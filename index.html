@@ -4,9 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#f5efe9">
-<title>苏伊温德日历 V1.3.0</title>
+<title>苏伊温德日历 V1.3.1</title>
 <link rel="manifest" href="manifest.json">
-<script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="./supabase-local.js"></script>
 <style>
 :root{
   --bg:#f5f1ec;--card:#fffdfa;--line:#e7dfd7;--text:#332e2a;--muted:#8b827a;
@@ -423,7 +423,7 @@ button{touch-action:manipulation}
 <body>
 <div class="app">
   <div class="top">
-    <div class="brand"><h1>苏伊温德日历 <span class="version">V1.3.0</span></h1><p>生命如暗室，不妨我明写春诗</p></div>
+    <div class="brand"><h1>苏伊温德日历 <span class="version">V1.3.1</span></h1><p>生命如暗室，不妨我明写春诗</p></div>
     <div class="actions">
       <button class="btn action-btn action-today" id="todayBtn"><span class="action-icon">⌂</span><span>回到今天</span></button>
       <button class="btn action-btn action-anniv" id="annivBtn"><span class="action-icon">♡</span><span>纪念日</span></button>
@@ -1582,12 +1582,24 @@ function updateCloudUI(){
   $('#signOutBtn').disabled=!user;$('#uploadCloud').disabled=!user;$('#downloadCloud').disabled=!user;
   renderSyncMeta()
 }
+function ensureSupabaseReady(){
+  const c=cloudCfg();
+  if(!c.url||!c.key){alert('请先填写并保存 Supabase Project URL 和 publishable key。');return false}
+  if(!window.supabase){alert('云同步组件没有加载成功，请刷新页面后重试。');return false}
+  if(!sb)initSupabase();
+  if(!sb){alert('Supabase 配置无法初始化，请检查 Project URL 和 key。');return false}
+  return true
+}
 async function saveCloudConfig(){
   const url=$('#sbUrl').value.trim(),key=$('#sbKey').value.trim();
-  S.s('cloudConfig',{url,key});initSupabase();setTimeout(retryPendingCloudSync,2200);alert('云端配置已保存。')
+  if(!url||!key){alert('请完整填写 Supabase Project URL 和 publishable key。');return}
+  S.s('cloudConfig',{url,key});
+  const client=initSupabase();
+  setTimeout(retryPendingCloudSync,800);
+  alert(client?'云端配置已保存。':'配置已保存，但初始化失败，请检查 URL 和 key。')
 }
 async function signUp(){
-  if(!sb)saveCloudConfig(); if(!sb){alert('请先填写并保存 Supabase 配置。');return}
+  if(!ensureSupabaseReady())return;
   const email=$('#sbEmail').value.trim(),password=$('#sbPassword').value;
   if(!email||!password){alert('请填写邮箱和密码。');return}
   setCloudStatus('busy','注册中');
@@ -1602,7 +1614,7 @@ async function signUp(){
   }
 }
 async function signIn(){
-  if(!sb)saveCloudConfig(); if(!sb){alert('请先填写并保存 Supabase 配置。');return}
+  if(!ensureSupabaseReady())return;
   const email=$('#sbEmail').value.trim(),password=$('#sbPassword').value;
   if(!email||!password){alert('请填写邮箱和密码。');return}
   setCloudStatus('busy','登录中');
