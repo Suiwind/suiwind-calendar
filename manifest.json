@@ -1,0 +1,9 @@
+{
+  "name": "苏伊温德日历 · 学习、计划与复盘",
+  "short_name": "苏伊温德日历",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#f5f1ec",
+  "theme_color": "#f5efe9",
+  "icons": []
+}

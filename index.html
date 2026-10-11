@@ -1,0 +1,1854 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#f5efe9">
+<title>苏伊温德日历 V1.3.0</title>
+<link rel="manifest" href="manifest.json">
+<script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root{
+  --bg:#f5f1ec;--card:#fffdfa;--line:#e7dfd7;--text:#332e2a;--muted:#8b827a;
+  --accent:#8f6f62;--accent-soft:#efe5df;--holiday:#b95f5f;--work:#667b92;
+  --green:#6f876e;--yellow:#b68b4b;--red:#b75d5d;--shadow:0 14px 36px rgba(70,50,42,.07)
+}
+*{box-sizing:border-box}body{margin:0;font-family:Inter,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;background:linear-gradient(135deg,#f5efe9,#f7f6f2);color:var(--text)}
+button,input,textarea,select{font:inherit}.app{max-width:1440px;margin:auto;padding:20px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:16px}.top h1{margin:0;font-size:28px}.top p{margin:5px 0 0;color:var(--muted);font-size:14px}
+.actions{display:flex;gap:8px;flex-wrap:wrap}.btn{border:1px solid var(--line);background:var(--card);padding:9px 13px;border-radius:11px;cursor:pointer;color:var(--text)}
+.btn:hover{border-color:#cbb8ae}.btn.primary{background:var(--accent);color:#fff;border-color:var(--accent)}.btn.ghost{background:transparent}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:12px}.stat,.panel{background:rgba(255,253,250,.97);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow)}
+.stat{padding:14px}.stat small{color:var(--muted)}.stat b{display:block;font-size:19px;margin-top:5px}.stat .hint{font-size:10px;color:var(--muted);margin-top:4px}
+.annivs{display:flex;gap:10px;overflow:auto;margin-bottom:12px;padding-bottom:2px}.anniv{min-width:220px;padding:12px;background:#fff;border:1px solid var(--line);border-radius:14px;position:relative}.anniv .count{font-size:18px;font-weight:700;color:var(--accent);margin:5px 0}.anniv .del{position:absolute;right:7px;top:7px;border:0;background:transparent;color:#b7aaa2;cursor:pointer}
+.layout{display:grid;grid-template-columns:minmax(0,1fr) 390px;gap:16px}.calendar{padding:16px}.calhead{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}.nav{display:flex;gap:8px}.calendar-period{display:flex;align-items:center;justify-content:center;gap:8px}.year-select{width:auto;min-width:98px;padding:7px 30px 7px 10px;border-radius:10px;font-weight:700;background:#fffdfb;border-color:var(--line);cursor:pointer}.title{font-size:21px;font-weight:750}.week,.grid{display:grid;grid-template-columns:repeat(7,1fr);gap:7px}
+.week div{text-align:center;color:var(--muted);font-size:12px;padding:7px}.day{min-height:112px;background:#fff;border:1px solid var(--line);border-radius:13px;padding:9px;cursor:pointer;position:relative;text-align:left}
+.day:hover{border-color:#cbb8ae;transform:translateY(-1px)}.day.other{opacity:.35}.day.today{outline:2px solid var(--accent);outline-offset:-2px;background:linear-gradient(180deg,#fff8f4 0%,#fff 74%);box-shadow:0 5px 18px rgba(143,111,98,.10)}.day.today .num{color:var(--accent);font-weight:850}.day.selected{border-color:var(--accent);box-shadow:0 0 0 2px rgba(143,111,98,.12)}.day.today.selected{box-shadow:0 0 0 3px rgba(143,111,98,.18),0 5px 18px rgba(143,111,98,.10)}
+.dtop{display:flex;justify-content:space-between;gap:5px}.date-left{display:flex;align-items:center;gap:5px;min-width:0}.num{font-weight:750}.today-chip{display:inline-flex;align-items:center;padding:1px 5px;border-radius:999px;background:var(--accent);color:#fff;font-size:8px;font-weight:750;line-height:1.55;white-space:nowrap}.lunar{font-size:10px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.tags{display:flex;gap:4px;flex-wrap:wrap;margin-top:6px}
+.tag{font-size:9px;padding:2px 5px;border-radius:999px;background:#f1ece8}.tag.holiday{background:#fbe8e8;color:var(--holiday)}.tag.work{background:#e8eef4;color:var(--work)}.tag.term{background:#edf3e9;color:#61785f}
+.mini{position:absolute;bottom:7px;left:9px;font-size:10px;color:#746b64;display:flex;gap:7px;align-items:center}.priority-dots{display:inline-flex;gap:2px}.pd{width:5px;height:5px;border-radius:50%;display:inline-block}.pd.high{background:var(--red)}.pd.medium{background:var(--yellow)}.pd.low{background:var(--green)}
+.side{padding:16px;position:sticky;top:14px;align-self:start;max-height:calc(100vh - 28px);overflow:auto}.hero{padding-bottom:13px;border-bottom:1px solid var(--line)}.hero b{font-size:23px}.hero div{color:var(--muted);font-size:13px;margin-top:4px}
+.section{padding:14px 0;border-bottom:1px solid var(--line)}.section:last-child{border:0}.section h3{margin:0 0 9px;font-size:15px;display:flex;justify-content:space-between}.section h3 span{color:var(--muted);font-size:11px;font-weight:400}
+.inputrow{display:flex;gap:7px;align-items:center}.inputrow input[type=text]{flex:1}input[type=text],input[type=date],input[type=time],textarea,select{width:100%;border:1px solid var(--line);border-radius:10px;padding:9px 10px;background:#fff;outline:none;color:var(--text)}
+textarea{min-height:78px;resize:vertical;line-height:1.45}.taskcomposer{display:grid;grid-template-columns:1fr 96px 92px 92px;gap:7px;margin-top:8px}.taskcomposer .wide{grid-column:1/-1;display:flex;gap:7px}.taskcomposer .wide input{flex:1}
+.task{display:flex;gap:8px;align-items:flex-start;padding:8px 0;border-bottom:1px dashed #eee6df}.task:last-child{border-bottom:0}.task.done .txt{text-decoration:line-through;color:#aaa}.txt{flex:1;font-size:13px;min-width:0}.meta{display:flex;gap:5px;flex-wrap:wrap;margin-top:4px}.pill{font-size:9px;padding:2px 5px;border-radius:999px;background:#f2ede9;color:#776d66}.pill.high{background:#fbe7e7;color:#a94d4d}.pill.medium{background:#faf0da;color:#9b7438}.pill.low{background:#eaf2e8;color:#61795e}.pill.repeat{background:#e9eef6;color:#60738a}.pill.reminder{background:#eee8f5;color:#75668c}
+.x{border:0;background:transparent;color:#aaa;cursor:pointer}.reflect label{display:block;font-size:12px;font-weight:650;margin:10px 0 5px}.note{font-size:11px;color:var(--muted);line-height:1.5;margin-top:10px}
+.modal{position:fixed;inset:0;background:rgba(30,24,20,.3);display:none;align-items:center;justify-content:center;padding:16px;z-index:50}.modal.show{display:flex}.modalbox{width:min(480px,100%);background:var(--card);border-radius:17px;padding:18px;max-height:85vh;overflow:auto}
+.modalbox .row{display:flex;gap:9px;margin-top:10px}.modalbox .row>*{flex:1}.check{display:flex;align-items:center;gap:7px;color:var(--muted);font-size:12px;margin-top:10px}.manage-list{margin-top:14px}.manage-item{display:flex;align-items:center;gap:8px;padding:9px 0;border-top:1px solid var(--line)}.manage-item .grow{flex:1}
+.banner{display:none;margin-bottom:12px;padding:10px 12px;border:1px solid #dfd1c9;background:#fff8f3;border-radius:12px;font-size:12px;color:#6d5e56}.banner.show{display:flex;justify-content:space-between;gap:10px;align-items:center}
+.file{display:none}.empty{color:var(--muted);font-size:12px;padding:4px 0}.legend{display:flex;gap:10px;flex-wrap:wrap;color:var(--muted);font-size:10px;margin-top:10px}
+@media(max-width:1040px){.layout{grid-template-columns:1fr}.side{position:static;max-height:none}.stats{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:700px){.app{padding:10px}.top{align-items:flex-start;flex-direction:column}.calendar{padding:9px}.week,.grid{gap:4px}.day{min-height:82px;padding:6px}.tag:nth-child(n+3){display:none}.mini{left:6px;bottom:4px}.lunar{font-size:9px}.stats{grid-template-columns:1fr 1fr}.taskcomposer{grid-template-columns:1fr 1fr}.taskcomposer .wide{grid-column:1/-1}.anniv{min-width:200px}}
+
+.review-buttons{display:flex;gap:8px;flex-wrap:wrap}
+.review-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.review-card{border:1px solid var(--line);border-radius:14px;padding:13px;background:#fff}
+.review-card h4{margin:0 0 8px;font-size:14px}
+.review-list{display:flex;flex-direction:column;gap:8px}
+.review-day{border:1px solid #eee5de;border-radius:11px;padding:9px;background:#fffdfa}
+.review-day b{font-size:12px}
+.review-day p{margin:5px 0 0;font-size:12px;line-height:1.5;color:#655d57;white-space:pre-wrap}
+.review-summary{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:10px 0 14px}
+.review-metric{background:#faf6f2;border:1px solid var(--line);border-radius:12px;padding:10px}
+.review-metric small{color:var(--muted);display:block}
+.review-metric strong{display:block;font-size:18px;margin-top:4px}
+.trend{display:flex;align-items:end;gap:5px;height:110px;padding:8px 2px 2px}
+.barwrap{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:end;gap:4px;height:100%}
+.bar{width:100%;max-width:28px;background:#cdb6aa;border-radius:7px 7px 3px 3px;min-height:3px}
+.barlabel{font-size:9px;color:var(--muted)}
+.review-tabs{display:flex;gap:6px;margin-bottom:12px}
+.review-tabs button.active{background:var(--accent);color:white;border-color:var(--accent)}
+.review-section{display:none}.review-section.active{display:block}
+.export-row{display:flex;justify-content:flex-end;gap:8px;margin-top:12px}
+.autobox{background:#f9f4ef;border:1px solid var(--line);border-radius:12px;padding:11px;line-height:1.55;font-size:12px;color:#625850;white-space:pre-wrap}
+@media(max-width:700px){
+  .review-grid{grid-template-columns:1fr}
+  .review-summary{grid-template-columns:1fr 1fr}
+}
+
+
+.cloud-status{display:inline-flex;align-items:center;gap:6px;font-size:11px;color:var(--muted)}
+.cloud-dot{width:7px;height:7px;border-radius:50%;background:#bdb5ae}
+.cloud-dot.on{background:#6f876e}.cloud-dot.busy{background:#b68b4b}
+.ai-result{white-space:pre-wrap;line-height:1.65;background:#faf7f3;border:1px solid var(--line);border-radius:12px;padding:12px;font-size:13px;min-height:80px}
+.settings-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.settings-grid .full{grid-column:1/-1}
+.account-card{border:1px solid var(--line);border-radius:13px;padding:12px;background:#fff;margin-top:12px}
+.account-card b{display:block;margin-bottom:4px}
+.sync-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.warning{font-size:11px;line-height:1.55;color:#7f6758;background:#fff7ef;border:1px solid #ead8c9;border-radius:11px;padding:9px;margin-top:10px}
+.ai-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.spinner{display:inline-block;width:12px;height:12px;border:2px solid #d8cbc4;border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite;vertical-align:-2px;margin-right:5px}
+@keyframes spin{to{transform:rotate(360deg)}}
+@media(max-width:700px){.settings-grid{grid-template-columns:1fr}.settings-grid .full{grid-column:auto}}
+
+
+
+.sync-meta-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+.sync-meta-item{border:1px solid var(--line);border-radius:10px;padding:8px 9px;background:#faf7f3}
+.sync-meta-item small{display:block;color:var(--muted);font-size:10px;margin-bottom:3px}
+.sync-meta-item b{display:block;font-size:11px;font-weight:650;word-break:break-all}
+.sync-conflict{display:none;margin-top:10px;padding:9px 10px;border-radius:10px;background:#fff1e8;border:1px solid #eccdb8;color:#8a5637;font-size:11px;line-height:1.5}
+.sync-conflict.show{display:block}
+@media(max-width:700px){.sync-meta-grid{grid-template-columns:1fr}}
+
+
+/* 苏伊温德日历 V1.2.0 */
+.brand .version{font-size:12px;color:var(--muted);font-weight:600;vertical-align:middle;margin-left:4px}
+.action-btn{display:inline-flex;align-items:center;gap:6px;transition:transform .15s ease,border-color .15s ease,background .15s ease}
+.action-btn:hover{transform:translateY(-1px)}
+.action-icon{font-size:13px;opacity:.82}
+.action-today{background:#f8f4ef;border-color:#ded3c9}
+.action-anniv{background:#fbf1f1;border-color:#ead6d6;color:#785d5d}
+.action-review{background:#f1f5ef;border-color:#d8e1d3;color:#5e705c}
+.action-cloud{background:#f0f4f7;border-color:#d4dee5;color:#596c78}
+.action-schedule{background:#f4f1f7;border-color:#ddd5e6;color:#675f75}
+.action-notify{background:#faf5e9;border-color:#e7dcc2;color:#776640}
+.action-notify.compact{padding:8px 10px;min-width:0}
+.calhead-spacer{width:56px}
+
+.goal-overviews{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+.goal-overview{padding:14px 15px;min-width:0}
+.overview-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:8px}
+.overview-kicker{font-size:10px;color:var(--muted);letter-spacing:.04em;margin-bottom:3px}
+.goal-overview h2{font-size:15px;margin:0;font-weight:720}
+.overview-symbol{font-size:12px;color:var(--accent)}
+.overview-progress{font-size:13px;color:var(--accent);background:var(--accent-soft);padding:5px 8px;border-radius:999px;white-space:nowrap}
+.overview-list{display:flex;flex-direction:column;gap:5px;min-height:36px}
+.overview-item{display:grid;grid-template-columns:22px 7px minmax(0,1fr);gap:7px;align-items:center;padding:6px 7px;border-radius:9px;background:#fff;border:1px solid #eee7e1}
+.overview-item.done{opacity:.58}
+.overview-item.done .overview-text{text-decoration:line-through}
+.overview-check{width:20px;height:20px;border:1px solid #d8cec7;background:#fff;border-radius:6px;cursor:pointer;padding:0;line-height:18px;color:#6f876e}
+.overview-dot,.goal-dot{width:6px;height:6px;border-radius:50%;display:inline-block;flex:0 0 auto}
+.overview-dot.high,.goal-dot.high{background:var(--red)}
+.overview-dot.medium,.goal-dot.medium{background:var(--yellow)}
+.overview-dot.low,.goal-dot.low{background:var(--green)}
+.overview-text{font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.overview-more{font-size:10px;color:var(--muted);padding:3px 4px}
+.overview-link{border:0;background:transparent;padding:7px 2px 0;color:var(--muted);font-size:10px;cursor:pointer}
+.overview-link:hover{color:var(--accent)}
+.goal-add-row{display:grid;grid-template-columns:minmax(0,1fr) 88px 40px;gap:7px;align-items:center;margin-top:8px}
+.goal-add-row select{padding:9px 7px}
+.task .goal-dot{margin-top:6px}
+
+.school-week-badge{display:inline-flex;align-items:center;font-size:9px;padding:2px 6px;border-radius:999px;background:#eee7f4;color:#735f82;border:1px solid #e0d6e7;font-weight:650}
+.day.other .school-week-badge{opacity:.75}
+
+.reflect{transition:background .2s ease,border-color .2s ease}
+.reflect.reflect-complete{background:linear-gradient(180deg,rgba(244,249,242,.78),transparent)}
+.reflect.reflect-dirty{background:linear-gradient(180deg,rgba(252,248,239,.72),transparent)}
+.reflect-actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:12px}
+.reflect-confirm{background:#edf4e9;border-color:#cfddc8;color:#5d735a;font-weight:650}
+.reflect-complete .reflect-confirm{background:#6f876e;border-color:#6f876e;color:#fff}
+.reflect-feedback{font-size:10px;color:var(--muted)}
+#saved{font-weight:600}
+.reflect-complete #saved{color:var(--green)}
+.reflect-dirty #saved{color:#9b7438}
+
+.backup-box{margin-top:13px;border:1px solid var(--line);border-radius:12px;background:#faf7f3;overflow:hidden}
+.backup-box summary{cursor:pointer;padding:10px 12px;font-size:12px;color:#695f58;font-weight:650;list-style:none}
+.backup-box summary::-webkit-details-marker{display:none}
+.backup-box summary::after{content:"⌄";float:right;color:var(--muted)}
+.backup-box[open] summary::after{content:"⌃"}
+.backup-inner{padding:0 12px 12px}
+.backup-inner p{font-size:10px;color:var(--muted);line-height:1.55;margin:0 0 8px}
+
+@media(max-width:760px){
+  .goal-overviews{grid-template-columns:1fr}
+  .goal-add-row{grid-template-columns:minmax(0,1fr) 82px 40px}
+  .actions{gap:6px}
+  .action-btn{padding:8px 10px}
+}
+
+
+/* V1.0.2 界面精修与 Xiaomi 15 / Android Chrome 优化 */
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%;background:var(--bg)}
+body{min-height:100vh;min-height:100dvh;overflow-x:hidden}
+button,input,textarea,select{-webkit-tap-highlight-color:transparent}
+button{touch-action:manipulation}
+.panel,.stat,.anniv{min-width:0}
+
+/* 纪念日改为自适应横向信息卡，单卡也不再留下突兀的大块空白 */
+.annivs{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:10px;overflow:visible;padding-bottom:0}
+.anniv{min-width:0;display:grid;grid-template-columns:minmax(150px,1fr) auto auto;align-items:center;gap:8px 14px;padding:11px 38px 11px 13px;background:rgba(255,253,250,.97);box-shadow:0 8px 22px rgba(70,50,42,.045)}
+.anniv b{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.anniv .count{font-size:15px;margin:0;white-space:nowrap}
+.anniv small{color:var(--muted);white-space:nowrap}
+
+/* 月历底部图例收得更轻，正式版不显示开发说明 */
+.legend{padding:3px 2px 0;opacity:.82;row-gap:5px}
+
+@media(max-width:700px){
+  .app{
+    padding-top:max(10px,env(safe-area-inset-top));
+    padding-right:max(9px,env(safe-area-inset-right));
+    padding-bottom:calc(18px + env(safe-area-inset-bottom));
+    padding-left:max(9px,env(safe-area-inset-left));
+  }
+  .top{gap:10px;margin-bottom:12px}
+  .top h1{font-size:22px;line-height:1.22;letter-spacing:-.02em}
+  .top p{font-size:12px;line-height:1.5;margin-top:4px}
+  .brand .version{font-size:10px}
+
+  /* 顶部操作保持一行横向滑动，避免小屏按钮挤成多行 */
+  .actions{width:100%;display:flex;flex-wrap:nowrap;overflow-x:auto;gap:7px;padding:1px 1px 5px;scroll-snap-type:x proximity;overscroll-behavior-x:contain;scrollbar-width:none}
+  .actions::-webkit-scrollbar{display:none}
+  .action-btn,.cloud-status{flex:0 0 auto;scroll-snap-align:start}
+  .action-btn{min-height:40px;padding:8px 10px;border-radius:10px}
+  .cloud-status{min-height:40px;padding:0 2px}
+
+  .banner{font-size:11px;line-height:1.45;align-items:flex-start}
+  .banner .btn{min-height:38px}
+
+  .stats{grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
+  .stat{padding:11px 12px;border-radius:15px;box-shadow:0 8px 24px rgba(70,50,42,.05)}
+  .stat small{font-size:11px}
+  .stat b{font-size:17px;margin-top:4px}
+  .stat .hint{font-size:9px;line-height:1.35}
+
+  .annivs{grid-template-columns:1fr;gap:8px;margin-bottom:10px}
+  .anniv{grid-template-columns:minmax(0,1fr) auto;padding:10px 34px 10px 12px;gap:3px 10px;border-radius:13px}
+  .anniv b{grid-column:1;grid-row:1;font-size:13px}
+  .anniv .count{grid-column:2;grid-row:1 / span 2;font-size:14px;align-self:center}
+  .anniv small{grid-column:1;grid-row:2;font-size:10px;white-space:normal}
+
+  /* 手机上周/月任务用横向卡片，减少进入月历前的纵向长度 */
+  .goal-overviews{display:flex;overflow-x:auto;gap:9px;margin-bottom:10px;padding-bottom:2px;scroll-snap-type:x mandatory;overscroll-behavior-x:contain;scrollbar-width:none}
+  .goal-overviews::-webkit-scrollbar{display:none}
+  .goal-overview{flex:0 0 min(86vw,360px);scroll-snap-align:start;padding:12px 13px;border-radius:15px}
+  .overview-head{margin-bottom:7px}
+  .overview-progress{font-size:11px;padding:4px 7px}
+  .overview-item{padding:5px 6px}
+  .overview-link{padding-top:6px}
+
+  .layout{display:flex;flex-direction:column;gap:10px}
+  .calendar{padding:8px 7px 9px;border-radius:16px}
+  .calhead{margin-bottom:8px;padding:0 1px}
+  .calhead .btn{width:40px;height:40px;padding:0;display:grid;place-items:center}
+  .calendar-period{gap:5px}
+  .year-select{min-width:84px;padding:6px 24px 6px 8px;font-size:12px}
+  .title{font-size:18px}
+  .calhead-spacer{width:88px}
+  .week,.grid{gap:3px}
+  .week div{font-size:10px;padding:6px 0}
+  .day{min-height:76px;padding:6px 5px;border-radius:10px;overflow:hidden}
+  .day:hover{transform:none}
+  .num{font-size:13px}
+  .today-chip{font-size:7px;padding:1px 4px}
+  .lunar{font-size:8.5px;max-width:28px}
+  .tags{gap:2px;margin-top:4px;max-height:31px;overflow:hidden}
+  .tag,.school-week-badge{font-size:7.5px;padding:1px 4px;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .mini{left:5px;right:4px;bottom:4px;font-size:8px;gap:4px;white-space:nowrap;overflow:hidden}
+  .pd{width:4px;height:4px}
+  .legend{font-size:8.5px;gap:7px;margin-top:8px;line-height:1.35;overflow-x:auto;flex-wrap:nowrap;white-space:nowrap;padding-bottom:2px;scrollbar-width:none}
+  .legend::-webkit-scrollbar{display:none}
+
+  .side{padding:12px;border-radius:16px;max-height:none;overflow:visible}
+  .hero{padding-bottom:11px}
+  .hero b{font-size:20px}
+  .hero div{font-size:11px;line-height:1.5}
+  .section{padding:12px 0}
+  .section h3{font-size:14px}
+  .task{padding:9px 0;gap:7px}
+  .txt{font-size:13px;line-height:1.45}
+  .task input[type=checkbox]{width:18px;height:18px;flex:0 0 auto}
+  input[type=text],input[type=date],input[type=time],input[type=password],textarea,select{font-size:16px;min-height:42px}
+  textarea{min-height:94px}
+  .taskcomposer{grid-template-columns:1fr 1fr;gap:7px}
+  .taskcomposer .wide{grid-column:1/-1}
+  .taskcomposer .wide .btn{min-width:62px}
+  .goal-add-row{grid-template-columns:minmax(0,1fr) 86px 42px}
+  .goal-add-row .btn{padding-left:0;padding-right:0}
+  .reflect-actions{align-items:stretch}
+  .reflect-confirm{min-height:44px;flex:1 1 auto}
+  .reflect-feedback{display:flex;align-items:center;min-height:28px}
+
+  /* Android Chrome 地址栏会动态改变可视高度，弹窗使用 dvh 并做底部安全区 */
+  .modal{align-items:flex-end;padding:0;background:rgba(30,24,20,.34)}
+  .modalbox{width:100%!important;max-width:none;border-radius:20px 20px 0 0;max-height:92vh;max-height:92dvh;padding:16px 14px calc(16px + env(safe-area-inset-bottom));overscroll-behavior:contain;box-shadow:0 -12px 40px rgba(50,38,30,.14)}
+  .modalbox .row{gap:7px}
+  .review-tabs{position:sticky;top:-16px;z-index:2;background:var(--card);padding:10px 0 8px;margin-top:4px!important}
+  .review-summary{gap:7px}
+  .review-metric{padding:9px}
+  .review-metric strong{font-size:16px}
+  .sync-actions .btn{min-height:42px}
+  .settings-grid{gap:8px}
+}
+
+@media(max-width:390px){
+  .stats{gap:6px}
+  .stat{padding:10px}
+  .calendar{padding-left:5px;padding-right:5px}
+  .week,.grid{gap:2px}
+  .day{min-height:72px;padding:5px 4px}
+  .num{font-size:12px}
+  .school-week-badge,.tag{font-size:7px;padding-left:3px;padding-right:3px}
+  .goal-overview{flex-basis:88vw}
+}
+
+
+
+/* V1.0.2 纪念日卡片排版修复：名称/倒计时一行，日期独占下一行，禁止内容串出卡片 */
+.annivs{
+  grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));
+  align-items:stretch;
+}
+.anniv{
+  grid-template-columns:minmax(0,1fr) max-content;
+  grid-template-rows:auto auto;
+  align-items:center;
+  column-gap:10px;
+  row-gap:4px;
+  overflow:hidden;
+}
+.anniv b{
+  grid-column:1;
+  grid-row:1;
+  min-width:0;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+.anniv .count{
+  grid-column:2;
+  grid-row:1;
+  max-width:100%;
+  white-space:nowrap;
+  justify-self:end;
+}
+.anniv small{
+  grid-column:1 / -1;
+  grid-row:2;
+  display:block;
+  min-width:0;
+  max-width:100%;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+@media(max-width:700px){
+  .annivs{grid-template-columns:1fr}
+  .anniv{
+    grid-template-columns:minmax(0,1fr) max-content;
+    grid-template-rows:auto auto;
+    padding:10px 34px 10px 12px;
+  }
+  .anniv b{grid-column:1;grid-row:1}
+  .anniv .count{grid-column:2;grid-row:1;align-self:center}
+  .anniv small{grid-column:1 / -1;grid-row:2;white-space:nowrap}
+}
+
+
+
+/* V1.2.0 · 每日课表 + 重复任务结束 */
+.schedule-section{background:linear-gradient(180deg,rgba(248,246,252,.62),transparent 75%)}
+.schedule-list{display:flex;flex-direction:column;gap:7px}
+.schedule-item{display:grid;grid-template-columns:82px minmax(0,1fr) auto;gap:9px;padding:9px 10px;border:1px solid #ebe4ee;border-radius:12px;background:#fffdfb;position:relative}
+.schedule-item.study{background:#fbfaf5;border-color:#e8e1cf}.schedule-item.commentary{background:#f8f4f7;border-color:#e8dce6}.schedule-item.course{background:#fffdfb}
+.schedule-item.conflict{border-color:#e3b2a8;background:#fff8f5}.schedule-time{font-weight:750;font-size:12px;color:#61566c;white-space:nowrap}
+.schedule-main{min-width:0}.schedule-name{font-size:13px;font-weight:700;line-height:1.35}.schedule-meta{font-size:10px;color:var(--muted);margin-top:3px;line-height:1.45}
+.schedule-badge{display:inline-block;font-size:9px;padding:2px 6px;border-radius:999px;margin-left:5px;background:#eee9f2;color:#71657d;vertical-align:1px}
+.schedule-badge.study{background:#f2eee1;color:#756b4f}.schedule-badge.commentary{background:#f4eaf1;color:#7e6476}.schedule-warning{color:#aa6254;font-weight:650}
+.schedule-head-actions{display:inline-flex;align-items:center;gap:8px}.schedule-edit-btn{border:0;background:#f1ebf3;color:#6f6178;border-radius:999px;padding:3px 8px;font-size:10px;cursor:pointer}.schedule-edit-btn:hover{background:#e8dfea}
+.schedule-remove{align-self:start;border:0;background:transparent;color:#b4a8b0;font-size:18px;line-height:1;cursor:pointer;padding:0 2px}.schedule-remove:hover{color:#a45f58}
+.schedule-rule-note{font-size:10px;line-height:1.5;color:#8b7e74;margin-top:7px;min-height:0}.schedule-rule-note:empty{display:none}
+.schedule-modalbox{width:min(560px,100%)}.modal-title-row{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}.schedule-manager-section{padding:14px 0;border-bottom:1px solid var(--line)}.schedule-manager-section h4{margin:0 0 9px;font-size:13px}.schedule-label{display:block;font-size:11px;color:var(--muted);margin:0 0 5px}
+.schedule-form-grid{display:grid;grid-template-columns:1.5fr .75fr .75fr;gap:7px;margin-top:8px}.schedule-form-grid #scheduleTeacher,.schedule-form-grid #scheduleRoom,.schedule-form-grid #scheduleNoteInput{grid-column:auto}.schedule-form-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:9px}
+.schedule-manage-list{display:flex;flex-direction:column;gap:6px}.schedule-manage-item{display:flex;align-items:center;gap:8px;padding:8px 9px;border:1px solid #eee6df;border-radius:10px;background:#fffdfb}.schedule-manage-item .grow{flex:1;min-width:0}.schedule-manage-item b{font-size:12px}.schedule-manage-item small{display:block;color:var(--muted);font-size:10px;margin-top:2px}.schedule-manage-item button{white-space:nowrap}
+.schedule-fixed-details{margin-top:12px}.schedule-fixed-details summary{cursor:pointer;font-weight:700;font-size:13px}.schedule-fixed-details[open] summary{margin-bottom:6px}
+.repeat-end-wrap{grid-column:1/-1;display:flex;align-items:center;gap:7px;padding:7px 9px;border:1px dashed #e3dbd4;border-radius:10px;background:#fbf8f5}
+.repeat-end-wrap[hidden]{display:none!important}.repeat-end-wrap label{font-size:11px;color:var(--muted);white-space:nowrap}.repeat-end-wrap input{max-width:180px}
+.repeat-action-buttons{display:grid;grid-template-columns:1fr;gap:8px;margin-top:12px}.repeat-action-buttons .btn{text-align:left;justify-content:flex-start;padding:11px 12px}
+.repeat-action-buttons .danger{background:#fbefed;border-color:#e9cbc4;color:#985548}.repeat-action-note{font-size:11px;color:var(--muted);line-height:1.55;margin-top:8px}
+@media(max-width:700px){.schedule-item{grid-template-columns:70px minmax(0,1fr) auto;padding:8px}.schedule-time{font-size:11px}.schedule-name{font-size:12px}.schedule-form-grid{grid-template-columns:1fr 1fr}.schedule-form-grid #scheduleName,.schedule-form-grid #scheduleTeacher,.schedule-form-grid #scheduleRoom,.schedule-form-grid #scheduleNoteInput{grid-column:1/-1}.schedule-head-actions{gap:5px}.repeat-end-wrap{align-items:stretch;flex-direction:column}.repeat-end-wrap input{max-width:none;width:100%}}
+
+/* V1.2.0 · 日期距离 + 期限事项 */
+.goal-overviews{grid-template-columns:repeat(3,minmax(0,1fr))}
+.hero-title-row{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.hero-title-row b{min-width:0}
+.date-distance{display:inline-flex;align-items:center;padding:4px 8px;border-radius:999px;background:#f4eee9;border:1px solid #e4d8cf;color:#735f55;font-size:10px;font-weight:700;white-space:nowrap}
+.date-distance.future{background:#eef3f7;border-color:#d8e2e9;color:#596e7c}
+.date-distance.past{background:#f7f1eb;border-color:#e7d9cc;color:#816957}
+.date-distance.today{background:var(--accent);border-color:var(--accent);color:#fff}
+
+.tag.deadline{background:#f7eee3;color:#896848;border:1px solid #ead9c7}
+.tag.deadline.done{background:#edf4e9;color:#60775c;border-color:#d5e2cf}
+
+.deadline-overview-item{display:grid;grid-template-columns:22px 7px minmax(0,1fr) max-content;gap:7px;align-items:center;padding:6px 7px;border-radius:9px;background:#fff;border:1px solid #eee7e1}
+.deadline-overview-item.done{opacity:.6}
+.deadline-overview-item.done .overview-text{text-decoration:line-through}
+.deadline-overview-time{font-size:9px;color:var(--muted);white-space:nowrap}
+.deadline-overview-time.overdue{color:#a94d4d;font-weight:650}
+.deadline-overview-time.soon{color:#9b7438;font-weight:650}
+
+.deadline-list{display:flex;flex-direction:column;gap:0}
+.deadline-item{display:grid;grid-template-columns:20px 7px minmax(0,1fr) auto;gap:8px;align-items:flex-start;padding:9px 0;border-bottom:1px dashed #eee6df}
+.deadline-item:last-child{border-bottom:0}
+.deadline-item.done{opacity:.62}
+.deadline-item.done .deadline-text{text-decoration:line-through;color:#999}
+.deadline-item input[type=checkbox]{margin-top:2px}
+.deadline-item .goal-dot{margin-top:7px}
+.deadline-body{min-width:0}
+.deadline-text{font-size:13px;line-height:1.45;overflow-wrap:anywhere}
+.deadline-meta{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-top:4px}
+.deadline-date-btn{border:0;background:transparent;padding:0;color:var(--muted);font-size:10px;cursor:pointer;text-decoration:underline;text-decoration-color:#d9cec6;text-underline-offset:2px}
+.deadline-status{font-size:9px;padding:2px 6px;border-radius:999px;background:#f3eee9;color:#776c64}
+.deadline-status.future{background:#edf3f7;color:#5b7180}
+.deadline-status.soon{background:#faf0da;color:#936c34}
+.deadline-status.today{background:#f7e8de;color:#895943}
+.deadline-status.overdue{background:#fbe7e7;color:#a94d4d}
+.deadline-status.done{background:#eaf2e8;color:#61795e}
+.deadline-add-row{display:grid;grid-template-columns:minmax(0,1fr) 145px 92px 40px;gap:7px;align-items:center;margin-top:9px}
+.deadline-add-row select,.deadline-add-row input{min-width:0}
+.deadline-help{font-size:10px;color:var(--muted);line-height:1.45;margin-top:6px}
+
+@media(max-width:980px) and (min-width:701px){
+  .goal-overviews{grid-template-columns:1fr 1fr}
+  .deadline-overview{grid-column:1/-1}
+}
+@media(max-width:700px){
+  .goal-overviews{display:flex}
+  .hero-title-row{align-items:flex-start}
+  .date-distance{font-size:9px;padding:3px 7px}
+  .deadline-overview-item{grid-template-columns:22px 7px minmax(0,1fr);gap:6px}
+  .deadline-overview-time{grid-column:3;white-space:normal;margin-top:-3px}
+  .deadline-add-row{grid-template-columns:minmax(0,1fr) 92px 42px}
+  .deadline-add-row .deadline-text-input{grid-column:1/-1}
+  .deadline-add-row input[type=date]{font-size:14px;padding-left:8px;padding-right:8px}
+  .deadline-add-row select{font-size:14px}
+}
+
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="top">
+    <div class="brand"><h1>苏伊温德日历 <span class="version">V1.3.0</span></h1><p>生命如暗室，不妨我明写春诗</p></div>
+    <div class="actions">
+      <button class="btn action-btn action-today" id="todayBtn"><span class="action-icon">⌂</span><span>回到今天</span></button>
+      <button class="btn action-btn action-anniv" id="annivBtn"><span class="action-icon">♡</span><span>纪念日</span></button>
+      <button class="btn action-btn action-review" id="reviewBtn"><span class="action-icon">↺</span><span>复盘中心</span></button>
+            <button class="btn action-btn action-cloud" id="cloudBtn"><span class="action-icon">☁</span><span>云同步</span></button>
+      <span class="cloud-status" title="云同步状态"><i class="cloud-dot" id="cloudDot"></i><span id="cloudText">仅本地</span></span>
+      <button class="btn action-btn action-notify" id="notifyBtn"><span class="action-icon">♢</span><span class="notify-label">开启提醒</span></button>
+    </div>
+  </div>
+
+  <div class="banner" id="notifyBanner"><span>任务提醒只会在网页打开时触发；开启浏览器通知后，到点会弹出提醒。</span><button class="btn" id="bannerNotify">开启</button></div>
+
+  <div class="stats">
+    <div class="stat"><small>本月任务完成</small><b id="monthProgress">0 / 0</b><div class="hint" id="monthRate"></div></div>
+    <div class="stat"><small>下一个节气</small><b id="nextTerm">载入中…</b><div class="hint">本地计算，无需外部加载</div></div>
+    <div class="stat"><small>连续复盘</small><b id="streak">0 天</b><div class="hint">任意一问有内容即计入</div></div>
+    <div class="stat"><small>今日待办</small><b id="todayTodo">0 项</b><div class="hint" id="todayHigh"></div></div>
+  </div>
+
+
+  <div class="annivs" id="annivCards"></div>
+
+  <section class="goal-overviews" aria-label="任务概览">
+    <article class="panel goal-overview week-overview">
+      <div class="overview-head">
+        <div>
+          <div class="overview-kicker" id="weekOverviewLabel">本周</div>
+          <h2><span class="overview-symbol">□</span> 本周任务</h2>
+        </div>
+        <strong class="overview-progress" id="weekOverviewProgress">0 / 0</strong>
+      </div>
+      <div class="overview-list" id="weekOverviewList"></div>
+      <button class="overview-link" id="jumpWeekGoals">查看 / 编辑本周任务 →</button>
+    </article>
+    <article class="panel goal-overview month-overview">
+      <div class="overview-head">
+        <div>
+          <div class="overview-kicker" id="monthOverviewLabel">本月</div>
+          <h2><span class="overview-symbol">◇</span> 本月任务</h2>
+        </div>
+        <strong class="overview-progress" id="monthOverviewProgress">0 / 0</strong>
+      </div>
+      <div class="overview-list" id="monthOverviewList"></div>
+      <button class="overview-link" id="jumpMonthGoals">查看 / 编辑本月任务 →</button>
+    </article>
+    <article class="panel goal-overview deadline-overview">
+      <div class="overview-head">
+        <div>
+          <div class="overview-kicker" id="deadlineOverviewLabel">近期截止</div>
+          <h2><span class="overview-symbol">⌛</span> 期限事项</h2>
+        </div>
+        <strong class="overview-progress" id="deadlineOverviewProgress">0 项</strong>
+      </div>
+      <div class="overview-list" id="deadlineOverviewList"></div>
+      <button class="overview-link" id="jumpDeadlineGoals">查看 / 编辑期限事项 →</button>
+    </article>
+  </section>
+  <div class="layout">
+    <main class="panel calendar">
+      <div class="calhead">
+        <div class="nav"><button class="btn" id="prevBtn" aria-label="上个月">‹</button><button class="btn" id="nextBtn" aria-label="下个月">›</button></div>
+        <div class="calendar-period">
+          <select id="yearSelect" class="year-select" aria-label="选择年份"></select>
+          <div class="title" id="monthTitle"></div>
+        </div>
+        <span class="calhead-spacer" aria-hidden="true"></span>
+      </div>
+      <div class="week"><div>一</div><div>二</div><div>三</div><div>四</div><div>五</div><div>六</div><div>日</div></div>
+      <div class="grid" id="calendar"></div>
+      <div class="legend">
+        <span>● 高优先级</span><span>● 中优先级</span><span>● 低优先级</span><span>休 = 法定/调休休息</span><span>班 = 周末调休上班</span>
+      </div>
+    </main>
+
+    <aside class="panel side">
+      <div class="hero"><div class="hero-title-row"><b id="dateTitle"></b><span class="date-distance" id="dateDistance">今天</span></div><div id="dateSub"></div></div>
+
+      <section class="section schedule-section" id="scheduleSection">
+        <h3><span>每日课表</span><span class="schedule-head-actions"><span id="scheduleStat"></span><button class="schedule-edit-btn" id="scheduleEditBtn" type="button">调整</button></span></h3>
+        <div class="schedule-list" id="dailySchedule"></div>
+        <div class="schedule-rule-note" id="scheduleRuleNote"></div>
+      </section>
+
+      <section class="section">
+        <h3>今日任务 <span id="taskStat"></span></h3>
+        <div id="tasks"></div>
+        <div class="taskcomposer">
+          <div class="wide"><input id="taskInput" type="text" placeholder="例如：完成项目首页原型"><button class="btn primary" id="addTask">添加</button></div>
+          <select id="priority"><option value="medium">中优先级</option><option value="high">高优先级</option><option value="low">低优先级</option></select>
+          <input id="reminder" type="time" title="提醒时间">
+          <select id="repeat"><option value="none">不重复</option><option value="daily">每天</option><option value="weekly">每周</option><option value="monthly">每月</option></select>
+          <button class="btn ghost" id="clearComposer" title="清空输入">清空</button>
+          <div class="repeat-end-wrap" id="repeatEndWrap" hidden>
+            <label for="repeatEnd">重复截止（可选，含当天）</label>
+            <input id="repeatEnd" type="date" aria-label="重复截止日期">
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="deadlineGoalsSection">
+        <h3>期限事项 <span id="deadlineStat"></span></h3>
+        <div class="deadline-list" id="deadlineGoals"></div>
+        <div class="deadline-add-row">
+          <input class="deadline-text-input" id="deadlineInput" type="text" placeholder="例如：学完高数一轮">
+          <input id="deadlineDate" type="date" aria-label="截止日期">
+          <select id="deadlinePriority" aria-label="期限事项优先级"><option value="medium">中优先</option><option value="high">高优先</option><option value="low">低优先</option></select>
+          <button class="btn" id="addDeadline" title="添加期限事项">＋</button>
+        </div>
+        <div class="deadline-help">截止日前可以自由安排进度；提前完成时直接勾选，系统会记录“提前多少天完成”。选择日历日期后，这里的截止日期会自动跟随。</div>
+      </section>
+
+      <section class="section" id="weekGoalsSection"><h3>本周任务 <span id="weekLabel"></span></h3><div id="weekGoals"></div><div class="goal-add-row"><input id="weekInput" type="text" placeholder="本周最重要的目标"><select id="weekPriority" aria-label="本周任务优先级"><option value="medium">中优先</option><option value="high">高优先</option><option value="low">低优先</option></select><button class="btn" id="addWeek">＋</button></div></section>
+      <section class="section" id="monthGoalsSection"><h3>本月任务 <span id="monthLabel"></span></h3><div id="monthGoals"></div><div class="goal-add-row"><input id="monthInput" type="text" placeholder="这个月想完成什么？"><select id="monthPriority" aria-label="本月任务优先级"><option value="medium">中优先</option><option value="high">高优先</option><option value="low">低优先</option></select><button class="btn" id="addMonth">＋</button></div></section>
+
+      <section class="section reflect" id="reflectSection"><h3>今日复盘 <span id="saved"></span></h3>
+        <label>我今天做错了什么？</label><textarea id="q1" placeholder="诚实一点，但不用苛责自己。"></textarea>
+        <label>我今天做对了什么？</label><textarea id="q2" placeholder="把做对的事情也认真记下来。"></textarea>
+        <label>明天该怎么做得更好？</label><textarea id="q3" placeholder="写一个明天真正能执行的小改变。"></textarea>
+        <div class="reflect-actions">
+          <button class="btn reflect-confirm" id="completeReflection">完成今日复盘</button>
+          <span class="reflect-feedback" id="reflectionFeedback">填写内容会自动保存草稿。</span>
+        </div>
+      </section>
+    </aside>
+  </div>
+</div>
+<div class="modal" id="cloudModal"><div class="modalbox" style="width:min(620px,100%)">
+  <div style="display:flex;justify-content:space-between;align-items:center;gap:10px">
+    <h3 style="margin:0">账号与云同步</h3><button class="x" id="closeCloud">✕</button>
+  </div>
+  <div class="warning">
+    云同步是可选功能。Supabase URL 与 anon key 可以放在浏览器端，但请不要在这里填写 service_role key。
+    开启 Row Level Security 后，每个账号只能读写自己的日历数据。
+  </div>
+
+  <div class="settings-grid" style="margin-top:12px">
+    <div class="full"><label class="small">Supabase Project URL</label><input id="sbUrl" type="text" placeholder="https://xxxx.supabase.co"></div>
+    <div class="full"><label class="small">Supabase anon / publishable key</label><input id="sbKey" type="text" placeholder="eyJ..."></div>
+    <div><label class="small">邮箱</label><input id="sbEmail" type="text" placeholder="you@example.com"></div>
+    <div><label class="small">密码</label><input id="sbPassword" type="password" placeholder="至少 6 位"></div>
+  </div>
+
+  <div class="sync-actions">
+    <button class="btn" id="saveCloudConfig">保存配置</button>
+    <button class="btn" id="signUpBtn">注册</button>
+    <button class="btn primary" id="signInBtn">登录</button>
+    <button class="btn" id="signOutBtn">退出</button>
+  </div>
+
+  <div class="account-card">
+    <b id="accountTitle">未登录</b>
+    <div class="small" id="accountInfo">当前所有数据只保存在本浏览器。</div>
+    <div class="sync-meta-grid">
+      <div class="sync-meta-item"><small>本地最后修改</small><b id="localUpdatedLabel">—</b></div>
+      <div class="sync-meta-item"><small>云端最后修改</small><b id="cloudUpdatedLabel">—</b></div>
+      <div class="sync-meta-item"><small>最近成功同步</small><b id="lastSyncedLabel">—</b></div>
+      <div class="sync-meta-item"><small>同步状态</small><b id="syncStateLabel">未连接</b></div>
+    </div>
+    <div class="sync-conflict" id="syncConflictBox">检测到本地和云端都发生了修改。为避免覆盖，自动同步已暂停。请先比较时间，再选择上传本地数据或下载云端数据。</div>
+    <div class="sync-actions">
+      <button class="btn" id="uploadCloud">上传本地数据</button>
+      <button class="btn" id="downloadCloud">下载云端数据</button>
+    </div>
+  </div>
+
+  <details class="backup-box">
+    <summary>本地备份与恢复</summary>
+    <div class="backup-inner">
+      <p>云同步是日常方案；这里保留 JSON 本地备份，供迁移、误覆盖或云端异常时使用。</p>
+      <div class="sync-actions">
+        <button class="btn" id="exportBtn">导出本地备份</button>
+        <button class="btn" id="importBtn">从备份恢复</button>
+        <input class="file" id="importFile" type="file" accept="application/json">
+      </div>
+    </div>
+  </details>
+</div></div>
+
+<div class="modal" id="reviewModal"><div class="modalbox" style="width:min(920px,100%)">
+  <div style="display:flex;justify-content:space-between;align-items:center;gap:10px">
+    <h3 style="margin:0">复盘中心</h3>
+    <button class="x" id="closeReview">✕</button>
+  </div>
+
+  <div class="review-tabs" style="margin-top:12px">
+    <button class="btn active" id="weeklyTab">本周复盘</button>
+    <button class="btn" id="monthlyTab">本月复盘</button>
+  </div>
+
+  <section id="weeklyReview" class="review-section active">
+    <div class="review-summary">
+      <div class="review-metric"><small>任务完成</small><strong id="wDone">0 / 0</strong></div>
+      <div class="review-metric"><small>完成率</small><strong id="wRate">0%</strong></div>
+      <div class="review-metric"><small>复盘天数</small><strong id="wReflectDays">0 / 7</strong></div>
+      <div class="review-metric"><small>高优先级完成</small><strong id="wHigh">0 / 0</strong></div>
+    </div>
+
+    <div class="review-grid">
+      <div class="review-card">
+        <h4>本周任务完成趋势</h4>
+        <div class="trend" id="weekTrend"></div>
+      </div>
+      <div class="review-card">
+        <h4>自动汇总</h4>
+        <div class="autobox" id="weekAuto"></div>
+      </div>
+    </div>
+
+    <div class="review-grid" style="margin-top:12px">
+      <div class="review-card"><h4>这周做错了什么</h4><div class="review-list" id="weekWrong"></div></div>
+      <div class="review-card"><h4>这周做对了什么</h4><div class="review-list" id="weekRight"></div></div>
+    </div>
+
+    <div class="review-card" style="margin-top:12px">
+      <h4>下周要怎么做得更好</h4>
+      <div class="review-list" id="weekBetter"></div>
+    </div>
+
+    <div class="review-card" style="margin-top:12px">
+      <h4>我的本周总结</h4>
+      <textarea id="weekManual" placeholder="把这一周最重要的感受、问题、决定写下来。"></textarea>
+    </div>
+    <div class="review-card" style="margin-top:12px">
+      <h4>AI 本周总结</h4>
+      <div class="ai-result" id="weekAI">点击“生成 AI 总结”后，会基于本周任务与每日三问生成一份结构化总结。</div>
+      <div class="ai-actions"><button class="btn primary" id="aiWeekBtn">生成 AI 总结</button><button class="btn" id="copyWeekAI">复制</button></div>
+    </div>
+    <div class="export-row">
+      <button class="btn" id="exportWeekMd">导出本周 Markdown</button>
+    </div>
+  </section>
+
+  <section id="monthlyReview" class="review-section">
+    <div class="review-summary">
+      <div class="review-metric"><small>任务完成</small><strong id="mDone">0 / 0</strong></div>
+      <div class="review-metric"><small>完成率</small><strong id="mRate">0%</strong></div>
+      <div class="review-metric"><small>复盘天数</small><strong id="mReflectDays">0</strong></div>
+      <div class="review-metric"><small>高优先级完成</small><strong id="mHigh">0 / 0</strong></div>
+    </div>
+
+    <div class="review-grid">
+      <div class="review-card">
+        <h4>每周任务完成趋势</h4>
+        <div class="trend" id="monthTrend"></div>
+      </div>
+      <div class="review-card">
+        <h4>自动汇总</h4>
+        <div class="autobox" id="monthAuto"></div>
+      </div>
+    </div>
+
+    <div class="review-grid" style="margin-top:12px">
+      <div class="review-card"><h4>本月做错了什么</h4><div class="review-list" id="monthWrong"></div></div>
+      <div class="review-card"><h4>本月做对了什么</h4><div class="review-list" id="monthRight"></div></div>
+    </div>
+
+    <div class="review-card" style="margin-top:12px">
+      <h4>下个月要怎么做得更好</h4>
+      <div class="review-list" id="monthBetter"></div>
+    </div>
+
+    <div class="review-card" style="margin-top:12px">
+      <h4>我的本月总结</h4>
+      <textarea id="monthManual" placeholder="写下这个月最值得记住的变化、问题和下个月的重点。"></textarea>
+    </div>
+    <div class="review-card" style="margin-top:12px">
+      <h4>AI 本月总结</h4>
+      <div class="ai-result" id="monthAI">点击“生成 AI 总结”后，会基于本月任务与每日三问生成一份结构化总结。</div>
+      <div class="ai-actions"><button class="btn primary" id="aiMonthBtn">生成 AI 总结</button><button class="btn" id="copyMonthAI">复制</button></div>
+    </div>
+    <div class="export-row">
+      <button class="btn" id="exportMonthMd">导出本月 Markdown</button>
+    </div>
+  </section>
+</div></div>
+
+
+<div class="modal" id="scheduleModal"><div class="modalbox schedule-modalbox">
+  <div class="modal-title-row">
+    <div>
+      <h3 style="margin:0">调整当天课表</h3>
+      <div class="note" id="scheduleModalDate" style="margin-top:4px"></div>
+    </div>
+    <button class="x" id="closeScheduleModal">✕</button>
+  </div>
+
+  <div class="schedule-manager-section">
+    <h4>添加课程</h4>
+    <label class="schedule-label" for="schedulePreset">从已有课程选择</label>
+    <select id="schedulePreset">
+      <option value="">自定义 / 临时课程</option>
+    </select>
+    <div class="schedule-form-grid">
+      <input id="scheduleName" type="text" placeholder="课程名称">
+      <input id="scheduleStart" type="time" aria-label="开始时间">
+      <input id="scheduleEnd" type="time" aria-label="结束时间">
+      <input id="scheduleTeacher" type="text" placeholder="老师（可选）">
+      <input id="scheduleRoom" type="text" placeholder="教室（可选）">
+      <input id="scheduleNoteInput" type="text" placeholder="备注（可选）">
+    </div>
+    <div class="schedule-form-actions">
+      <button class="btn" id="clearScheduleForm" type="button">清空</button>
+      <button class="btn primary" id="addScheduleCourse" type="button">添加到这一天</button>
+    </div>
+  </div>
+
+  <div class="schedule-manager-section">
+    <h4>今天已取消的固定课程</h4>
+    <div id="cancelledScheduleList" class="schedule-manage-list"></div>
+  </div>
+
+  <details class="schedule-fixed-details">
+    <summary>固定课表开关</summary>
+    <div class="note">停用后，这门固定课程将不再自动出现在对应周次；以后可随时重新启用。</div>
+    <div id="fixedScheduleList" class="schedule-manage-list"></div>
+  </details>
+</div></div>
+
+<div class="modal" id="repeatActionModal"><div class="modalbox" style="width:min(440px,100%)">
+  <div style="display:flex;justify-content:space-between;align-items:center;gap:10px">
+    <h3 style="margin:0">处理重复任务</h3><button class="x" id="closeRepeatAction">✕</button>
+  </div>
+  <div class="note" id="repeatActionDesc" style="margin-top:8px"></div>
+  <div class="repeat-action-buttons">
+    <button class="btn" id="repeatSkipOne">仅跳过这一天</button>
+    <button class="btn" id="repeatEndFromHere">从这一天起结束重复</button>
+    <button class="btn danger" id="repeatDeleteAll">删除整个重复任务</button>
+  </div>
+  <div class="repeat-action-note">“从这一天起结束重复”会保留此前所有日期和完成记录，只让当前日期及之后不再出现。</div>
+</div></div>
+
+<div class="modal" id="modal"><div class="modalbox">
+  <h3 style="margin-top:0">纪念日管理</h3>
+  <input id="aName" type="text" placeholder="名称，例如：认识纪念日">
+  <div class="row"><input id="aDate" type="date"></div>
+  <label class="check"><input id="aRepeat" type="checkbox" checked> 每年重复（生日、周年等）</label>
+  <div class="row"><button class="btn" id="cancelA">关闭</button><button class="btn primary" id="saveA">添加</button></div>
+  <div class="manage-list" id="annivManage"></div>
+</div></div>
+
+<script>
+(()=>{
+const $=s=>document.querySelector(s);
+const S={g:(k,f)=>{try{return JSON.parse(localStorage.getItem('zx_'+k))??f}catch{return f}},s:(k,v)=>localStorage.setItem('zx_'+k,JSON.stringify(v))};
+
+let T=S.g('tasks',{}), WG=S.g('weekGoals',{}), MG=S.g('monthGoals',{}), R=S.g('reflections',{}), A=S.g('anniversaries',[]), RT=S.g('recurringTasks',[]), DG=S.g('deadlineGoals',[]), SO=S.g('scheduleOverrides',{}), SC=S.g('scheduleConfig',{disabledCourseIds:[]});
+const now=new Date(), pad=n=>String(n).padStart(2,'0'), fmt=d=>`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+const parse=s=>{const[a,b,c]=s.split('-').map(Number);return new Date(a,b-1,c,12)};
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
+const uuid=()=>crypto.randomUUID?.()||Date.now().toString(36)+Math.random().toString(36).slice(2);
+let view=new Date(now.getFullYear(),now.getMonth(),1), sel=new Date(now.getFullYear(),now.getMonth(),now.getDate());
+
+const H={};function range(a,b,type,name){let d=parse(a),e=parse(b);for(;d<=e;d.setDate(d.getDate()+1))H[fmt(d)]={type,name}}
+range('2026-01-01','2026-01-03','holiday','元旦假期');H['2026-01-04']={type:'work',name:'调休上班'};
+range('2026-02-15','2026-02-23','holiday','春节假期');['2026-02-14','2026-02-28'].forEach(x=>H[x]={type:'work',name:'调休上班'});
+range('2026-04-04','2026-04-06','holiday','清明假期');
+range('2026-05-01','2026-05-05','holiday','劳动节假期');H['2026-05-09']={type:'work',name:'调休上班'};
+range('2026-06-19','2026-06-21','holiday','端午假期');
+range('2026-09-25','2026-09-27','holiday','中秋假期');
+range('2026-10-01','2026-10-07','holiday','国庆假期');['2026-09-20','2026-10-10'].forEach(x=>H[x]={type:'work',name:'调休上班'});
+
+const SOLAR_TERM_NAMES=['小寒','大寒','立春','雨水','惊蛰','春分','清明','谷雨','立夏','小满','芒种','夏至','小暑','大暑','立秋','处暑','白露','秋分','寒露','霜降','立冬','小雪','大雪','冬至'];
+const SOLAR_TERM_MINUTES=[0,21208,42467,63836,85337,107014,128867,150921,173149,195551,218072,240693,263343,285989,308563,331033,353350,375494,397447,419210,440795,462224,483532,504758];
+function solarTermDate(year,index){
+  const ms=Date.UTC(1900,0,6,2,5)+31556925974.7*(year-1900)+SOLAR_TERM_MINUTES[index]*60000;
+  const raw=new Date(ms);
+  return new Date(raw.getUTCFullYear(),raw.getUTCMonth(),raw.getUTCDate(),12)
+}
+function solarTermForDate(d){
+  const k=fmt(d),y=d.getFullYear();
+  for(let i=0;i<24;i++)if(fmt(solarTermDate(y,i))===k)return SOLAR_TERM_NAMES[i];
+  return ''
+}
+function nextSolarTerm(from){
+  const base=new Date(from.getFullYear(),from.getMonth(),from.getDate(),12);
+  let best=null;
+  for(let y=base.getFullYear();y<=base.getFullYear()+1;y++){
+    for(let i=0;i<24;i++){
+      const date=solarTermDate(y,i);
+      if(date<base)continue;
+      if(!best||date<best.date)best={name:SOLAR_TERM_NAMES[i],date}
+    }
+  }
+  return best
+}
+function lunarDayText(n){
+  n=Number(n);
+  const nums=['','一','二','三','四','五','六','七','八','九','十'];
+  if(n<=0||n>30)return String(n||'');
+  if(n<=10)return n===10?'初十':`初${nums[n]}`;
+  if(n<20)return `十${nums[n-10]}`;
+  if(n===20)return '二十';
+  if(n<30)return `廿${nums[n-20]}`;
+  return '三十'
+}
+const LUNAR_FESTIVALS={
+  '正月-1':'春节','正月-15':'元宵节','五月-5':'端午节','七月-7':'七夕',
+  '八月-15':'中秋节','九月-9':'重阳节','十二月-8':'腊八节'
+};
+const SOLAR_FESTIVALS={'01-01':'元旦','05-01':'劳动节','10-01':'国庆节'};
+let chineseCalendarFormatter=null;
+function lunar(d){
+  try{
+    if(!chineseCalendarFormatter)chineseCalendarFormatter=new Intl.DateTimeFormat('zh-CN-u-ca-chinese',{year:'numeric',month:'long',day:'numeric'});
+    const parts=chineseCalendarFormatter.formatToParts(d);
+    const month=(parts.find(x=>x.type==='month')?.value||'').replace(/月月$/,'月');
+    const dayNum=Number(parts.find(x=>x.type==='day')?.value||0);
+    const di=lunarDayText(dayNum),monthText=month.endsWith('月')?month:`${month}月`;
+    const term=solarTermForDate(d),fest=[];
+    const lunarFest=LUNAR_FESTIVALS[`${month}-${dayNum}`];
+    if(lunarFest)fest.push(lunarFest);
+    const solarFest=SOLAR_FESTIVALS[`${pad(d.getMonth()+1)}-${pad(d.getDate())}`];
+    if(solarFest&&!fest.includes(solarFest))fest.push(solarFest);
+    const text=dayNum===1?monthText:di;
+    return{text,fullText:`${monthText}${di}`,fest,term}
+  }catch{
+    return{text:'农历',fullText:'—',fest:[],term:solarTermForDate(d)}
+  }
+}
+function weekKey(d){let x=new Date(d),day=(x.getDay()+6)%7;x.setDate(x.getDate()-day+3);let f=new Date(x.getFullYear(),0,4,12),w=1+Math.round(((x-f)/86400000-3+(f.getDay()+6)%7)/7);return`${x.getFullYear()}-W${pad(w)}`}
+const monthKey=d=>`${d.getFullYear()}-${pad(d.getMonth()+1)}`, same=(a,b)=>fmt(a)===fmt(b), wd=d=>['日','一','二','三','四','五','六'][d.getDay()];
+
+const SCHOOL_TERM={start:'2026-08-31',end:'2027-02-21',weeks:25};
+function schoolWeekNumber(d){
+  const day=new Date(d.getFullYear(),d.getMonth(),d.getDate(),12),start=parse(SCHOOL_TERM.start),end=parse(SCHOOL_TERM.end);
+  if(day<start||day>end)return null;
+  const monday=startOfWeek(day),n=Math.floor((monday-start)/604800000)+1;
+  return n>=1&&n<=SCHOOL_TERM.weeks?n:null
+}
+function schoolWeekText(d){const n=schoolWeekNumber(d);return n?`校历第${n}周`:''}
+
+function weekNums(...ranges){const out=[];for(const [a,b] of ranges){for(let n=a;n<=b;n++)out.push(n)}return out}
+const COURSE_SCHEDULE=[
+  {id:'eng-mon',day:1,start:'10:20',end:'12:00',name:'大学英语1',teacher:'高岚',room:'主楼0420',weeks:weekNums([2,5],[9,18])},
+  {id:'computer-mon',day:1,start:'14:00',end:'17:30',name:'大学计算机',teacher:'崔加祥',room:'1411',weeks:weekNums([2,5],[9,18])},
+  {id:'management-tue',day:2,start:'08:20',end:'11:05',name:'管理学基础',teacher:'朱云芳',room:'1221',weeks:weekNums([2,5],[9,18])},
+  {id:'mao-tue',day:2,start:'14:00',end:'15:40',name:'毛泽东思想和中国特色社会主义理论体系概论',teacher:'沈优',room:'主楼0311',weeks:weekNums([2,5],[9,18])},
+  {id:'accounting-wed',day:3,start:'08:20',end:'12:00',name:'基础会计',teacher:'孙国生',room:'主楼0304',weeks:weekNums([2,5],[9,18])},
+  {id:'eng-wed',day:3,start:'14:00',end:'15:40',name:'大学英语1',teacher:'高岚',room:'主楼0420',weeks:weekNums([2,5],[9,18])},
+  {id:'security-thu',day:4,start:'08:20',end:'10:00',name:'国家安全教育',teacher:'陈芳',room:'1114',weeks:[9]},
+  {id:'policy-thu',day:4,start:'10:20',end:'11:50',name:'形势与政策1',teacher:'王静静',room:'1218',weeks:[11,12],note:'1218 位于 1 号楼，第4节比主楼提前10分钟结束'},
+  {id:'pe-thu',day:4,start:'14:00',end:'15:40',name:'大学体育1',teacher:'体育教研部',room:'',weeks:weekNums([3,4],[9,18])},
+  {id:'finance-law-thu',day:4,start:'18:30',end:'21:05',name:'财经法规与会计职业道德',teacher:'顾逸薇',room:'主楼0303',weeks:weekNums([2,4],[9,18])},
+  {id:'career-fri',day:5,start:'15:50',end:'17:30',name:'大学生职业生涯设计',teacher:'杨俊',room:'主楼0519',weeks:weekNums([9,12])}
+];
+const SCHOOL_ACTIVITY_START='2026-09-07', SCHOOL_ACTIVITY_END='2027-01-08';
+const SCHOOL_BREAKS=[['2026-09-25','2026-09-27'],['2026-10-01','2026-10-11'],['2027-01-01','2027-01-03']];
+function dateBetween(d,a,b){const k=fmt(d);return k>=a&&k<=b}
+function isSchoolBreak(d){return SCHOOL_BREAKS.some(([a,b])=>dateBetween(d,a,b))}
+function isHolidayLike(d){return isSchoolBreak(d)||H[fmt(d)]?.type==='holiday'}
+function isHolidayEve(d){
+  if(isHolidayLike(d))return false;
+  const next=new Date(d);next.setDate(next.getDate()+1);
+  return isHolidayLike(next)
+}
+function inSchoolActivityPeriod(d){return dateBetween(d,SCHOOL_ACTIVITY_START,SCHOOL_ACTIVITY_END)&&!isHolidayLike(d)}
+function timeMinutes(v){const[h,m]=String(v||'0:0').split(':').map(Number);return h*60+m}
+function schedulesOverlap(a,b){return Math.max(timeMinutes(a.start),timeMinutes(b.start))<Math.min(timeMinutes(a.end),timeMinutes(b.end))}
+function scheduleOverrideFor(d){
+  const k=fmt(d),raw=SO[k]||{};
+  return {added:Array.isArray(raw.added)?raw.added:[],cancelled:Array.isArray(raw.cancelled)?raw.cancelled:[]}
+}
+function disabledCourseIds(){return Array.isArray(SC?.disabledCourseIds)?SC.disabledCourseIds:[]}
+function saveScheduleState(){
+  S.s('scheduleOverrides',SO);
+  S.s('scheduleConfig',SC)
+}
+function baseCoursesFor(d){
+  const week=schoolWeekNumber(d),day=d.getDay(),ov=scheduleOverrideFor(d),disabled=disabledCourseIds();
+  if(!week)return [];
+  return COURSE_SCHEDULE
+    .filter(c=>c.day===day&&c.weeks.includes(week)&&!disabled.includes(c.id)&&!ov.cancelled.includes(c.id))
+    .map(c=>({...c,type:'course',source:'base',baseId:c.id,id:`base:${c.id}`}))
+}
+function addedCoursesFor(d){
+  return scheduleOverrideFor(d).added.map(c=>({...c,type:'course',source:'added',id:c.id||uuid()}))
+}
+function eveningClassExists(courses){
+  const studyWindow={start:'19:00',end:'20:30'};
+  return courses.some(c=>schedulesOverlap(c,studyWindow)||timeMinutes(c.start)>=18*60&&timeMinutes(c.start)<21*60)
+}
+function scheduleFor(d){
+  const week=schoolWeekNumber(d),day=d.getDay();
+  let events=[...baseCoursesFor(d),...addedCoursesFor(d)];
+  const courses=[...events];
+  if(courses.some(e=>e.start==='08:20'))events.push({id:'auto-morning-study',start:'07:40',end:'08:10',name:'早自习',teacher:'',room:'',type:'study',source:'auto',note:'当天 08:20 有课，提前到校自习'});
+  const eveningCourse=eveningClassExists(courses),holidayEve=isHolidayEve(d);
+  if(inSchoolActivityPeriod(d)&&[1,2,3,4].includes(day)&&!eveningCourse&&!holidayEve){
+    events.push({id:'auto-evening-study',start:'19:00',end:'20:30',name:'晚自习',teacher:'',room:'主楼316',type:'study',source:'auto'})
+  }
+  if(inSchoolActivityPeriod(d)&&day===0)events.push({id:'auto-commentary',start:'19:30',end:'19:45',name:'晚点评',teacher:'',room:'主楼313',type:'commentary',source:'auto',note:'结束时间不定，约 10—15 分钟'});
+  events.sort((a,b)=>timeMinutes(a.start)-timeMinutes(b.start));
+  return events.map((e,i)=>({...e,conflict:events.some((x,j)=>j!==i&&schedulesOverlap(e,x))}))
+}
+function scheduleRuleText(d){
+  if(!inSchoolActivityPeriod(d)||![1,2,3,4].includes(d.getDay()))return '';
+  const courses=[...baseCoursesFor(d),...addedCoursesFor(d)];
+  if(eveningClassExists(courses))return '今晚有晚间课程，已自动取消晚自习。';
+  if(isHolidayEve(d))return '明日进入假期，今晚不安排晚自习。';
+  return ''
+}
+function scheduleTypeLabel(e){return e.type==='study'?'自习':e.type==='commentary'?'点评':'课程'}
+function removeCourseFromDate(e){
+  const k=fmt(sel),ov=scheduleOverrideFor(sel);
+  if(e.source==='base'){
+    if(!confirm(`仅取消 ${fmt(sel)} 的“${e.name}”？其他周次的固定课仍会保留。`))return;
+    SO[k]={...ov,cancelled:[...new Set([...ov.cancelled,e.baseId])]}
+  }else if(e.source==='added'){
+    if(!confirm(`删除 ${fmt(sel)} 临时添加的“${e.name}”？`))return;
+    SO[k]={...ov,added:ov.added.filter(x=>x.id!==e.id)}
+  }else return;
+  saveScheduleState();renderSchedule();renderCal()
+}
+function renderSchedule(){
+  const box=$('#dailySchedule'),stat=$('#scheduleStat'),rule=$('#scheduleRuleNote');if(!box)return;
+  const events=scheduleFor(sel),week=schoolWeekNumber(sel);box.innerHTML='';
+  stat.textContent=events.length?`${events.length} 项${week?` · 第${week}周`:''}`:(week?`第${week}周`:'');
+  if(rule)rule.textContent=scheduleRuleText(sel);
+  if(!events.length){
+    const msg=week?(isHolidayLike(sel)?'今天属于校历假期，没有固定课表安排。':'今天没有固定课程、自习或晚点评。'):'当前日期不在本学期课表范围内。';
+    box.innerHTML=`<div class="empty">${msg}</div>`;return
+  }
+  events.forEach(e=>{
+    const row=document.createElement('div');row.className=`schedule-item ${e.type}${e.conflict?' conflict':''}`;
+    const details=[e.teacher?`老师：${e.teacher}`:'',e.room?`地点：${e.room}`:'',e.note||'',e.source==='added'?'临时添加':'',e.conflict?'⚠ 与本日另一项安排时间重叠':''].filter(Boolean);
+    row.innerHTML=`<div class="schedule-time">${esc(e.start)}–${esc(e.end)}</div><div class="schedule-main"><div class="schedule-name">${esc(e.name)}<span class="schedule-badge ${e.type}">${scheduleTypeLabel(e)}</span></div><div class="schedule-meta ${e.conflict?'schedule-warning':''}">${details.map(esc).join(' · ')}</div></div>${e.type==='course'?'<button class="schedule-remove" type="button" title="删除 / 取消这一天的课程">×</button>':'<span></span>'}`;
+    const remove=row.querySelector('.schedule-remove');if(remove)remove.onclick=()=>removeCourseFromDate(e);
+    box.appendChild(row)
+  })
+}
+function presetLabel(c){
+  return `${['日','一','二','三','四','五','六'][c.day]} · ${c.start}–${c.end} · ${c.name}${c.room?` · ${c.room}`:''}`
+}
+function populateSchedulePreset(){
+  const select=$('#schedulePreset');if(!select)return;
+  select.innerHTML='<option value="">自定义 / 临时课程</option>'+COURSE_SCHEDULE.map(c=>`<option value="${esc(c.id)}">周${esc(presetLabel(c))}</option>`).join('')
+}
+function fillScheduleForm(c){
+  $('#scheduleName').value=c?.name||'';$('#scheduleStart').value=c?.start||'';$('#scheduleEnd').value=c?.end||'';
+  $('#scheduleTeacher').value=c?.teacher||'';$('#scheduleRoom').value=c?.room||'';$('#scheduleNoteInput').value=c?.note||''
+}
+function clearScheduleForm(){if($('#schedulePreset'))$('#schedulePreset').value='';fillScheduleForm(null)}
+function renderCancelledScheduleList(){
+  const box=$('#cancelledScheduleList');if(!box)return;
+  const ov=scheduleOverrideFor(sel),items=COURSE_SCHEDULE.filter(c=>ov.cancelled.includes(c.id));
+  box.innerHTML='';
+  if(!items.length){box.innerHTML='<div class="empty">今天没有被取消的固定课程。</div>';return}
+  items.forEach(c=>{
+    const row=document.createElement('div');row.className='schedule-manage-item';
+    row.innerHTML=`<div class="grow"><b>${esc(c.name)}</b><small>${esc(c.start)}–${esc(c.end)}${c.room?` · ${esc(c.room)}`:''}</small></div><button class="btn" type="button">恢复</button>`;
+    row.querySelector('button').onclick=()=>{
+      const k=fmt(sel),cur=scheduleOverrideFor(sel);SO[k]={...cur,cancelled:cur.cancelled.filter(id=>id!==c.id)};
+      saveScheduleState();renderSchedule();renderCancelledScheduleList();renderCal()
+    };
+    box.appendChild(row)
+  })
+}
+function renderFixedScheduleList(){
+  const box=$('#fixedScheduleList');if(!box)return;
+  const disabled=disabledCourseIds();box.innerHTML='';
+  COURSE_SCHEDULE.forEach(c=>{
+    const off=disabled.includes(c.id),row=document.createElement('div');row.className='schedule-manage-item';
+    row.innerHTML=`<div class="grow"><b>${esc(c.name)}</b><small>周${esc(presetLabel(c))}</small></div><button class="btn ${off?'':'ghost'}" type="button">${off?'重新启用':'停用'}</button>`;
+    row.querySelector('button').onclick=()=>{
+      const ids=new Set(disabledCourseIds());off?ids.delete(c.id):ids.add(c.id);SC={...SC,disabledCourseIds:[...ids]};
+      saveScheduleState();renderFixedScheduleList();renderSchedule();renderCal()
+    };
+    box.appendChild(row)
+  })
+}
+function openScheduleModal(){
+  $('#scheduleModalDate').textContent=`${fmt(sel)} · 周${wd(sel)}${schoolWeekText(sel)?` · ${schoolWeekText(sel)}`:''}`;
+  populateSchedulePreset();clearScheduleForm();renderCancelledScheduleList();renderFixedScheduleList();$('#scheduleModal').classList.add('show')
+}
+function closeScheduleModal(){$('#scheduleModal').classList.remove('show')}
+function addScheduleCourseForSelectedDate(){
+  const name=$('#scheduleName').value.trim(),start=$('#scheduleStart').value,end=$('#scheduleEnd').value;
+  if(!name||!start||!end){alert('请填写课程名称、开始时间和结束时间。');return}
+  if(timeMinutes(end)<=timeMinutes(start)){alert('结束时间需要晚于开始时间。');return}
+  const k=fmt(sel),ov=scheduleOverrideFor(sel),course={
+    id:uuid(),name,start,end,teacher:$('#scheduleTeacher').value.trim(),room:$('#scheduleRoom').value.trim(),note:$('#scheduleNoteInput').value.trim()
+  };
+  SO[k]={...ov,added:[...ov.added,course]};saveScheduleState();clearScheduleForm();renderSchedule();renderCal();
+  alert(`已添加到 ${k} 的课表。`)
+}
+
+function annivOn(d){return A.filter(a=>{let q=parse(a.date);return a.repeat?q.getMonth()===d.getMonth()&&q.getDate()===d.getDate():a.date===fmt(d)})}
+
+function dayDiff(a,b){
+  const au=Date.UTC(a.getFullYear(),a.getMonth(),a.getDate()),bu=Date.UTC(b.getFullYear(),b.getMonth(),b.getDate());
+  return Math.round((au-bu)/86400000)
+}
+function selectedDistanceText(d){
+  const n=dayDiff(d,now);return n===0?'今天':n>0?`${n} 天后`:`${Math.abs(n)} 天前`
+}
+function deadlineOn(d){return DG.filter(g=>g.dueDate===fmt(d))}
+function deadlinePriority(g){return g?.priority||'medium'}
+function completedDate(g){
+  if(!g?.completedAt)return null;
+  const d=new Date(g.completedAt);return Number.isNaN(d.getTime())?null:new Date(d.getFullYear(),d.getMonth(),d.getDate(),12)
+}
+function deadlineState(g){
+  const due=parse(g.dueDate),today=new Date(now.getFullYear(),now.getMonth(),now.getDate(),12);
+  if(g.done){
+    const c=completedDate(g)||today,n=dayDiff(due,c);
+    if(n>0)return{text:`提前 ${n} 天完成`,cls:'done'};
+    if(n===0)return{text:'截止当天完成',cls:'done'};
+    return{text:`逾期 ${Math.abs(n)} 天完成`,cls:'done'}
+  }
+  const n=dayDiff(due,today);
+  if(n>7)return{text:`${n} 天后截止`,cls:'future'};
+  if(n>0)return{text:`还有 ${n} 天`,cls:'soon'};
+  if(n===0)return{text:'今天截止',cls:'today'};
+  return{text:`已逾期 ${Math.abs(n)} 天`,cls:'overdue'}
+}
+function deadlineSort(a,b){
+  if(!!a.done!==!!b.done)return a.done?1:-1;
+  const ad=parse(a.dueDate).getTime(),bd=parse(b.dueDate).getTime();
+  if(ad!==bd)return ad-bd;
+  return ({high:0,medium:1,low:2}[deadlinePriority(a)]??1)-({high:0,medium:1,low:2}[deadlinePriority(b)]??1)
+}
+
+function occurs(rule,d){
+  const start=parse(rule.startDate), cur=new Date(d.getFullYear(),d.getMonth(),d.getDate(),12),key=fmt(cur);
+  if(cur<start)return false;
+  if(rule.endDate&&cur>parse(rule.endDate))return false;
+  if((rule.skipDates||[]).includes(key))return false;
+  if(rule.repeat==='daily')return true;
+  if(rule.repeat==='weekly')return cur.getDay()===start.getDay();
+  if(rule.repeat==='monthly')return cur.getDate()===start.getDate();
+  return key===rule.startDate;
+}
+function recurringFor(d){return RT.filter(r=>occurs(r,d)).map(r=>({...r, recurring:true, done:(r.doneDates||[]).includes(fmt(d)), occurrenceDate:fmt(d)}))}
+function allTasksFor(d){return [...(T[fmt(d)]||[]).map(x=>({...x, recurring:false})), ...recurringFor(d)]}
+function setTaskDone(task,d,done){
+  if(task.recurring){
+    const r=RT.find(x=>x.id===task.id); if(!r)return;
+    r.doneDates=r.doneDates||[]; const k=fmt(d);
+    if(done&&!r.doneDates.includes(k))r.doneDates.push(k); if(!done)r.doneDates=r.doneDates.filter(x=>x!==k);
+    S.s('recurringTasks',RT);
+  }else{
+    const r=(T[fmt(d)]||[]).find(x=>x.id===task.id); if(r)r.done=done; S.s('tasks',T);
+  }
+}
+let pendingRecurringAction=null;
+function closeRecurringAction(){pendingRecurringAction=null;$('#repeatActionModal').classList.remove('show')}
+function openRecurringAction(task,d){
+  pendingRecurringAction={task,date:new Date(d)};
+  $('#repeatActionDesc').textContent=`${task.text} · ${fmt(d)}`;
+  $('#repeatActionModal').classList.add('show')
+}
+function finishRecurringAction(kind){
+  if(!pendingRecurringAction)return;
+  const {task,date}=pendingRecurringAction,r=RT.find(x=>x.id===task.id),key=fmt(date);if(!r){closeRecurringAction();return}
+  if(kind==='skip'){
+    r.skipDates=r.skipDates||[];if(!r.skipDates.includes(key))r.skipDates.push(key)
+  }else if(kind==='end'){
+    const prev=new Date(date);prev.setDate(prev.getDate()-1);
+    if(prev<parse(r.startDate))RT=RT.filter(x=>x.id!==r.id);else r.endDate=fmt(prev)
+  }else if(kind==='all')RT=RT.filter(x=>x.id!==r.id);
+  S.s('recurringTasks',RT);closeRecurringAction();renderCal();renderTasks()
+}
+function removeTask(task,d){
+  if(task.recurring)openRecurringAction(task,d);
+  else{T[fmt(d)]=(T[fmt(d)]||[]).filter(x=>x.id!==task.id);S.s('tasks',T);renderCal();renderTasks()}
+}
+
+function pLabel(p){return p==='high'?'高':p==='low'?'低':'中'}
+function rLabel(r){return r==='daily'?'每天':r==='weekly'?'每周':r==='monthly'?'每月':''}
+
+function syncYearSelect(){
+  const el=$('#yearSelect'); if(!el)return;
+  const y=view.getFullYear();
+  // 为以后“年计划 / 年回顾”预留较宽的年份范围；超出范围时会自动扩展。
+  const start=Math.min(now.getFullYear()-5,y-1), end=Math.max(now.getFullYear()+10,y+1);
+  const current=el.value;
+  el.innerHTML='';
+  for(let yr=start;yr<=end;yr++){
+    const op=document.createElement('option');
+    op.value=String(yr);op.textContent=`${yr}年`;
+    if(yr===y)op.selected=true;
+    el.appendChild(op);
+  }
+  if(current && Number(current)===y)el.value=current;
+}
+
+function renderCal(){
+  syncYearSelect();
+  $('#monthTitle').textContent=`${view.getMonth()+1}月`;let g=$('#calendar');g.innerHTML='';
+  let y=view.getFullYear(),m=view.getMonth(),f=new Date(y,m,1,12),off=(f.getDay()+6)%7,start=new Date(y,m,1-off,12);
+  for(let i=0;i<42;i++){
+    let d=new Date(start);d.setDate(start.getDate()+i);let k=fmt(d),li=lunar(d),h=H[k],an=annivOn(d),ddl=deadlineOn(d),arr=allTasksFor(d),done=arr.filter(x=>x.done).length;
+    let b=document.createElement('button');b.className='day'+(d.getMonth()!==m?' other':'')+(same(d,now)?' today':'')+(same(d,sel)?' selected':'');
+    const dots=arr.filter(x=>!x.done).slice(0,4).map(x=>`<i class="pd ${x.priority||'medium'}"></i>`).join('');
+    const schoolWeek=(d.getDay()===1)?schoolWeekNumber(d):null;
+    b.innerHTML=`<div class="dtop"><span class="date-left"><span class="num">${d.getDate()}</span>${same(d,now)?'<span class="today-chip">今天</span>':''}</span><span class="lunar">${esc(li.text)}</span></div>
+      <div class="tags">${schoolWeek?`<span class="school-week-badge">第${schoolWeek}周</span>`:''}${ddl.length?`<span class="tag deadline ${ddl.every(x=>x.done)?'done':''}">${ddl.every(x=>x.done)?'✓':'⌛'} 截止${ddl.length>1?` ${ddl.length}`:''}</span>`:''}${h?`<span class="tag ${h.type}">${h.type==='holiday'?'休':'班'} · ${esc(h.name)}</span>`:''}${li.term?`<span class="tag term">${esc(li.term)}</span>`:''}${li.fest.slice(0,1).map(x=>`<span class="tag">${esc(x)}</span>`).join('')}${an.slice(0,1).map(x=>`<span class="tag">♥ ${esc(x.name)}</span>`).join('')}</div>
+      <div class="mini"><span>${arr.length?`✓ ${done}/${arr.length}`:''}</span><span class="priority-dots">${dots}</span></div>`;
+    b.onclick=()=>{sel=new Date(d);renderCal();renderSide()};g.appendChild(b)
+  }
+  renderMonthStat();renderTodayStat();renderGoalOverview();renderDeadlineOverview();
+}
+
+function renderTasks(){
+  const e=$('#tasks'), arr=allTasksFor(sel);e.innerHTML='';$('#taskStat').textContent=arr.length?`${arr.filter(x=>x.done).length}/${arr.length}`:'';
+  if(!arr.length)e.innerHTML='<div class="empty">今天还没有任务。</div>';
+  arr.sort((a,b)=>({high:0,medium:1,low:2}[a.priority||'medium']-({high:0,medium:1,low:2}[b.priority||'medium'])));
+  arr.forEach(t=>{
+    let r=document.createElement('div');r.className='task'+(t.done?' done':'');
+    r.innerHTML=`<input type="checkbox" ${t.done?'checked':''}><div class="txt"><div>${esc(t.text)}</div><div class="meta"><span class="pill ${t.priority||'medium'}">${pLabel(t.priority||'medium')}优先级</span>${t.reminder?`<span class="pill reminder">⏰ ${esc(t.reminder)}</span>`:''}${t.recurring?`<span class="pill repeat">↻ ${rLabel(t.repeat)}${t.endDate?` · 到 ${esc(t.endDate)}`:''}</span>`:''}</div></div><button class="x">×</button>`;
+    r.querySelector('input').onchange=x=>{setTaskDone(t,sel,x.target.checked);renderCal();renderTasks()};
+    r.querySelector('button').onclick=()=>{removeTask(t,sel);renderCal();renderTasks()};e.appendChild(r)
+  })
+}
+function syncRepeatEndUI(){
+  const active=$('#repeat').value!=='none';$('#repeatEndWrap').hidden=!active;if(!active)$('#repeatEnd').value=''
+}
+function addTask(){
+  let v=$('#taskInput').value.trim();if(!v)return;
+  const data={id:uuid(),text:v,priority:$('#priority').value,reminder:$('#reminder').value||'',repeat:$('#repeat').value,done:false};
+  if(data.repeat==='none'){let k=fmt(sel);T[k]=T[k]||[];T[k].push(data);S.s('tasks',T)}
+  else{
+    const endDate=$('#repeatEnd').value||'';
+    if(endDate&&parse(endDate)<parse(fmt(sel))){alert('重复截止日期不能早于开始日期。');return}
+    RT.push({...data,startDate:fmt(sel),endDate,doneDates:[],skipDates:[]});S.s('recurringTasks',RT)
+  }
+  $('#taskInput').value='';$('#reminder').value='';$('#repeat').value='none';$('#repeatEnd').value='';syncRepeatEndUI();renderCal();renderTasks()
+}
+
+function jumpToDate(dateText){
+  const d=parse(dateText);sel=new Date(d);view=new Date(d.getFullYear(),d.getMonth(),1,12);renderCal();renderSide();
+  document.querySelector('.calendar')?.scrollIntoView({behavior:'smooth',block:'start'})
+}
+function renderDeadlines(){
+  const e=$('#deadlineGoals');if(!e)return;
+  const arr=[...DG].sort(deadlineSort),pending=arr.filter(x=>!x.done);
+  $('#deadlineStat').textContent=DG.length?`${pending.length} 未完成 / ${DG.length}`:'';
+  e.innerHTML='';
+  if(!arr.length){e.innerHTML='<div class="empty">还没有期限事项。可以给一个长期目标设定明确截止日。</div>';return}
+  arr.forEach(g=>{
+    const st=deadlineState(g),row=document.createElement('div');row.className='deadline-item'+(g.done?' done':'');
+    row.innerHTML=`<input type="checkbox" ${g.done?'checked':''} aria-label="标记完成"><span class="goal-dot ${deadlinePriority(g)}" title="${pLabel(deadlinePriority(g))}优先级"></span><div class="deadline-body"><div class="deadline-text">${esc(g.text)}</div><div class="deadline-meta"><button class="deadline-date-btn" title="跳到截止日">截止 ${esc(g.dueDate)}</button><span class="deadline-status ${st.cls}">${esc(st.text)}</span></div></div><button class="x" title="删除">×</button>`;
+    row.querySelector('input').onchange=x=>{
+      g.done=x.target.checked;g.completedAt=g.done?new Date().toISOString():'';
+      S.s('deadlineGoals',DG);renderDeadlines();renderDeadlineOverview();renderCal()
+    };
+    row.querySelector('.deadline-date-btn').onclick=()=>jumpToDate(g.dueDate);
+    row.querySelector('.x').onclick=()=>{if(confirm(`删除期限事项“${g.text}”？`)){DG=DG.filter(x=>x.id!==g.id);S.s('deadlineGoals',DG);renderDeadlines();renderDeadlineOverview();renderCal()}};
+    e.appendChild(row)
+  })
+}
+function addDeadline(){
+  const text=$('#deadlineInput').value.trim(),dueDate=$('#deadlineDate').value;
+  if(!text){alert('先写下要在截止日前完成的事项。');return}
+  if(!dueDate){alert('请选择截止日期。');return}
+  DG.push({id:uuid(),text,dueDate,priority:$('#deadlinePriority').value||'medium',done:false,createdAt:new Date().toISOString(),completedAt:''});
+  S.s('deadlineGoals',DG);$('#deadlineInput').value='';renderDeadlines();renderDeadlineOverview();renderCal()
+}
+function renderDeadlineOverview(){
+  const e=$('#deadlineOverviewList');if(!e)return;
+  const arr=[...DG].sort(deadlineSort),pending=arr.filter(x=>!x.done),done=arr.filter(x=>x.done).length;
+  $('#deadlineOverviewProgress').textContent=`${done} / ${arr.length}`;
+  if(!arr.length){$('#deadlineOverviewLabel').textContent='近期截止';e.innerHTML='<div class="empty">还没有设置期限事项。</div>';return}
+  const next=pending[0];
+  $('#deadlineOverviewLabel').textContent=next?`最近：${next.dueDate.slice(5).replace('-','/')} · ${deadlineState(next).text}`:'全部完成';
+  e.innerHTML='';
+  arr.slice(0,5).forEach(g=>{
+    const st=deadlineState(g),row=document.createElement('div');row.className='deadline-overview-item'+(g.done?' done':'');
+    row.innerHTML=`<button class="overview-check" title="${g.done?'标记为未完成':'提前完成 / 标记完成'}">${g.done?'✓':''}</button><span class="overview-dot ${deadlinePriority(g)}"></span><span class="overview-text" title="${esc(g.text)}">${esc(g.text)}</span><span class="deadline-overview-time ${st.cls==='overdue'?'overdue':st.cls==='soon'||st.cls==='today'?'soon':''}">${esc(st.text)}</span>`;
+    row.querySelector('button').onclick=()=>{g.done=!g.done;g.completedAt=g.done?new Date().toISOString():'';S.s('deadlineGoals',DG);renderDeadlines();renderDeadlineOverview();renderCal()};
+    e.appendChild(row)
+  });
+  if(arr.length>5)e.insertAdjacentHTML('beforeend',`<div class="overview-more">还有 ${arr.length-5} 项，在右侧“期限事项”中查看。</div>`)
+}
+
+function goalPriority(g){return g?.priority||'medium'}
+function renderGoal(el,obj,key,sk){
+  const e=$(el),arr=obj[key]||[];e.innerHTML='';
+  if(!arr.length)e.innerHTML='<div class="empty">还没有目标。</div>';
+  arr.forEach((g,i)=>{
+    const r=document.createElement('div');r.className='task'+(g.done?' done':'');
+    r.innerHTML=`<input type="checkbox" ${g.done?'checked':''}><span class="goal-dot ${goalPriority(g)}" title="${pLabel(goalPriority(g))}优先级"></span><div class="txt">${esc(g.text)}</div><button class="x">×</button>`;
+    r.querySelector('input').onchange=x=>{g.done=x.target.checked;S.s(sk,obj);renderGoal(el,obj,key,sk);renderGoalOverview()};
+    r.querySelector('button').onclick=()=>{arr.splice(i,1);obj[key]=arr;S.s(sk,obj);renderGoal(el,obj,key,sk);renderGoalOverview()};
+    e.appendChild(r)
+  })
+}
+function renderGoals(){
+  const wk=weekKey(sel),mk=monthKey(sel);
+  $('#weekLabel').textContent=wk;$('#monthLabel').textContent=mk;
+  renderGoal('#weekGoals',WG,wk,'weekGoals');renderGoal('#monthGoals',MG,mk,'monthGoals');renderGoalOverview()
+}
+function addGoal(type){
+  const weekly=type==='w',inp=weekly?$('#weekInput'):$('#monthInput'),v=inp.value.trim();if(!v)return;
+  const obj=weekly?WG:MG,key=weekly?weekKey(sel):monthKey(sel),sk=weekly?'weekGoals':'monthGoals';
+  const priority=(weekly?$('#weekPriority'):$('#monthPriority')).value||'medium';
+  obj[key]=obj[key]||[];obj[key].push({id:uuid(),text:v,done:false,priority});S.s(sk,obj);inp.value='';renderGoals()
+}
+function renderOverviewList(el,arr,obj,key,sk){
+  const e=$(el);e.innerHTML='';
+  if(!arr.length){e.innerHTML='<div class="empty">暂时没有待办。</div>';return}
+  arr.slice(0,5).forEach(g=>{
+    const row=document.createElement('div');row.className='overview-item'+(g.done?' done':'');
+    row.innerHTML=`<button class="overview-check" title="${g.done?'标记为未完成':'标记完成'}">${g.done?'✓':''}</button><span class="overview-dot ${goalPriority(g)}"></span><span class="overview-text" title="${esc(g.text)}">${esc(g.text)}</span>`;
+    row.querySelector('button').onclick=()=>{g.done=!g.done;S.s(sk,obj);renderGoals()};
+    e.appendChild(row)
+  });
+  if(arr.length>5)e.insertAdjacentHTML('beforeend',`<div class="overview-more">还有 ${arr.length-5} 项，点击下方进入完整列表。</div>`)
+}
+function renderGoalOverview(){
+  if(!$('#weekOverviewList'))return;
+  const wk=weekKey(sel),weekArr=WG[wk]||[];
+  const monthDate=new Date(view.getFullYear(),view.getMonth(),1,12),mk=monthKey(monthDate),monthArr=MG[mk]||[];
+  const wa=startOfWeek(sel),wb=endOfWeek(sel),sw=schoolWeekNumber(sel);
+  $('#weekOverviewLabel').textContent=`${wa.getMonth()+1}/${wa.getDate()}—${wb.getMonth()+1}/${wb.getDate()}${sw?` · 校历第${sw}周`:''}`;
+  $('#monthOverviewLabel').textContent=`${view.getFullYear()}年${view.getMonth()+1}月`;
+  $('#weekOverviewProgress').textContent=`${weekArr.filter(x=>x.done).length} / ${weekArr.length}`;
+  $('#monthOverviewProgress').textContent=`${monthArr.filter(x=>x.done).length} / ${monthArr.length}`;
+  renderOverviewList('#weekOverviewList',weekArr,WG,wk,'weekGoals');renderOverviewList('#monthOverviewList',monthArr,MG,mk,'monthGoals')
+}
+
+function reflectionHasContent(r){return [r?.q1,r?.q2,r?.q3].some(x=>(x||'').trim())}
+function reflectionConfirmed(r){
+  if(!reflectionHasContent(r))return false;
+  if(r.confirmRequired)return false;
+  if(!r.completedAt)return true;
+  if(!r.updatedAt)return true;
+  return new Date(r.completedAt).getTime()>=new Date(r.updatedAt).getTime()-500
+}
+function reflectionTime(v){
+  if(!v)return '';
+  const d=new Date(v);return Number.isNaN(d.getTime())?'':d.toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit'})
+}
+function renderReflectionState(r=R[fmt(sel)]||{}){
+  const sec=$('#reflectSection'),btn=$('#completeReflection'),feedback=$('#reflectionFeedback'),has=reflectionHasContent(r),done=reflectionConfirmed(r);
+  sec.classList.toggle('reflect-complete',done);sec.classList.toggle('reflect-dirty',has&&!done);
+  if(!has){
+    $('#saved').textContent='';btn.textContent='完成今日复盘';feedback.textContent='填写内容会自动保存草稿。'
+  }else if(done){
+    $('#saved').textContent='✓ 已完成';btn.textContent='✓ 今日复盘已完成';
+    feedback.textContent=`已保存${r.completedAt?` · ${reflectionTime(r.completedAt)}`:''}`
+  }else{
+    $('#saved').textContent='有未确认修改';btn.textContent='确认今日复盘';feedback.textContent='草稿已自动保存，点击确认完成。'
+  }
+}
+function renderSide(){
+  const k=fmt(sel),li=lunar(sel),h=H[k],r=R[k]||{},school=schoolWeekText(sel),distance=dayDiff(sel,now);
+  $('#dateTitle').textContent=`${sel.getMonth()+1}月${sel.getDate()}日 · 周${wd(sel)}`;
+  const distanceEl=$('#dateDistance');distanceEl.textContent=selectedDistanceText(sel);distanceEl.className=`date-distance ${distance===0?'today':distance>0?'future':'past'}`;
+  $('#dateSub').textContent=[`农历${li.fullText}`,school,li.term,...li.fest,h?.name].filter(Boolean).join(' · ');
+  if(!$('#deadlineInput').value.trim())$('#deadlineDate').value=fmt(sel);
+  renderSchedule();renderTasks();renderDeadlines();renderGoals();['q1','q2','q3'].forEach(id=>$('#'+id).value=r[id]||'');renderReflectionState(r)
+}
+let timer;
+function saveR(){
+  const key=fmt(sel),draft={q1:$('#q1').value,q2:$('#q2').value,q3:$('#q3').value};
+  clearTimeout(timer);$('#saved').textContent='草稿保存中…';$('#reflectSection').classList.add('reflect-dirty');$('#reflectSection').classList.remove('reflect-complete');
+  timer=setTimeout(()=>{
+    const previous=R[key]||{},stamp=new Date().toISOString();
+    R[key]={...previous,...draft,updatedAt:stamp,confirmRequired:true};S.s('reflections',R);renderStreak();
+    if(fmt(sel)===key)renderReflectionState(R[key])
+  },260)
+}
+function completeReflection(){
+  clearTimeout(timer);
+  const key=fmt(sel),draft={q1:$('#q1').value,q2:$('#q2').value,q3:$('#q3').value};
+  if(![draft.q1,draft.q2,draft.q3].some(x=>x.trim())){alert('先写下一点今天的复盘，再确认完成吧。');return}
+  const stamp=new Date().toISOString(),previous=R[key]||{};
+  R[key]={...previous,...draft,updatedAt:stamp,completedAt:stamp,confirmRequired:false};S.s('reflections',R);renderReflectionState(R[key]);renderStreak()
+}
+
+
+function renderMonthStat(){
+  let p=monthKey(view),all=[];for(let day=1;day<=31;day++){let d=new Date(view.getFullYear(),view.getMonth(),day,12);if(d.getMonth()!==view.getMonth())break;all.push(...allTasksFor(d))}
+  let done=all.filter(x=>x.done).length;$('#monthProgress').textContent=`${done} / ${all.length}`;$('#monthRate').textContent=all.length?`完成率 ${Math.round(done/all.length*100)}%`:'本月还没有任务'
+}
+function renderTodayStat(){let arr=allTasksFor(now).filter(x=>!x.done),high=arr.filter(x=>(x.priority||'medium')==='high').length;$('#todayTodo').textContent=`${arr.length} 项`;$('#todayHigh').textContent=high?`其中 ${high} 项高优先级`:'没有高优先级待办'}
+function renderStreak(){let n=0,d=new Date(now.getFullYear(),now.getMonth(),now.getDate(),12);while(true){let r=R[fmt(d)];if(r&&[r.q1,r.q2,r.q3].some(x=>(x||'').trim())){n++;d.setDate(d.getDate()-1)}else break}$('#streak').textContent=`${n} 天`}
+
+function annivLabel(a){
+  const t=new Date(now.getFullYear(),now.getMonth(),now.getDate(),12),b=parse(a.date);
+  if(a.repeat){let n=new Date(t.getFullYear(),b.getMonth(),b.getDate(),12);if(n<t)n.setFullYear(n.getFullYear()+1);let left=Math.round((n-t)/86400000),since=Math.max(0,Math.round((t-b)/86400000));return left===0?`今天 · 第 ${since+1} 天`:`还有 ${left} 天`}
+  let x=Math.round((b-t)/86400000);return x>0?`还有 ${x} 天`:x===0?'就是今天':`已经 ${Math.abs(x)} 天`
+}
+function renderAnniv(){
+  let e=$('#annivCards');e.innerHTML='';if(!A.length){e.innerHTML='<div class="empty" style="padding:8px">还没有纪念日，添加一个吧。</div>'}
+  A.forEach(a=>{let c=document.createElement('div');c.className='anniv';c.innerHTML=`<button class="del" title="删除">×</button><b>♥ ${esc(a.name)}</b><div class="count">${annivLabel(a)}</div><small>${a.date}${a.repeat?' · 每年重复':''}</small>`;c.querySelector('.del').onclick=()=>{if(confirm(`删除纪念日“${a.name}”？`)){A=A.filter(x=>x.id!==a.id);S.s('anniversaries',A);renderAnniv();renderAnnivManage();renderCal()}};e.appendChild(c)});
+}
+function renderAnnivManage(){let e=$('#annivManage');e.innerHTML='<h4 style="margin:8px 0">已有纪念日</h4>';if(!A.length){e.innerHTML+='<div class="empty">暂无。</div>';return}A.forEach(a=>{let d=document.createElement('div');d.className='manage-item';d.innerHTML=`<div class="grow"><b>${esc(a.name)}</b><div class="note" style="margin:2px 0 0">${a.date}${a.repeat?' · 每年重复':''}</div></div><button class="btn">删除</button>`;d.querySelector('button').onclick=()=>{A=A.filter(x=>x.id!==a.id);S.s('anniversaries',A);renderAnniv();renderAnnivManage();renderCal()};e.appendChild(d)})}
+
+function nextTerm(){
+  try{
+    const t=nextSolarTerm(now);
+    if(!t){$('#nextTerm').textContent='—';return}
+    const n=dayDiff(t.date,now);
+    $('#nextTerm').textContent=n===0?`今日 · ${t.name}`:`${t.name} · ${n} 天`
+  }catch{$('#nextTerm').textContent='—'}
+}
+
+function exportData(){
+  const data=snapshotData();
+  let blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'}),a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);a.download=`苏伊温德日历备份_${fmt(now)}.json`;a.click();URL.revokeObjectURL(a.href)
+}
+async function importData(file){
+  try{
+    const data=JSON.parse(await file.text());
+    if(!data||typeof data!=='object')throw new Error();
+    if(!confirm('导入会用备份数据替换当前日历数据，继续吗？'))return;
+    applySnapshot(data);alert('本地备份已恢复。若要让云端也采用这份数据，请再点击“上传本地数据”。')
+  }catch{alert('无法读取这个备份文件。')}
+}
+
+async function askNotify(){
+  if(!('Notification'in window)){alert('当前浏览器不支持网页通知。');return}
+  if(Notification.permission==='denied'){alert('提醒权限已被浏览器关闭，请在浏览器的网站权限中重新允许通知。');return}
+  const p=await Notification.requestPermission();updateNotifyUI();if(p==='granted')new Notification('苏伊温德日历',{body:'任务提醒已经开启。'})
+}
+function updateNotifyUI(){
+  if(!('Notification'in window)){$('#notifyBtn').style.display='none';$('#notifyBanner').classList.remove('show');return}
+  const p=Notification.permission,btn=$('#notifyBtn'),label=btn.querySelector('.notify-label'),icon=btn.querySelector('.action-icon');
+  btn.classList.toggle('compact',p==='granted');
+  if(p==='granted'){if(icon)icon.textContent='🔔';if(label)label.textContent='已开启';btn.title='提醒已开启'}
+  else if(p==='denied'){if(icon)icon.textContent='🔕';if(label)label.textContent='已关闭';btn.title='通知权限已被浏览器关闭'}
+  else{if(icon)icon.textContent='♢';if(label)label.textContent='开启提醒';btn.title='开启任务提醒'}
+  $('#notifyBanner').classList.toggle('show',p==='default')
+}
+function checkReminders(){
+  if(!('Notification'in window)||Notification.permission!=='granted')return;
+  const t=new Date(),today=fmt(t),hhmm=`${pad(t.getHours())}:${pad(t.getMinutes())}`,sent=S.g('sentReminders',{});
+  allTasksFor(t).forEach(task=>{
+    if(task.done||!task.reminder||task.reminder!==hhmm)return;
+    const key=`${today}|${task.id}|${hhmm}`;if(sent[key])return;
+    new Notification('苏伊温德日历 · 到时间啦',{body:task.text});sent[key]=Date.now();
+  });
+  Object.keys(sent).forEach(k=>{if(Date.now()-sent[k]>7*86400000)delete sent[k]});S.s('sentReminders',sent)
+}
+
+
+function startOfWeek(d){
+  let x=new Date(d.getFullYear(),d.getMonth(),d.getDate(),12),day=(x.getDay()+6)%7;
+  x.setDate(x.getDate()-day);return x
+}
+function endOfWeek(d){let x=startOfWeek(d);x.setDate(x.getDate()+6);return x}
+function eachDate(a,b){
+  let out=[],d=new Date(a);for(;d<=b;d.setDate(d.getDate()+1))out.push(new Date(d));return out
+}
+function reviewEntryHtml(date,text){
+  return `<div class="review-day"><b>${date.getMonth()+1}月${date.getDate()}日 · 周${wd(date)}</b><p>${esc(text)}</p></div>`
+}
+function collectPeriod(a,b){
+  const days=eachDate(a,b);let taskTotal=0,taskDone=0,highTotal=0,highDone=0,reflectDays=0;
+  const wrong=[],right=[],better=[];
+  days.forEach(d=>{
+    const arr=allTasksFor(d);taskTotal+=arr.length;taskDone+=arr.filter(x=>x.done).length;
+    const hi=arr.filter(x=>(x.priority||'medium')==='high');highTotal+=hi.length;highDone+=hi.filter(x=>x.done).length;
+    const r=R[fmt(d)]||{};
+    if([r.q1,r.q2,r.q3].some(x=>(x||'').trim()))reflectDays++;
+    if((r.q1||'').trim())wrong.push({date:d,text:r.q1.trim()});
+    if((r.q2||'').trim())right.push({date:d,text:r.q2.trim()});
+    if((r.q3||'').trim())better.push({date:d,text:r.q3.trim()});
+  });
+  return {days,taskTotal,taskDone,highTotal,highDone,reflectDays,wrong,right,better}
+}
+function renderReviewList(sel,arr){
+  const e=$(sel);e.innerHTML='';
+  if(!arr.length){e.innerHTML='<div class="empty">这一段还没有内容。</div>';return}
+  arr.forEach(x=>e.insertAdjacentHTML('beforeend',reviewEntryHtml(x.date,x.text)))
+}
+function renderTrend(sel,groups){
+  const e=$(sel);e.innerHTML='';const max=Math.max(1,...groups.map(g=>g.total));
+  groups.forEach(g=>{
+    const h=g.total?Math.max(6,Math.round((g.done/max)*85)):3;
+    const pct=g.total?Math.round(g.done/g.total*100):0;
+    e.insertAdjacentHTML('beforeend',`<div class="barwrap"><div class="bar" style="height:${h}px" title="${g.done}/${g.total} · ${pct}%"></div><div class="barlabel">${esc(g.label)}</div></div>`)
+  })
+}
+function autoSummary(data,label){
+  const rate=data.taskTotal?Math.round(data.taskDone/data.taskTotal*100):0;
+  const highRate=data.highTotal?Math.round(data.highDone/data.highTotal*100):0;
+  let lines=[
+    `${label}共记录 ${data.taskTotal} 项任务，完成 ${data.taskDone} 项，完成率 ${rate}%。`,
+    `高优先级任务完成 ${data.highDone}/${data.highTotal}${data.highTotal?`（${highRate}%）`:''}。`,
+    `共有 ${data.reflectDays} 天写了每日复盘。`
+  ];
+  if(data.wrong.length)lines.push(`“做错了什么”记录了 ${data.wrong.length} 条。`);
+  if(data.right.length)lines.push(`“做对了什么”记录了 ${data.right.length} 条。`);
+  if(data.better.length)lines.push(`“明天怎么做得更好”记录了 ${data.better.length} 条。`);
+  return lines.join('\n')
+}
+function manualKey(type,d){return type==='week'?`week:${weekKey(d)}`:`month:${monthKey(d)}`}
+function renderWeekReview(){
+  const a=startOfWeek(sel),b=endOfWeek(sel),data=collectPeriod(a,b),rate=data.taskTotal?Math.round(data.taskDone/data.taskTotal*100):0;
+  $('#wDone').textContent=`${data.taskDone} / ${data.taskTotal}`;$('#wRate').textContent=`${rate}%`;
+  $('#wReflectDays').textContent=`${data.reflectDays} / 7`;$('#wHigh').textContent=`${data.highDone} / ${data.highTotal}`;
+  renderReviewList('#weekWrong',data.wrong);renderReviewList('#weekRight',data.right);renderReviewList('#weekBetter',data.better);
+  $('#weekAuto').textContent=autoSummary(data,'本周');
+  renderTrend('#weekTrend',data.days.map(d=>{let arr=allTasksFor(d);return{label:['日','一','二','三','四','五','六'][d.getDay()],done:arr.filter(x=>x.done).length,total:arr.length}}));
+  $('#weekManual').value=S.g('reviewNotes',{})[manualKey('week',sel)]||''
+}
+function monthWeeks(d){
+  const y=d.getFullYear(),m=d.getMonth(),first=new Date(y,m,1,12),last=new Date(y,m+1,0,12),groups=[];
+  let cur=startOfWeek(first),i=1;
+  while(cur<=last){
+    let end=endOfWeek(cur),a=cur<first?first:new Date(cur),b=end>last?last:new Date(end),arr=[];
+    eachDate(a,b).forEach(x=>arr.push(...allTasksFor(x)));
+    groups.push({label:`W${i++}`,done:arr.filter(x=>x.done).length,total:arr.length});cur=new Date(end);cur.setDate(cur.getDate()+1)
+  }
+  return groups
+}
+function renderMonthReview(){
+  const y=sel.getFullYear(),m=sel.getMonth(),a=new Date(y,m,1,12),b=new Date(y,m+1,0,12),data=collectPeriod(a,b),rate=data.taskTotal?Math.round(data.taskDone/data.taskTotal*100):0;
+  $('#mDone').textContent=`${data.taskDone} / ${data.taskTotal}`;$('#mRate').textContent=`${rate}%`;
+  $('#mReflectDays').textContent=`${data.reflectDays}`;$('#mHigh').textContent=`${data.highDone} / ${data.highTotal}`;
+  renderReviewList('#monthWrong',data.wrong);renderReviewList('#monthRight',data.right);renderReviewList('#monthBetter',data.better);
+  $('#monthAuto').textContent=autoSummary(data,'本月');renderTrend('#monthTrend',monthWeeks(sel));
+  $('#monthManual').value=S.g('reviewNotes',{})[manualKey('month',sel)]||''
+}
+function saveReviewNote(type){
+  let notes=S.g('reviewNotes',{}),key=manualKey(type,sel),value=type==='week'?$('#weekManual').value:$('#monthManual').value;
+  notes[key]=value;S.s('reviewNotes',notes)
+}
+function reviewMarkdown(type){
+  const isWeek=type==='week';
+  const a=isWeek?startOfWeek(sel):new Date(sel.getFullYear(),sel.getMonth(),1,12);
+  const b=isWeek?endOfWeek(sel):new Date(sel.getFullYear(),sel.getMonth()+1,0,12);
+  const data=collectPeriod(a,b),title=isWeek?`${fmt(a)} ~ ${fmt(b)} 周复盘`:`${sel.getFullYear()}年${sel.getMonth()+1}月 月复盘`;
+  const lines=[`# ${title}`,'',`- 任务完成：${data.taskDone}/${data.taskTotal}`,`- 完成率：${data.taskTotal?Math.round(data.taskDone/data.taskTotal*100):0}%`,`- 高优先级完成：${data.highDone}/${data.highTotal}`,`- 复盘天数：${data.reflectDays}`,''];
+  const sec=(name,arr)=>{lines.push(`## ${name}`,'');if(!arr.length)lines.push('暂无记录。','');else arr.forEach(x=>lines.push(`### ${fmt(x.date)}`,'',x.text,''))}
+  sec('做错了什么',data.wrong);sec('做对了什么',data.right);sec(isWeek?'下周要怎么做得更好':'下个月要怎么做得更好',data.better);
+  const note=(S.g('reviewNotes',{})[manualKey(type,sel)]||'').trim();lines.push(`## 我的${isWeek?'本周':'本月'}总结`,'',note||'暂无。','');
+  return {name:`${title.replace(/[~:/\\*?"<>|]/g,'-')}.md`,text:lines.join('\n')}
+}
+function downloadText(name,text){
+  const blob=new Blob([text],{type:'text/markdown;charset=utf-8'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;a.click();URL.revokeObjectURL(a.href)
+}
+function openReview(){
+  $('#reviewModal').classList.add('show');renderWeekReview();renderMonthReview();renderAIStored()
+}
+
+
+
+function snapshotData(){
+  return {
+    version:13,
+    savedAt:new Date().toISOString(),
+    tasks:T,
+    recurringTasks:RT,
+    weekGoals:WG,
+    monthGoals:MG,
+    deadlineGoals:DG,
+    scheduleOverrides:SO,
+    scheduleConfig:SC,
+    reflections:R,
+    anniversaries:A,
+    reviewNotes:S.g('reviewNotes',{}),
+    aiSummaries:S.g('aiSummaries',{})
+  }
+}
+let syncSuppressed=false;
+function applySnapshot(data){
+  if(!data||typeof data!=='object')throw new Error('invalid data');
+  syncSuppressed=true;
+  try{
+    T=data.tasks||{};RT=(data.recurringTasks||[]).map(r=>({...r,endDate:r.endDate||'',doneDates:r.doneDates||[],skipDates:r.skipDates||[]}));WG=data.weekGoals||{};MG=data.monthGoals||{};
+    DG=(data.deadlineGoals||[]).map(g=>({...g,id:g.id||uuid(),priority:g.priority||'medium',done:!!g.done,completedAt:g.completedAt||''}));
+    SO=data.scheduleOverrides||{};SC=data.scheduleConfig||{disabledCourseIds:[]};if(!Array.isArray(SC.disabledCourseIds))SC.disabledCourseIds=[];
+    R=data.reflections||{};A=(data.anniversaries||[]).map(a=>({...a,id:a.id||uuid()}));
+    S.s('tasks',T);S.s('recurringTasks',RT);S.s('weekGoals',WG);S.s('monthGoals',MG);S.s('deadlineGoals',DG);
+    S.s('scheduleOverrides',SO);S.s('scheduleConfig',SC);
+    S.s('reflections',R);S.s('anniversaries',A);S.s('reviewNotes',data.reviewNotes||{});
+    S.s('aiSummaries',data.aiSummaries||{});
+  }finally{syncSuppressed=false}
+  
+
+renderCal();renderSide();renderAnniv();renderStreak();renderAIStored();
+}
+
+let sb=null,sbUser=null,sbAccessToken='',syncTimer=null;
+function cloudCfg(){return S.g('cloudConfig',{url:'',key:''})}
+function syncMeta(){return S.g('syncMeta',{localUpdatedAt:'',lastSyncedAt:'',lastSyncedCloudAt:'',cloudUpdatedAt:'',conflict:false})}
+function saveSyncMeta(patch){
+  const next={...syncMeta(),...patch};
+  originalSet('syncMeta',next);
+  renderSyncMeta();
+  return next
+}
+function fmtSyncTime(v){
+  if(!v)return '—';
+  const d=new Date(v);if(Number.isNaN(d.getTime()))return '—';
+  return d.toLocaleString('zh-CN',{month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit'})
+}
+function isAfter(a,b,slack=700){
+  if(!a)return false;if(!b)return true;
+  return new Date(a).getTime()>new Date(b).getTime()+slack
+}
+function localIsDirty(m=syncMeta()){
+  return !!m.localUpdatedAt && (!m.lastSyncedAt || isAfter(m.localUpdatedAt,m.lastSyncedAt,0))
+}
+function remoteChangedSinceSync(remoteAt,m=syncMeta()){
+  return !!remoteAt && !!m.lastSyncedCloudAt && isAfter(remoteAt,m.lastSyncedCloudAt)
+}
+function renderSyncMeta(){
+  const m=syncMeta();
+  if($('#localUpdatedLabel'))$('#localUpdatedLabel').textContent=fmtSyncTime(m.localUpdatedAt);
+  if($('#cloudUpdatedLabel'))$('#cloudUpdatedLabel').textContent=fmtSyncTime(m.cloudUpdatedAt);
+  if($('#lastSyncedLabel'))$('#lastSyncedLabel').textContent=fmtSyncTime(m.lastSyncedAt);
+  if($('#syncStateLabel'))$('#syncStateLabel').textContent=m.conflict?'⚠ 需要处理冲突':(sbUser?'正常':'未登录');
+  if($('#syncConflictBox'))$('#syncConflictBox').classList.toggle('show',!!m.conflict)
+}
+function setCloudStatus(state,text){
+  const dot=$('#cloudDot');dot.className='cloud-dot'+(state==='on'?' on':state==='busy'?' busy':'');
+  $('#cloudText').textContent=text
+}
+async function fetchCloudState(){
+  if(!sb||!sbUser)return {data:null,error:null};
+  return await sb.from('calendar_state').select('payload,updated_at').eq('user_id',sbUser.id).maybeSingle()
+}
+async function refreshCloudMeta(){
+  if(!sb||!sbUser){renderSyncMeta();return}
+  const {data,error}=await fetchCloudState();
+  if(error)return;
+  const cloudAt=data?.updated_at||'';
+  const m=syncMeta();
+  if(cloudAt&&!m.lastSyncedCloudAt){
+    const baseline=new Date().toISOString();
+    saveSyncMeta({cloudUpdatedAt:cloudAt,lastSyncedCloudAt:cloudAt,lastSyncedAt:m.lastSyncedAt||baseline,localUpdatedAt:m.localUpdatedAt||baseline,conflict:false});
+    return
+  }
+  const conflict=localIsDirty(m) && remoteChangedSinceSync(cloudAt,m);
+  saveSyncMeta({cloudUpdatedAt:cloudAt,conflict});
+  if(conflict)setCloudStatus('off','发现同步冲突')
+}
+function initSupabase(){
+  const c=cloudCfg();
+  if(!c.url||!c.key||!window.supabase){sb=null;sbUser=null;setCloudStatus('off','仅本地');updateCloudUI();return null}
+  try{sb=window.supabase.createClient(c.url,c.key)}catch{sb=null}
+  if(!sb){setCloudStatus('off','配置错误');updateCloudUI();return null}
+  setCloudStatus('busy','检查账号');
+  sb.auth.getSession().then(({data})=>{sbAccessToken=data?.session?.access_token||''}).catch(()=>{});
+  sb.auth.getUser().then(async({data})=>{
+    sbUser=data?.user||null;
+    setCloudStatus(sbUser?'on':'off',sbUser?'云端已登录':'云端未登录');
+    updateCloudUI();
+    if(sbUser)await refreshCloudMeta();
+  }).catch(()=>{sbUser=null;setCloudStatus('off','云端异常');updateCloudUI()});
+  sb.auth.onAuthStateChange((_event,session)=>{
+    sbUser=session?.user||null;sbAccessToken=session?.access_token||'';updateCloudUI();renderSyncMeta();
+  });
+  return sb
+}
+function updateCloudUI(){
+  const user=sbUser;
+  $('#accountTitle').textContent=user?`已登录 · ${user.email||'账号'}`:'未登录';
+  $('#accountInfo').textContent=user?'自动同步开启；若两台设备同时修改，检测到冲突时会暂停自动覆盖。':'当前所有数据只保存在本浏览器。';
+  $('#signOutBtn').disabled=!user;$('#uploadCloud').disabled=!user;$('#downloadCloud').disabled=!user;
+  renderSyncMeta()
+}
+async function saveCloudConfig(){
+  const url=$('#sbUrl').value.trim(),key=$('#sbKey').value.trim();
+  S.s('cloudConfig',{url,key});initSupabase();setTimeout(retryPendingCloudSync,2200);alert('云端配置已保存。')
+}
+async function signUp(){
+  if(!sb)saveCloudConfig(); if(!sb){alert('请先填写并保存 Supabase 配置。');return}
+  const email=$('#sbEmail').value.trim(),password=$('#sbPassword').value;
+  if(!email||!password){alert('请填写邮箱和密码。');return}
+  setCloudStatus('busy','注册中');
+  const {data,error}=await sb.auth.signUp({email,password});
+  if(error){alert(error.message);setCloudStatus('off','注册失败');return}
+  if(data.session){
+    sbUser=data.user||null;sbAccessToken=data.session?.access_token||'';updateCloudUI();setCloudStatus('on','云端已登录');
+    alert('注册并登录成功。')
+  }else{
+    sbUser=null;updateCloudUI();setCloudStatus('off','请验证邮箱');
+    alert('注册成功。请先到邮箱完成验证，然后回来点击“登录”。')
+  }
+}
+async function signIn(){
+  if(!sb)saveCloudConfig(); if(!sb){alert('请先填写并保存 Supabase 配置。');return}
+  const email=$('#sbEmail').value.trim(),password=$('#sbPassword').value;
+  if(!email||!password){alert('请填写邮箱和密码。');return}
+  setCloudStatus('busy','登录中');
+  const {data,error}=await sb.auth.signInWithPassword({email,password});
+  if(error){alert(error.message);setCloudStatus('off','登录失败');return}
+  sbUser=data.user;sbAccessToken=data.session?.access_token||'';updateCloudUI();setCloudStatus('on','云端已登录');await refreshCloudMeta()
+}
+async function signOut(){
+  if(sb)await sb.auth.signOut();sbUser=null;sbAccessToken='';updateCloudUI();setCloudStatus('off','云端未登录')
+}
+async function uploadCloud(silent=false,force=false){
+  if(!sb||!sbUser){if(!silent)alert('请先登录云端账号。');return}
+  setCloudStatus('busy','检查云端');
+  const current=await fetchCloudState();
+  if(current.error){setCloudStatus('off','同步失败');if(!silent)alert(current.error.message);return}
+  const remoteAt=current.data?.updated_at||'';
+  const m=syncMeta();
+  const conflict=remoteChangedSinceSync(remoteAt,m) && localIsDirty(m);
+  if(conflict&&!force){
+    saveSyncMeta({cloudUpdatedAt:remoteAt,conflict:true});setCloudStatus('off','发现同步冲突');
+    if(silent)return;
+    const ok=confirm(`检测到冲突：\n\n本地最后修改：${fmtSyncTime(m.localUpdatedAt)}\n云端最后修改：${fmtSyncTime(remoteAt)}\n\n继续“上传”会用本机数据覆盖云端。确定覆盖吗？`);
+    if(!ok)return;
+  }
+  setCloudStatus('busy','上传中');
+  const stamp=new Date().toISOString();
+  const {data,error}=await sb.from('calendar_state').upsert({user_id:sbUser.id,payload:snapshotData(),updated_at:stamp},{onConflict:'user_id'}).select('updated_at').single();
+  if(error){setCloudStatus('off','同步失败');if(!silent)alert(error.message);return}
+  const cloudAt=data?.updated_at||stamp, syncedAt=new Date().toISOString();
+  saveSyncMeta({lastSyncedCloudAt:cloudAt,cloudUpdatedAt:cloudAt,lastSyncedAt:syncedAt,localUpdatedAt:syncedAt,conflict:false});
+  clearCloudDirty();setCloudStatus('on','已同步');if(!silent)alert('本地数据已安全上传到云端。')
+}
+async function downloadCloud(force=false){
+  if(!sb||!sbUser){alert('请先登录云端账号。');return}
+  setCloudStatus('busy','检查云端');
+  const {data,error}=await fetchCloudState();
+  if(error){setCloudStatus('off','下载失败');alert(error.message);return}
+  if(!data?.payload){setCloudStatus('on','云端为空');alert('云端还没有日历数据。');return}
+  const m=syncMeta(), remoteAt=data.updated_at||'';
+  const dirty=localIsDirty(m);
+  if(dirty&&!force){
+    const ok=confirm(`本机存在尚未确认同步的修改：\n\n本地最后修改：${fmtSyncTime(m.localUpdatedAt)}\n云端最后修改：${fmtSyncTime(remoteAt)}\n\n继续“下载”会用云端数据覆盖本机。确定继续吗？`);
+    if(!ok){setCloudStatus('on','云端已登录');return}
+  }else if(!confirm(`云端数据更新时间：${fmtSyncTime(remoteAt)}。\n用它覆盖当前本地数据吗？`)){
+    setCloudStatus('on','云端已登录');return
+  }
+  applySnapshot(data.payload);
+  const syncedAt=new Date().toISOString();
+  saveSyncMeta({lastSyncedCloudAt:remoteAt,cloudUpdatedAt:remoteAt,lastSyncedAt:syncedAt,localUpdatedAt:syncedAt,conflict:false});
+  clearCloudDirty();setCloudStatus('on','已同步');alert('云端数据已安全恢复到本机。')
+}
+
+// ---------- V1.0 关闭 / 切后台时尽力同步 ----------
+let cloudDirty = false;
+let lastCloudFlushAt = 0;
+
+function markCloudDirty(){
+  cloudDirty = true;
+  try{ localStorage.setItem('zx_cloudDirty','1'); }catch{}
+}
+
+function clearCloudDirty(){
+  cloudDirty = false;
+  try{ localStorage.removeItem('zx_cloudDirty'); }catch{}
+}
+
+function flushCloudSyncOnLeave(){
+  if(!sb || !sbUser || !cloudDirty || syncMeta().conflict) return;
+  if(Date.now() - lastCloudFlushAt < 800) return;
+  lastCloudFlushAt = Date.now();
+  try{
+    const token=sbAccessToken,cfg=cloudCfg();
+    if(!token || !cfg.url || !cfg.key) return;
+    const stamp=new Date().toISOString(),m=syncMeta();
+    originalSet('syncMeta',{...m,lastSyncedCloudAt:stamp,cloudUpdatedAt:stamp,lastSyncedAt:stamp,localUpdatedAt:stamp,conflict:false});renderSyncMeta();
+    const body=JSON.stringify({user_id:sbUser.id,payload:snapshotData(),updated_at:stamp});
+    fetch(`${cfg.url}/rest/v1/calendar_state?on_conflict=user_id`,{
+      method:'POST',keepalive:true,
+      headers:{'Content-Type':'application/json','apikey':cfg.key,'Authorization':`Bearer ${token}`,'Prefer':'resolution=merge-duplicates,return=minimal'},
+      body
+    }).then(r=>{if(r.ok)clearCloudDirty()}).catch(()=>{})
+  }catch{}
+}
+
+function retryPendingCloudSync(){
+  try{
+    if(localStorage.getItem('zx_cloudDirty') === '1'){
+      cloudDirty = true;
+      setTimeout(()=>{ if(sb && sbUser) uploadCloud(true); }, 1800);
+    }
+  }catch{}
+}
+
+function scheduleCloudSync(){
+  clearTimeout(syncTimer);syncTimer=setTimeout(async()=>{
+    if(!sb||!sbUser)return;
+    const m=syncMeta();
+    if(m.conflict){setCloudStatus('off','发现同步冲突');return}
+    await uploadCloud(true)
+  },1800)
+}
+const originalSet=S.s;
+S.s=(k,v)=>{
+  originalSet(k,v);
+  if(syncSuppressed)return;
+  if(!['sentReminders','cloudConfig','syncMeta'].includes(k)){
+    const stamp=new Date().toISOString();
+    const m=syncMeta();
+    originalSet('syncMeta',{...m,localUpdatedAt:stamp});
+    markCloudDirty();renderSyncMeta();scheduleCloudSync()
+  }
+};
+
+function reviewPayload(type){
+  const isWeek=type==='week';
+  const a=isWeek?startOfWeek(sel):new Date(sel.getFullYear(),sel.getMonth(),1,12);
+  const b=isWeek?endOfWeek(sel):new Date(sel.getFullYear(),sel.getMonth()+1,0,12);
+  const data=collectPeriod(a,b);
+  return {
+    type,
+    period:{start:fmt(a),end:fmt(b)},
+    metrics:{taskTotal:data.taskTotal,taskDone:data.taskDone,highTotal:data.highTotal,highDone:data.highDone,reflectionDays:data.reflectDays},
+    reflections:{
+      wrong:data.wrong.map(x=>({date:fmt(x.date),text:x.text})),
+      right:data.right.map(x=>({date:fmt(x.date),text:x.text})),
+      better:data.better.map(x=>({date:fmt(x.date),text:x.text}))
+    },
+    manualNote:(S.g('reviewNotes',{})[manualKey(type,sel)]||'')
+  }
+}
+function localSmartSummary(type){
+  const p=reviewPayload(type),m=p.metrics,rate=m.taskTotal?Math.round(m.taskDone/m.taskTotal*100):0,hi=m.highTotal?Math.round(m.highDone/m.highTotal*100):0;
+  const period=type==='week'?'这周':'这个月',next=type==='week'?'下周':'下个月';
+  const allBetter=p.reflections.better.map(x=>x.text).filter(Boolean);
+  const lines=[
+    `【整体】${period}共安排 ${m.taskTotal} 项任务，完成 ${m.taskDone} 项，完成率 ${rate}%。复盘 ${m.reflectionDays} 天。`,
+    `【重点】高优先级任务完成 ${m.highDone}/${m.highTotal}${m.highTotal?`，完成率 ${hi}%`:''}。`,
+    `【反思记录】做错/不足 ${p.reflections.wrong.length} 条；做对/有效 ${p.reflections.right.length} 条；改进计划 ${p.reflections.better.length} 条。`,
+    allBetter.length?`【${next}行动】优先从你已经写下的改进项开始：${allBetter.slice(0,3).join('；')}`:`【${next}行动】先补一条最具体、最容易执行的改进动作。`
+  ];
+  return lines.join('\n\n')
+}
+function aiStoreKey(type){return `${type}:${type==='week'?weekKey(sel):monthKey(sel)}`}
+function renderAIStored(){
+  const a=S.g('aiSummaries',{});
+  const wk=a[aiStoreKey('week')],mk=a[aiStoreKey('month')];
+  if($('#weekAI'))$('#weekAI').textContent=wk?.text||'点击“生成 AI 总结”后，会基于本周任务与每日三问生成一份结构化总结。';
+  if($('#monthAI'))$('#monthAI').textContent=mk?.text||'点击“生成 AI 总结”后，会基于本月任务与每日三问生成一份结构化总结。'
+}
+async function generateAI(type){
+  const btn=type==='week'?$('#aiWeekBtn'):$('#aiMonthBtn'),out=type==='week'?$('#weekAI'):$('#monthAI');
+  const old=btn.textContent;btn.disabled=true;btn.innerHTML='<span class="spinner"></span>生成中';
+  try{
+    const res=await fetch('/api/summary',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(reviewPayload(type))});
+    if(!res.ok)throw new Error(await res.text());
+    const data=await res.json(); if(!data.summary)throw new Error('empty');
+    out.textContent=data.summary;
+  }catch(e){
+    out.textContent=localSmartSummary(type)+'\n\n（当前未连接 AI 服务，以上为本地结构化总结。）'
+  }finally{
+    const all=S.g('aiSummaries',{});all[aiStoreKey(type)]={text:out.textContent,updatedAt:new Date().toISOString()};S.s('aiSummaries',all);
+    btn.disabled=false;btn.textContent=old
+  }
+}
+async function copyText(text){
+  try{await navigator.clipboard.writeText(text);alert('已复制。')}catch{alert('复制失败，请手动选择文本。')}
+}
+
+
+
+
+$('#cloudBtn').onclick=()=>{
+  if(!sb&&window.supabase)initSupabase();
+  const c=cloudCfg();$('#sbUrl').value=c.url||'';$('#sbKey').value=c.key||'';
+  $('#cloudModal').classList.add('show');updateCloudUI();if(sbUser)refreshCloudMeta()
+};
+$('#closeCloud').onclick=()=>$('#cloudModal').classList.remove('show');
+$('#cloudModal').onclick=e=>{if(e.target===$('#cloudModal'))$('#cloudModal').classList.remove('show')};
+$('#saveCloudConfig').onclick=saveCloudConfig;
+$('#signUpBtn').onclick=signUp;$('#signInBtn').onclick=signIn;$('#signOutBtn').onclick=signOut;
+$('#uploadCloud').onclick=()=>uploadCloud(false);$('#downloadCloud').onclick=downloadCloud;
+$('#aiWeekBtn').onclick=()=>generateAI('week');$('#aiMonthBtn').onclick=()=>generateAI('month');
+$('#copyWeekAI').onclick=()=>copyText($('#weekAI').textContent);$('#copyMonthAI').onclick=()=>copyText($('#monthAI').textContent);
+
+$('#reviewBtn').onclick=openReview;
+$('#closeReview').onclick=()=>$('#reviewModal').classList.remove('show');
+$('#reviewModal').onclick=e=>{if(e.target===$('#reviewModal'))$('#reviewModal').classList.remove('show')};
+$('#weeklyTab').onclick=()=>{$('#weeklyTab').classList.add('active');$('#monthlyTab').classList.remove('active');$('#weeklyReview').classList.add('active');$('#monthlyReview').classList.remove('active');renderWeekReview()};
+$('#monthlyTab').onclick=()=>{$('#monthlyTab').classList.add('active');$('#weeklyTab').classList.remove('active');$('#monthlyReview').classList.add('active');$('#weeklyReview').classList.remove('active');renderMonthReview()};
+$('#weekManual').oninput=()=>saveReviewNote('week');
+$('#monthManual').oninput=()=>saveReviewNote('month');
+$('#exportWeekMd').onclick=()=>{const x=reviewMarkdown('week');downloadText(x.name,x.text)};
+$('#exportMonthMd').onclick=()=>{const x=reviewMarkdown('month');downloadText(x.name,x.text)};
+
+$('#jumpWeekGoals').onclick=()=>$('#weekGoalsSection').scrollIntoView({behavior:'smooth',block:'center'});
+$('#jumpMonthGoals').onclick=()=>{
+  if(sel.getFullYear()!==view.getFullYear()||sel.getMonth()!==view.getMonth()){
+    sel=new Date(view.getFullYear(),view.getMonth(),1,12);renderCal();renderSide()
+  }
+  $('#monthGoalsSection').scrollIntoView({behavior:'smooth',block:'center'})
+};
+$('#completeReflection').onclick=completeReflection;
+$('#jumpDeadlineGoals').onclick=()=>$('#deadlineGoalsSection').scrollIntoView({behavior:'smooth',block:'center'});
+$('#addDeadline').onclick=addDeadline;
+$('#deadlineInput').onkeydown=e=>{if(e.key==='Enter')addDeadline()};
+
+$('#prevBtn').onclick=()=>{view.setMonth(view.getMonth()-1);renderCal()};$('#nextBtn').onclick=()=>{view.setMonth(view.getMonth()+1);renderCal()};
+$('#yearSelect').onchange=e=>{
+  const y=Number(e.target.value);
+  if(!Number.isFinite(y))return;
+  const m=view.getMonth();
+  view=new Date(y,m,1,12);
+  // 年份切换后，把右侧详情定位到该年当前所显示月份的 1 日，避免详情仍停留在旧年份。
+  sel=new Date(y,m,1,12);
+  renderCal();renderSide();
+};
+$('#todayBtn').onclick=()=>{sel=new Date(now);view=new Date(now.getFullYear(),now.getMonth(),1);renderCal();renderSide()};
+$('#addTask').onclick=addTask;$('#taskInput').onkeydown=e=>{if(e.key==='Enter')addTask()};
+$('#repeat').onchange=syncRepeatEndUI;syncRepeatEndUI();
+$('#clearComposer').onclick=()=>{$('#taskInput').value='';$('#reminder').value='';$('#priority').value='medium';$('#repeat').value='none';$('#repeatEnd').value='';syncRepeatEndUI()};
+$('#scheduleEditBtn').onclick=openScheduleModal;
+$('#closeScheduleModal').onclick=closeScheduleModal;
+$('#scheduleModal').onclick=e=>{if(e.target===$('#scheduleModal'))closeScheduleModal()};
+$('#schedulePreset').onchange=e=>{const c=COURSE_SCHEDULE.find(x=>x.id===e.target.value);fillScheduleForm(c||null)};
+$('#clearScheduleForm').onclick=clearScheduleForm;
+$('#addScheduleCourse').onclick=addScheduleCourseForSelectedDate;
+
+$('#closeRepeatAction').onclick=closeRecurringAction;$('#repeatSkipOne').onclick=()=>finishRecurringAction('skip');$('#repeatEndFromHere').onclick=()=>finishRecurringAction('end');$('#repeatDeleteAll').onclick=()=>finishRecurringAction('all');
+$('#repeatActionModal').onclick=e=>{if(e.target===$('#repeatActionModal'))closeRecurringAction()};
+$('#addWeek').onclick=()=>addGoal('w');$('#addMonth').onclick=()=>addGoal('m');$('#weekInput').onkeydown=e=>{if(e.key==='Enter')addGoal('w')};$('#monthInput').onkeydown=e=>{if(e.key==='Enter')addGoal('m')};['q1','q2','q3'].forEach(id=>$('#'+id).oninput=saveR);
+
+let modal=$('#modal');$('#annivBtn').onclick=()=>{modal.classList.add('show');$('#aDate').value=fmt(sel);renderAnnivManage()};$('#cancelA').onclick=()=>modal.classList.remove('show');
+$('#saveA').onclick=()=>{let name=$('#aName').value.trim(),date=$('#aDate').value;if(!name||!date)return;A.push({id:uuid(),name,date,repeat:$('#aRepeat').checked});S.s('anniversaries',A);$('#aName').value='';renderAnniv();renderAnnivManage();renderCal()};
+modal.onclick=e=>{if(e.target===modal)modal.classList.remove('show')};
+
+$('#exportBtn').onclick=exportData;$('#importBtn').onclick=()=>$('#importFile').click();$('#importFile').onchange=e=>{if(e.target.files[0])importData(e.target.files[0]);e.target.value=''};
+$('#notifyBtn').onclick=askNotify;$('#bannerNotify').onclick=askNotify;
+
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden')flushCloudSyncOnLeave()});
+window.addEventListener('pagehide',()=>{flushCloudSyncOnLeave()});
+window.addEventListener('pageshow',()=>{retryPendingCloudSync()});
+window.addEventListener('focus',()=>{retryPendingCloudSync()});
+
+renderCal();renderSide();renderAnniv();renderStreak();nextTerm();updateNotifyUI();checkReminders();renderAIStored();initSupabase();setTimeout(()=>{initSupabase();retryPendingCloudSync()},1800);window.addEventListener('load',()=>{initSupabase();setTimeout(retryPendingCloudSync,500)});
+setInterval(checkReminders,30000);setTimeout(()=>{renderCal();renderSide();nextTerm()},900);
+if('serviceWorker'in navigator&&location.protocol.startsWith('http'))navigator.serviceWorker.register('./sw.js').catch(()=>{});
+})();
+</script>
+</body></html>
