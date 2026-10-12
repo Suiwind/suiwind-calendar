@@ -3,7 +3,7 @@
   "short_name": "苏伊温德日历",
   "start_url": "./index.html",
   "display": "standalone",
-  "background_color": "#f5f1ec",
-  "theme_color": "#f5efe9",
+  "background_color": "#eef2ea",
+  "theme_color": "#eef2ea",
   "icons": []
 }

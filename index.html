@@ -3,27 +3,27 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#f5efe9">
-<title>苏伊温德日历 V1.5.1</title>
+<meta name="theme-color" content="#eef2ea">
+<title>苏伊温德日历 V1.5.2</title>
 <link rel="manifest" href="manifest.json">
 <script src="./supabase-local.js"></script>
 <style>
 :root{
-  --bg:#f5f1ec;--card:#fffdfa;--line:#e7dfd7;--text:#332e2a;--muted:#8b827a;
-  --accent:#8f6f62;--accent-soft:#efe5df;--holiday:#b95f5f;--work:#667b92;
-  --green:#6f876e;--yellow:#b68b4b;--red:#b75d5d;--shadow:0 14px 36px rgba(70,50,42,.07)
+  --bg:#eef2ea;--card:#fbfcf8;--line:#dfe5da;--text:#30362f;--muted:#7b8578;
+  --accent:#71866e;--accent-soft:#e4ece1;--holiday:#b56b6b;--work:#708397;
+  --green:#6f8a6c;--yellow:#ad8a51;--red:#b86565;--shadow:0 14px 36px rgba(59,77,57,.07)
 }
-*{box-sizing:border-box}body{margin:0;font-family:Inter,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;background:linear-gradient(135deg,#f5efe9,#f7f6f2);color:var(--text)}
+*{box-sizing:border-box}body{margin:0;font-family:Inter,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;background:linear-gradient(135deg,#edf2e9,#f6f4ec);color:var(--text)}
 button,input,textarea,select{font:inherit}.app{max-width:1440px;margin:auto;padding:20px}
 .top{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:16px}.top h1{margin:0;font-size:28px}.top p{margin:5px 0 0;color:var(--muted);font-size:14px}
 .actions{display:flex;gap:8px;flex-wrap:wrap}.btn{border:1px solid var(--line);background:var(--card);padding:9px 13px;border-radius:11px;cursor:pointer;color:var(--text)}
 .btn:hover{border-color:#cbb8ae}.btn.primary{background:var(--accent);color:#fff;border-color:var(--accent)}.btn.ghost{background:transparent}
-.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:12px}.stat,.panel{background:rgba(255,253,250,.97);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow)}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:12px}.stat,.panel{background:rgba(251,252,248,.97);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow)}
 .stat{padding:14px}.stat small{color:var(--muted)}.stat b{display:block;font-size:19px;margin-top:5px}.stat .hint{font-size:10px;color:var(--muted);margin-top:4px}
 .annivs{display:flex;gap:10px;overflow:auto;margin-bottom:12px;padding-bottom:2px}.anniv{min-width:220px;padding:12px;background:#fff;border:1px solid var(--line);border-radius:14px;position:relative}.anniv .count{font-size:18px;font-weight:700;color:var(--accent);margin:5px 0}.anniv .del{position:absolute;right:7px;top:7px;border:0;background:transparent;color:#b7aaa2;cursor:pointer}
-.layout{display:grid;grid-template-columns:minmax(0,1fr) 390px;gap:16px}.calendar{padding:16px}.calhead{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}.nav{display:flex;gap:8px}.calendar-period{display:flex;align-items:center;justify-content:center;gap:8px}.year-select{width:auto;min-width:98px;padding:7px 30px 7px 10px;border-radius:10px;font-weight:700;background:#fffdfb;border-color:var(--line);cursor:pointer}.title{font-size:21px;font-weight:750}.week,.grid{display:grid;grid-template-columns:repeat(7,1fr);gap:7px}
+.layout{display:grid;grid-template-columns:minmax(0,1fr) 390px;gap:16px}.calendar{padding:16px}.calhead{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}.nav{display:flex;gap:8px}.calendar-period{display:flex;align-items:center;justify-content:center;gap:8px}.year-select{width:auto;min-width:98px;padding:7px 30px 7px 10px;border-radius:10px;font-weight:700;background:#fbfcf8;border-color:var(--line);cursor:pointer}.title{font-size:21px;font-weight:750}.week,.grid{display:grid;grid-template-columns:repeat(7,1fr);gap:7px}
 .week div{text-align:center;color:var(--muted);font-size:12px;padding:7px}.day{min-height:112px;background:#fff;border:1px solid var(--line);border-radius:13px;padding:9px;cursor:pointer;position:relative;text-align:left}
-.day:hover{border-color:#cbb8ae;transform:translateY(-1px)}.day.other{opacity:.35}.day.today{outline:2px solid var(--accent);outline-offset:-2px;background:linear-gradient(180deg,#fff8f4 0%,#fff 74%);box-shadow:0 5px 18px rgba(143,111,98,.10)}.day.today .num{color:var(--accent);font-weight:850}.day.selected{border-color:var(--accent);box-shadow:0 0 0 2px rgba(143,111,98,.12)}.day.today.selected{box-shadow:0 0 0 3px rgba(143,111,98,.18),0 5px 18px rgba(143,111,98,.10)}
+.day:hover{border-color:#cbb8ae;transform:translateY(-1px)}.day.other{opacity:.35}.day.today{outline:2px solid var(--accent);outline-offset:-2px;background:linear-gradient(180deg,#f1f6ee 0%,#fbfcf8 74%);box-shadow:0 5px 18px rgba(113,134,110,.11)}.day.today .num{color:var(--accent);font-weight:850}.day.selected{border-color:var(--accent);box-shadow:0 0 0 2px rgba(113,134,110,.14)}.day.today.selected{box-shadow:0 0 0 3px rgba(113,134,110,.20),0 5px 18px rgba(113,134,110,.11)}
 .dtop{display:flex;justify-content:space-between;gap:5px}.date-left{display:flex;align-items:center;gap:5px;min-width:0}.num{font-weight:750}.today-chip{display:inline-flex;align-items:center;padding:1px 5px;border-radius:999px;background:var(--accent);color:#fff;font-size:8px;font-weight:750;line-height:1.55;white-space:nowrap}.lunar{font-size:10px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.tags{display:flex;gap:4px;flex-wrap:wrap;margin-top:6px}
 .tag{font-size:9px;padding:2px 5px;border-radius:999px;background:#f1ece8}.tag.holiday{background:#fbe8e8;color:var(--holiday)}.tag.work{background:#e8eef4;color:var(--work)}.tag.term{background:#edf3e9;color:#61785f}
 .mini{position:absolute;bottom:7px;left:9px;font-size:10px;color:#746b64;display:flex;gap:7px;align-items:center}.priority-dots{display:inline-flex;gap:2px}.pd{width:5px;height:5px;border-radius:50%;display:inline-block}.pd.high{background:var(--red)}.pd.medium{background:var(--yellow)}.pd.low{background:var(--green)}
@@ -170,7 +170,7 @@ button{touch-action:manipulation}
 
 /* 纪念日改为自适应横向信息卡，单卡也不再留下突兀的大块空白 */
 .annivs{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:10px;overflow:visible;padding-bottom:0}
-.anniv{min-width:0;display:grid;grid-template-columns:minmax(150px,1fr) auto auto;align-items:center;gap:8px 14px;padding:11px 38px 11px 13px;background:rgba(255,253,250,.97);box-shadow:0 8px 22px rgba(70,50,42,.045)}
+.anniv{min-width:0;display:grid;grid-template-columns:minmax(150px,1fr) auto auto;align-items:center;gap:8px 14px;padding:11px 38px 11px 13px;background:rgba(251,252,248,.97);box-shadow:0 8px 22px rgba(70,50,42,.045)}
 .anniv b{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .anniv .count{font-size:15px;margin:0;white-space:nowrap}
 .anniv small{color:var(--muted);white-space:nowrap}
@@ -343,8 +343,8 @@ button{touch-action:manipulation}
 /* V1.2.0 · 每日课表 + 重复任务结束 */
 .schedule-section{background:linear-gradient(180deg,rgba(248,246,252,.62),transparent 75%)}
 .schedule-list{display:flex;flex-direction:column;gap:7px}
-.schedule-item{display:grid;grid-template-columns:82px minmax(0,1fr) auto;gap:9px;padding:9px 10px;border:1px solid #ebe4ee;border-radius:12px;background:#fffdfb;position:relative}
-.schedule-item.study{background:#fbfaf5;border-color:#e8e1cf}.schedule-item.commentary{background:#f8f4f7;border-color:#e8dce6}.schedule-item.course{background:#fffdfb}
+.schedule-item{display:grid;grid-template-columns:82px minmax(0,1fr) auto;gap:9px;padding:9px 10px;border:1px solid #ebe4ee;border-radius:12px;background:#fbfcf8;position:relative}
+.schedule-item.study{background:#fbfaf5;border-color:#e8e1cf}.schedule-item.commentary{background:#f8f4f7;border-color:#e8dce6}.schedule-item.course{background:#fbfcf8}
 .schedule-item.conflict{border-color:#e3b2a8;background:#fff8f5}.schedule-time{font-weight:750;font-size:12px;color:#61566c;white-space:nowrap}
 .schedule-main{min-width:0}.schedule-name{font-size:13px;font-weight:700;line-height:1.35}.schedule-meta{font-size:10px;color:var(--muted);margin-top:3px;line-height:1.45}
 .schedule-badge{display:inline-block;font-size:9px;padding:2px 6px;border-radius:999px;margin-left:5px;background:#eee9f2;color:#71657d;vertical-align:1px}
@@ -354,7 +354,7 @@ button{touch-action:manipulation}
 .schedule-rule-note{font-size:10px;line-height:1.5;color:#8b7e74;margin-top:7px;min-height:0}.schedule-rule-note:empty{display:none}
 .schedule-modalbox{width:min(560px,100%)}.modal-title-row{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}.schedule-manager-section{padding:14px 0;border-bottom:1px solid var(--line)}.schedule-manager-section h4{margin:0 0 9px;font-size:13px}.schedule-label{display:block;font-size:11px;color:var(--muted);margin:0 0 5px}
 .schedule-form-grid{display:grid;grid-template-columns:1.5fr .75fr .75fr;gap:7px;margin-top:8px}.schedule-form-grid #scheduleTeacher,.schedule-form-grid #scheduleRoom,.schedule-form-grid #scheduleNoteInput{grid-column:auto}.schedule-form-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:9px}
-.schedule-manage-list{display:flex;flex-direction:column;gap:6px}.schedule-manage-item{display:flex;align-items:center;gap:8px;padding:8px 9px;border:1px solid #eee6df;border-radius:10px;background:#fffdfb}.schedule-manage-item .grow{flex:1;min-width:0}.schedule-manage-item b{font-size:12px}.schedule-manage-item small{display:block;color:var(--muted);font-size:10px;margin-top:2px}.schedule-manage-item button{white-space:nowrap}
+.schedule-manage-list{display:flex;flex-direction:column;gap:6px}.schedule-manage-item{display:flex;align-items:center;gap:8px;padding:8px 9px;border:1px solid #eee6df;border-radius:10px;background:#fbfcf8}.schedule-manage-item .grow{flex:1;min-width:0}.schedule-manage-item b{font-size:12px}.schedule-manage-item small{display:block;color:var(--muted);font-size:10px;margin-top:2px}.schedule-manage-item button{white-space:nowrap}
 .schedule-fixed-details{margin-top:12px}.schedule-fixed-details summary{cursor:pointer;font-weight:700;font-size:13px}.schedule-fixed-details[open] summary{margin-bottom:6px}
 .repeat-end-wrap{grid-column:1/-1;display:flex;align-items:center;gap:7px;padding:7px 9px;border:1px dashed #e3dbd4;border-radius:10px;background:#fbf8f5}
 .repeat-end-wrap[hidden]{display:none!important}.repeat-end-wrap label{font-size:11px;color:var(--muted);white-space:nowrap}.repeat-end-wrap input{max-width:180px}
@@ -524,7 +524,7 @@ button{touch-action:manipulation}
 }
 
 
-/* ===== V1.5.0 学习中枢：驾驶舱 / 科学计时 / 统计 / 间隔复习 / 年度路线图 ===== */
+/* ===== V1.5.2 学习管理：首页 / 科学计时 / 统计 / 间隔复习 / 年度路线图 ===== */
 .learning-tabs{overflow-x:auto;flex-wrap:nowrap;scrollbar-width:none;overscroll-behavior-x:contain}
 .learning-tabs::-webkit-scrollbar{display:none}
 .learning-tabs .btn{flex:0 0 auto}
@@ -559,12 +559,23 @@ button{touch-action:manipulation}
 @media(max-width:900px){.cockpit-grid,.timer-shell{grid-template-columns:1fr}.study-stat-grid{grid-template-columns:1fr 1fr}.timer-start-grid{grid-template-columns:1fr 1fr}.timer-start-grid input{grid-column:1/-1}.learning-countdown-form.v150{grid-template-columns:1fr 1fr}.learning-countdown-form.v150 input:first-child,.learning-countdown-form.v150 input:nth-child(5){grid-column:1/-1}}
 @media(max-width:620px){.timer-clock{font-size:40px}.study-stat-grid{grid-template-columns:1fr 1fr}.study-log-row{grid-template-columns:80px 70px minmax(0,1fr)}.study-log-row .x{grid-column:3}.eye-rule{grid-template-columns:1fr}.roadmap-year{grid-template-columns:58px minmax(0,1fr)}.roadmap-year:before{left:28px}.roadmap-year-label{width:56px}.timer-start-grid{grid-template-columns:1fr}.learning-countdown-form.v150{grid-template-columns:1fr}.learning-countdown-form.v150>*{grid-column:1!important}}
 
+/* ===== V1.5.2 低饱和护眼配色 + 学习导航区分 ===== */
+.learning-nav-v152{gap:7px;padding:2px 1px 7px}
+.learning-nav-v152 .btn{display:inline-flex;align-items:center;gap:6px;border-color:color-mix(in srgb,var(--tab,#71866e) 24%,#dfe5da);background:color-mix(in srgb,var(--tab,#71866e) 8%,#fbfcf8);color:#455044;transition:.18s ease}
+.learning-nav-v152 .btn:hover{border-color:color-mix(in srgb,var(--tab,#71866e) 48%,#dfe5da);transform:translateY(-1px)}
+.learning-nav-v152 .btn.active{background:color-mix(in srgb,var(--tab,#71866e) 84%,#fff);border-color:var(--tab,#71866e);color:#fff;box-shadow:0 5px 15px color-mix(in srgb,var(--tab,#71866e) 17%,transparent)}
+.learning-nav-v152 .lt-icon{display:inline-flex;align-items:center;justify-content:center;min-width:19px;height:19px;font-size:11px;font-weight:800;border-radius:6px;background:color-mix(in srgb,var(--tab,#71866e) 14%,#fff);color:var(--tab,#71866e)}
+.learning-nav-v152 .btn.active .lt-icon{background:rgba(255,255,255,.18);color:#fff}
+.lt-today{--tab:#71866e}.lt-timer{--tab:#6e8791}.lt-stats{--tab:#7c79a0}.lt-review{--tab:#9a8062}.lt-english{--tab:#6686a2}.lt-finance{--tab:#9b7755}.lt-math{--tab:#7d7198}.lt-countdowns{--tab:#a16d6d}.lt-roadmap{--tab:#62877c}.lt-schedule{--tab:#777f69}
+.subject-burndown{margin-top:10px}.subject-burndown>summary{cursor:pointer;list-style:none;font-weight:780;font-size:13px;display:flex;align-items:center;justify-content:space-between;gap:10px}.subject-burndown>summary::-webkit-details-marker{display:none}.subject-burndown>summary:after{content:'展开';font-size:9px;color:var(--muted);font-weight:500}.subject-burndown[open]>summary:after{content:'收起'}.subject-burndown-body{padding-top:10px}.subject-burndown .burndown-chart{min-height:210px}.subject-burndown .burndown-metrics{grid-template-columns:repeat(4,minmax(0,1fr))}.subject-burndown-tabs{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0}.subject-burndown-tabs .btn.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+@media(max-width:760px){.subject-burndown .burndown-metrics{grid-template-columns:1fr 1fr}}
+
 </style>
 </head>
 <body>
 <div class="app">
   <div class="top">
-    <div class="brand"><h1>苏伊温德日历 <span class="version">V1.5.1</span></h1><p>生命如暗室，不妨我明写春诗</p></div>
+    <div class="brand"><h1>苏伊温德日历 <span class="version">V1.5.2</span></h1><p>生命如暗室，不妨我明写春诗</p></div>
     <div class="actions">
       <button class="btn action-btn action-today" id="todayBtn"><span class="action-icon">⌂</span><span>回到今天</span></button>
       <button class="btn action-btn action-anniv" id="annivBtn"><span class="action-icon">♡</span><span>纪念日</span></button>
@@ -580,8 +591,8 @@ button{touch-action:manipulation}
 
   <div class="stats">
     <div class="stat"><small>本月任务完成</small><b id="monthProgress">0 / 0</b><div class="hint" id="monthRate"></div></div>
-    <div class="stat"><small>下一个节气</small><b id="nextTerm">载入中…</b><div class="hint">本地计算，无需外部加载</div></div>
-    <div class="stat"><small>连续复盘</small><b id="streak">0 天</b><div class="hint">任意一问有内容即计入</div></div>
+    <div class="stat"><small>下一个节气</small><b id="nextTerm">载入中…</b></div>
+    <div class="stat"><small>连续复盘</small><b id="streak">0 天</b></div>
     <div class="stat"><small>今日待办</small><b id="todayTodo">0 项</b><div class="hint" id="todayHigh"></div></div>
   </div>
 
@@ -659,7 +670,7 @@ button{touch-action:manipulation}
         <h3>今日任务 <span id="taskStat"></span></h3>
         <div id="tasks"></div>
         <div class="taskcomposer">
-          <div class="wide"><input id="taskInput" type="text" placeholder="例如：完成项目首页原型"><button class="btn primary" id="addTask">添加</button></div>
+          <div class="wide"><input id="taskInput" type="text" name="task_text_v152" autocomplete="off" autocapitalize="sentences" data-lpignore="true" data-1p-ignore="true" data-bwignore="true" placeholder="例如：完成项目首页原型"><button class="btn primary" id="addTask">添加</button></div>
           <select id="priority"><option value="medium">中优先级</option><option value="high">高优先级</option><option value="low">低优先级</option></select>
           <input id="reminder" type="time" title="提醒时间">
           <select id="repeat"><option value="none">不重复</option><option value="daily">每天</option><option value="weekly">每周</option><option value="monthly">每月</option></select>
@@ -683,8 +694,8 @@ button{touch-action:manipulation}
         <div class="deadline-help">截止日前可以自由安排进度；提前完成时直接勾选，系统会记录“提前多少天完成”。选择日历日期后，这里的截止日期会自动跟随。</div>
       </section>
 
-      <section class="section" id="weekGoalsSection"><h3>本周任务 <span id="weekLabel"></span></h3><div id="weekGoals"></div><div class="goal-add-row"><input id="weekInput" type="text" placeholder="本周最重要的目标"><select id="weekPriority" aria-label="本周任务优先级"><option value="medium">中优先</option><option value="high">高优先</option><option value="low">低优先</option></select><button class="btn" id="addWeek">＋</button></div></section>
-      <section class="section" id="monthGoalsSection"><h3>本月任务 <span id="monthLabel"></span></h3><div id="monthGoals"></div><div class="goal-add-row"><input id="monthInput" type="text" placeholder="这个月想完成什么？"><select id="monthPriority" aria-label="本月任务优先级"><option value="medium">中优先</option><option value="high">高优先</option><option value="low">低优先</option></select><button class="btn" id="addMonth">＋</button></div></section>
+      <section class="section" id="weekGoalsSection"><h3>本周任务 <span id="weekLabel"></span></h3><div id="weekGoals"></div><div class="goal-add-row"><input id="weekInput" type="text" name="week_goal_text_v152" autocomplete="off" autocapitalize="sentences" data-lpignore="true" data-1p-ignore="true" data-bwignore="true" placeholder="本周最重要的目标"><select id="weekPriority" aria-label="本周任务优先级"><option value="medium">中优先</option><option value="high">高优先</option><option value="low">低优先</option></select><button class="btn" id="addWeek">＋</button></div></section>
+      <section class="section" id="monthGoalsSection"><h3>本月任务 <span id="monthLabel"></span></h3><div id="monthGoals"></div><div class="goal-add-row"><input id="monthInput" type="text" name="month_goal_text_v152" autocomplete="off" autocapitalize="sentences" data-lpignore="true" data-1p-ignore="true" data-bwignore="true" placeholder="这个月想完成什么？"><select id="monthPriority" aria-label="本月任务优先级"><option value="medium">中优先</option><option value="high">高优先</option><option value="low">低优先</option></select><button class="btn" id="addMonth">＋</button></div></section>
 
       <section class="section reflect" id="reflectSection"><h3>今日复盘 <span id="saved"></span></h3>
         <label>我今天做错了什么？</label><textarea id="q1" placeholder="诚实一点，但不用苛责自己。"></textarea>
@@ -735,18 +746,17 @@ button{touch-action:manipulation}
       <div class="note" id="learnStudyNote">开始学习后自动累计</div>
     </article>
   </div>
-  <div class="learning-tabs">
-    <button class="btn active" data-learning-tab="today">驾驶舱</button>
-    <button class="btn" data-learning-tab="timer">计时</button>
-    <button class="btn" data-learning-tab="stats">统计</button>
-    <button class="btn" data-learning-tab="burndown">燃尽</button>
-    <button class="btn" data-learning-tab="review">复习</button>
-    <button class="btn" data-learning-tab="english">英语</button>
-    <button class="btn" data-learning-tab="finance">财经</button>
-    <button class="btn" data-learning-tab="math">高数</button>
-    <button class="btn" data-learning-tab="countdowns">倒数日</button>
-    <button class="btn" data-learning-tab="roadmap">路线图</button>
-    <button class="btn" data-learning-tab="schedule">调度</button>
+  <div class="learning-tabs learning-nav-v152">
+    <button class="btn active lt-today" data-learning-tab="today"><span class="lt-icon">☀</span><span>今日学习</span></button>
+    <button class="btn lt-timer" data-learning-tab="timer"><span class="lt-icon">◷</span><span>计时</span></button>
+    <button class="btn lt-stats" data-learning-tab="stats"><span class="lt-icon">▥</span><span>统计</span></button>
+    <button class="btn lt-review" data-learning-tab="review"><span class="lt-icon">↻</span><span>复习</span></button>
+    <button class="btn lt-english" data-learning-tab="english"><span class="lt-icon">Aa</span><span>英语</span></button>
+    <button class="btn lt-finance" data-learning-tab="finance"><span class="lt-icon">¥</span><span>财经</span></button>
+    <button class="btn lt-math" data-learning-tab="math"><span class="lt-icon">∑</span><span>高数</span></button>
+    <button class="btn lt-countdowns" data-learning-tab="countdowns"><span class="lt-icon">⌛</span><span>倒数日</span></button>
+    <button class="btn lt-roadmap" data-learning-tab="roadmap"><span class="lt-icon">◇</span><span>路线图</span></button>
+    <button class="btn lt-schedule" data-learning-tab="schedule"><span class="lt-icon">⇄</span><span>调度</span></button>
   </div>
   <div class="learning-panel" id="learningPanel"></div>
 </div></div>
@@ -763,8 +773,8 @@ button{touch-action:manipulation}
   <div class="settings-grid" style="margin-top:12px">
     <div class="full"><label class="small">Supabase Project URL</label><input id="sbUrl" type="text" placeholder="https://xxxx.supabase.co"></div>
     <div class="full"><label class="small">Supabase anon / publishable key</label><input id="sbKey" type="text" placeholder="eyJ..."></div>
-    <div><label class="small">邮箱</label><input id="sbEmail" type="text" placeholder="you@example.com"></div>
-    <div><label class="small">密码</label><input id="sbPassword" type="password" placeholder="至少 6 位"></div>
+    <div><label class="small">邮箱</label><input id="sbEmail" type="email" name="email" autocomplete="username" placeholder="you@example.com"></div>
+    <div><label class="small">密码</label><input id="sbPassword" type="password" name="password" autocomplete="current-password" placeholder="至少 6 位"></div>
   </div>
 
   <div class="sync-actions">
@@ -1929,7 +1939,8 @@ let activeLearningTab='today';
 function openLearning(tab='today'){
   activeLearningTab=tab;
   $('#learningModal').classList.add('show');
-  renderLearningAll()
+  renderLearningAll();
+  if(sbUser)refreshCloudMeta()
 }
 function closeLearning(){$('#learningModal').classList.remove('show')}
 function renderLearningAll(){
@@ -1994,7 +2005,7 @@ function renderLearningToday(){
     </div>
     <div class="learning-section-card">
       <h4>自主学习记录 <span class="learning-chip">不推进正式计划</span></h4>
-      <div class="learning-free-row"><select id="freeTrack"><option>英语</option><option>财经</option><option>高数</option><option>其他</option></select><input id="freeText" type="text" placeholder="例如：军训后顺手看了会计第1章思维导图"><button class="btn" id="addFreeLog">记录</button></div>
+      <div class="learning-free-row"><select id="freeTrack"><option>英语</option><option>财经</option><option>高数</option><option>其他</option></select><input id="freeText" type="text" name="free_learning_note_v152" autocomplete="off" autocapitalize="sentences" data-lpignore="true" data-1p-ignore="true" data-bwignore="true" placeholder="例如：军训后顺手看了会计第1章思维导图"><button class="btn" id="addFreeLog">记录</button></div>
       <div id="freeLogList">${free.length?free.map(x=>`<div class="learning-free-log"><span>${esc(x.track)} · ${esc(x.text)}</span><button class="x" data-free-id="${x.id}">×</button></div>`).join(''):'<div class="learning-empty">今天还没有自主学习记录。</div>'}</div>
     </div>
     <div class="learning-section-card">
@@ -2129,10 +2140,10 @@ function renderLearningCountdowns(){
     <div class="learning-section-card">
       <h4>添加考试 / 考证倒数日</h4>
       <div class="learning-countdown-form">
-        <input id="countdownTitle" type="text" placeholder="例如：计算机一级 / 教资笔试">
+        <input id="countdownTitle" type="text" name="countdown_title_v152" autocomplete="off" autocapitalize="sentences" data-lpignore="true" data-1p-ignore="true" data-bwignore="true" placeholder="例如：计算机一级 / 教资笔试">
         <input id="countdownDate" type="date" value="${today}">
         <select id="countdownKind"><option>考试</option><option>考证</option><option>报名</option><option>面试</option><option>其他</option></select>
-        <input id="countdownNote" type="text" placeholder="备注（可选）">
+        <input id="countdownNote" type="text" name="countdown_note_v152" autocomplete="off" autocapitalize="sentences" data-lpignore="true" data-1p-ignore="true" data-bwignore="true" placeholder="备注（可选）">
         <button class="btn primary" id="addCountdownBtn">添加</button>
       </div>
       <div class="learning-source-note" style="margin-top:6px">添加后会进入学习管理总览，并在对应日期的日历格里显示。倒数日只负责提醒，不会自动把当天设成缓冲日；需要暂停学习队列时，可再到“调度”里设缓冲。</div>
@@ -2165,7 +2176,7 @@ function renderLearningSchedule(){
     </div>
     <div class="learning-section-card">
       <h4>添加缓冲日</h4>
-      <div class="learning-free-row"><input id="busyDateInput" type="date" value="${learningTodayKey()}"><input id="busyReasonInput" type="text" placeholder="例如：志愿活动 / 普通话考试 / 临时作业"><button class="btn" id="addBusyDateBtn">设为缓冲</button></div>
+      <div class="learning-free-row"><input id="busyDateInput" type="date" value="${learningTodayKey()}"><input id="busyReasonInput" type="text" name="busy_reason_v152" autocomplete="off" autocapitalize="sentences" data-lpignore="true" data-1p-ignore="true" data-bwignore="true" placeholder="例如：志愿活动 / 普通话考试 / 临时作业"><button class="btn" id="addBusyDateBtn">设为缓冲</button></div>
       <div class="learning-source-note" style="margin-top:6px">缓冲日不会删除任务；它只让正式队列停住，下一次学习继续从未完成的第一项开始。</div>
       <div class="learning-busy-list">${busy.length?busy.map(([k,v])=>`<div class="learning-busy-row"><b>${k}</b><span>${esc(v.reason||'临时忙')}</span><button class="x" data-busy-remove="${k}">×</button></div>`).join(''):'<div class="learning-empty">暂无手动缓冲日。</div>'}</div>
     </div>
@@ -2227,10 +2238,11 @@ function v150Countdown(c){
   return {id:String(c.id||uuid()),title:String(c.title||'').trim(),date,endDate,kind:String(c.kind||'考试'),note:String(c.note||''),createdAt:String(c.createdAt||'')}
 }
 function v150EnsureState(){
-  LS.version=Math.max(5,Number(LS.version)||0);
+  LS.version=Math.max(7,Number(LS.version)||0);
   LS.energy=(LS.energy&&typeof LS.energy==='object')?LS.energy:{};
-  LS.studyTimer=(LS.studyTimer&&typeof LS.studyTimer==='object')?LS.studyTimer:{active:null,sessions:[]};
+  LS.studyTimer=(LS.studyTimer&&typeof LS.studyTimer==='object')?LS.studyTimer:{active:null,sessions:[],deletedSessionIds:[]};
   if(!Array.isArray(LS.studyTimer.sessions))LS.studyTimer.sessions=[];
+  if(!Array.isArray(LS.studyTimer.deletedSessionIds))LS.studyTimer.deletedSessionIds=[];
   LS.studyTimer.active=LS.studyTimer.active&&typeof LS.studyTimer.active==='object'?LS.studyTimer.active:null;
   LS.spacedReviews=(LS.spacedReviews&&typeof LS.spacedReviews==='object')?LS.spacedReviews:{done:{},settings:{finance:true,math:true,skills:true}};
   if(!LS.spacedReviews.done||typeof LS.spacedReviews.done!=='object')LS.spacedReviews.done={};
@@ -2260,13 +2272,13 @@ v150EnsureState();
 // 覆盖导入时的学习状态规范化：保留 V1.5 新字段和可编辑日期范围。
 normalizeLearningState=function(raw){
   const x=(raw&&typeof raw==='object')?raw:{};
-  const d={version:6,busyDates:{},freeLogs:[],countdowns:[],english:{round1:{},round2:{},skills:{},reviews:{}},finance:{completions:{}},math:{completions:{}},energy:{},studyTimer:{active:null,sessions:[]},spacedReviews:{done:{},settings:{finance:true,math:true,skills:true}},burndown:{targets:{english1:'2026-11-18',english2:'',skills:'',finance:'',math:''},selected:'english1'},migrations:{}};
+  const d={version:7,busyDates:{},freeLogs:[],countdowns:[],english:{round1:{},round2:{},skills:{},reviews:{}},finance:{completions:{}},math:{completions:{}},energy:{},studyTimer:{active:null,sessions:[],deletedSessionIds:[]},spacedReviews:{done:{},settings:{finance:true,math:true,skills:true}},burndown:{targets:{english1:'2026-11-18',english2:'',skills:'',finance:'',math:''},selected:'english1'},migrations:{}};
   d.busyDates=(x.busyDates&&typeof x.busyDates==='object')?x.busyDates:{};d.freeLogs=Array.isArray(x.freeLogs)?x.freeLogs:[];
   d.countdowns=(Array.isArray(x.countdowns)?x.countdowns:[]).map(v150Countdown).filter(Boolean);
   const en=x.english||{};d.english.round1=(en.round1&&typeof en.round1==='object')?en.round1:{};d.english.round2=(en.round2&&typeof en.round2==='object')?en.round2:{};d.english.skills=(en.skills&&typeof en.skills==='object')?en.skills:{};d.english.reviews=(en.reviews&&typeof en.reviews==='object')?en.reviews:{};
   d.finance.completions=(x.finance?.completions&&typeof x.finance.completions==='object')?x.finance.completions:{};d.math.completions=(x.math?.completions&&typeof x.math.completions==='object')?x.math.completions:{};
   d.energy=(x.energy&&typeof x.energy==='object')?x.energy:{};
-  d.studyTimer=(x.studyTimer&&typeof x.studyTimer==='object')?x.studyTimer:{active:null,sessions:[]};if(!Array.isArray(d.studyTimer.sessions))d.studyTimer.sessions=[];
+  d.studyTimer=(x.studyTimer&&typeof x.studyTimer==='object')?x.studyTimer:{active:null,sessions:[],deletedSessionIds:[]};if(!Array.isArray(d.studyTimer.sessions))d.studyTimer.sessions=[];if(!Array.isArray(d.studyTimer.deletedSessionIds))d.studyTimer.deletedSessionIds=[];
   d.spacedReviews=(x.spacedReviews&&typeof x.spacedReviews==='object')?x.spacedReviews:{done:{},settings:{finance:true,math:true,skills:true}};if(!d.spacedReviews.done||typeof d.spacedReviews.done!=='object')d.spacedReviews.done={};
   d.spacedReviews.settings={finance:d.spacedReviews.settings?.finance!==false,math:d.spacedReviews.settings?.math!==false,skills:d.spacedReviews.settings?.skills!==false};
   d.burndown=(x.burndown&&typeof x.burndown==='object')?x.burndown:d.burndown;
@@ -2325,6 +2337,7 @@ function weekStudySeconds(subject=''){const[a,b]=studyWeekRange();return studySe
 function monthStudySeconds(subject=''){const d=learningTodayDate(),a=`${d.getFullYear()}-${pad(d.getMonth()+1)}-01`,b=fmt(new Date(d.getFullYear(),d.getMonth()+1,0,12));return studySecondsBetween(a,b,subject)+(LS.studyTimer.active&&(!subject||LS.studyTimer.active.subject===subject)?activeStudyFocusSeconds():0)}
 function activeStudyFocusSeconds(){const a=LS.studyTimer.active;if(!a)return 0;let total=Number(a.focusAccumSec||0);if(a.phase==='focus')total+=Math.max(0,Math.floor((Date.now()-Date.parse(a.phaseStartedAt))/1000));return total}
 function currentPhaseSeconds(){const a=LS.studyTimer.active;if(!a)return 0;return Math.max(0,Math.floor((Date.now()-Date.parse(a.phaseStartedAt))/1000))}
+function learningDeviceId(){let id='';try{id=localStorage.getItem('zx_learningDeviceId')||'';if(!id){id='dev-'+uuid();localStorage.setItem('zx_learningDeviceId',id)}}catch{id='dev-unknown'}return id}
 function persistLearningState(){S.s('learningState',LS);renderLearningOverview();renderLearningMini();renderCal()}
 function startStudy(subject,energy,note=''){
   if(LS.studyTimer.active){alert('已经有一段学习正在进行，请先结束当前学习。');return}
@@ -2337,9 +2350,9 @@ function startStudyBreak(){const a=LS.studyTimer.active;if(!a)return;if(a.phase=
 function skipBreakAndContinue(){const a=LS.studyTimer.active;if(!a)return;if(a.phase==='focus'){a.focusAccumSec=Number(a.focusAccumSec||0)+currentPhaseSeconds();a.blocksCompleted=Number(a.blocksCompleted||0)+1;a.blocksSinceLong=Number(a.blocksSinceLong||0)+1}if(a.blocksSinceLong>=2)a.blocksSinceLong=0;a.phase='focus';a.phaseStartedAt=new Date().toISOString();a.lastEyeMark=0;a.focusDueNotified=false;persistLearningState();renderLearningPanel()}
 function startNextFocus(){const a=LS.studyTimer.active;if(!a)return;if(a.blocksSinceLong>=2)a.blocksSinceLong=0;a.phase='focus';a.phaseStartedAt=new Date().toISOString();a.lastEyeMark=0;a.focusDueNotified=false;persistLearningState();renderLearningPanel()}
 function finishStudy(){const a=LS.studyTimer.active;if(!a)return;let focus=Number(a.focusAccumSec||0),br=Number(a.breakAccumSec||0);if(a.phase==='focus')focus+=Math.max(0,Math.floor((Date.now()-Date.parse(a.phaseStartedAt))/1000));else if(a.phase==='break')br+=currentPhaseSeconds()
-  LS.studyTimer.sessions.push({id:a.id,subject:a.subject,energy:a.energy,note:a.note,startAt:a.sessionStartedAt,endAt:new Date().toISOString(),focusSeconds:focus,breakSeconds:br,blocks:a.blocksCompleted||0});LS.studyTimer.active=null;persistLearningState();renderLearningAll()
+  LS.studyTimer.sessions.push({id:a.id,deviceId:learningDeviceId(),subject:a.subject,energy:a.energy,note:a.note,startAt:a.sessionStartedAt,endAt:new Date().toISOString(),focusSeconds:focus,breakSeconds:br,blocks:a.blocksCompleted||0,recordedAt:new Date().toISOString()});LS.studyTimer.active=null;persistLearningState();renderLearningAll()
 }
-function removeStudySession(id){if(!confirm('删除这条学习计时记录？'))return;LS.studyTimer.sessions=LS.studyTimer.sessions.filter(x=>x.id!==id);persistLearningState();renderLearningAll()}
+function removeStudySession(id){if(!confirm('删除这条学习计时记录？'))return;LS.studyTimer.sessions=LS.studyTimer.sessions.filter(x=>x.id!==id);if(!Array.isArray(LS.studyTimer.deletedSessionIds))LS.studyTimer.deletedSessionIds=[];if(!LS.studyTimer.deletedSessionIds.includes(id))LS.studyTimer.deletedSessionIds.push(id);persistLearningState();renderLearningAll()}
 function studyTimerTick(){
   const a=LS.studyTimer.active;if(!a){updateTimerDOM();return}
   const p=energyPlan(a.energy),elapsed=currentPhaseSeconds();
@@ -2380,7 +2393,7 @@ function setReviewSetting(name,val){LS.spacedReviews.settings[name]=!!val;persis
 function renderLearningTimer(){
   const e=$('#learningPanel'),a=LS.studyTimer.active,mode=energyFor(),p=energyPlan(a?.energy||mode),todayTotal=todayStudySeconds();
   const controls=a?`<div class="timer-controls">${a.phase==='focus'&&a.focusDueNotified?`<button class="btn primary" id="startBreakBtn">开始休息</button><button class="btn" id="skipBreakBtn">继续下一轮</button>`:a.phase==='break_due'?`<button class="btn primary" id="startBreakBtn">开始休息</button><button class="btn" id="skipBreakBtn">继续下一轮</button>`:a.phase==='ready'?`<button class="btn primary" id="nextFocusBtn">开始下一轮</button>`:''}<button class="btn learning-danger-btn" id="finishStudyBtn">结束学习</button></div>`:'';
-  e.innerHTML=`<div class="learning-section-card"><div class="learning-row spread"><div><h4>学习计时</h4><div class="learning-source-note">只累计“专注阶段”，休息不计入学习时长；关闭页面后重新打开也能恢复当前阶段。</div></div><span class="learning-chip green">今天 ${secHuman(todayTotal)}</span></div>${!a?`<div class="timer-start-grid" style="margin-top:10px"><select id="studySubject">${STUDY_SUBJECTS.map(x=>`<option>${x}</option>`).join('')}</select><select id="studyEnergy"><option value="normal" ${mode==='normal'?'selected':''}>标准 · 50/10</option><option value="high" ${mode==='high'?'selected':''}>高能量 · 50/10</option><option value="low" ${mode==='low'?'selected':''}>低负荷 · 25/5</option></select><input id="studyNote" type="text" placeholder="可选：今天具体学什么"><button class="btn primary" id="startStudyBtn">开始学习</button></div>`:''}</div>
+  e.innerHTML=`<div class="learning-section-card"><div class="learning-row spread"><div><h4>学习计时</h4><div class="learning-source-note">只累计“专注阶段”，休息不计入学习时长；关闭页面后重新打开也能恢复当前阶段。</div></div><span class="learning-chip green">今天 ${secHuman(todayTotal)}</span></div>${!a?`<div class="timer-start-grid" style="margin-top:10px"><select id="studySubject">${STUDY_SUBJECTS.map(x=>`<option>${x}</option>`).join('')}</select><select id="studyEnergy"><option value="normal" ${mode==='normal'?'selected':''}>标准 · 50/10</option><option value="high" ${mode==='high'?'selected':''}>高能量 · 50/10</option><option value="low" ${mode==='low'?'selected':''}>低负荷 · 25/5</option></select><input id="studyNote" type="text" name="study_note_v152" autocomplete="off" autocapitalize="sentences" data-lpignore="true" data-1p-ignore="true" data-bwignore="true" placeholder="可选：今天具体学什么"><button class="btn primary" id="startStudyBtn">开始学习</button></div>`:''}</div>
   <div class="timer-shell"><div class="timer-face"><div class="timer-subject">${a?`${esc(a.subject)} · ${energyLabel(a.energy)}`:'科学学习节奏'}</div><div class="timer-clock" id="liveTimerClock">00:00</div><div class="timer-phase" id="liveTimerPhase">${a?'准备中':'尚未开始'}</div><div class="timer-hint" id="liveTimerHint"></div>${controls}</div><div class="learning-section-card"><h4>默认节奏</h4><div class="eye-rule"><div><b>50 分钟专注</b><small>标准 / 高能量模式。低负荷模式自动改为 25 分钟。</small></div><div><b>10 分钟离屏</b><small>每两轮后给 20 分钟长休息；低负荷为 5 / 15 分钟。</small></div><div><b>20-20-20 护眼</b><small>每 20 分钟看约 6 米外至少 20 秒，不计为正式休息。</small></div></div><div class="learning-source-note" style="margin-top:9px">没有一个对所有人都“唯一最科学”的番茄时长。这里采用 50/10 作为默认，并用短休息、长休息和 20-20-20 护眼把疲劳控制放在第一位；如果你今天已经很累，直接切换低负荷 25/5。</div></div></div>`;
   if($('#startStudyBtn'))$('#startStudyBtn').onclick=()=>startStudy($('#studySubject').value,$('#studyEnergy').value,$('#studyNote').value);
   if($('#startBreakBtn'))$('#startBreakBtn').onclick=startStudyBreak;if($('#skipBreakBtn'))$('#skipBreakBtn').onclick=skipBreakAndContinue;if($('#nextFocusBtn'))$('#nextFocusBtn').onclick=startNextFocus;if($('#finishStudyBtn'))$('#finishStudyBtn').onclick=finishStudy;updateTimerDOM()
@@ -2399,7 +2412,7 @@ function renderSpacedReviews(){
 }
 function renderRoadmap(){
   const e=$('#learningPanel'),events=learningAllCountdowns(),years=[2026,2027,2028,2029];
-  e.innerHTML=`<div class="learning-section-card"><div class="learning-row spread"><div><h4>2026—2029 年度路线图</h4><div class="learning-source-note">路线图直接读取“倒数日”，所以预测日期以后修改一次，这里、月历和驾驶舱会一起更新。</div></div><button class="btn" id="roadmapEditDates">管理日期</button></div></div><div class="roadmap">${years.map(y=>{const theme=ROADMAP_THEMES[y]||['阶段',''],arr=events.filter(x=>Number(x.date.slice(0,4))===y);return `<div class="roadmap-year"><div class="roadmap-year-label">${y}</div><div class="roadmap-card"><div class="roadmap-theme">${theme[0]}</div><div class="roadmap-note">${theme[1]}</div>${arr.length?arr.map(x=>`<div class="roadmap-event"><div><b>${esc(x.title)}</b><small>${esc(x.kind)} · ${countdownLabel(x)}${x.note?` · ${esc(x.note)}`:''}</small></div><span class="learning-chip ${x.date>=learningTodayKey()?'blue':''}">${learningCountdownText(x.date,x.endDate)}</span></div>`).join(''):'<div class="learning-empty">这一年暂时没有固定考试节点。</div>'}</div></div>`}).join('')}</div><div class="defer-note" style="margin-top:10px">暂缓但已保留在开发路线：薄弱点 / 错题系统、完整“人生事件”时间轴、根据长期数据自动调整学习强度的更高级推荐。等现有学习数据积累起来再做，会比现在空建一个壳更有价值。</div>`;
+  e.innerHTML=`<div class="learning-section-card"><div class="learning-row spread"><div><h4>2026—2029 年度路线图</h4><div class="learning-source-note">路线图直接读取“倒数日”，所以预测日期以后修改一次，这里、月历和今日学习会一起更新。</div></div><button class="btn" id="roadmapEditDates">管理日期</button></div></div><div class="roadmap">${years.map(y=>{const theme=ROADMAP_THEMES[y]||['阶段',''],arr=events.filter(x=>Number(x.date.slice(0,4))===y);return `<div class="roadmap-year"><div class="roadmap-year-label">${y}</div><div class="roadmap-card"><div class="roadmap-theme">${theme[0]}</div><div class="roadmap-note">${theme[1]}</div>${arr.length?arr.map(x=>`<div class="roadmap-event"><div><b>${esc(x.title)}</b><small>${esc(x.kind)} · ${countdownLabel(x)}${x.note?` · ${esc(x.note)}`:''}</small></div><span class="learning-chip ${x.date>=learningTodayKey()?'blue':''}">${learningCountdownText(x.date,x.endDate)}</span></div>`).join(''):'<div class="learning-empty">这一年暂时没有固定考试节点。</div>'}</div></div>`}).join('')}</div><div class="defer-note" style="margin-top:10px">暂缓但已保留在开发路线：薄弱点 / 错题系统、完整“人生事件”时间轴、根据长期数据自动调整学习强度的更高级推荐。等现有学习数据积累起来再做，会比现在空建一个壳更有价值。</div>`;
   $('#roadmapEditDates').onclick=()=>{activeLearningTab='countdowns';renderLearningAll()}
 }
 
@@ -2479,6 +2492,39 @@ function renderLearningBurndown(){
   document.querySelectorAll('[data-bd-track]').forEach(b=>b.onclick=()=>{LS.burndown.selected=b.dataset.bdTrack;persistLearningState();renderLearningAll()});$('#saveBdTarget').onclick=()=>setBurndownTarget(key,$('#bdTargetDate').value)
 }
 
+/* ===== V1.5.2 学科内燃尽 + 多设备学习记录合并 ===== */
+function burndownInlineHtml(keys,title='进度趋势与预计完成'){
+  keys=Array.isArray(keys)&&keys.length?keys:['english1'];
+  let selected=String(LS.burndown?.selected||'');if(!keys.includes(selected))selected=keys[0];
+  const track=burndownTrack(selected),target=burndownTarget(selected),done=learningDoneCount(track.map),remaining=Math.max(0,track.total-done),forecast=burndownForecast(track),status=burndownStatus(track,target,forecast),planned=burndownPlannedRemaining(track,target),pct=learningPct(done,track.total);
+  const expected=planned===null?'—':`${Math.max(0,Math.round(planned))}`,forecastText=remaining===0?'已完成':forecast.date?forecast.date:'积累 3 天记录后预测',speed=forecast.stats.days?`${forecast.stats.weekly.toFixed(forecast.stats.weekly>=10?0:1)} ${track.unit}/周`:'—';
+  const buttons=keys.length>1?`<div class="subject-burndown-tabs">${keys.map(k=>`<button class="btn ${k===selected?'active':''}" data-inline-bd-track="${k}">${esc(BURNDOWN_TRACKS[k].short)}</button>`).join('')}</div>`:'';
+  return `<div class="learning-section-card"><details class="subject-burndown"><summary><span>${esc(title)}</span><span class="learning-chip ${status.cls}">${status.label}</span></summary><div class="subject-burndown-body">${buttons}<div class="burndown-metrics"><div class="burndown-metric"><small>剩余</small><b>${remaining} / ${track.total}</b><span>已完成 ${pct}%</span></div><div class="burndown-metric"><small>基准今日应剩</small><b>${expected}</b><span>${target?`目标 ${target}`:'未设置目标日'}</span></div><div class="burndown-metric"><small>近7日速度</small><b>${speed}</b><span>只看真实完成记录</span></div><div class="burndown-metric"><small>预计完成</small><b>${forecastText}</b><span>${status.detail}</span></div></div><div class="burndown-chart-wrap">${burndownSvg(track,target,forecast)}</div><div class="burndown-legend"><span><i class="burndown-dot base"></i>固定基准</span><span><i class="burndown-dot actual"></i>真实进度</span><span><i class="burndown-dot forecast"></i>动态预测</span></div><div class="burndown-settings"><label><span>目标完成日（可留空）</span><input id="inlineBdTargetDate" type="date" value="${target||''}"></label><button class="btn primary" id="saveInlineBdTarget">保存目标日</button></div></div></details></div>`
+}
+function bindInlineBurndown(keys){
+  keys=Array.isArray(keys)&&keys.length?keys:['english1'];let selected=String(LS.burndown?.selected||'');if(!keys.includes(selected))selected=keys[0];
+  document.querySelectorAll('[data-inline-bd-track]').forEach(b=>b.onclick=()=>{LS.burndown.selected=b.dataset.inlineBdTrack;persistLearningState();renderLearningAll()});
+  const save=$('#saveInlineBdTarget');if(save)save.onclick=()=>setBurndownTarget(selected,$('#inlineBdTargetDate').value)
+}
+function appendSubjectBurndown(keys,title){const e=$('#learningPanel');if(!e)return;e.insertAdjacentHTML('beforeend',burndownInlineHtml(keys,title));bindInlineBurndown(keys)}
+
+function studyLedger(raw){const st=raw?.learningState?.studyTimer||raw?.studyTimer||{};return {sessions:Array.isArray(st.sessions)?st.sessions:[],deleted:Array.isArray(st.deletedSessionIds)?st.deletedSessionIds:[]}}
+function mergeStudyLedger(localSessions,localDeleted,remoteSessions,remoteDeleted){
+  const deleted=new Set([...(localDeleted||[]),...(remoteDeleted||[])]),byId=new Map();
+  for(const x of [...(remoteSessions||[]),...(localSessions||[])]){if(!x||!x.id||deleted.has(x.id))continue;const prev=byId.get(x.id);if(!prev||String(x.recordedAt||x.endAt||'')>=String(prev.recordedAt||prev.endAt||''))byId.set(x.id,x)}
+  return {sessions:[...byId.values()].sort((a,b)=>String(a.startAt||'').localeCompare(String(b.startAt||''))),deletedSessionIds:[...deleted].slice(-1000)}
+}
+function mergeRemoteStudyLedgerIntoLocal(remotePayload,{persist=true}={}){
+  const remote=studyLedger(remotePayload),local=mergeStudyLedger(LS.studyTimer.sessions,LS.studyTimer.deletedSessionIds,remote.sessions,remote.deleted);
+  const before=JSON.stringify([LS.studyTimer.sessions,LS.studyTimer.deletedSessionIds||[]]);LS.studyTimer.sessions=local.sessions;LS.studyTimer.deletedSessionIds=local.deletedSessionIds;
+  const changed=before!==JSON.stringify([local.sessions,local.deletedSessionIds]);if(changed&&persist){originalSet('learningState',LS);renderLearningOverview();renderLearningMini();if($('#learningModal')?.classList.contains('show'))renderLearningPanel()}return changed
+}
+function stableCloneWithoutStudyLedger(payload){
+  const x=JSON.parse(JSON.stringify(payload||{}));delete x.savedAt;delete x.version;if(x.learningState){delete x.learningState.version}if(x.learningState?.studyTimer){x.learningState.studyTimer.sessions=[];x.learningState.studyTimer.deletedSessionIds=[];x.learningState.studyTimer.active=null}return x
+}
+function stableStringify(v){if(v===null||typeof v!=='object')return JSON.stringify(v);if(Array.isArray(v))return '['+v.map(stableStringify).join(',')+']';return '{'+Object.keys(v).sort().map(k=>JSON.stringify(k)+':'+stableStringify(v[k])).join(',')+'}'}
+function studyOnlyDifference(localPayload,remotePayload){return stableStringify(stableCloneWithoutStudyLedger(localPayload))===stableStringify(stableCloneWithoutStudyLedger(remotePayload))}
+
 renderLearningOverview=function(){
   if(!$('#learnEnglishMetric'))return;const r1=learningDoneCount(LS.english.round1),r2=learningDoneCount(LS.english.round2),sk=learningDoneCount(LS.english.skills);
   if(!englishRound1Complete()){$('#learnEnglishMetric').textContent=`${r1} / 45`;$('#learnEnglishBar').style.width=`${learningPct(r1,45)}%`;$('#learnEnglishNote').textContent=`词汇第一轮 · 下一个 Lesson ${nextNumber(45,LS.english.round1)||'—'}`}else{const done=r2+sk,total=45+ENGLISH_SKILLS.length;$('#learnEnglishMetric').textContent=`${done} / ${total}`;$('#learnEnglishBar').style.width=`${learningPct(done,total)}%`;$('#learnEnglishNote').textContent=`第二轮 ${r2}/45 · 技巧 ${sk}/${ENGLISH_SKILLS.length}`}
@@ -2491,7 +2537,7 @@ renderLearningBanner=function(){
 };
 renderLearningPanel=function(){
   document.querySelectorAll('[data-learning-tab]').forEach(b=>b.classList.toggle('active',b.dataset.learningTab===activeLearningTab));
-  if(activeLearningTab==='timer')renderLearningTimer();else if(activeLearningTab==='stats')renderLearningStats();else if(activeLearningTab==='burndown')renderLearningBurndown();else if(activeLearningTab==='review')renderSpacedReviews();else if(activeLearningTab==='roadmap')renderRoadmap();else if(activeLearningTab==='english')renderLearningEnglish();else if(activeLearningTab==='finance')renderLearningFinance();else if(activeLearningTab==='math')renderLearningMath();else if(activeLearningTab==='countdowns')renderLearningCountdowns();else if(activeLearningTab==='schedule')renderLearningSchedule();else renderLearningToday()
+  if(activeLearningTab==='timer')renderLearningTimer();else if(activeLearningTab==='stats')renderLearningStats();else if(activeLearningTab==='review')renderSpacedReviews();else if(activeLearningTab==='roadmap')renderRoadmap();else if(activeLearningTab==='english')renderLearningEnglish();else if(activeLearningTab==='finance')renderLearningFinance();else if(activeLearningTab==='math')renderLearningMath();else if(activeLearningTab==='countdowns')renderLearningCountdowns();else if(activeLearningTab==='schedule')renderLearningSchedule();else renderLearningToday()
 };
 renderLearningToday=function(){
   const e=$('#learningPanel'),k=learningTodayKey(),d=learningTodayDate(),mil=isMilitaryKey(k),busy=isLearningBusyKey(k),monday=d.getDay()===1,mode=energyFor(k),r=learningReviewFor(k),todayItems=learningCompletionItemsOnDate(k),due=dueReviews(),free=LS.freeLogs.filter(x=>x.date===k),fd=nextFinanceDay(),md=nextMathDay(),nextR1=nextNumber(45,LS.english.round1),nextR2=nextNumber(45,LS.english.round2),nextSkill=nextNumber(ENGLISH_SKILLS.length,LS.english.skills);
@@ -2500,7 +2546,7 @@ renderLearningToday=function(){
   if(!mil&&!busy&&isResumeOrLaterKey(k)){if(fd)tasks.push({rank:mode==='low'?'可后移':'核心',cls:mode==='low'?'extra':'core',title:`财经 · 原 Day ${fd}`,meta:`${financeItem(fd)?.subject||''} · ${financeItem(fd)?.title||''}`,action:'finance'});if(md&&(mode==='high'||mode==='normal'))tasks.push({rank:mode==='high'?'核心':'建议',cls:mode==='high'?'core':'extra',title:`高数 · Day ${md}`,meta:`${mathItem(md)?.lectures?.length||0} 个视频 · ${durationHuman(mathDayDuration(mathItem(md)))}`,action:'math'})}
   if(busy)tasks=tasks.filter(x=>x.action==='weekly'||x.action==='r1'||x.action==='r2');if(mil)tasks=tasks.filter(x=>['weekly','r1','r2','skill'].includes(x.action));if(!tasks.length)tasks.push({rank:'完成',cls:'extra',title:'今天没有必须推进的新内容',meta:'可以做复习、计时学习，或者直接休息。',action:''});
   const taskHtml=tasks.map((x,i)=>`<div class="cockpit-task ${x.cls}"><span class="rank">${x.rank}</span><div><div class="cockpit-task-title">${esc(x.title)}</div><div class="cockpit-task-meta">${esc(x.meta)}</div></div>${x.action?`<button class="btn" data-cockpit-action="${x.action}">完成</button>`:''}</div>`).join('');
-  e.innerHTML=`<div class="learning-section-card"><div class="learning-row spread"><div><h4>今日驾驶舱 · ${k} · 周${wd(d)}</h4><div class="learning-source-note">状态决定“建议强度”，不会改掉你的正式学习记录。</div></div><span class="learning-chip ${mil?'orange':busy?'red':'green'}">${mil?'军训':busy?'缓冲':'正常'}</span></div><div class="energy-switch" style="margin-top:9px"><button class="btn ${mode==='high'?'active':''}" data-energy="high">高能量</button><button class="btn ${mode==='normal'?'active':''}" data-energy="normal">标准</button><button class="btn ${mode==='low'?'active':''}" data-energy="low">低负荷</button></div></div><div class="cockpit-grid"><div class="cockpit-stack"><div class="learning-section-card"><div class="learning-row spread"><h4>今天先做什么</h4><span class="learning-chip">${energyLabel(mode)}模式</span></div>${taskHtml}</div><div class="learning-section-card"><div class="learning-row spread"><h4>固定词汇复习</h4><span class="learning-chip">早晚 + 周一</span></div><div class="learning-review-grid"><label class="learning-review-check"><input type="checkbox" id="reviewMorning" ${r.morning?'checked':''}><span><b>早上复习昨日词汇</b><small>快速主动回忆。</small></span></label><label class="learning-review-check"><input type="checkbox" id="reviewEvening" ${r.evening?'checked':''}><span><b>晚上复习昨日词汇</b><small>睡前检索卡壳词。</small></span></label><label class="learning-review-check" style="${monday?'':'opacity:.48'}"><input type="checkbox" id="reviewWeekly" ${r.weekly?'checked':''} ${monday?'':'disabled'}><span><b>周一一周总复习</b><small>${monday?'今天执行。':'仅周一开启。'}</small></span></label></div></div><div class="learning-section-card"><div class="learning-row spread"><h4>到期复习</h4><button class="btn" id="openReviewToday">查看复习</button></div>${due.length?due.slice(0,4).map(x=>`<div class="learning-mini-line"><b>${esc(x.track)}</b> · ${esc(x.title)} · 第${x.offset}天</div>`).join(''):'<div class="learning-empty">今天没有自动到期复习。</div>'}</div></div><div class="cockpit-stack"><div class="learning-section-card"><div class="learning-row spread"><h4>专注计时</h4><button class="btn primary" id="openTimerToday">${LS.studyTimer.active?'查看计时':'开始学习'}</button></div><div class="learning-big-next">今天 ${secHuman(todayStudySeconds())}</div><div class="learning-source-note">本周 ${secHuman(weekStudySeconds())} · ${LS.studyTimer.active?`正在学习 ${esc(LS.studyTimer.active.subject)}`:'当前未计时'}</div></div><div class="learning-section-card"><div class="learning-row spread"><h4>近期考试 / 考证</h4><button class="btn" id="openCountdownsToday">管理</button></div>${nearest.length?nearest.map(x=>`<div class="learning-mini-line"><b>${esc(x.title)}</b> · ${countdownLabel(x)} · ${learningCountdownText(x.date,x.endDate)}</div>`).join(''):'<div class="learning-empty">暂无倒数日。</div>'}</div><div class="learning-section-card"><h4>自主学习记录</h4><div class="learning-free-row"><select id="freeTrack"><option>英语</option><option>财经</option><option>高数</option><option>其他</option></select><input id="freeText" type="text" placeholder="不推进正式队列的额外学习"><button class="btn" id="addFreeLog">记录</button></div>${free.length?free.map(x=>`<div class="learning-free-log"><span>${esc(x.track)} · ${esc(x.text)}</span><button class="x" data-free-id="${x.id}">×</button></div>`).join(''):'<div class="learning-empty">今天还没有自主学习记录。</div>'}</div><div class="learning-section-card"><h4>今天已经完成</h4>${todayItems.length?todayItems.map(x=>`<div class="learning-mini-line">✓ ${esc(x)}</div>`).join(''):'<div class="learning-empty">正式学习项目还没有打勾。</div>'}</div></div></div>`;
+  e.innerHTML=`<div class="learning-section-card"><div class="learning-row spread"><div><h4>今日学习 · ${k} · 周${wd(d)}</h4><div class="learning-source-note">状态决定“建议强度”，不会改掉你的正式学习记录。</div></div><span class="learning-chip ${mil?'orange':busy?'red':'green'}">${mil?'军训':busy?'缓冲':'正常'}</span></div><div class="energy-switch" style="margin-top:9px"><button class="btn ${mode==='high'?'active':''}" data-energy="high">高能量</button><button class="btn ${mode==='normal'?'active':''}" data-energy="normal">标准</button><button class="btn ${mode==='low'?'active':''}" data-energy="low">低负荷</button></div></div><div class="cockpit-grid"><div class="cockpit-stack"><div class="learning-section-card"><div class="learning-row spread"><h4>今天先做什么</h4><span class="learning-chip">${energyLabel(mode)}模式</span></div>${taskHtml}</div><div class="learning-section-card"><div class="learning-row spread"><h4>固定词汇复习</h4><span class="learning-chip">早晚 + 周一</span></div><div class="learning-review-grid"><label class="learning-review-check"><input type="checkbox" id="reviewMorning" ${r.morning?'checked':''}><span><b>早上复习昨日词汇</b><small>快速主动回忆。</small></span></label><label class="learning-review-check"><input type="checkbox" id="reviewEvening" ${r.evening?'checked':''}><span><b>晚上复习昨日词汇</b><small>睡前检索卡壳词。</small></span></label><label class="learning-review-check" style="${monday?'':'opacity:.48'}"><input type="checkbox" id="reviewWeekly" ${r.weekly?'checked':''} ${monday?'':'disabled'}><span><b>周一一周总复习</b><small>${monday?'今天执行。':'仅周一开启。'}</small></span></label></div></div><div class="learning-section-card"><div class="learning-row spread"><h4>到期复习</h4><button class="btn" id="openReviewToday">查看复习</button></div>${due.length?due.slice(0,4).map(x=>`<div class="learning-mini-line"><b>${esc(x.track)}</b> · ${esc(x.title)} · 第${x.offset}天</div>`).join(''):'<div class="learning-empty">今天没有自动到期复习。</div>'}</div></div><div class="cockpit-stack"><div class="learning-section-card"><div class="learning-row spread"><h4>专注计时</h4><button class="btn primary" id="openTimerToday">${LS.studyTimer.active?'查看计时':'开始学习'}</button></div><div class="learning-big-next">今天 ${secHuman(todayStudySeconds())}</div><div class="learning-source-note">本周 ${secHuman(weekStudySeconds())} · ${LS.studyTimer.active?`正在学习 ${esc(LS.studyTimer.active.subject)}`:'当前未计时'}</div></div><div class="learning-section-card"><div class="learning-row spread"><h4>近期考试 / 考证</h4><button class="btn" id="openCountdownsToday">管理</button></div>${nearest.length?nearest.map(x=>`<div class="learning-mini-line"><b>${esc(x.title)}</b> · ${countdownLabel(x)} · ${learningCountdownText(x.date,x.endDate)}</div>`).join(''):'<div class="learning-empty">暂无倒数日。</div>'}</div><div class="learning-section-card"><h4>自主学习记录</h4><div class="learning-free-row"><select id="freeTrack"><option>英语</option><option>财经</option><option>高数</option><option>其他</option></select><input id="freeText" type="text" name="free_learning_note_v152" autocomplete="off" autocapitalize="sentences" data-lpignore="true" data-1p-ignore="true" data-bwignore="true" placeholder="不推进正式队列的额外学习"><button class="btn" id="addFreeLog">记录</button></div>${free.length?free.map(x=>`<div class="learning-free-log"><span>${esc(x.track)} · ${esc(x.text)}</span><button class="x" data-free-id="${x.id}">×</button></div>`).join(''):'<div class="learning-empty">今天还没有自主学习记录。</div>'}</div><div class="learning-section-card"><h4>今天已经完成</h4>${todayItems.length?todayItems.map(x=>`<div class="learning-mini-line">✓ ${esc(x)}</div>`).join(''):'<div class="learning-empty">正式学习项目还没有打勾。</div>'}</div></div></div>`;
   document.querySelectorAll('[data-energy]').forEach(b=>b.onclick=()=>setEnergy(b.dataset.energy,k));$('#reviewMorning').onchange=x=>setLearningReview('morning',x.target.checked,k);$('#reviewEvening').onchange=x=>setLearningReview('evening',x.target.checked,k);if(monday)$('#reviewWeekly').onchange=x=>setLearningReview('weekly',x.target.checked,k);
   document.querySelectorAll('[data-cockpit-action]').forEach(b=>b.onclick=()=>{const a=b.dataset.cockpitAction;if(a==='weekly'){setLearningReview('weekly',true,k)}else if(a==='r1')learningMark(LS.english.round1,nextNumber(45,LS.english.round1),true,k);else if(a==='r2')learningMark(LS.english.round2,nextNumber(45,LS.english.round2),true,k);else if(a==='skill')learningMark(LS.english.skills,nextNumber(ENGLISH_SKILLS.length,LS.english.skills),true,k);else if(a==='finance')learningMark(LS.finance.completions,nextFinanceDay(),true,k);else if(a==='math')learningMark(LS.math.completions,nextMathDay(),true,k);renderLearningAll()});
   $('#openTimerToday').onclick=()=>{activeLearningTab='timer';renderLearningAll()};$('#openReviewToday').onclick=()=>{activeLearningTab='review';renderLearningAll()};$('#openCountdownsToday').onclick=()=>{activeLearningTab='countdowns';renderLearningAll()};$('#addFreeLog').onclick=()=>addFreeLearningLog($('#freeTrack').value,$('#freeText').value,k);document.querySelectorAll('[data-free-id]').forEach(b=>b.onclick=()=>removeFreeLearningLog(b.dataset.freeId))
@@ -2510,13 +2556,13 @@ let editingCountdownId='';
 renderLearningCountdowns=function(){
   const e=$('#learningPanel'),today=learningTodayKey(),mine=learningAllCountdowns(),edit=editingCountdownId?mine.find(x=>x.id===editingCountdownId):null;
   const list=mine.length?mine.map(x=>{const end=x.endDate||x.date,past=end<today,n=dayDiff(parse(x.date),learningTodayDate()),cls=n===0?'today':'';return `<div class="learning-countdown-row ${past?'past':''}"><div><div class="learning-countdown-title">${esc(x.title)} <span class="learning-chip">${esc(x.kind||'考试')}</span></div><div class="learning-countdown-meta">${countdownLabel(x)}${x.note?` · ${esc(x.note)}`:''}</div></div><div class="learning-countdown-days ${cls}">${learningCountdownText(x.date,x.endDate)}</div><div class="countdown-actions"><button class="btn countdown-edit" data-countdown-edit="${x.id}">编辑</button><button class="x" data-countdown-remove="${x.id}" title="删除倒数日">×</button></div></div>`}).join(''):'<div class="learning-empty">还没有倒数日。</div>';
-  e.innerHTML=`<div class="learning-section-card"><div class="learning-row spread"><div><h4>${edit?'编辑倒数日':'添加考试 / 考证倒数日'}</h4><div class="learning-source-note">所有节点都由你控制：包括三级B和专转本预计窗口，也可以修改或删除。日期范围适合计算机考试、专转本“预计窗口”等情况。</div></div>${edit?'<button class="btn" id="cancelCountdownEdit">取消编辑</button>':''}</div><div class="learning-countdown-form v150"><input id="countdownTitle" type="text" placeholder="考试 / 考证名称" value="${edit?esc(edit.title):''}"><input id="countdownDate" type="date" value="${edit?.date||today}"><input id="countdownEndDate" type="date" value="${edit?.endDate||''}" title="结束日期（可选）"><select id="countdownKind">${['考试','考证','升学考试','报名','面试','其他'].map(k=>`<option ${edit?.kind===k?'selected':''}>${k}</option>`).join('')}</select><input id="countdownNote" type="text" placeholder="备注（可选）" value="${edit?esc(edit.note):''}"><button class="btn primary" id="saveCountdownBtn">${edit?'保存修改':'添加'}</button></div></div><div class="learning-section-card"><div class="learning-row spread"><h4>我的倒数日 · ${mine.length}</h4><span class="learning-chip blue">全部可编辑 / 删除</span></div><div class="learning-countdown-list">${list}</div></div>`;
+  e.innerHTML=`<div class="learning-section-card"><div class="learning-row spread"><div><h4>${edit?'编辑倒数日':'添加考试 / 考证倒数日'}</h4><div class="learning-source-note">所有节点都由你控制：包括三级B和专转本预计窗口，也可以修改或删除。日期范围适合计算机考试、专转本“预计窗口”等情况。</div></div>${edit?'<button class="btn" id="cancelCountdownEdit">取消编辑</button>':''}</div><div class="learning-countdown-form v150"><input id="countdownTitle" type="text" name="countdown_title_v152" autocomplete="off" autocapitalize="sentences" data-lpignore="true" data-1p-ignore="true" data-bwignore="true" placeholder="考试 / 考证名称" value="${edit?esc(edit.title):''}"><input id="countdownDate" type="date" value="${edit?.date||today}"><input id="countdownEndDate" type="date" value="${edit?.endDate||''}" title="结束日期（可选）"><select id="countdownKind">${['考试','考证','升学考试','报名','面试','其他'].map(k=>`<option ${edit?.kind===k?'selected':''}>${k}</option>`).join('')}</select><input id="countdownNote" type="text" name="countdown_note_v152" autocomplete="off" autocapitalize="sentences" data-lpignore="true" data-1p-ignore="true" data-bwignore="true" placeholder="备注（可选）" value="${edit?esc(edit.note):''}"><button class="btn primary" id="saveCountdownBtn">${edit?'保存修改':'添加'}</button></div></div><div class="learning-section-card"><div class="learning-row spread"><h4>我的倒数日 · ${mine.length}</h4><span class="learning-chip blue">全部可编辑 / 删除</span></div><div class="learning-countdown-list">${list}</div></div>`;
   $('#saveCountdownBtn').onclick=()=>{if(edit){if(saveCountdownEdit(edit.id,$('#countdownTitle').value,$('#countdownDate').value,$('#countdownEndDate').value,$('#countdownKind').value,$('#countdownNote').value)){editingCountdownId='';renderLearningAll()}}else addLearningCountdown($('#countdownTitle').value,$('#countdownDate').value,$('#countdownKind').value,$('#countdownNote').value,$('#countdownEndDate').value)};
   if($('#cancelCountdownEdit'))$('#cancelCountdownEdit').onclick=()=>{editingCountdownId='';renderLearningAll()};document.querySelectorAll('[data-countdown-edit]').forEach(b=>b.onclick=()=>{editingCountdownId=b.dataset.countdownEdit;renderLearningAll()});document.querySelectorAll('[data-countdown-remove]').forEach(b=>b.onclick=()=>{editingCountdownId='';removeLearningCountdown(b.dataset.countdownRemove)})
 };
 renderLearningSchedule=function(){
   const e=$('#learningPanel'),busy=Object.entries(LS.busyDates).sort((a,b)=>a[0].localeCompare(b[0])),milestones=[{date:LEARNING_CONFIG.resumeDate,text:'恢复正常上课：财经 / 高数正式队列开放。'},...(LS.countdowns||[]).map(x=>({date:x.date,text:`${esc(x.title)} <span class="learning-chip">${esc(x.kind||'考试')}</span> · ${countdownLabel(x)}`}))].sort((a,b)=>a.date.localeCompare(b.date));
-  e.innerHTML=`<div class="learning-section-card"><div class="learning-row spread"><h4>计划节点</h4><button class="btn" id="scheduleEditCountdowns">编辑倒数日</button></div><div class="learning-mini-line"><b>10/12—10/25</b> · 军训保护期：财经、高数冻结；英语照常。</div>${milestones.map(x=>`<div class="learning-mini-line"><b>${x.date}</b> · ${x.text}</div>`).join('')}</div><div class="learning-section-card"><h4>添加缓冲日</h4><div class="learning-free-row"><input id="busyDateInput" type="date" value="${learningTodayKey()}"><input id="busyReasonInput" type="text" placeholder="例如：志愿活动 / 普通话考试 / 临时作业"><button class="btn" id="addBusyDateBtn">设为缓冲</button></div><div class="learning-source-note" style="margin-top:6px">缓冲日不会删除任务；正式队列只是停住，恢复后继续下一项。</div><div class="learning-busy-list">${busy.length?busy.map(([k,v])=>`<div class="learning-busy-row"><b>${k}</b><span>${esc(v.reason||'临时忙')}</span><button class="x" data-busy-remove="${k}">×</button></div>`).join(''):'<div class="learning-empty">暂无手动缓冲日。</div>'}</div></div><div class="learning-section-card"><h4>调度规则</h4><div class="learning-status-box"><b>英语一轮</b>：周一总复习，周二—周日默认 1 Lesson；短课可连续学多个，队列即时前移。<br><b>英语二轮</b>：第一轮 45/45 后才独立开始，并与 38 节四级技巧课同步。<br><b>财经</b>：会计优先闭环，原 Day 编号保留。<br><b>高数</b>：保持机构 48 天顺序。<br><b>缓冲</b>：临时忙不算失败；恢复后接着下一项。<br><b>倒数日</b>：全部可编辑，不再存在不可修改的系统固定考试日期。</div></div>`;
+  e.innerHTML=`<div class="learning-section-card"><div class="learning-row spread"><h4>计划节点</h4><button class="btn" id="scheduleEditCountdowns">编辑倒数日</button></div><div class="learning-mini-line"><b>10/12—10/25</b> · 军训保护期：财经、高数冻结；英语照常。</div>${milestones.map(x=>`<div class="learning-mini-line"><b>${x.date}</b> · ${x.text}</div>`).join('')}</div><div class="learning-section-card"><h4>添加缓冲日</h4><div class="learning-free-row"><input id="busyDateInput" type="date" value="${learningTodayKey()}"><input id="busyReasonInput" type="text" name="busy_reason_v152" autocomplete="off" autocapitalize="sentences" data-lpignore="true" data-1p-ignore="true" data-bwignore="true" placeholder="例如：志愿活动 / 普通话考试 / 临时作业"><button class="btn" id="addBusyDateBtn">设为缓冲</button></div><div class="learning-source-note" style="margin-top:6px">缓冲日不会删除任务；正式队列只是停住，恢复后继续下一项。</div><div class="learning-busy-list">${busy.length?busy.map(([k,v])=>`<div class="learning-busy-row"><b>${k}</b><span>${esc(v.reason||'临时忙')}</span><button class="x" data-busy-remove="${k}">×</button></div>`).join(''):'<div class="learning-empty">暂无手动缓冲日。</div>'}</div></div><div class="learning-section-card"><h4>调度规则</h4><div class="learning-status-box"><b>英语一轮</b>：周一总复习，周二—周日默认 1 Lesson；短课可连续学多个，队列即时前移。<br><b>英语二轮</b>：第一轮 45/45 后才独立开始，并与 38 节四级技巧课同步。<br><b>财经</b>：会计优先闭环，原 Day 编号保留。<br><b>高数</b>：保持机构 48 天顺序。<br><b>缓冲</b>：临时忙不算失败；恢复后接着下一项。<br><b>倒数日</b>：全部可编辑，不再存在不可修改的系统固定考试日期。</div></div>`;
   $('#scheduleEditCountdowns').onclick=()=>{activeLearningTab='countdowns';renderLearningAll()};$('#addBusyDateBtn').onclick=()=>addBusyDate($('#busyDateInput').value,$('#busyReasonInput').value);document.querySelectorAll('[data-busy-remove]').forEach(b=>b.onclick=()=>removeBusyDate(b.dataset.busyRemove))
 };
 learningCalendarTags=function(d){const k=fmt(d),tags=[],cds=learningCountdownsOnDate(k);if(cds.length)tags.push(`<span class="tag learning-countdown">⌛ ${esc(cds[0].title)}${cds.length>1?` +${cds.length-1}`:''}</span>`);if(isMilitaryKey(k))tags.push('<span class="tag learning">军训</span>');if(isLearningBusyKey(k))tags.push('<span class="tag learning-busy">缓冲</span>');const n=learningCompletionItemsOnDate(k).length;if(n)tags.push(`<span class="tag learning">学 ${n}</span>`);return tags.slice(0,2).join('')};
@@ -2526,9 +2572,14 @@ renderLearningMini=function(){const e=$('#learningMini');if(!e)return;const k=fm
 const v142RenderLearningEnglish=renderLearningEnglish;
 renderLearningEnglish=function(){v142RenderLearningEnglish();const deadline=englishContentDeadline();if(!deadline)return;const notes=document.querySelectorAll('#learningPanel .learning-source-note');notes.forEach(n=>{n.innerHTML=n.innerHTML.replace(/12月10日前/g,`${dateHuman(deadline)}前`).replace(/12\/11—12\/12/g,`${dateHuman(addDaysKey(deadline,1))}—${dateHuman(addDaysKey(deadline,2))}`)})};
 
+const v152RenderEnglishBase=renderLearningEnglish, v152RenderFinanceBase=renderLearningFinance, v152RenderMathBase=renderLearningMath;
+renderLearningEnglish=function(){v152RenderEnglishBase();appendSubjectBurndown(englishRound1Complete()?['english1','english2','skills']:['english1'],'英语进度趋势')};
+renderLearningFinance=function(){v152RenderFinanceBase();appendSubjectBurndown(['finance'],'财经进度趋势')};
+renderLearningMath=function(){v152RenderMathBase();appendSubjectBurndown(['math'],'高数进度趋势')};
+
 function snapshotData(){
   return {
-    version:17,
+    version:18,
     savedAt:new Date().toISOString(),
     tasks:T,
     recurringTasks:RT,
@@ -2612,6 +2663,7 @@ async function refreshCloudMeta(){
   const {data,error}=await fetchCloudState();
   if(error)return;
   const cloudAt=data?.updated_at||'';
+  if(data?.payload)mergeRemoteStudyLedgerIntoLocal(data.payload);
   const m=syncMeta();
   if(cloudAt&&!m.lastSyncedCloudAt){
     const baseline=new Date().toISOString();
@@ -2761,16 +2813,20 @@ async function uploadCloud(silent=false,force=false){
   if(current.error){setCloudStatus('off','同步失败');if(!silent)alert(current.error.message);return}
   const remoteAt=current.data?.updated_at||'';
   const m=syncMeta();
-  const conflict=remoteChangedSinceSync(remoteAt,m) && localIsDirty(m);
+  const beforeMerge=snapshotData(),remotePayload=current.data?.payload||null;
+  if(remotePayload)mergeRemoteStudyLedgerIntoLocal(remotePayload);
+  const afterMerge=snapshotData();
+  let conflict=remoteChangedSinceSync(remoteAt,m) && localIsDirty(m);
+  if(conflict&&remotePayload&&studyOnlyDifference(beforeMerge,remotePayload))conflict=false;
   if(conflict&&!force){
     saveSyncMeta({cloudUpdatedAt:remoteAt,conflict:true});setCloudStatus('off','发现同步冲突');
     if(silent)return;
-    const ok=confirm(`检测到冲突：\n\n本地最后修改：${fmtSyncTime(m.localUpdatedAt)}\n云端最后修改：${fmtSyncTime(remoteAt)}\n\n继续“上传”会用本机数据覆盖云端。确定覆盖吗？`);
+    const ok=confirm(`检测到除学习计时记录之外的同步冲突：\n\n本地最后修改：${fmtSyncTime(m.localUpdatedAt)}\n云端最后修改：${fmtSyncTime(remoteAt)}\n\n学习计时记录已经自动合并；继续“上传”仍会用本机的其他数据覆盖云端。确定覆盖吗？`);
     if(!ok)return;
   }
   setCloudStatus('busy','上传中');
   const stamp=new Date().toISOString();
-  const {data,error}=await sb.from('calendar_state').upsert({user_id:sbUser.id,payload:snapshotData(),updated_at:stamp},{onConflict:'user_id'}).select('updated_at').single();
+  const {data,error}=await sb.from('calendar_state').upsert({user_id:sbUser.id,payload:afterMerge,updated_at:stamp},{onConflict:'user_id'}).select('updated_at').single();
   if(error){setCloudStatus('off','同步失败');if(!silent)alert(error.message);return}
   const cloudAt=data?.updated_at||stamp, syncedAt=new Date().toISOString();
   saveSyncMeta({lastSyncedCloudAt:cloudAt,cloudUpdatedAt:cloudAt,lastSyncedAt:syncedAt,localUpdatedAt:syncedAt,conflict:false});
@@ -2790,7 +2846,13 @@ async function downloadCloud(force=false){
   }else if(!confirm(`云端数据更新时间：${fmtSyncTime(remoteAt)}。\n用它覆盖当前本地数据吗？`)){
     setCloudStatus('on','云端已登录');return
   }
-  applySnapshot(data.payload);
+  const remotePayload=JSON.parse(JSON.stringify(data.payload));
+  const mergedLedger=mergeStudyLedger(LS.studyTimer.sessions,LS.studyTimer.deletedSessionIds,studyLedger(remotePayload).sessions,studyLedger(remotePayload).deleted);
+  if(!remotePayload.learningState)remotePayload.learningState={};if(!remotePayload.learningState.studyTimer)remotePayload.learningState.studyTimer={active:null,sessions:[]};
+  remotePayload.learningState.studyTimer.sessions=mergedLedger.sessions;remotePayload.learningState.studyTimer.deletedSessionIds=mergedLedger.deletedSessionIds;
+  // 当前计时段属于本设备，下载云端时不覆盖它。
+  remotePayload.learningState.studyTimer.active=LS.studyTimer.active;
+  applySnapshot(remotePayload);
   const syncedAt=new Date().toISOString();
   saveSyncMeta({lastSyncedCloudAt:remoteAt,cloudUpdatedAt:remoteAt,lastSyncedAt:syncedAt,localUpdatedAt:syncedAt,conflict:false});
   clearCloudDirty();setCloudStatus('on','已同步');alert('云端数据已安全恢复到本机。')
@@ -2811,21 +2873,10 @@ function clearCloudDirty(){
 }
 
 function flushCloudSyncOnLeave(){
-  if(!sb || !sbUser || !cloudDirty || syncMeta().conflict) return;
-  if(Date.now() - lastCloudFlushAt < 800) return;
-  lastCloudFlushAt = Date.now();
-  try{
-    const token=sbAccessToken,cfg=cloudCfg();
-    if(!token || !cfg.url || !cfg.key) return;
-    const stamp=new Date().toISOString(),m=syncMeta();
-    originalSet('syncMeta',{...m,lastSyncedCloudAt:stamp,cloudUpdatedAt:stamp,lastSyncedAt:stamp,localUpdatedAt:stamp,conflict:false});renderSyncMeta();
-    const body=JSON.stringify({user_id:sbUser.id,payload:snapshotData(),updated_at:stamp});
-    fetch(`${cfg.url}/rest/v1/calendar_state?on_conflict=user_id`,{
-      method:'POST',keepalive:true,
-      headers:{'Content-Type':'application/json','apikey':cfg.key,'Authorization':`Bearer ${token}`,'Prefer':'resolution=merge-duplicates,return=minimal'},
-      body
-    }).then(r=>{if(r.ok)clearCloudDirty()}).catch(()=>{})
-  }catch{}
+  // V1.5.2：离开页面时不再用整份本地快照盲目覆盖云端。
+  // 正常停留时由防抖同步完成；若来不及，保留 dirty 标记，下一次打开/聚焦时先拉取并合并再上传。
+  if(!cloudDirty)return;
+  try{localStorage.setItem('zx_cloudDirty','1')}catch{}
 }
 
 function retryPendingCloudSync(){
@@ -2933,7 +2984,7 @@ $('#learningBtn').onclick=()=>openLearning('today');
 $('#openLearningFromSide').onclick=()=>openLearning('today');
 $('#closeLearning').onclick=closeLearning;
 $('#learningModal').onclick=e=>{if(e.target===$('#learningModal'))closeLearning()};
-document.querySelectorAll('[data-learning-tab]').forEach(b=>b.onclick=()=>{activeLearningTab=b.dataset.learningTab;renderLearningPanel()});
+document.querySelectorAll('[data-learning-tab]').forEach(b=>b.onclick=()=>{activeLearningTab=b.dataset.learningTab;renderLearningPanel();if(sbUser&&['stats','timer'].includes(activeLearningTab))refreshCloudMeta()});
 
 $('#reviewBtn').onclick=openReview;
 $('#closeReview').onclick=()=>$('#reviewModal').classList.remove('show');
@@ -2992,6 +3043,7 @@ $('#notifyBtn').onclick=askNotify;$('#bannerNotify').onclick=askNotify;
 async function recoverSessionAndRetrySync(){
   if(!sb&&window.supabase)initSupabase();
   if(sb)await recoverSupabaseSession();
+  if(sbUser)await refreshCloudMeta();
   retryPendingCloudSync()
 }
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden')flushCloudSyncOnLeave();else recoverSessionAndRetrySync()});
