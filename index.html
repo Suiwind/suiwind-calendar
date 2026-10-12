@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#f5efe9">
-<title>苏伊温德日历 V1.5.0</title>
+<title>苏伊温德日历 V1.5.1</title>
 <link rel="manifest" href="manifest.json">
 <script src="./supabase-local.js"></script>
 <style>
@@ -550,6 +550,12 @@ button{touch-action:manipulation}
 .roadmap{display:flex;flex-direction:column;gap:10px}.roadmap-year{display:grid;grid-template-columns:74px minmax(0,1fr);gap:12px;position:relative}.roadmap-year:before{content:"";position:absolute;left:35px;top:42px;bottom:-12px;width:1px;background:#e2d8d1}.roadmap-year:last-child:before{display:none}.roadmap-year-label{width:70px;height:38px;border-radius:12px;background:#f2ebe6;border:1px solid #e1d5cd;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;z-index:1}.roadmap-card{border:1px solid #e9e2dc;border-radius:14px;padding:12px;background:#fff}.roadmap-theme{font-size:12px;font-weight:780}.roadmap-note{font-size:10px;color:var(--muted);line-height:1.5;margin-top:3px}.roadmap-event{display:flex;justify-content:space-between;gap:8px;align-items:flex-start;padding:7px 0;border-top:1px dashed #eee6df;margin-top:7px}.roadmap-event b{font-size:11px}.roadmap-event small{display:block;color:var(--muted);font-size:9px;margin-top:2px}
 .countdown-actions{display:flex;gap:6px;align-items:center}.countdown-edit{font-size:10px;padding:5px 8px}.learning-countdown-form.v150{grid-template-columns:minmax(0,1.3fr) 145px 145px 100px minmax(0,1fr) auto}
 .defer-note{border:1px dashed #dcd2ca;border-radius:12px;padding:10px;background:#faf8f6;color:var(--muted);font-size:10px;line-height:1.55}
+/* ===== V1.5.1 学习燃尽：基准 / 实际 / 动态预测 ===== */
+.burndown-toolbar{display:flex;gap:7px;flex-wrap:wrap;align-items:center}.burndown-toolbar .btn.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.burndown-metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:10px}.burndown-metric{border:1px solid #e8e1da;border-radius:12px;background:#fff;padding:10px}.burndown-metric small{display:block;color:var(--muted);font-size:9px}.burndown-metric b{display:block;font-size:17px;margin-top:4px;line-height:1.25}.burndown-metric span{display:block;font-size:9px;color:var(--muted);margin-top:4px;line-height:1.45}
+.burndown-chart-wrap{margin-top:10px;border:1px solid #e8e1da;border-radius:14px;background:linear-gradient(180deg,#fff,#fbf8f5);padding:8px;overflow:hidden}.burndown-chart{display:block;width:100%;height:auto;min-height:250px}.burndown-legend{display:flex;gap:12px;flex-wrap:wrap;margin-top:8px;font-size:9px;color:var(--muted)}.burndown-legend span{display:flex;align-items:center;gap:5px}.burndown-dot{width:18px;height:3px;border-radius:99px;display:inline-block}.burndown-dot.base{background:#b8b0aa}.burndown-dot.actual{background:#6ea98d}.burndown-dot.forecast{background:#d99a61;background:repeating-linear-gradient(90deg,#d99a61 0 7px,transparent 7px 11px)}
+.burndown-settings{display:grid;grid-template-columns:minmax(0,1fr) 160px auto;gap:8px;align-items:end;margin-top:10px}.burndown-settings label{font-size:9px;color:var(--muted)}.burndown-settings label span{display:block;margin-bottom:4px}.burndown-status{display:flex;gap:7px;flex-wrap:wrap;align-items:center}.burndown-explain{font-size:10px;line-height:1.65;color:var(--muted)}
+@media(max-width:760px){.burndown-metrics{grid-template-columns:1fr 1fr}.burndown-settings{grid-template-columns:1fr}.burndown-settings>*{grid-column:1}.burndown-chart{min-height:220px}}
 @media(max-width:900px){.cockpit-grid,.timer-shell{grid-template-columns:1fr}.study-stat-grid{grid-template-columns:1fr 1fr}.timer-start-grid{grid-template-columns:1fr 1fr}.timer-start-grid input{grid-column:1/-1}.learning-countdown-form.v150{grid-template-columns:1fr 1fr}.learning-countdown-form.v150 input:first-child,.learning-countdown-form.v150 input:nth-child(5){grid-column:1/-1}}
 @media(max-width:620px){.timer-clock{font-size:40px}.study-stat-grid{grid-template-columns:1fr 1fr}.study-log-row{grid-template-columns:80px 70px minmax(0,1fr)}.study-log-row .x{grid-column:3}.eye-rule{grid-template-columns:1fr}.roadmap-year{grid-template-columns:58px minmax(0,1fr)}.roadmap-year:before{left:28px}.roadmap-year-label{width:56px}.timer-start-grid{grid-template-columns:1fr}.learning-countdown-form.v150{grid-template-columns:1fr}.learning-countdown-form.v150>*{grid-column:1!important}}
 
@@ -558,7 +564,7 @@ button{touch-action:manipulation}
 <body>
 <div class="app">
   <div class="top">
-    <div class="brand"><h1>苏伊温德日历 <span class="version">V1.5.0</span></h1><p>生命如暗室，不妨我明写春诗</p></div>
+    <div class="brand"><h1>苏伊温德日历 <span class="version">V1.5.1</span></h1><p>生命如暗室，不妨我明写春诗</p></div>
     <div class="actions">
       <button class="btn action-btn action-today" id="todayBtn"><span class="action-icon">⌂</span><span>回到今天</span></button>
       <button class="btn action-btn action-anniv" id="annivBtn"><span class="action-icon">♡</span><span>纪念日</span></button>
@@ -733,6 +739,7 @@ button{touch-action:manipulation}
     <button class="btn active" data-learning-tab="today">驾驶舱</button>
     <button class="btn" data-learning-tab="timer">计时</button>
     <button class="btn" data-learning-tab="stats">统计</button>
+    <button class="btn" data-learning-tab="burndown">燃尽</button>
     <button class="btn" data-learning-tab="review">复习</button>
     <button class="btn" data-learning-tab="english">英语</button>
     <button class="btn" data-learning-tab="finance">财经</button>
@@ -2228,6 +2235,12 @@ function v150EnsureState(){
   LS.spacedReviews=(LS.spacedReviews&&typeof LS.spacedReviews==='object')?LS.spacedReviews:{done:{},settings:{finance:true,math:true,skills:true}};
   if(!LS.spacedReviews.done||typeof LS.spacedReviews.done!=='object')LS.spacedReviews.done={};
   LS.spacedReviews.settings={finance:LS.spacedReviews.settings?.finance!==false,math:LS.spacedReviews.settings?.math!==false,skills:LS.spacedReviews.settings?.skills!==false};
+  LS.burndown=(LS.burndown&&typeof LS.burndown==='object')?LS.burndown:{targets:{},selected:'english1'};
+  if(!LS.burndown.targets||typeof LS.burndown.targets!=='object')LS.burndown.targets={};
+  const bdDefaults={english1:'2026-11-18',english2:'',skills:'',finance:'',math:''};
+  for(const [k,v] of Object.entries(bdDefaults))if(typeof LS.burndown.targets[k]!=='string')LS.burndown.targets[k]=v;
+  if(!['english1','english2','skills','finance','math'].includes(LS.burndown.selected))LS.burndown.selected='english1';
+  LS.version=Math.max(6,Number(LS.version)||0);
   LS.countdowns=(Array.isArray(LS.countdowns)?LS.countdowns:[]).map(v150Countdown).filter(Boolean);
   if(!LS.migrations||typeof LS.migrations!=='object')LS.migrations={};
   if(!LS.migrations.editableMilestonesV150){
@@ -2247,7 +2260,7 @@ v150EnsureState();
 // 覆盖导入时的学习状态规范化：保留 V1.5 新字段和可编辑日期范围。
 normalizeLearningState=function(raw){
   const x=(raw&&typeof raw==='object')?raw:{};
-  const d={version:5,busyDates:{},freeLogs:[],countdowns:[],english:{round1:{},round2:{},skills:{},reviews:{}},finance:{completions:{}},math:{completions:{}},energy:{},studyTimer:{active:null,sessions:[]},spacedReviews:{done:{},settings:{finance:true,math:true,skills:true}},migrations:{}};
+  const d={version:6,busyDates:{},freeLogs:[],countdowns:[],english:{round1:{},round2:{},skills:{},reviews:{}},finance:{completions:{}},math:{completions:{}},energy:{},studyTimer:{active:null,sessions:[]},spacedReviews:{done:{},settings:{finance:true,math:true,skills:true}},burndown:{targets:{english1:'2026-11-18',english2:'',skills:'',finance:'',math:''},selected:'english1'},migrations:{}};
   d.busyDates=(x.busyDates&&typeof x.busyDates==='object')?x.busyDates:{};d.freeLogs=Array.isArray(x.freeLogs)?x.freeLogs:[];
   d.countdowns=(Array.isArray(x.countdowns)?x.countdowns:[]).map(v150Countdown).filter(Boolean);
   const en=x.english||{};d.english.round1=(en.round1&&typeof en.round1==='object')?en.round1:{};d.english.round2=(en.round2&&typeof en.round2==='object')?en.round2:{};d.english.skills=(en.skills&&typeof en.skills==='object')?en.skills:{};d.english.reviews=(en.reviews&&typeof en.reviews==='object')?en.reviews:{};
@@ -2255,7 +2268,10 @@ normalizeLearningState=function(raw){
   d.energy=(x.energy&&typeof x.energy==='object')?x.energy:{};
   d.studyTimer=(x.studyTimer&&typeof x.studyTimer==='object')?x.studyTimer:{active:null,sessions:[]};if(!Array.isArray(d.studyTimer.sessions))d.studyTimer.sessions=[];
   d.spacedReviews=(x.spacedReviews&&typeof x.spacedReviews==='object')?x.spacedReviews:{done:{},settings:{finance:true,math:true,skills:true}};if(!d.spacedReviews.done||typeof d.spacedReviews.done!=='object')d.spacedReviews.done={};
-  d.spacedReviews.settings={finance:d.spacedReviews.settings?.finance!==false,math:d.spacedReviews.settings?.math!==false,skills:d.spacedReviews.settings?.skills!==false};d.migrations=(x.migrations&&typeof x.migrations==='object')?x.migrations:{};
+  d.spacedReviews.settings={finance:d.spacedReviews.settings?.finance!==false,math:d.spacedReviews.settings?.math!==false,skills:d.spacedReviews.settings?.skills!==false};
+  d.burndown=(x.burndown&&typeof x.burndown==='object')?x.burndown:d.burndown;
+  if(!d.burndown.targets||typeof d.burndown.targets!=='object')d.burndown.targets={english1:'2026-11-18',english2:'',skills:'',finance:'',math:''};
+  d.migrations=(x.migrations&&typeof x.migrations==='object')?x.migrations:{};
   LS=d;v150EnsureState();return LS
 };
 defaultLearningState=function(){return normalizeLearningState({})};
@@ -2387,6 +2403,82 @@ function renderRoadmap(){
   $('#roadmapEditDates').onclick=()=>{activeLearningTab='countdowns';renderLearningAll()}
 }
 
+
+/* ===== V1.5.1 学习燃尽 ===== */
+const BURNDOWN_TRACKS={
+  english1:{label:'英语词汇 · 第一轮',short:'英语一轮',total:45,start:'2026-10-13',unit:'Lesson',map:()=>LS.english.round1},
+  english2:{label:'英语词汇 · 第二轮',short:'英语二轮',total:45,start:()=>burndownRound2Start(),unit:'Lesson',map:()=>LS.english.round2},
+  skills:{label:'英语四级 · 技巧课',short:'四级技巧',total:()=>ENGLISH_SKILLS.length,start:()=>burndownRound2Start(),unit:'节',map:()=>LS.english.skills},
+  finance:{label:'财经综合 · 80任务',short:'财经',total:80,start:LEARNING_CONFIG.resumeDate,unit:'任务',map:()=>LS.finance.completions},
+  math:{label:'高数 · 48计划日',short:'高数',total:48,start:LEARNING_CONFIG.resumeDate,unit:'计划日',map:()=>LS.math.completions}
+};
+function bdDate(v){return typeof v==='function'?v():v}
+function bdNum(v){return Number(typeof v==='function'?v():v)||0}
+function burndownCompletionDates(map){return Object.values(map||{}).map(learningEntryDate).filter(v150DateOk).sort()}
+function burndownRound1CompletedDate(){const a=burndownCompletionDates(LS.english.round1);return a.length>=45?a[a.length-1]:''}
+function burndownRound2Start(){const done=burndownRound1CompletedDate();return done?addDaysKey(done,1):''}
+function burndownTarget(key){
+  const saved=String(LS.burndown?.targets?.[key]||'');
+  if(v150DateOk(saved))return saved;
+  if((key==='english2'||key==='skills')&&englishContentDeadline())return englishContentDeadline();
+  return ''
+}
+function burndownTrack(key){const c=BURNDOWN_TRACKS[key]||BURNDOWN_TRACKS.english1;return {...c,total:bdNum(c.total),start:bdDate(c.start),map:c.map()}}
+function burndownEarliestCompletion(map){return burndownCompletionDates(map)[0]||''}
+function burndownActualPoints(track,today=learningTodayKey()){
+  const dates=burndownCompletionDates(track.map).filter(k=>k<=today),counts={};dates.forEach(k=>counts[k]=(counts[k]||0)+1);
+  const start=track.start||burndownEarliestCompletion(track.map)||today;let rem=track.total,out=[{date:start,remaining:track.total}];
+  Object.keys(counts).sort().forEach(k=>{if(k<start)return;rem=Math.max(0,rem-counts[k]);out.push({date:k,remaining:rem})});
+  if(out[out.length-1].date!==today)out.push({date:today,remaining:Math.max(0,track.total-dates.length)});else out[out.length-1].remaining=Math.max(0,track.total-dates.length);
+  return out
+}
+function burndownObservedStats(track){
+  const today=learningTodayKey(),start=track.start||burndownEarliestCompletion(track.map)||today,windowStart=addDaysKey(today,-6),obsStart=start>windowStart?start:windowStart;
+  const days=Math.max(1,dayDiff(parse(today),parse(obsStart))+1),recent=burndownCompletionDates(track.map).filter(k=>k>=obsStart&&k<=today).length,weekly=recent/days*7;
+  return {days,recent,weekly}
+}
+function burndownForecast(track){
+  const done=learningDoneCount(track.map),remaining=Math.max(0,track.total-done),stats=burndownObservedStats(track),today=learningTodayKey();
+  if(!remaining)return {date:today,stats,confident:true};
+  if(stats.recent<=0||stats.days<3)return {date:'',stats,confident:false};
+  const perDay=stats.recent/stats.days,daysNeed=Math.ceil(remaining/perDay);return {date:addDaysKey(today,daysNeed),stats,confident:stats.days>=5}
+}
+function burndownPlannedRemaining(track,target,date=learningTodayKey()){
+  if(!track.start||!v150DateOk(track.start)||!target||!v150DateOk(target)||target<=track.start)return null;
+  if(date<=track.start)return track.total;if(date>=target)return 0;const totalDays=Math.max(1,dayDiff(parse(target),parse(track.start))),elapsed=Math.max(0,dayDiff(parse(date),parse(track.start)));return Math.max(0,track.total*(1-elapsed/totalDays))
+}
+function burndownStatus(track,target,forecast){
+  const rem=Math.max(0,track.total-learningDoneCount(track.map));if(!rem)return {label:'已燃尽',cls:'green',detail:'这一阶段已经全部完成。'};
+  const plan=burndownPlannedRemaining(track,target);if(plan===null)return {label:'持续推进',cls:'blue',detail:'未设置目标日，只展示真实进度与速度。'};
+  if(forecast.date&&target&&forecast.date>target)return {label:'可能影响目标',cls:'red',detail:`按近7日速度，预计 ${forecast.date} 才完成。`};
+  const diff=rem-plan;if(diff<=-0.75)return {label:'领先',cls:'green',detail:`比基准线约多完成 ${Math.max(1,Math.round(-diff))} ${track.unit}。`};
+  if(diff>=0.75)return {label:'需要调整',cls:'orange',detail:`比基准线约少完成 ${Math.max(1,Math.round(diff))} ${track.unit}。`};
+  return {label:'正常',cls:'blue',detail:'实际进度基本贴着基准线。'}
+}
+function burndownSvg(track,target,forecast){
+  const today=learningTodayKey(),start=track.start||burndownEarliestCompletion(track.map)||today,actual=burndownActualPoints(track,today);let end=today;
+  for(const k of [target,forecast.date])if(v150DateOk(k)&&k>end)end=k;
+  if(dayDiff(parse(end),parse(start))<7)end=addDaysKey(start,7);if(dayDiff(parse(end),parse(start))>365)end=addDaysKey(start,365);
+  const W=760,H=300,L=54,R=18,T=18,B=42,plotW=W-L-R,plotH=H-T-B,totalDays=Math.max(1,dayDiff(parse(end),parse(start))),maxY=Math.max(1,track.total);
+  const x=k=>L+Math.max(0,Math.min(totalDays,dayDiff(parse(k),parse(start))))/totalDays*plotW,y=v=>T+(1-Math.max(0,Math.min(maxY,v))/maxY)*plotH;
+  const poly=pts=>pts.map(p=>`${x(p.date).toFixed(1)},${y(p.remaining).toFixed(1)}`).join(' ');
+  const grid=[0,.25,.5,.75,1].map(f=>{const yy=y(maxY*f),val=Math.round(maxY*f);return `<line x1="${L}" y1="${yy}" x2="${W-R}" y2="${yy}" stroke="#ece6e1" stroke-width="1"/><text x="${L-9}" y="${yy+3}" text-anchor="end" font-size="10" fill="#8d837c">${val}</text>`}).join('');
+  let base='';if(target&&v150DateOk(target)&&target>start)base=`<line x1="${x(start)}" y1="${y(track.total)}" x2="${x(target)}" y2="${y(0)}" stroke="#b8b0aa" stroke-width="2"/>`;
+  const actualLine=actual.length>1?`<polyline points="${poly(actual)}" fill="none" stroke="#6ea98d" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>`:'';
+  const actualDots=actual.slice(1).map(p=>`<circle cx="${x(p.date)}" cy="${y(p.remaining)}" r="3" fill="#6ea98d"/>`).join('');
+  let forecastLine='';if(forecast.date&&v150DateOk(forecast.date)&&forecast.date>=today)forecastLine=`<line x1="${x(today)}" y1="${y(Math.max(0,track.total-learningDoneCount(track.map)))}" x2="${x(forecast.date)}" y2="${y(0)}" stroke="#d99a61" stroke-width="2.5" stroke-dasharray="8 6"/>`;
+  const tickDates=[start,today,target].filter(v150DateOk).filter((v,i,a)=>a.indexOf(v)===i).sort();const ticks=tickDates.map(k=>`<line x1="${x(k)}" y1="${H-B}" x2="${x(k)}" y2="${H-B+5}" stroke="#a99e97"/><text x="${x(k)}" y="${H-15}" text-anchor="middle" font-size="10" fill="#8d837c">${k.slice(5).replace('-','/')}</text>`).join('');
+  return `<svg class="burndown-chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(track.label)}燃尽图"><rect x="0" y="0" width="${W}" height="${H}" rx="12" fill="transparent"/>${grid}<line x1="${L}" y1="${T}" x2="${L}" y2="${H-B}" stroke="#cfc5bd"/><line x1="${L}" y1="${H-B}" x2="${W-R}" y2="${H-B}" stroke="#cfc5bd"/>${base}${actualLine}${actualDots}${forecastLine}<line x1="${x(today)}" y1="${T}" x2="${x(today)}" y2="${H-B}" stroke="#d9d1ca" stroke-dasharray="3 5"/>${ticks}<text x="${L}" y="12" font-size="10" fill="#8d837c">剩余 ${esc(track.unit)}</text></svg>`
+}
+function setBurndownTarget(key,value){value=String(value||'');if(value&&!v150DateOk(value)){alert('请选择有效目标日期。');return}LS.burndown.targets[key]=value;persistLearningState();renderLearningAll()}
+function renderLearningBurndown(){
+  const e=$('#learningPanel'),key=LS.burndown.selected||'english1',track=burndownTrack(key),target=burndownTarget(key),done=learningDoneCount(track.map),remaining=Math.max(0,track.total-done),forecast=burndownForecast(track),status=burndownStatus(track,target,forecast),planned=burndownPlannedRemaining(track,target),pct=learningPct(done,track.total);
+  const buttons=Object.entries(BURNDOWN_TRACKS).map(([k,v])=>`<button class="btn ${k===key?'active':''}" data-bd-track="${k}">${esc(v.short)}</button>`).join('');
+  const expected=planned===null?'—':`${Math.max(0,Math.round(planned))}`;const forecastText=remaining===0?'已完成':forecast.date?forecast.date:'积累 3 天记录后预测';const speed=forecast.stats.days?`${forecast.stats.weekly.toFixed(forecast.stats.weekly>=10?0:1)} ${track.unit}/周`:'—';
+  e.innerHTML=`<div class="learning-section-card"><div class="learning-row spread"><div><h4>学习燃尽 · ${esc(track.label)}</h4><div class="learning-source-note">基准线不会因为“今天很忙”自动重写；实际线只来自你的真实打勾。动态预测只看最近学习速度。</div></div><div class="burndown-status"><span class="learning-chip ${status.cls}">${status.label}</span></div></div><div class="burndown-toolbar" style="margin-top:10px">${buttons}</div></div><div class="learning-section-card"><div class="burndown-metrics"><div class="burndown-metric"><small>剩余</small><b>${remaining} / ${track.total}</b><span>已完成 ${pct}%</span></div><div class="burndown-metric"><small>基准今日应剩</small><b>${expected}</b><span>${target?`目标 ${target}`:'先设置目标日才生成基准线'}</span></div><div class="burndown-metric"><small>近7日速度</small><b>${speed}</b><span>按当前阶段真实完成记录</span></div><div class="burndown-metric"><small>动态预计完成</small><b>${forecastText}</b><span>${status.detail}</span></div></div><div class="burndown-chart-wrap">${burndownSvg(track,target,forecast)}</div><div class="burndown-legend"><span><i class="burndown-dot base"></i>固定基准线</span><span><i class="burndown-dot actual"></i>真实燃尽线</span><span><i class="burndown-dot forecast"></i>动态预测线</span></div></div><div class="learning-section-card"><h4>目标设置</h4><div class="burndown-settings"><label><span>当前项目</span><input value="${esc(track.label)}" disabled></label><label><span>目标完成日（可改 / 可留空）</span><input id="bdTargetDate" type="date" value="${target||''}"></label><button class="btn primary" id="saveBdTarget">保存目标日</button></div><div class="burndown-explain" style="margin-top:10px"><b>怎么看：</b>真实线在基准线下方＝领先；在上方＝落后。缓冲日只影响未来真实推进，不会把历史基准线“偷偷挪走”。<br><b>口径：</b>英语一/二轮按 Lesson；四级技巧按节；财经按 80 个实际执行任务；高数按 48 个机构计划日。当前版本不拿未知课时强行做“加权工作量”，避免制造假精确。</div></div>`;
+  document.querySelectorAll('[data-bd-track]').forEach(b=>b.onclick=()=>{LS.burndown.selected=b.dataset.bdTrack;persistLearningState();renderLearningAll()});$('#saveBdTarget').onclick=()=>setBurndownTarget(key,$('#bdTargetDate').value)
+}
+
 renderLearningOverview=function(){
   if(!$('#learnEnglishMetric'))return;const r1=learningDoneCount(LS.english.round1),r2=learningDoneCount(LS.english.round2),sk=learningDoneCount(LS.english.skills);
   if(!englishRound1Complete()){$('#learnEnglishMetric').textContent=`${r1} / 45`;$('#learnEnglishBar').style.width=`${learningPct(r1,45)}%`;$('#learnEnglishNote').textContent=`词汇第一轮 · 下一个 Lesson ${nextNumber(45,LS.english.round1)||'—'}`}else{const done=r2+sk,total=45+ENGLISH_SKILLS.length;$('#learnEnglishMetric').textContent=`${done} / ${total}`;$('#learnEnglishBar').style.width=`${learningPct(done,total)}%`;$('#learnEnglishNote').textContent=`第二轮 ${r2}/45 · 技巧 ${sk}/${ENGLISH_SKILLS.length}`}
@@ -2399,7 +2491,7 @@ renderLearningBanner=function(){
 };
 renderLearningPanel=function(){
   document.querySelectorAll('[data-learning-tab]').forEach(b=>b.classList.toggle('active',b.dataset.learningTab===activeLearningTab));
-  if(activeLearningTab==='timer')renderLearningTimer();else if(activeLearningTab==='stats')renderLearningStats();else if(activeLearningTab==='review')renderSpacedReviews();else if(activeLearningTab==='roadmap')renderRoadmap();else if(activeLearningTab==='english')renderLearningEnglish();else if(activeLearningTab==='finance')renderLearningFinance();else if(activeLearningTab==='math')renderLearningMath();else if(activeLearningTab==='countdowns')renderLearningCountdowns();else if(activeLearningTab==='schedule')renderLearningSchedule();else renderLearningToday()
+  if(activeLearningTab==='timer')renderLearningTimer();else if(activeLearningTab==='stats')renderLearningStats();else if(activeLearningTab==='burndown')renderLearningBurndown();else if(activeLearningTab==='review')renderSpacedReviews();else if(activeLearningTab==='roadmap')renderRoadmap();else if(activeLearningTab==='english')renderLearningEnglish();else if(activeLearningTab==='finance')renderLearningFinance();else if(activeLearningTab==='math')renderLearningMath();else if(activeLearningTab==='countdowns')renderLearningCountdowns();else if(activeLearningTab==='schedule')renderLearningSchedule();else renderLearningToday()
 };
 renderLearningToday=function(){
   const e=$('#learningPanel'),k=learningTodayKey(),d=learningTodayDate(),mil=isMilitaryKey(k),busy=isLearningBusyKey(k),monday=d.getDay()===1,mode=energyFor(k),r=learningReviewFor(k),todayItems=learningCompletionItemsOnDate(k),due=dueReviews(),free=LS.freeLogs.filter(x=>x.date===k),fd=nextFinanceDay(),md=nextMathDay(),nextR1=nextNumber(45,LS.english.round1),nextR2=nextNumber(45,LS.english.round2),nextSkill=nextNumber(ENGLISH_SKILLS.length,LS.english.skills);
@@ -2436,7 +2528,7 @@ renderLearningEnglish=function(){v142RenderLearningEnglish();const deadline=engl
 
 function snapshotData(){
   return {
-    version:16,
+    version:17,
     savedAt:new Date().toISOString(),
     tasks:T,
     recurringTasks:RT,
