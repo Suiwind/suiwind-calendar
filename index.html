@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#eef2ea">
-<title>苏伊温德日历 V1.5.2</title>
+<title>苏伊温德日历 V1.5.3</title>
 <link rel="manifest" href="manifest.json">
 <script src="./supabase-local.js"></script>
 <style>
@@ -575,7 +575,7 @@ button{touch-action:manipulation}
 <body>
 <div class="app">
   <div class="top">
-    <div class="brand"><h1>苏伊温德日历 <span class="version">V1.5.2</span></h1><p>生命如暗室，不妨我明写春诗</p></div>
+    <div class="brand"><h1>苏伊温德日历 <span class="version">V1.5.3</span></h1><p>生命如暗室，不妨我明写春诗</p></div>
     <div class="actions">
       <button class="btn action-btn action-today" id="todayBtn"><span class="action-icon">⌂</span><span>回到今天</span></button>
       <button class="btn action-btn action-anniv" id="annivBtn"><span class="action-icon">♡</span><span>纪念日</span></button>
@@ -1725,8 +1725,16 @@ function learningSave(){
   renderLearningMini();
   renderCal()
 }
-function learningTodayDate(){const d=new Date();return new Date(d.getFullYear(),d.getMonth(),d.getDate(),12)}
-function learningTodayKey(){return fmt(learningTodayDate())}
+const LEARNING_TIME_ZONE='Asia/Shanghai';
+const LEARNING_TZ_FORMATTER=new Intl.DateTimeFormat('en-CA',{timeZone:LEARNING_TIME_ZONE,year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit',hourCycle:'h23'});
+function beijingParts(value=new Date()){
+  const d=value instanceof Date?value:new Date(value);if(Number.isNaN(d.getTime()))return null;
+  const parts={};LEARNING_TZ_FORMATTER.formatToParts(d).forEach(x=>{if(x.type!=='literal')parts[x.type]=x.value});return parts
+}
+function beijingDateKey(value=new Date()){const x=beijingParts(value);return x?`${x.year}-${x.month}-${x.day}`:''}
+function beijingDateTimeLabel(value){const x=beijingParts(value);return x?`${x.year}-${x.month}-${x.day} ${x.hour}:${x.minute}`:'—'}
+function learningTodayDate(){const x=beijingParts();return x?new Date(Number(x.year),Number(x.month)-1,Number(x.day),12):new Date()}
+function learningTodayKey(){return beijingDateKey()}
 function learningEntryDate(v){
   if(!v)return '';
   if(typeof v==='string')return v.slice(0,10);
@@ -1805,6 +1813,7 @@ function learningCompletionItemsOnDate(k){
   ENGLISH_SKILLS.forEach(s=>{if(learningEntryDate(LS.english.skills[String(s.id)])===k)out.push(`四级技巧 · ${s.module} ${s.id}`)});
   FINANCE_EXEC_ORDER.forEach(d=>{if(learningEntryDate(LS.finance.completions[String(d)])===k){const x=financeItem(d);out.push(`财经 · ${x?.subject||''} ${x?.title||`Day${d}`}`)}});
   for(let d=1;d<=48;d++)if(learningEntryDate(LS.math.completions[String(d)])===k)out.push(`高数 · Day ${d}`);
+  if(LS.english.reviews?.[k]?.weekly)out.push('英语 · 一周总复习');
   LS.freeLogs.filter(x=>x.date===k).forEach(x=>out.push(`自主 · ${x.track||'学习'} ${x.text||''}`));
   return out
 }
@@ -1825,7 +1834,7 @@ function learningReviewFor(k){
   return LS.english.reviews[k]
 }
 function setLearningReview(kind,checked,k=learningTodayKey()){
-  const r=learningReviewFor(k);r[kind]=!!checked;learningSave()
+  const r=learningReviewFor(k);r[kind]=!!checked;learningSave();renderLearningAll()
 }
 function toggleLearningBusy(k=learningTodayKey()){
   if(LS.busyDates[k]){
@@ -2265,6 +2274,14 @@ function v150EnsureState(){
     LS.countdowns=LS.countdowns.filter(x=>{const key=`${x.title}|${x.date}`;if(seen.has(key))return false;seen.add(key);return true});
     LS.migrations.editableMilestonesV150=true;
   }
+  if(!LS.migrations.v153PersonalFixes){
+    // 清掉旧自主学习区里残留的“高数衔接班”示例/旧记录。
+    LS.freeLogs=(LS.freeLogs||[]).filter(x=>!(String(x?.track||'').trim()==='高数'&&String(x?.text||'').trim()==='高数衔接班'));
+    // 2026-10-12 晚上 21:42（北京时间）高数 55 分钟：若真实记录已存在则不重复补记。
+    const already=(LS.studyTimer.sessions||[]).some(x=>x?.subject==='高数'&&beijingDateKey(x.endAt||x.startAt)==='2026-10-12'&&Math.abs(Number(x.focusSeconds||0)-3300)<=120);
+    if(!already){LS.studyTimer.sessions.push({id:'v153-recover-math-20261012-2142-55',recoveryKey:'math-20261012-2142-55',deviceId:'v153-recovery',subject:'高数',energy:'normal',note:'补记：高数学习 55 分钟',startAt:'2026-10-12T13:42:00.000Z',endAt:'2026-10-12T14:37:00.000Z',focusSeconds:3300,breakSeconds:0,blocks:1,recordedAt:new Date().toISOString()})}
+    LS.migrations.v153PersonalFixes=true;
+  }
   S.s('learningState',LS)
 }
 v150EnsureState();
@@ -2329,7 +2346,7 @@ function energyPlan(mode){return mode==='low'?{focus:25,shortBreak:5,longBreak:1
 function secHuman(sec){sec=Math.max(0,Math.round(sec||0));const h=Math.floor(sec/3600),m=Math.floor((sec%3600)/60);return h?`${h}小时${m?`${m}分`:''}`:`${m}分钟`}
 function timeClock(sec){sec=Math.max(0,Math.floor(sec||0));const h=Math.floor(sec/3600),m=Math.floor(sec%3600/60),s=sec%60;return h?`${pad(h)}:${pad(m)}:${pad(s)}`:`${pad(m)}:${pad(s)}`}
 function studyWeekRange(){const a=startOfWeek(learningTodayDate()),b=endOfWeek(learningTodayDate());return [fmt(a),fmt(b)]}
-function sessionDate(s){return String(s.endAt||s.startAt||'').slice(0,10)}
+function sessionDate(s){return beijingDateKey(s.startAt||s.endAt||'')}
 function studySessionsBetween(a,b){return (LS.studyTimer.sessions||[]).filter(x=>{const k=sessionDate(x);return k>=a&&k<=b})}
 function studySecondsBetween(a,b,subject=''){return studySessionsBetween(a,b).filter(x=>!subject||x.subject===subject).reduce((sum,x)=>sum+Number(x.focusSeconds||0),0)}
 function todayStudySeconds(subject=''){const k=learningTodayKey();return studySecondsBetween(k,k,subject)+(LS.studyTimer.active&&(!subject||LS.studyTimer.active.subject===subject)?activeStudyFocusSeconds():0)}
@@ -2401,7 +2418,7 @@ function renderLearningTimer(){
 function renderLearningStats(){
   const e=$('#learningPanel'),[wa,wb]=studyWeekRange(),today=learningTodayKey(),sessions=[...(LS.studyTimer.sessions||[])].sort((a,b)=>String(b.endAt||'').localeCompare(String(a.endAt||''))).slice(0,30),weekTotal=weekStudySeconds();
   const cards=STUDY_SUBJECTS.map(sub=>{const sec=weekStudySeconds(sub),w=weekTotal?Math.round(sec/weekTotal*100):0;return `<div class="study-stat"><small>${sub} · 本周</small><b>${secHuman(sec)}</b><i style="--w:${w}%"></i></div>`}).join('');
-  e.innerHTML=`<div class="learning-section-card"><div class="learning-row spread"><div><h4>学习时间统计</h4><div class="learning-source-note">统计的是计时器记录的真实专注时间，不把休息时间混进去。</div></div><span class="learning-chip blue">${wa} — ${wb}</span></div><div class="study-stat-grid" style="margin-top:10px">${cards}</div></div><div class="learning-section-card"><h4>今天 / 本周 / 本月</h4><div class="study-stat-grid"><div class="study-stat"><small>今天</small><b>${secHuman(todayStudySeconds())}</b></div><div class="study-stat"><small>本周</small><b>${secHuman(weekTotal)}</b></div><div class="study-stat"><small>本月</small><b>${secHuman(monthStudySeconds())}</b></div><div class="study-stat"><small>已记录学习段</small><b>${LS.studyTimer.sessions.length}</b></div></div></div><div class="learning-section-card"><h4>最近学习记录</h4>${sessions.length?sessions.map(x=>`<div class="study-log-row"><b>${esc(x.subject)}</b><span>${secHuman(x.focusSeconds)}</span><span>${String(x.startAt||'').slice(0,16).replace('T',' ')}${x.note?` · ${esc(x.note)}`:''}</span><button class="x" data-study-remove="${x.id}">×</button></div>`).join(''):'<div class="learning-empty">还没有计时记录。以后每次“开始学习 → 结束学习”都会自动留下记录。</div>'}</div>`;
+  e.innerHTML=`<div class="learning-section-card"><div class="learning-row spread"><div><h4>学习时间统计</h4><div class="learning-source-note">统计的是计时器记录的真实专注时间，不把休息时间混进去；日期与时间统一按北京时间（Asia/Shanghai）显示。</div></div><span class="learning-chip blue">${wa} — ${wb}</span></div><div class="study-stat-grid" style="margin-top:10px">${cards}</div></div><div class="learning-section-card"><h4>今天 / 本周 / 本月</h4><div class="study-stat-grid"><div class="study-stat"><small>今天</small><b>${secHuman(todayStudySeconds())}</b></div><div class="study-stat"><small>本周</small><b>${secHuman(weekTotal)}</b></div><div class="study-stat"><small>本月</small><b>${secHuman(monthStudySeconds())}</b></div><div class="study-stat"><small>已记录学习段</small><b>${LS.studyTimer.sessions.length}</b></div></div></div><div class="learning-section-card"><h4>最近学习记录</h4>${sessions.length?sessions.map(x=>`<div class="study-log-row"><b>${esc(x.subject)}</b><span>${secHuman(x.focusSeconds)}</span><span>${beijingDateTimeLabel(x.startAt)}${x.note?` · ${esc(x.note)}`:''}</span><button class="x" data-study-remove="${x.id}">×</button></div>`).join(''):'<div class="learning-empty">还没有计时记录。以后每次“开始学习 → 结束学习”都会自动留下记录。</div>'}</div>`;
   document.querySelectorAll('[data-study-remove]').forEach(b=>b.onclick=()=>removeStudySession(b.dataset.studyRemove))
 }
 function renderSpacedReviews(){
@@ -2492,27 +2509,33 @@ function renderLearningBurndown(){
   document.querySelectorAll('[data-bd-track]').forEach(b=>b.onclick=()=>{LS.burndown.selected=b.dataset.bdTrack;persistLearningState();renderLearningAll()});$('#saveBdTarget').onclick=()=>setBurndownTarget(key,$('#bdTargetDate').value)
 }
 
-/* ===== V1.5.2 学科内燃尽 + 多设备学习记录合并 ===== */
+/* ===== V1.5.3 学科趋势前置 + 北京时间 + 多设备学习记录修复 ===== */
 function burndownInlineHtml(keys,title='进度趋势与预计完成'){
   keys=Array.isArray(keys)&&keys.length?keys:['english1'];
   let selected=String(LS.burndown?.selected||'');if(!keys.includes(selected))selected=keys[0];
   const track=burndownTrack(selected),target=burndownTarget(selected),done=learningDoneCount(track.map),remaining=Math.max(0,track.total-done),forecast=burndownForecast(track),status=burndownStatus(track,target,forecast),planned=burndownPlannedRemaining(track,target),pct=learningPct(done,track.total);
   const expected=planned===null?'—':`${Math.max(0,Math.round(planned))}`,forecastText=remaining===0?'已完成':forecast.date?forecast.date:'积累 3 天记录后预测',speed=forecast.stats.days?`${forecast.stats.weekly.toFixed(forecast.stats.weekly>=10?0:1)} ${track.unit}/周`:'—';
   const buttons=keys.length>1?`<div class="subject-burndown-tabs">${keys.map(k=>`<button class="btn ${k===selected?'active':''}" data-inline-bd-track="${k}">${esc(BURNDOWN_TRACKS[k].short)}</button>`).join('')}</div>`:'';
-  return `<div class="learning-section-card"><details class="subject-burndown"><summary><span>${esc(title)}</span><span class="learning-chip ${status.cls}">${status.label}</span></summary><div class="subject-burndown-body">${buttons}<div class="burndown-metrics"><div class="burndown-metric"><small>剩余</small><b>${remaining} / ${track.total}</b><span>已完成 ${pct}%</span></div><div class="burndown-metric"><small>基准今日应剩</small><b>${expected}</b><span>${target?`目标 ${target}`:'未设置目标日'}</span></div><div class="burndown-metric"><small>近7日速度</small><b>${speed}</b><span>只看真实完成记录</span></div><div class="burndown-metric"><small>预计完成</small><b>${forecastText}</b><span>${status.detail}</span></div></div><div class="burndown-chart-wrap">${burndownSvg(track,target,forecast)}</div><div class="burndown-legend"><span><i class="burndown-dot base"></i>固定基准</span><span><i class="burndown-dot actual"></i>真实进度</span><span><i class="burndown-dot forecast"></i>动态预测</span></div><div class="burndown-settings"><label><span>目标完成日（可留空）</span><input id="inlineBdTargetDate" type="date" value="${target||''}"></label><button class="btn primary" id="saveInlineBdTarget">保存目标日</button></div></div></details></div>`
+  return `<div class="learning-section-card"><details class="subject-burndown" open><summary><span>${esc(title)}</span><span class="learning-chip ${status.cls}">${status.label}</span></summary><div class="subject-burndown-body">${buttons}<div class="burndown-metrics"><div class="burndown-metric"><small>剩余</small><b>${remaining} / ${track.total}</b><span>已完成 ${pct}%</span></div><div class="burndown-metric"><small>基准今日应剩</small><b>${expected}</b><span>${target?`目标 ${target}`:'未设置目标日'}</span></div><div class="burndown-metric"><small>近7日速度</small><b>${speed}</b><span>只看真实完成记录</span></div><div class="burndown-metric"><small>预计完成</small><b>${forecastText}</b><span>${status.detail}</span></div></div><div class="burndown-chart-wrap">${burndownSvg(track,target,forecast)}</div><div class="burndown-legend"><span><i class="burndown-dot base"></i>固定基准</span><span><i class="burndown-dot actual"></i>真实进度</span><span><i class="burndown-dot forecast"></i>动态预测</span></div><div class="burndown-settings"><label><span>目标完成日（可留空）</span><input id="inlineBdTargetDate" type="date" value="${target||''}"></label><button class="btn primary" id="saveInlineBdTarget">保存目标日</button></div></div></details></div>`
 }
 function bindInlineBurndown(keys){
   keys=Array.isArray(keys)&&keys.length?keys:['english1'];let selected=String(LS.burndown?.selected||'');if(!keys.includes(selected))selected=keys[0];
   document.querySelectorAll('[data-inline-bd-track]').forEach(b=>b.onclick=()=>{LS.burndown.selected=b.dataset.inlineBdTrack;persistLearningState();renderLearningAll()});
   const save=$('#saveInlineBdTarget');if(save)save.onclick=()=>setBurndownTarget(selected,$('#inlineBdTargetDate').value)
 }
-function appendSubjectBurndown(keys,title){const e=$('#learningPanel');if(!e)return;e.insertAdjacentHTML('beforeend',burndownInlineHtml(keys,title));bindInlineBurndown(keys)}
+function appendSubjectBurndown(keys,title){const e=$('#learningPanel');if(!e)return;e.insertAdjacentHTML('afterbegin',burndownInlineHtml(keys,title));bindInlineBurndown(keys)}
 
 function studyLedger(raw){const st=raw?.learningState?.studyTimer||raw?.studyTimer||{};return {sessions:Array.isArray(st.sessions)?st.sessions:[],deleted:Array.isArray(st.deletedSessionIds)?st.deletedSessionIds:[]}}
 function mergeStudyLedger(localSessions,localDeleted,remoteSessions,remoteDeleted){
   const deleted=new Set([...(localDeleted||[]),...(remoteDeleted||[])]),byId=new Map();
   for(const x of [...(remoteSessions||[]),...(localSessions||[])]){if(!x||!x.id||deleted.has(x.id))continue;const prev=byId.get(x.id);if(!prev||String(x.recordedAt||x.endAt||'')>=String(prev.recordedAt||prev.endAt||''))byId.set(x.id,x)}
-  return {sessions:[...byId.values()].sort((a,b)=>String(a.startAt||'').localeCompare(String(b.startAt||''))),deletedSessionIds:[...deleted].slice(-1000)}
+  let sessions=[...byId.values()];
+  const recoveries=sessions.filter(x=>x?.recoveryKey);
+  for(const rec of recoveries){
+    const twin=sessions.find(x=>x!==rec&&!x?.recoveryKey&&x.subject===rec.subject&&sessionDate(x)===sessionDate(rec)&&Math.abs(Number(x.focusSeconds||0)-Number(rec.focusSeconds||0))<=120&&Math.abs(Date.parse(x.startAt||0)-Date.parse(rec.startAt||0))<=20*60*1000);
+    if(twin)sessions=sessions.filter(x=>x!==rec)
+  }
+  return {sessions:sessions.sort((a,b)=>String(a.startAt||'').localeCompare(String(b.startAt||''))),deletedSessionIds:[...deleted].slice(-1000)}
 }
 function mergeRemoteStudyLedgerIntoLocal(remotePayload,{persist=true}={}){
   const remote=studyLedger(remotePayload),local=mergeStudyLedger(LS.studyTimer.sessions,LS.studyTimer.deletedSessionIds,remote.sessions,remote.deleted);
@@ -2542,7 +2565,7 @@ renderLearningPanel=function(){
 renderLearningToday=function(){
   const e=$('#learningPanel'),k=learningTodayKey(),d=learningTodayDate(),mil=isMilitaryKey(k),busy=isLearningBusyKey(k),monday=d.getDay()===1,mode=energyFor(k),r=learningReviewFor(k),todayItems=learningCompletionItemsOnDate(k),due=dueReviews(),free=LS.freeLogs.filter(x=>x.date===k),fd=nextFinanceDay(),md=nextMathDay(),nextR1=nextNumber(45,LS.english.round1),nextR2=nextNumber(45,LS.english.round2),nextSkill=nextNumber(ENGLISH_SKILLS.length,LS.english.skills);
   const nearest=learningUpcomingCountdowns().slice(0,3);let tasks=[];
-  if(monday&&!englishRound1Complete())tasks.push({rank:'必须',cls:'must',title:'英语 · 一周总复习',meta:'周一不默认安排新 Lesson，把本周词汇重新检索一遍。',action:'weekly'});else if(!englishRound1Complete()&&k>=LEARNING_CONFIG.militaryStart&&nextR1)tasks.push({rank:'核心',cls:'core',title:`英语一轮 · Lesson ${nextR1}`,meta:'完成后如果这一节短、状态好，可以继续下一 Lesson。',action:'r1'});else if(englishRound1Complete()){if(nextR2)tasks.push({rank:'核心',cls:'core',title:`英语二轮 · Lesson ${nextR2}`,meta:'正式二轮，从 0/45 独立重新推进。',action:'r2'});if(nextSkill)tasks.push({rank:'核心',cls:'core',title:`四级技巧 · 第 ${nextSkill} 节`,meta:'与二轮同步，不提前占用一轮词汇时间。',action:'skill'})}
+  if(monday&&!englishRound1Complete()){if(!r.weekly)tasks.push({rank:'必须',cls:'must',title:'英语 · 一周总复习',meta:'周一不默认安排新 Lesson，把本周词汇重新检索一遍。',action:'weekly'})}else if(!englishRound1Complete()&&k>=LEARNING_CONFIG.militaryStart&&nextR1)tasks.push({rank:'核心',cls:'core',title:`英语一轮 · Lesson ${nextR1}`,meta:'完成后如果这一节短、状态好，可以继续下一 Lesson。',action:'r1'});else if(englishRound1Complete()){if(nextR2)tasks.push({rank:'核心',cls:'core',title:`英语二轮 · Lesson ${nextR2}`,meta:'正式二轮，从 0/45 独立重新推进。',action:'r2'});if(nextSkill)tasks.push({rank:'核心',cls:'core',title:`四级技巧 · 第 ${nextSkill} 节`,meta:'与二轮同步，不提前占用一轮词汇时间。',action:'skill'})}
   if(!mil&&!busy&&isResumeOrLaterKey(k)){if(fd)tasks.push({rank:mode==='low'?'可后移':'核心',cls:mode==='low'?'extra':'core',title:`财经 · 原 Day ${fd}`,meta:`${financeItem(fd)?.subject||''} · ${financeItem(fd)?.title||''}`,action:'finance'});if(md&&(mode==='high'||mode==='normal'))tasks.push({rank:mode==='high'?'核心':'建议',cls:mode==='high'?'core':'extra',title:`高数 · Day ${md}`,meta:`${mathItem(md)?.lectures?.length||0} 个视频 · ${durationHuman(mathDayDuration(mathItem(md)))}`,action:'math'})}
   if(busy)tasks=tasks.filter(x=>x.action==='weekly'||x.action==='r1'||x.action==='r2');if(mil)tasks=tasks.filter(x=>['weekly','r1','r2','skill'].includes(x.action));if(!tasks.length)tasks.push({rank:'完成',cls:'extra',title:'今天没有必须推进的新内容',meta:'可以做复习、计时学习，或者直接休息。',action:''});
   const taskHtml=tasks.map((x,i)=>`<div class="cockpit-task ${x.cls}"><span class="rank">${x.rank}</span><div><div class="cockpit-task-title">${esc(x.title)}</div><div class="cockpit-task-meta">${esc(x.meta)}</div></div>${x.action?`<button class="btn" data-cockpit-action="${x.action}">完成</button>`:''}</div>`).join('');
@@ -2579,7 +2602,7 @@ renderLearningMath=function(){v152RenderMathBase();appendSubjectBurndown(['math'
 
 function snapshotData(){
   return {
-    version:18,
+    version:19,
     savedAt:new Date().toISOString(),
     tasks:T,
     recurringTasks:RT,
@@ -2630,7 +2653,7 @@ function saveSyncMeta(patch){
 function fmtSyncTime(v){
   if(!v)return '—';
   const d=new Date(v);if(Number.isNaN(d.getTime()))return '—';
-  return d.toLocaleString('zh-CN',{month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit'})
+  return d.toLocaleString('zh-CN',{timeZone:LEARNING_TIME_ZONE,month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit',hourCycle:'h23'})
 }
 function isAfter(a,b,slack=700){
   if(!a)return false;if(!b)return true;
