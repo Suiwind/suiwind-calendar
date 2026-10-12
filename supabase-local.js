@@ -1,4 +1,4 @@
-/* 苏伊温德日历 V1.3.1 · 轻量本地 Supabase 客户端
+/* 苏伊温德日历 V1.3.2 · 轻量本地 Supabase 客户端
  * 只实现本日历实际使用的 Auth + PostgREST 接口，避免依赖外部 CDN。
  * 浏览器仍需能够访问项目自身的 *.supabase.co 域名才能登录/同步。
  */
@@ -30,24 +30,42 @@
     };
   }
 
-  function createClient(projectUrl,anonKey){
+  function createClient(projectUrl,anonKey,options){
     const url=trimSlash(projectUrl), key=String(anonKey||'').trim();
     if(!/^https:\/\/[^/]+\.supabase\.co$/i.test(url))throw new Error('Supabase Project URL 格式不正确');
     if(!key)throw new Error('Supabase key 不能为空');
 
     let projectId='default';
     try{projectId=new URL(url).hostname.split('.')[0]||'default'}catch{}
-    const storageKey='suiwind_supabase_session_'+projectId;
+    const authOptions=options?.auth||{};
+    const persistSession=authOptions.persistSession!==false;
+    const autoRefreshToken=authOptions.autoRefreshToken!==false;
+    const storageKey=authOptions.storageKey||('suiwind_supabase_session_'+projectId);
     let listeners=[];
+    let refreshPromise=null;
+    let refreshTimer=null;
 
     function loadSession(){
+      if(!persistSession)return null;
       try{return JSON.parse(localStorage.getItem(storageKey)||'null')}catch{return null}
     }
+    function clearRefreshTimer(){
+      if(refreshTimer){clearTimeout(refreshTimer);refreshTimer=null}
+    }
+    function scheduleRefresh(session){
+      clearRefreshTimer();
+      if(!autoRefreshToken||!session?.refresh_token||!Number(session.expires_at||0))return;
+      const delay=Math.max(30000,Number(session.expires_at)*1000-Date.now()-120000);
+      refreshTimer=setTimeout(()=>{refreshSession(true).catch(()=>{})},delay)
+    }
     function saveSession(session){
-      try{
-        if(session)localStorage.setItem(storageKey,JSON.stringify(session));
-        else localStorage.removeItem(storageKey);
-      }catch{}
+      if(persistSession){
+        try{
+          if(session)localStorage.setItem(storageKey,JSON.stringify(session));
+          else localStorage.removeItem(storageKey);
+        }catch{}
+      }
+      if(session)scheduleRefresh(session);else clearRefreshTimer()
     }
     function emit(event,session){
       listeners.slice().forEach(fn=>{try{fn(event,session)}catch{}});
@@ -65,17 +83,29 @@
       let session=loadSession();
       if(!session?.refresh_token)return session;
       const now=Math.floor(Date.now()/1000);
-      if(!force && session.access_token && Number(session.expires_at||0)>now+60)return session;
-      const res=await doFetch('/auth/v1/token?grant_type=refresh_token',{
-        method:'POST',
-        headers:baseHeaders('',{'content-type':'application/json'}),
-        body:JSON.stringify({refresh_token:session.refresh_token})
-      });
-      const body=await parseBody(res);
-      if(!res.ok){saveSession(null);emit('SIGNED_OUT',null);return null}
-      const next=sessionFromResponse(body);
-      if(next){saveSession(next);emit('TOKEN_REFRESHED',next);return next}
-      return session;
+      if(!force && session.access_token && Number(session.expires_at||0)>now+60){scheduleRefresh(session);return session}
+      if(refreshPromise)return refreshPromise;
+      refreshPromise=(async()=>{
+        const latest=loadSession()||session;
+        const res=await doFetch('/auth/v1/token?grant_type=refresh_token',{
+          method:'POST',
+          headers:baseHeaders('',{'content-type':'application/json'}),
+          body:JSON.stringify({refresh_token:latest.refresh_token})
+        });
+        const body=await parseBody(res);
+        if(!res.ok){
+          if(res.status===400||res.status===401){saveSession(null);emit('SIGNED_OUT',null);return null}
+          throw errObj(messageOf(body,'登录续期暂时失败'),res.status,body)
+        }
+        const next=sessionFromResponse(body);
+        if(next){
+          next.user=next.user||latest.user||null;
+          saveSession(next);emit('TOKEN_REFRESHED',next);return next
+        }
+        scheduleRefresh(latest);
+        return latest;
+      })();
+      try{return await refreshPromise}finally{refreshPromise=null}
     }
     async function validSession(){
       let s=loadSession();
@@ -100,8 +130,9 @@
 
     const auth={
       async getSession(){
+        const cached=loadSession();
         try{return {data:{session:await validSession()},error:null}}
-        catch(e){return {data:{session:null},error:e?.message?e:errObj(String(e))}}
+        catch(e){return {data:{session:cached},error:e?.message?e:errObj(String(e))}}
       },
       async getUser(){
         try{
@@ -133,6 +164,9 @@
         return {data:{subscription:{unsubscribe(){listeners=listeners.filter(x=>x!==callback)}}}};
       }
     };
+
+    const initialSession=loadSession();
+    if(initialSession)scheduleRefresh(initialSession);
 
     async function restFetch(table,method,params,body,prefer){
       let session;

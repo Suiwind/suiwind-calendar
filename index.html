@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#f5efe9">
-<title>苏伊温德日历 V1.3.1</title>
+<title>苏伊温德日历 V1.3.2</title>
 <link rel="manifest" href="manifest.json">
 <script src="./supabase-local.js"></script>
 <style>
@@ -423,7 +423,7 @@ button{touch-action:manipulation}
 <body>
 <div class="app">
   <div class="top">
-    <div class="brand"><h1>苏伊温德日历 <span class="version">V1.3.1</span></h1><p>生命如暗室，不妨我明写春诗</p></div>
+    <div class="brand"><h1>苏伊温德日历 <span class="version">V1.3.2</span></h1><p>生命如暗室，不妨我明写春诗</p></div>
     <div class="actions">
       <button class="btn action-btn action-today" id="todayBtn"><span class="action-icon">⌂</span><span>回到今天</span></button>
       <button class="btn action-btn action-anniv" id="annivBtn"><span class="action-icon">♡</span><span>纪念日</span></button>
@@ -1503,7 +1503,10 @@ renderCal();renderSide();renderAnniv();renderStreak();renderAIStored();
 }
 
 let sb=null,sbUser=null,sbAccessToken='',syncTimer=null;
+let sbAuthSubscription=null,sbConfigFingerprint='',sbSessionRestoring=false,sbRestorePromise=null;
 function cloudCfg(){return S.g('cloudConfig',{url:'',key:''})}
+function cloudCfgFingerprint(c){return `${String(c?.url||'').trim()}::${String(c?.key||'').trim()}`}
+
 function syncMeta(){return S.g('syncMeta',{localUpdatedAt:'',lastSyncedAt:'',lastSyncedCloudAt:'',cloudUpdatedAt:'',conflict:false})}
 function saveSyncMeta(patch){
   const next={...syncMeta(),...patch};
@@ -1531,7 +1534,7 @@ function renderSyncMeta(){
   if($('#localUpdatedLabel'))$('#localUpdatedLabel').textContent=fmtSyncTime(m.localUpdatedAt);
   if($('#cloudUpdatedLabel'))$('#cloudUpdatedLabel').textContent=fmtSyncTime(m.cloudUpdatedAt);
   if($('#lastSyncedLabel'))$('#lastSyncedLabel').textContent=fmtSyncTime(m.lastSyncedAt);
-  if($('#syncStateLabel'))$('#syncStateLabel').textContent=m.conflict?'⚠ 需要处理冲突':(sbUser?'正常':'未登录');
+  if($('#syncStateLabel'))$('#syncStateLabel').textContent=m.conflict?'⚠ 需要处理冲突':(sbSessionRestoring&&!sbUser?'恢复登录中':(sbUser?'正常':'未登录'));
   if($('#syncConflictBox'))$('#syncConflictBox').classList.toggle('show',!!m.conflict)
 }
 function setCloudStatus(state,text){
@@ -1557,28 +1560,92 @@ async function refreshCloudMeta(){
   saveSyncMeta({cloudUpdatedAt:cloudAt,conflict});
   if(conflict)setCloudStatus('off','发现同步冲突')
 }
-function initSupabase(){
+async function recoverSupabaseSession(){
+  if(!sb)return null;
+  if(sbRestorePromise)return sbRestorePromise;
+  const client=sb;
+  sbSessionRestoring=true;
+  if(!sbUser)setCloudStatus('busy','恢复登录中');
+  updateCloudUI();
+  sbRestorePromise=(async()=>{
+    try{
+      const {data,error}=await client.auth.getSession();
+      if(client!==sb)return null;
+      const session=data?.session||null;
+      if(error&&!session)throw error;
+      if(!session){
+        sbUser=null;sbAccessToken='';
+        setCloudStatus('off','云端未登录');
+        return null
+      }
+      sbAccessToken=session.access_token||'';
+      sbUser=session.user||sbUser||null;
+      if(!sbUser){
+        const userResult=await client.auth.getUser();
+        if(client!==sb)return null;
+        if(userResult?.data?.user)sbUser=userResult.data.user
+      }
+      if(sbUser){
+        setCloudStatus('on',error?'登录已保存 · 网络待恢复':'云端已登录');
+        setTimeout(()=>{if(client===sb&&sbUser)refreshCloudMeta()},0)
+      }else{
+        setCloudStatus('busy','登录已保存 · 等待联网')
+      }
+      return sbUser
+    }catch(e){
+      if(client===sb)setCloudStatus('off','网络异常 · 登录状态已保留');
+      return sbUser
+    }finally{
+      if(client===sb){sbSessionRestoring=false;updateCloudUI()}
+      sbRestorePromise=null
+    }
+  })();
+  return sbRestorePromise
+}
+function initSupabase(force=false){
   const c=cloudCfg();
-  if(!c.url||!c.key||!window.supabase){sb=null;sbUser=null;setCloudStatus('off','仅本地');updateCloudUI();return null}
-  try{sb=window.supabase.createClient(c.url,c.key)}catch{sb=null}
-  if(!sb){setCloudStatus('off','配置错误');updateCloudUI();return null}
-  setCloudStatus('busy','检查账号');
-  sb.auth.getSession().then(({data})=>{sbAccessToken=data?.session?.access_token||''}).catch(()=>{});
-  sb.auth.getUser().then(async({data})=>{
-    sbUser=data?.user||null;
-    setCloudStatus(sbUser?'on':'off',sbUser?'云端已登录':'云端未登录');
-    updateCloudUI();
-    if(sbUser)await refreshCloudMeta();
-  }).catch(()=>{sbUser=null;setCloudStatus('off','云端异常');updateCloudUI()});
-  sb.auth.onAuthStateChange((_event,session)=>{
-    sbUser=session?.user||null;sbAccessToken=session?.access_token||'';updateCloudUI();renderSyncMeta();
+  if(!c.url||!c.key||!window.supabase){
+    if(sbAuthSubscription?.unsubscribe)sbAuthSubscription.unsubscribe();
+    sbAuthSubscription=null;sb=null;sbUser=null;sbAccessToken='';sbConfigFingerprint='';
+    setCloudStatus('off','仅本地');updateCloudUI();return null
+  }
+  const fingerprint=cloudCfgFingerprint(c);
+  if(sb&&sbConfigFingerprint===fingerprint&&!force){
+    if(!sbUser&&!sbSessionRestoring)recoverSupabaseSession();
+    return sb
+  }
+  if(sbAuthSubscription?.unsubscribe)sbAuthSubscription.unsubscribe();
+  sbAuthSubscription=null;sbRestorePromise=null;sbSessionRestoring=false;sbUser=null;sbAccessToken='';
+  try{
+    sb=window.supabase.createClient(c.url,c.key,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}})
+  }catch{sb=null}
+  if(!sb){sbConfigFingerprint='';setCloudStatus('off','配置错误');updateCloudUI();return null}
+  sbConfigFingerprint=fingerprint;
+  setCloudStatus('busy','恢复登录中');
+  const authListener=sb.auth.onAuthStateChange((event,session)=>{
+    if(event==='SIGNED_OUT'){
+      sbUser=null;sbAccessToken='';setCloudStatus('off','云端未登录')
+    }else if(session){
+      sbUser=session.user||sbUser||null;
+      sbAccessToken=session.access_token||sbAccessToken||'';
+      setCloudStatus(sbUser?'on':'busy',sbUser?'云端已登录':'登录续期中')
+    }
+    updateCloudUI();renderSyncMeta();
+    if(sbUser)setTimeout(()=>refreshCloudMeta(),0)
   });
+  sbAuthSubscription=authListener?.data?.subscription||null;
+  recoverSupabaseSession();
   return sb
 }
 function updateCloudUI(){
   const user=sbUser;
-  $('#accountTitle').textContent=user?`已登录 · ${user.email||'账号'}`:'未登录';
-  $('#accountInfo').textContent=user?'自动同步开启；若两台设备同时修改，检测到冲突时会暂停自动覆盖。':'当前所有数据只保存在本浏览器。';
+  if(sbSessionRestoring&&!user){
+    $('#accountTitle').textContent='正在恢复本设备登录…';
+    $('#accountInfo').textContent='正在读取已保存的登录状态并自动续期，请稍候。';
+  }else{
+    $('#accountTitle').textContent=user?`已登录 · ${user.email||'账号'}`:'未登录';
+    $('#accountInfo').textContent=user?'本设备已开启长期登录与自动续期；除非主动退出或清除网站数据，否则会自动恢复云同步。':'登录一次后，本设备会持久保存登录状态并自动续期；主动退出或清除网站数据后需重新登录。';
+  }
   $('#signOutBtn').disabled=!user;$('#uploadCloud').disabled=!user;$('#downloadCloud').disabled=!user;
   renderSyncMeta()
 }
@@ -1594,8 +1661,8 @@ async function saveCloudConfig(){
   const url=$('#sbUrl').value.trim(),key=$('#sbKey').value.trim();
   if(!url||!key){alert('请完整填写 Supabase Project URL 和 publishable key。');return}
   S.s('cloudConfig',{url,key});
-  const client=initSupabase();
-  setTimeout(retryPendingCloudSync,800);
+  const client=initSupabase(true);
+  setTimeout(()=>{recoverSupabaseSession().then(retryPendingCloudSync)},800);
   alert(client?'云端配置已保存。':'配置已保存，但初始化失败，请检查 URL 和 key。')
 }
 async function signUp(){
@@ -1853,12 +1920,17 @@ modal.onclick=e=>{if(e.target===modal)modal.classList.remove('show')};
 $('#exportBtn').onclick=exportData;$('#importBtn').onclick=()=>$('#importFile').click();$('#importFile').onchange=e=>{if(e.target.files[0])importData(e.target.files[0]);e.target.value=''};
 $('#notifyBtn').onclick=askNotify;$('#bannerNotify').onclick=askNotify;
 
-document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden')flushCloudSyncOnLeave()});
+async function recoverSessionAndRetrySync(){
+  if(!sb&&window.supabase)initSupabase();
+  if(sb)await recoverSupabaseSession();
+  retryPendingCloudSync()
+}
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden')flushCloudSyncOnLeave();else recoverSessionAndRetrySync()});
 window.addEventListener('pagehide',()=>{flushCloudSyncOnLeave()});
-window.addEventListener('pageshow',()=>{retryPendingCloudSync()});
-window.addEventListener('focus',()=>{retryPendingCloudSync()});
+window.addEventListener('pageshow',()=>{recoverSessionAndRetrySync()});
+window.addEventListener('focus',()=>{recoverSessionAndRetrySync()});
 
-renderCal();renderSide();renderAnniv();renderStreak();nextTerm();updateNotifyUI();checkReminders();renderAIStored();initSupabase();setTimeout(()=>{initSupabase();retryPendingCloudSync()},1800);window.addEventListener('load',()=>{initSupabase();setTimeout(retryPendingCloudSync,500)});
+renderCal();renderSide();renderAnniv();renderStreak();nextTerm();updateNotifyUI();checkReminders();renderAIStored();initSupabase();setTimeout(recoverSessionAndRetrySync,1800);window.addEventListener('load',()=>setTimeout(recoverSessionAndRetrySync,500));
 setInterval(checkReminders,30000);setTimeout(()=>{renderCal();renderSide();nextTerm()},900);
 if('serviceWorker'in navigator&&location.protocol.startsWith('http'))navigator.serviceWorker.register('./sw.js').catch(()=>{});
 })();
