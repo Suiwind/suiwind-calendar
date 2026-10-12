@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#f5efe9">
-<title>苏伊温德日历 V1.4.1</title>
+<title>苏伊温德日历 V1.5.0</title>
 <link rel="manifest" href="manifest.json">
 <script src="./supabase-local.js"></script>
 <style>
@@ -523,12 +523,42 @@ button{touch-action:manipulation}
   .learning-countdown-fixed{grid-template-columns:1fr}
 }
 
+
+/* ===== V1.5.0 学习中枢：驾驶舱 / 科学计时 / 统计 / 间隔复习 / 年度路线图 ===== */
+.learning-tabs{overflow-x:auto;flex-wrap:nowrap;scrollbar-width:none;overscroll-behavior-x:contain}
+.learning-tabs::-webkit-scrollbar{display:none}
+.learning-tabs .btn{flex:0 0 auto}
+.energy-switch{display:flex;gap:7px;flex-wrap:wrap}
+.energy-switch .btn.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.cockpit-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:10px}
+.cockpit-stack{display:flex;flex-direction:column;gap:10px}
+.cockpit-task{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:8px;align-items:center;padding:10px;border:1px solid #e9e2dc;border-radius:11px;background:#fff}
+.cockpit-task .rank{font-size:10px;font-weight:800;padding:3px 6px;border-radius:999px;background:#f0ebe7;color:#6e625a}
+.cockpit-task.must .rank{background:#fbe7e7;color:#9b4e4e}.cockpit-task.core .rank{background:#edf3e8;color:#5f775c}.cockpit-task.extra .rank{background:#edf2f7;color:#587086}
+.cockpit-task-title{font-size:12px;font-weight:750;line-height:1.4}.cockpit-task-meta{font-size:10px;color:var(--muted);margin-top:2px;line-height:1.45}
+.timer-shell{display:grid;grid-template-columns:1fr .72fr;gap:12px}
+.timer-face{border:1px solid #e7ded7;border-radius:18px;padding:18px;background:linear-gradient(145deg,#fffdfa,#f6f0ea);text-align:center}
+.timer-subject{font-size:12px;color:var(--muted);margin-bottom:5px}.timer-clock{font-size:48px;font-weight:820;letter-spacing:.03em;font-variant-numeric:tabular-nums;line-height:1.15}
+.timer-phase{font-size:12px;font-weight:750;margin-top:7px}.timer-hint{font-size:10px;color:var(--muted);line-height:1.5;margin-top:6px}
+.timer-controls{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:13px}
+.timer-start-grid{display:grid;grid-template-columns:130px 130px minmax(0,1fr) auto;gap:8px;align-items:center}
+.timer-start-grid select,.timer-start-grid input{min-width:0}
+.eye-rule{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:10px}.eye-rule>div{border:1px solid #e9e2dc;background:#faf7f4;border-radius:11px;padding:9px}.eye-rule b{display:block;font-size:11px}.eye-rule small{display:block;font-size:9px;color:var(--muted);line-height:1.45;margin-top:3px}
+.study-stat-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}.study-stat{border:1px solid #e8e1da;border-radius:12px;padding:11px;background:#fff}.study-stat small{display:block;color:var(--muted);font-size:9px}.study-stat b{display:block;font-size:18px;margin-top:4px}.study-stat i{display:block;height:5px;background:#e7e1dc;border-radius:999px;margin-top:8px;overflow:hidden}.study-stat i:after{content:"";display:block;height:100%;width:var(--w,0%);background:var(--accent);border-radius:999px}
+.study-log-row{display:grid;grid-template-columns:95px 90px minmax(0,1fr) auto;gap:8px;align-items:center;padding:8px 0;border-bottom:1px dashed #eee6df;font-size:11px}.study-log-row:last-child{border-bottom:0}
+.review-due{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;align-items:center;padding:9px 0;border-bottom:1px dashed #eee6df}.review-due:last-child{border-bottom:0}.review-due.overdue{background:#fff8f5;padding:9px;border-radius:9px;border-bottom:0;margin-bottom:6px}.review-due-title{font-size:11px;font-weight:720}.review-due-meta{font-size:9px;color:var(--muted);margin-top:2px}.review-badge{font-size:9px;padding:2px 6px;border-radius:999px;background:#edf3e9;color:#5d7359}
+.roadmap{display:flex;flex-direction:column;gap:10px}.roadmap-year{display:grid;grid-template-columns:74px minmax(0,1fr);gap:12px;position:relative}.roadmap-year:before{content:"";position:absolute;left:35px;top:42px;bottom:-12px;width:1px;background:#e2d8d1}.roadmap-year:last-child:before{display:none}.roadmap-year-label{width:70px;height:38px;border-radius:12px;background:#f2ebe6;border:1px solid #e1d5cd;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;z-index:1}.roadmap-card{border:1px solid #e9e2dc;border-radius:14px;padding:12px;background:#fff}.roadmap-theme{font-size:12px;font-weight:780}.roadmap-note{font-size:10px;color:var(--muted);line-height:1.5;margin-top:3px}.roadmap-event{display:flex;justify-content:space-between;gap:8px;align-items:flex-start;padding:7px 0;border-top:1px dashed #eee6df;margin-top:7px}.roadmap-event b{font-size:11px}.roadmap-event small{display:block;color:var(--muted);font-size:9px;margin-top:2px}
+.countdown-actions{display:flex;gap:6px;align-items:center}.countdown-edit{font-size:10px;padding:5px 8px}.learning-countdown-form.v150{grid-template-columns:minmax(0,1.3fr) 145px 145px 100px minmax(0,1fr) auto}
+.defer-note{border:1px dashed #dcd2ca;border-radius:12px;padding:10px;background:#faf8f6;color:var(--muted);font-size:10px;line-height:1.55}
+@media(max-width:900px){.cockpit-grid,.timer-shell{grid-template-columns:1fr}.study-stat-grid{grid-template-columns:1fr 1fr}.timer-start-grid{grid-template-columns:1fr 1fr}.timer-start-grid input{grid-column:1/-1}.learning-countdown-form.v150{grid-template-columns:1fr 1fr}.learning-countdown-form.v150 input:first-child,.learning-countdown-form.v150 input:nth-child(5){grid-column:1/-1}}
+@media(max-width:620px){.timer-clock{font-size:40px}.study-stat-grid{grid-template-columns:1fr 1fr}.study-log-row{grid-template-columns:80px 70px minmax(0,1fr)}.study-log-row .x{grid-column:3}.eye-rule{grid-template-columns:1fr}.roadmap-year{grid-template-columns:58px minmax(0,1fr)}.roadmap-year:before{left:28px}.roadmap-year-label{width:56px}.timer-start-grid{grid-template-columns:1fr}.learning-countdown-form.v150{grid-template-columns:1fr}.learning-countdown-form.v150>*{grid-column:1!important}}
+
 </style>
 </head>
 <body>
 <div class="app">
   <div class="top">
-    <div class="brand"><h1>苏伊温德日历 <span class="version">V1.4.2</span></h1><p>生命如暗室，不妨我明写春诗</p></div>
+    <div class="brand"><h1>苏伊温德日历 <span class="version">V1.5.0</span></h1><p>生命如暗室，不妨我明写春诗</p></div>
     <div class="actions">
       <button class="btn action-btn action-today" id="todayBtn"><span class="action-icon">⌂</span><span>回到今天</span></button>
       <button class="btn action-btn action-anniv" id="annivBtn"><span class="action-icon">♡</span><span>纪念日</span></button>
@@ -694,17 +724,21 @@ button{touch-action:manipulation}
       <div class="note" id="learnCountdownNote">暂无倒数日</div>
     </article>
     <article class="learning-overview">
-      <div class="learning-overview-head"><h4>2029 江苏专转本</h4><span class="metric" id="learnTransferMetric">待公布</span></div>
-      <div class="learning-progress"><i id="learnTransferBar" style="width:0%"></i></div>
-      <div class="note" id="learnTransferNote">预计 2029 年 3 月下旬</div>
+      <div class="learning-overview-head"><h4>本周专注</h4><span class="metric" id="learnStudyMetric">0 分钟</span></div>
+      <div class="learning-progress"><i id="learnStudyBar" style="width:0%"></i></div>
+      <div class="note" id="learnStudyNote">开始学习后自动累计</div>
     </article>
   </div>
   <div class="learning-tabs">
-    <button class="btn active" data-learning-tab="today">今日</button>
+    <button class="btn active" data-learning-tab="today">驾驶舱</button>
+    <button class="btn" data-learning-tab="timer">计时</button>
+    <button class="btn" data-learning-tab="stats">统计</button>
+    <button class="btn" data-learning-tab="review">复习</button>
     <button class="btn" data-learning-tab="english">英语</button>
     <button class="btn" data-learning-tab="finance">财经</button>
     <button class="btn" data-learning-tab="math">高数</button>
     <button class="btn" data-learning-tab="countdowns">倒数日</button>
+    <button class="btn" data-learning-tab="roadmap">路线图</button>
     <button class="btn" data-learning-tab="schedule">调度</button>
   </div>
   <div class="learning-panel" id="learningPanel"></div>
@@ -2161,9 +2195,248 @@ function renderLearningMini(){
   $('#learningMiniStat').textContent=items.length?`${items.length} 项`:'';
 }
 
+
+/* ===== V1.5.0 学习中枢增强 ===== */
+const V150_MILESTONES=[
+  {id:'goal-putonghua-20261114',title:'普通话考试',date:'2026-11-14',kind:'考证',note:'普通话水平测试'},
+  {id:'goal-english-b',title:'英语三级 B 考试',date:'2026-12-13',kind:'考试',note:'当前计划节点，可随官方/学校通知修改'},
+  {id:'goal-wps-2027',title:'计算机二级 WPS',date:'2027-03-27',endDate:'2027-03-29',kind:'考证',note:'预计考试窗口，待官方公布后修改'},
+  {id:'goal-cet4-2027',title:'英语四级 CET4',date:'2027-06-12',kind:'考试',note:'预计日期，待官方公布后修改'},
+  {id:'goal-cet6-2027',title:'英语六级 CET6',date:'2027-12-11',kind:'考试',note:'预计日期，待官方公布后修改'},
+  {id:'goal-transfer',title:'2029 江苏专转本预计窗口',date:'2029-03-20',endDate:'2029-03-31',kind:'升学考试',note:'预计 3 月下旬，待江苏省教育考试院公布后修改'}
+];
+const REVIEW_OFFSETS=[1,3,7,14,30];
+const STUDY_SUBJECTS=['英语','财经','高数','其他'];
+const ROADMAP_THEMES={
+  2026:['基础打底年','把英语词汇与学习习惯真正建立起来；财经、高数启动，并完成普通话 / 三级B等近期节点。'],
+  2027:['能力提升年','英语证书与计算机能力并行，四级、六级和 WPS 等节点按实际通知动态调整。'],
+  2028:['强化沉淀年','专转本进入系统强化：持续刷题、复盘与查漏补缺，给 2029 冲刺留足余量。'],
+  2029:['冲刺应考年','以江苏专转本正式考试通知为准，围绕最终节点做收口、模拟与状态管理。']
+};
+function v150DateOk(v){return /^\d{4}-\d{2}-\d{2}$/.test(String(v||''))}
+function v150Countdown(c){
+  const date=String(c?.date||'');let endDate=String(c?.endDate||'');
+  if(!v150DateOk(date))return null;if(!v150DateOk(endDate)||endDate<date)endDate='';
+  return {id:String(c.id||uuid()),title:String(c.title||'').trim(),date,endDate,kind:String(c.kind||'考试'),note:String(c.note||''),createdAt:String(c.createdAt||'')}
+}
+function v150EnsureState(){
+  LS.version=Math.max(5,Number(LS.version)||0);
+  LS.energy=(LS.energy&&typeof LS.energy==='object')?LS.energy:{};
+  LS.studyTimer=(LS.studyTimer&&typeof LS.studyTimer==='object')?LS.studyTimer:{active:null,sessions:[]};
+  if(!Array.isArray(LS.studyTimer.sessions))LS.studyTimer.sessions=[];
+  LS.studyTimer.active=LS.studyTimer.active&&typeof LS.studyTimer.active==='object'?LS.studyTimer.active:null;
+  LS.spacedReviews=(LS.spacedReviews&&typeof LS.spacedReviews==='object')?LS.spacedReviews:{done:{},settings:{finance:true,math:true,skills:true}};
+  if(!LS.spacedReviews.done||typeof LS.spacedReviews.done!=='object')LS.spacedReviews.done={};
+  LS.spacedReviews.settings={finance:LS.spacedReviews.settings?.finance!==false,math:LS.spacedReviews.settings?.math!==false,skills:LS.spacedReviews.settings?.skills!==false};
+  LS.countdowns=(Array.isArray(LS.countdowns)?LS.countdowns:[]).map(v150Countdown).filter(Boolean);
+  if(!LS.migrations||typeof LS.migrations!=='object')LS.migrations={};
+  if(!LS.migrations.editableMilestonesV150){
+    for(const c of V150_MILESTONES){
+      const duplicate=LS.countdowns.some(x=>x.id===c.id||(x.title===c.title&&x.date===c.date));
+      if(!duplicate)LS.countdowns.push({...c,createdAt:new Date().toISOString()});
+    }
+    // 兼容 V1.4.2 里预置的普通话节点，避免重复。
+    const seen=new Set();
+    LS.countdowns=LS.countdowns.filter(x=>{const key=`${x.title}|${x.date}`;if(seen.has(key))return false;seen.add(key);return true});
+    LS.migrations.editableMilestonesV150=true;
+  }
+  S.s('learningState',LS)
+}
+v150EnsureState();
+
+// 覆盖导入时的学习状态规范化：保留 V1.5 新字段和可编辑日期范围。
+normalizeLearningState=function(raw){
+  const x=(raw&&typeof raw==='object')?raw:{};
+  const d={version:5,busyDates:{},freeLogs:[],countdowns:[],english:{round1:{},round2:{},skills:{},reviews:{}},finance:{completions:{}},math:{completions:{}},energy:{},studyTimer:{active:null,sessions:[]},spacedReviews:{done:{},settings:{finance:true,math:true,skills:true}},migrations:{}};
+  d.busyDates=(x.busyDates&&typeof x.busyDates==='object')?x.busyDates:{};d.freeLogs=Array.isArray(x.freeLogs)?x.freeLogs:[];
+  d.countdowns=(Array.isArray(x.countdowns)?x.countdowns:[]).map(v150Countdown).filter(Boolean);
+  const en=x.english||{};d.english.round1=(en.round1&&typeof en.round1==='object')?en.round1:{};d.english.round2=(en.round2&&typeof en.round2==='object')?en.round2:{};d.english.skills=(en.skills&&typeof en.skills==='object')?en.skills:{};d.english.reviews=(en.reviews&&typeof en.reviews==='object')?en.reviews:{};
+  d.finance.completions=(x.finance?.completions&&typeof x.finance.completions==='object')?x.finance.completions:{};d.math.completions=(x.math?.completions&&typeof x.math.completions==='object')?x.math.completions:{};
+  d.energy=(x.energy&&typeof x.energy==='object')?x.energy:{};
+  d.studyTimer=(x.studyTimer&&typeof x.studyTimer==='object')?x.studyTimer:{active:null,sessions:[]};if(!Array.isArray(d.studyTimer.sessions))d.studyTimer.sessions=[];
+  d.spacedReviews=(x.spacedReviews&&typeof x.spacedReviews==='object')?x.spacedReviews:{done:{},settings:{finance:true,math:true,skills:true}};if(!d.spacedReviews.done||typeof d.spacedReviews.done!=='object')d.spacedReviews.done={};
+  d.spacedReviews.settings={finance:d.spacedReviews.settings?.finance!==false,math:d.spacedReviews.settings?.math!==false,skills:d.spacedReviews.settings?.skills!==false};d.migrations=(x.migrations&&typeof x.migrations==='object')?x.migrations:{};
+  LS=d;v150EnsureState();return LS
+};
+defaultLearningState=function(){return normalizeLearningState({})};
+
+function countdownLabel(x){return x?.endDate&&x.endDate!==x.date?`${x.date} — ${x.endDate}`:x?.date||'—'}
+function englishExamCountdown(){return (LS.countdowns||[]).find(x=>x.id==='goal-english-b')||null}
+function transferCountdown(){return (LS.countdowns||[]).find(x=>x.id==='goal-transfer')||null}
+function englishExamDate(){return englishExamCountdown()?.date||''}
+function englishContentDeadline(){const k=englishExamDate();return k?addDaysKey(k,-3):''}
+learningSystemCountdowns=function(){return []};
+learningAllCountdowns=function(){return [...(LS.countdowns||[])].sort((a,b)=>a.date.localeCompare(b.date)||a.title.localeCompare(b.title,'zh-CN'))};
+learningUpcomingCountdowns=function(){const k=learningTodayKey();return learningAllCountdowns().filter(x=>(x.endDate||x.date)>=k).sort((a,b)=>{const aa=a.date<k?k:a.date,bb=b.date<k?k:b.date;return aa.localeCompare(bb)})};
+learningNearestCountdown=function(){return learningUpcomingCountdowns()[0]||null};
+learningCountdownsOnDate=function(k){return (LS.countdowns||[]).filter(x=>k>=x.date&&k<=(x.endDate||x.date))};
+learningCountdownText=function(date,endDate=''){
+  const today=learningTodayDate(),n=dayDiff(parse(date),today);
+  if(endDate&&v150DateOk(endDate)&&learningTodayKey()>=date&&learningTodayKey()<=endDate)return '正在进行';
+  return n>0?`还有 ${n} 天`:n===0?'就是今天':`已过去 ${Math.abs(n)} 天`
+};
+isExamKey=function(k){const x=englishExamCountdown();return !!x&&k>=x.date&&k<=(x.endDate||x.date)};
+isTransferWindowKey=function(k){const x=transferCountdown();return !!x&&k>=x.date&&k<=(x.endDate||x.date)};
+
+function saveCountdownEdit(id,title,date,endDate,kind,note){
+  title=String(title||'').trim();date=String(date||'').trim();endDate=String(endDate||'').trim();
+  if(!title||!v150DateOk(date)){alert('请填写名称和有效日期。');return false}
+  if(endDate&&(!v150DateOk(endDate)||endDate<date)){alert('结束日期不能早于开始日期。');return false}
+  const i=LS.countdowns.findIndex(x=>x.id===id);if(i<0)return false;
+  LS.countdowns[i]={...LS.countdowns[i],title,date,endDate:endDate||'',kind:String(kind||'考试'),note:String(note||'').trim()};learningSave();return true
+}
+addLearningCountdown=function(title,date,kind,note,endDate=''){
+  title=String(title||'').trim();date=String(date||'').trim();endDate=String(endDate||'').trim();
+  if(!title){alert('先写一个考试 / 考证名称。');return}
+  if(!v150DateOk(date)){alert('请选择开始日期。');return}
+  if(endDate&&(!v150DateOk(endDate)||endDate<date)){alert('结束日期不能早于开始日期。');return}
+  if((LS.countdowns||[]).some(x=>x.title===title&&x.date===date)){alert('这个倒数日已经存在。');return}
+  LS.countdowns.push({id:uuid(),title,date,endDate:endDate||'',kind:String(kind||'考试'),note:String(note||'').trim(),createdAt:new Date().toISOString()});learningSave();renderLearningAll()
+};
+
+function energyFor(k=learningTodayKey()){return LS.energy[k]||'normal'}
+function setEnergy(mode,k=learningTodayKey()){LS.energy[k]=mode;learningSave();renderLearningAll()}
+function energyLabel(mode){return mode==='high'?'高能量':mode==='low'?'低负荷':'标准'}
+function energyPlan(mode){return mode==='low'?{focus:25,shortBreak:5,longBreak:15}:{focus:50,shortBreak:10,longBreak:20}}
+function secHuman(sec){sec=Math.max(0,Math.round(sec||0));const h=Math.floor(sec/3600),m=Math.floor((sec%3600)/60);return h?`${h}小时${m?`${m}分`:''}`:`${m}分钟`}
+function timeClock(sec){sec=Math.max(0,Math.floor(sec||0));const h=Math.floor(sec/3600),m=Math.floor(sec%3600/60),s=sec%60;return h?`${pad(h)}:${pad(m)}:${pad(s)}`:`${pad(m)}:${pad(s)}`}
+function studyWeekRange(){const a=startOfWeek(learningTodayDate()),b=endOfWeek(learningTodayDate());return [fmt(a),fmt(b)]}
+function sessionDate(s){return String(s.endAt||s.startAt||'').slice(0,10)}
+function studySessionsBetween(a,b){return (LS.studyTimer.sessions||[]).filter(x=>{const k=sessionDate(x);return k>=a&&k<=b})}
+function studySecondsBetween(a,b,subject=''){return studySessionsBetween(a,b).filter(x=>!subject||x.subject===subject).reduce((sum,x)=>sum+Number(x.focusSeconds||0),0)}
+function todayStudySeconds(subject=''){const k=learningTodayKey();return studySecondsBetween(k,k,subject)+(LS.studyTimer.active&&(!subject||LS.studyTimer.active.subject===subject)?activeStudyFocusSeconds():0)}
+function weekStudySeconds(subject=''){const[a,b]=studyWeekRange();return studySecondsBetween(a,b,subject)+(LS.studyTimer.active&&(!subject||LS.studyTimer.active.subject===subject)&&learningTodayKey()>=a&&learningTodayKey()<=b?activeStudyFocusSeconds():0)}
+function monthStudySeconds(subject=''){const d=learningTodayDate(),a=`${d.getFullYear()}-${pad(d.getMonth()+1)}-01`,b=fmt(new Date(d.getFullYear(),d.getMonth()+1,0,12));return studySecondsBetween(a,b,subject)+(LS.studyTimer.active&&(!subject||LS.studyTimer.active.subject===subject)?activeStudyFocusSeconds():0)}
+function activeStudyFocusSeconds(){const a=LS.studyTimer.active;if(!a)return 0;let total=Number(a.focusAccumSec||0);if(a.phase==='focus')total+=Math.max(0,Math.floor((Date.now()-Date.parse(a.phaseStartedAt))/1000));return total}
+function currentPhaseSeconds(){const a=LS.studyTimer.active;if(!a)return 0;return Math.max(0,Math.floor((Date.now()-Date.parse(a.phaseStartedAt))/1000))}
+function persistLearningState(){S.s('learningState',LS);renderLearningOverview();renderLearningMini();renderCal()}
+function startStudy(subject,energy,note=''){
+  if(LS.studyTimer.active){alert('已经有一段学习正在进行，请先结束当前学习。');return}
+  if(!STUDY_SUBJECTS.includes(subject))subject='其他';
+  const nowIso=new Date().toISOString();LS.studyTimer.active={id:uuid(),subject,energy:energy||energyFor(),note:String(note||'').trim(),sessionStartedAt:nowIso,phase:'focus',phaseStartedAt:nowIso,focusAccumSec:0,breakAccumSec:0,blocksCompleted:0,blocksSinceLong:0,lastEyeMark:0};persistLearningState();renderLearningAll();studyTimerTick()
+}
+function v150Notify(title,body){try{if('Notification'in window&&Notification.permission==='granted')new Notification(title,{body})}catch{}}
+function completeFocusBlock(){const a=LS.studyTimer.active;if(!a||a.phase!=='focus')return;const p=energyPlan(a.energy);a.focusAccumSec=Number(a.focusAccumSec||0)+p.focus*60;a.blocksCompleted=Number(a.blocksCompleted||0)+1;a.blocksSinceLong=Number(a.blocksSinceLong||0)+1;a.phase='break_due';a.phaseStartedAt=new Date().toISOString();a.lastEyeMark=0;persistLearningState();v150Notify('本轮学习完成',`已专注 ${p.focus} 分钟，建议离开屏幕休息。`);renderLearningPanel()}
+function startStudyBreak(){const a=LS.studyTimer.active;if(!a)return;if(a.phase==='focus'){a.focusAccumSec=Number(a.focusAccumSec||0)+currentPhaseSeconds();a.blocksCompleted=Number(a.blocksCompleted||0)+1;a.blocksSinceLong=Number(a.blocksSinceLong||0)+1}a.phase='break';a.phaseStartedAt=new Date().toISOString();a.focusDueNotified=false;persistLearningState();renderLearningPanel()}
+function skipBreakAndContinue(){const a=LS.studyTimer.active;if(!a)return;if(a.phase==='focus'){a.focusAccumSec=Number(a.focusAccumSec||0)+currentPhaseSeconds();a.blocksCompleted=Number(a.blocksCompleted||0)+1;a.blocksSinceLong=Number(a.blocksSinceLong||0)+1}if(a.blocksSinceLong>=2)a.blocksSinceLong=0;a.phase='focus';a.phaseStartedAt=new Date().toISOString();a.lastEyeMark=0;a.focusDueNotified=false;persistLearningState();renderLearningPanel()}
+function startNextFocus(){const a=LS.studyTimer.active;if(!a)return;if(a.blocksSinceLong>=2)a.blocksSinceLong=0;a.phase='focus';a.phaseStartedAt=new Date().toISOString();a.lastEyeMark=0;a.focusDueNotified=false;persistLearningState();renderLearningPanel()}
+function finishStudy(){const a=LS.studyTimer.active;if(!a)return;let focus=Number(a.focusAccumSec||0),br=Number(a.breakAccumSec||0);if(a.phase==='focus')focus+=Math.max(0,Math.floor((Date.now()-Date.parse(a.phaseStartedAt))/1000));else if(a.phase==='break')br+=currentPhaseSeconds()
+  LS.studyTimer.sessions.push({id:a.id,subject:a.subject,energy:a.energy,note:a.note,startAt:a.sessionStartedAt,endAt:new Date().toISOString(),focusSeconds:focus,breakSeconds:br,blocks:a.blocksCompleted||0});LS.studyTimer.active=null;persistLearningState();renderLearningAll()
+}
+function removeStudySession(id){if(!confirm('删除这条学习计时记录？'))return;LS.studyTimer.sessions=LS.studyTimer.sessions.filter(x=>x.id!==id);persistLearningState();renderLearningAll()}
+function studyTimerTick(){
+  const a=LS.studyTimer.active;if(!a){updateTimerDOM();return}
+  const p=energyPlan(a.energy),elapsed=currentPhaseSeconds();
+  if(a.phase==='focus'){
+    const eyeMark=Math.floor(elapsed/(20*60));if(eyeMark>Number(a.lastEyeMark||0)){a.lastEyeMark=eyeMark;S.s('learningState',LS);v150Notify('看远 20 秒', '把视线移到约 6 米外，让眼睛和身体短暂放松。')}
+    if(elapsed>=p.focus*60&&!a.focusDueNotified){a.focusDueNotified=true;S.s('learningState',LS);v150Notify('到建议休息点了',`已经专注 ${p.focus} 分钟。可以把这一小段收尾后离屏休息。`);renderLearningPanel();return}
+  }else if(a.phase==='break'){
+    const breakMin=a.blocksSinceLong>=2?p.longBreak:p.shortBreak;
+    if(elapsed>=breakMin*60){a.breakAccumSec=Number(a.breakAccumSec||0)+breakMin*60;a.phase='ready';a.phaseStartedAt=new Date().toISOString();S.s('learningState',LS);v150Notify('休息结束', '如果状态合适，可以开始下一轮。');renderLearningPanel();return}
+  }
+  updateTimerDOM()
+}
+function updateTimerDOM(){
+  const c=$('#liveTimerClock'),ph=$('#liveTimerPhase'),hi=$('#liveTimerHint');if(!c)return;const a=LS.studyTimer.active;
+  if(!a){c.textContent='00:00';if(ph)ph.textContent='尚未开始';if(hi)hi.textContent='选择科目后开始计时。';return}
+  const p=energyPlan(a.energy),elapsed=currentPhaseSeconds();
+  if(a.phase==='focus'){const left=p.focus*60-elapsed;c.textContent=left>=0?timeClock(left):`+${timeClock(Math.abs(left))}`;ph.textContent=left>=0?`${a.subject} · 专注中 · 第 ${(a.blocksCompleted||0)+1} 轮`:`${a.subject} · 已到建议休息点`;const nextEye=20*60-(elapsed%(20*60));hi.textContent=left>=0?`本轮建议 ${p.focus} 分钟 · 约 ${timeClock(nextEye)} 后看远 20 秒 · 已累计 ${secHuman(activeStudyFocusSeconds())}`:`已超过建议专注时长 ${secHuman(Math.abs(left))}；学习时间仍会如实记录，收尾后建议离屏休息。`}
+  else if(a.phase==='break_due'){c.textContent='00:00';ph.textContent='本轮完成 · 该休息了';hi.textContent=`建议 ${a.blocksSinceLong>=2?p.longBreak:p.shortBreak} 分钟离屏休息。`}
+  else if(a.phase==='break'){const mins=a.blocksSinceLong>=2?p.longBreak:p.shortBreak;c.textContent=timeClock(Math.max(0,mins*60-elapsed));ph.textContent='休息中';hi.textContent='离开屏幕、起身走动、补水。'}
+  else{c.textContent='00:00';ph.textContent='休息完成';hi.textContent='状态合适再开始下一轮，不必为了计时强撑。'}
+}
+setInterval(studyTimerTick,1000);
+
+function reviewKey(track,id,offset){return `${track}:${id}:${offset}`}
+function spacedReviewSources(){
+  const out=[],settings=LS.spacedReviews.settings||{};
+  if(settings.finance!==false)FINANCE_EXEC_ORDER.forEach(id=>{const v=LS.finance.completions[String(id)],k=learningEntryDate(v);if(k){const x=financeItem(id);out.push({track:'财经',trackKey:'finance',id:String(id),completed:k,title:`${x?.subject||'财经'} · ${x?.title||`原 Day ${id}`}`})}});
+  if(settings.math!==false)for(let id=1;id<=48;id++){const v=LS.math.completions[String(id)],k=learningEntryDate(v);if(k)out.push({track:'高数',trackKey:'math',id:String(id),completed:k,title:`高数 Day ${id}`})}
+  if(settings.skills!==false)ENGLISH_SKILLS.forEach(x=>{const v=LS.english.skills[String(x.id)],k=learningEntryDate(v);if(k)out.push({track:'四级技巧',trackKey:'skills',id:String(x.id),completed:k,title:`${x.module} · ${x.title}`})});
+  return out
+}
+function spacedReviewItems(){const out=[];for(const src of spacedReviewSources())for(const off of REVIEW_OFFSETS){const key=reviewKey(src.trackKey,src.id,off),due=addDaysKey(src.completed,off),done=LS.spacedReviews.done[key];out.push({...src,offset:off,key,due,done})}return out.sort((a,b)=>a.due.localeCompare(b.due))}
+function dueReviews(){const k=learningTodayKey();return spacedReviewItems().filter(x=>x.due<=k&&!x.done)}
+function upcomingReviews(limit=12){const k=learningTodayKey();return spacedReviewItems().filter(x=>x.due>k&&!x.done).slice(0,limit)}
+function markReviewDone(key){LS.spacedReviews.done[key]={date:learningTodayKey(),at:new Date().toISOString()};persistLearningState();renderLearningAll()}
+function setReviewSetting(name,val){LS.spacedReviews.settings[name]=!!val;persistLearningState();renderLearningAll()}
+
+function renderLearningTimer(){
+  const e=$('#learningPanel'),a=LS.studyTimer.active,mode=energyFor(),p=energyPlan(a?.energy||mode),todayTotal=todayStudySeconds();
+  const controls=a?`<div class="timer-controls">${a.phase==='focus'&&a.focusDueNotified?`<button class="btn primary" id="startBreakBtn">开始休息</button><button class="btn" id="skipBreakBtn">继续下一轮</button>`:a.phase==='break_due'?`<button class="btn primary" id="startBreakBtn">开始休息</button><button class="btn" id="skipBreakBtn">继续下一轮</button>`:a.phase==='ready'?`<button class="btn primary" id="nextFocusBtn">开始下一轮</button>`:''}<button class="btn learning-danger-btn" id="finishStudyBtn">结束学习</button></div>`:'';
+  e.innerHTML=`<div class="learning-section-card"><div class="learning-row spread"><div><h4>学习计时</h4><div class="learning-source-note">只累计“专注阶段”，休息不计入学习时长；关闭页面后重新打开也能恢复当前阶段。</div></div><span class="learning-chip green">今天 ${secHuman(todayTotal)}</span></div>${!a?`<div class="timer-start-grid" style="margin-top:10px"><select id="studySubject">${STUDY_SUBJECTS.map(x=>`<option>${x}</option>`).join('')}</select><select id="studyEnergy"><option value="normal" ${mode==='normal'?'selected':''}>标准 · 50/10</option><option value="high" ${mode==='high'?'selected':''}>高能量 · 50/10</option><option value="low" ${mode==='low'?'selected':''}>低负荷 · 25/5</option></select><input id="studyNote" type="text" placeholder="可选：今天具体学什么"><button class="btn primary" id="startStudyBtn">开始学习</button></div>`:''}</div>
+  <div class="timer-shell"><div class="timer-face"><div class="timer-subject">${a?`${esc(a.subject)} · ${energyLabel(a.energy)}`:'科学学习节奏'}</div><div class="timer-clock" id="liveTimerClock">00:00</div><div class="timer-phase" id="liveTimerPhase">${a?'准备中':'尚未开始'}</div><div class="timer-hint" id="liveTimerHint"></div>${controls}</div><div class="learning-section-card"><h4>默认节奏</h4><div class="eye-rule"><div><b>50 分钟专注</b><small>标准 / 高能量模式。低负荷模式自动改为 25 分钟。</small></div><div><b>10 分钟离屏</b><small>每两轮后给 20 分钟长休息；低负荷为 5 / 15 分钟。</small></div><div><b>20-20-20 护眼</b><small>每 20 分钟看约 6 米外至少 20 秒，不计为正式休息。</small></div></div><div class="learning-source-note" style="margin-top:9px">没有一个对所有人都“唯一最科学”的番茄时长。这里采用 50/10 作为默认，并用短休息、长休息和 20-20-20 护眼把疲劳控制放在第一位；如果你今天已经很累，直接切换低负荷 25/5。</div></div></div>`;
+  if($('#startStudyBtn'))$('#startStudyBtn').onclick=()=>startStudy($('#studySubject').value,$('#studyEnergy').value,$('#studyNote').value);
+  if($('#startBreakBtn'))$('#startBreakBtn').onclick=startStudyBreak;if($('#skipBreakBtn'))$('#skipBreakBtn').onclick=skipBreakAndContinue;if($('#nextFocusBtn'))$('#nextFocusBtn').onclick=startNextFocus;if($('#finishStudyBtn'))$('#finishStudyBtn').onclick=finishStudy;updateTimerDOM()
+}
+function renderLearningStats(){
+  const e=$('#learningPanel'),[wa,wb]=studyWeekRange(),today=learningTodayKey(),sessions=[...(LS.studyTimer.sessions||[])].sort((a,b)=>String(b.endAt||'').localeCompare(String(a.endAt||''))).slice(0,30),weekTotal=weekStudySeconds();
+  const cards=STUDY_SUBJECTS.map(sub=>{const sec=weekStudySeconds(sub),w=weekTotal?Math.round(sec/weekTotal*100):0;return `<div class="study-stat"><small>${sub} · 本周</small><b>${secHuman(sec)}</b><i style="--w:${w}%"></i></div>`}).join('');
+  e.innerHTML=`<div class="learning-section-card"><div class="learning-row spread"><div><h4>学习时间统计</h4><div class="learning-source-note">统计的是计时器记录的真实专注时间，不把休息时间混进去。</div></div><span class="learning-chip blue">${wa} — ${wb}</span></div><div class="study-stat-grid" style="margin-top:10px">${cards}</div></div><div class="learning-section-card"><h4>今天 / 本周 / 本月</h4><div class="study-stat-grid"><div class="study-stat"><small>今天</small><b>${secHuman(todayStudySeconds())}</b></div><div class="study-stat"><small>本周</small><b>${secHuman(weekTotal)}</b></div><div class="study-stat"><small>本月</small><b>${secHuman(monthStudySeconds())}</b></div><div class="study-stat"><small>已记录学习段</small><b>${LS.studyTimer.sessions.length}</b></div></div></div><div class="learning-section-card"><h4>最近学习记录</h4>${sessions.length?sessions.map(x=>`<div class="study-log-row"><b>${esc(x.subject)}</b><span>${secHuman(x.focusSeconds)}</span><span>${String(x.startAt||'').slice(0,16).replace('T',' ')}${x.note?` · ${esc(x.note)}`:''}</span><button class="x" data-study-remove="${x.id}">×</button></div>`).join(''):'<div class="learning-empty">还没有计时记录。以后每次“开始学习 → 结束学习”都会自动留下记录。</div>'}</div>`;
+  document.querySelectorAll('[data-study-remove]').forEach(b=>b.onclick=()=>removeStudySession(b.dataset.studyRemove))
+}
+function renderSpacedReviews(){
+  const e=$('#learningPanel'),due=dueReviews(),up=upcomingReviews(),settings=LS.spacedReviews.settings;
+  const row=x=>`<div class="review-due ${x.due<learningTodayKey()?'overdue':''}"><div><div class="review-due-title">${esc(x.track)} · ${esc(x.title)}</div><div class="review-due-meta">第 ${x.offset} 天复习 · 应复习 ${x.due}${x.due<learningTodayKey()?' · 已顺延到今天':''}</div></div><button class="btn" data-review-done="${x.key}">完成复习</button></div>`;
+  e.innerHTML=`<div class="learning-section-card"><div class="learning-row spread"><div><h4>间隔复习</h4><div class="learning-source-note">完成正式学习后自动生成 +1、+3、+7、+14、+30 天复习。逾期不会消失，只会进入“待复习”。</div></div><span class="learning-chip ${due.length?'orange':'green'}">待复习 ${due.length}</span></div><div class="learning-row" style="margin-top:9px"><label class="check"><input id="revFinance" type="checkbox" ${settings.finance!==false?'checked':''}>财经</label><label class="check"><input id="revMath" type="checkbox" ${settings.math!==false?'checked':''}>高数</label><label class="check"><input id="revSkills" type="checkbox" ${settings.skills!==false?'checked':''}>四级技巧</label></div><div class="learning-source-note">英语单词不额外套这套算法：你已经有“早晚复习昨日 + 周一总复习”，避免重复堆任务。</div></div><div class="learning-section-card"><h4>今天应复习</h4>${due.length?due.map(row).join(''):'<div class="learning-empty">今天没有到期复习，放心推进新内容。</div>'}</div><div class="learning-section-card"><h4>接下来</h4>${up.length?up.map(x=>`<div class="learning-mini-line"><b>${x.due}</b> · ${esc(x.track)} · ${esc(x.title)} · 第${x.offset}天</div>`).join(''):'<div class="learning-empty">暂无未来复习任务。</div>'}</div>`;
+  $('#revFinance').onchange=x=>setReviewSetting('finance',x.target.checked);$('#revMath').onchange=x=>setReviewSetting('math',x.target.checked);$('#revSkills').onchange=x=>setReviewSetting('skills',x.target.checked);document.querySelectorAll('[data-review-done]').forEach(b=>b.onclick=()=>markReviewDone(b.dataset.reviewDone))
+}
+function renderRoadmap(){
+  const e=$('#learningPanel'),events=learningAllCountdowns(),years=[2026,2027,2028,2029];
+  e.innerHTML=`<div class="learning-section-card"><div class="learning-row spread"><div><h4>2026—2029 年度路线图</h4><div class="learning-source-note">路线图直接读取“倒数日”，所以预测日期以后修改一次，这里、月历和驾驶舱会一起更新。</div></div><button class="btn" id="roadmapEditDates">管理日期</button></div></div><div class="roadmap">${years.map(y=>{const theme=ROADMAP_THEMES[y]||['阶段',''],arr=events.filter(x=>Number(x.date.slice(0,4))===y);return `<div class="roadmap-year"><div class="roadmap-year-label">${y}</div><div class="roadmap-card"><div class="roadmap-theme">${theme[0]}</div><div class="roadmap-note">${theme[1]}</div>${arr.length?arr.map(x=>`<div class="roadmap-event"><div><b>${esc(x.title)}</b><small>${esc(x.kind)} · ${countdownLabel(x)}${x.note?` · ${esc(x.note)}`:''}</small></div><span class="learning-chip ${x.date>=learningTodayKey()?'blue':''}">${learningCountdownText(x.date,x.endDate)}</span></div>`).join(''):'<div class="learning-empty">这一年暂时没有固定考试节点。</div>'}</div></div>`}).join('')}</div><div class="defer-note" style="margin-top:10px">暂缓但已保留在开发路线：薄弱点 / 错题系统、完整“人生事件”时间轴、根据长期数据自动调整学习强度的更高级推荐。等现有学习数据积累起来再做，会比现在空建一个壳更有价值。</div>`;
+  $('#roadmapEditDates').onclick=()=>{activeLearningTab='countdowns';renderLearningAll()}
+}
+
+renderLearningOverview=function(){
+  if(!$('#learnEnglishMetric'))return;const r1=learningDoneCount(LS.english.round1),r2=learningDoneCount(LS.english.round2),sk=learningDoneCount(LS.english.skills);
+  if(!englishRound1Complete()){$('#learnEnglishMetric').textContent=`${r1} / 45`;$('#learnEnglishBar').style.width=`${learningPct(r1,45)}%`;$('#learnEnglishNote').textContent=`词汇第一轮 · 下一个 Lesson ${nextNumber(45,LS.english.round1)||'—'}`}else{const done=r2+sk,total=45+ENGLISH_SKILLS.length;$('#learnEnglishMetric').textContent=`${done} / ${total}`;$('#learnEnglishBar').style.width=`${learningPct(done,total)}%`;$('#learnEnglishNote').textContent=`第二轮 ${r2}/45 · 技巧 ${sk}/${ENGLISH_SKILLS.length}`}
+  const f=learningDoneCount(LS.finance.completions),m=learningDoneCount(LS.math.completions);$('#learnFinanceMetric').textContent=`${f} / 80`;$('#learnFinanceBar').style.width=`${learningPct(f,80)}%`;const fd=nextFinanceDay(),fp=fd?financePhaseByPosition(financeExecPosition(fd)):null;$('#learnFinanceNote').textContent=fd?`${fp.name} · 下一项原 Day ${fd}`:'80 天全部完成';$('#learnMathMetric').textContent=`${m} / 48`;$('#learnMathBar').style.width=`${learningPct(m,48)}%`;$('#learnMathNote').textContent=nextMathDay()?`下一项 Day ${nextMathDay()}`:'48 天全部完成';
+  const nearest=learningNearestCountdown();if(nearest){const left=dayDiff(parse(nearest.date),learningTodayDate());$('#learnCountdownMetric').textContent=left>0?`还有 ${left} 天`:left===0?'今天':(nearest.endDate&&nearest.endDate>=learningTodayKey()?'进行中':'已结束');$('#learnCountdownNote').textContent=`${nearest.title} · ${countdownLabel(nearest)} · ${nearest.kind}`;const horizon=60;$('#learnCountdownBar').style.width=`${left<=0?100:left>=horizon?6:Math.max(6,Math.round((1-left/horizon)*100))}%`}else{$('#learnCountdownMetric').textContent='暂无';$('#learnCountdownNote').textContent='可在“倒数日”中添加';$('#learnCountdownBar').style.width='0%'}
+  const w=weekStudySeconds();$('#learnStudyMetric').textContent=secHuman(w);$('#learnStudyBar').style.width=`${Math.min(100,Math.round(w/(20*3600)*100))}%`;$('#learnStudyNote').textContent=`今天 ${secHuman(todayStudySeconds())} · ${LS.studyTimer.active?'正在计时':'未开始计时'}`
+};
+renderLearningBanner=function(){
+  const e=$('#learningBanner');if(!e)return;const k=learningTodayKey(),mil=isMilitaryKey(k),busy=isLearningBusyKey(k),nearest=learningNearestCountdown(),mode=energyFor(k);let title=mil?'军训保护期':busy?'今天已设为缓冲日':`今日能量：${energyLabel(mode)}`;let desc=mil?'10/12—10/25：财经、高数正式进度冻结；英语照常按周节奏推进。':busy?'今天不强制推进正式队列；先保留最轻的复习和必要任务。':'提前完成就整体前移；临时忙就整体顺延。学习时间只记录真实专注，不用为了维持数字硬撑。';const nearChip=nearest?`<span class="learning-chip blue">${esc(nearest.title)} · ${learningCountdownText(nearest.date,nearest.endDate)}</span>`:'';e.innerHTML=`<div><strong>${title}</strong><div class="small">${desc}</div></div><div class="learning-row">${nearChip}<button class="btn ${busy?'':'learning-danger-btn'}" id="toggleBusyToday">${busy?'恢复正常计划':'今天很忙'}</button></div>`;$('#toggleBusyToday').onclick=()=>toggleLearningBusy(k)
+};
+renderLearningPanel=function(){
+  document.querySelectorAll('[data-learning-tab]').forEach(b=>b.classList.toggle('active',b.dataset.learningTab===activeLearningTab));
+  if(activeLearningTab==='timer')renderLearningTimer();else if(activeLearningTab==='stats')renderLearningStats();else if(activeLearningTab==='review')renderSpacedReviews();else if(activeLearningTab==='roadmap')renderRoadmap();else if(activeLearningTab==='english')renderLearningEnglish();else if(activeLearningTab==='finance')renderLearningFinance();else if(activeLearningTab==='math')renderLearningMath();else if(activeLearningTab==='countdowns')renderLearningCountdowns();else if(activeLearningTab==='schedule')renderLearningSchedule();else renderLearningToday()
+};
+renderLearningToday=function(){
+  const e=$('#learningPanel'),k=learningTodayKey(),d=learningTodayDate(),mil=isMilitaryKey(k),busy=isLearningBusyKey(k),monday=d.getDay()===1,mode=energyFor(k),r=learningReviewFor(k),todayItems=learningCompletionItemsOnDate(k),due=dueReviews(),free=LS.freeLogs.filter(x=>x.date===k),fd=nextFinanceDay(),md=nextMathDay(),nextR1=nextNumber(45,LS.english.round1),nextR2=nextNumber(45,LS.english.round2),nextSkill=nextNumber(ENGLISH_SKILLS.length,LS.english.skills);
+  const nearest=learningUpcomingCountdowns().slice(0,3);let tasks=[];
+  if(monday&&!englishRound1Complete())tasks.push({rank:'必须',cls:'must',title:'英语 · 一周总复习',meta:'周一不默认安排新 Lesson，把本周词汇重新检索一遍。',action:'weekly'});else if(!englishRound1Complete()&&k>=LEARNING_CONFIG.militaryStart&&nextR1)tasks.push({rank:'核心',cls:'core',title:`英语一轮 · Lesson ${nextR1}`,meta:'完成后如果这一节短、状态好，可以继续下一 Lesson。',action:'r1'});else if(englishRound1Complete()){if(nextR2)tasks.push({rank:'核心',cls:'core',title:`英语二轮 · Lesson ${nextR2}`,meta:'正式二轮，从 0/45 独立重新推进。',action:'r2'});if(nextSkill)tasks.push({rank:'核心',cls:'core',title:`四级技巧 · 第 ${nextSkill} 节`,meta:'与二轮同步，不提前占用一轮词汇时间。',action:'skill'})}
+  if(!mil&&!busy&&isResumeOrLaterKey(k)){if(fd)tasks.push({rank:mode==='low'?'可后移':'核心',cls:mode==='low'?'extra':'core',title:`财经 · 原 Day ${fd}`,meta:`${financeItem(fd)?.subject||''} · ${financeItem(fd)?.title||''}`,action:'finance'});if(md&&(mode==='high'||mode==='normal'))tasks.push({rank:mode==='high'?'核心':'建议',cls:mode==='high'?'core':'extra',title:`高数 · Day ${md}`,meta:`${mathItem(md)?.lectures?.length||0} 个视频 · ${durationHuman(mathDayDuration(mathItem(md)))}`,action:'math'})}
+  if(busy)tasks=tasks.filter(x=>x.action==='weekly'||x.action==='r1'||x.action==='r2');if(mil)tasks=tasks.filter(x=>['weekly','r1','r2','skill'].includes(x.action));if(!tasks.length)tasks.push({rank:'完成',cls:'extra',title:'今天没有必须推进的新内容',meta:'可以做复习、计时学习，或者直接休息。',action:''});
+  const taskHtml=tasks.map((x,i)=>`<div class="cockpit-task ${x.cls}"><span class="rank">${x.rank}</span><div><div class="cockpit-task-title">${esc(x.title)}</div><div class="cockpit-task-meta">${esc(x.meta)}</div></div>${x.action?`<button class="btn" data-cockpit-action="${x.action}">完成</button>`:''}</div>`).join('');
+  e.innerHTML=`<div class="learning-section-card"><div class="learning-row spread"><div><h4>今日驾驶舱 · ${k} · 周${wd(d)}</h4><div class="learning-source-note">状态决定“建议强度”，不会改掉你的正式学习记录。</div></div><span class="learning-chip ${mil?'orange':busy?'red':'green'}">${mil?'军训':busy?'缓冲':'正常'}</span></div><div class="energy-switch" style="margin-top:9px"><button class="btn ${mode==='high'?'active':''}" data-energy="high">高能量</button><button class="btn ${mode==='normal'?'active':''}" data-energy="normal">标准</button><button class="btn ${mode==='low'?'active':''}" data-energy="low">低负荷</button></div></div><div class="cockpit-grid"><div class="cockpit-stack"><div class="learning-section-card"><div class="learning-row spread"><h4>今天先做什么</h4><span class="learning-chip">${energyLabel(mode)}模式</span></div>${taskHtml}</div><div class="learning-section-card"><div class="learning-row spread"><h4>固定词汇复习</h4><span class="learning-chip">早晚 + 周一</span></div><div class="learning-review-grid"><label class="learning-review-check"><input type="checkbox" id="reviewMorning" ${r.morning?'checked':''}><span><b>早上复习昨日词汇</b><small>快速主动回忆。</small></span></label><label class="learning-review-check"><input type="checkbox" id="reviewEvening" ${r.evening?'checked':''}><span><b>晚上复习昨日词汇</b><small>睡前检索卡壳词。</small></span></label><label class="learning-review-check" style="${monday?'':'opacity:.48'}"><input type="checkbox" id="reviewWeekly" ${r.weekly?'checked':''} ${monday?'':'disabled'}><span><b>周一一周总复习</b><small>${monday?'今天执行。':'仅周一开启。'}</small></span></label></div></div><div class="learning-section-card"><div class="learning-row spread"><h4>到期复习</h4><button class="btn" id="openReviewToday">查看复习</button></div>${due.length?due.slice(0,4).map(x=>`<div class="learning-mini-line"><b>${esc(x.track)}</b> · ${esc(x.title)} · 第${x.offset}天</div>`).join(''):'<div class="learning-empty">今天没有自动到期复习。</div>'}</div></div><div class="cockpit-stack"><div class="learning-section-card"><div class="learning-row spread"><h4>专注计时</h4><button class="btn primary" id="openTimerToday">${LS.studyTimer.active?'查看计时':'开始学习'}</button></div><div class="learning-big-next">今天 ${secHuman(todayStudySeconds())}</div><div class="learning-source-note">本周 ${secHuman(weekStudySeconds())} · ${LS.studyTimer.active?`正在学习 ${esc(LS.studyTimer.active.subject)}`:'当前未计时'}</div></div><div class="learning-section-card"><div class="learning-row spread"><h4>近期考试 / 考证</h4><button class="btn" id="openCountdownsToday">管理</button></div>${nearest.length?nearest.map(x=>`<div class="learning-mini-line"><b>${esc(x.title)}</b> · ${countdownLabel(x)} · ${learningCountdownText(x.date,x.endDate)}</div>`).join(''):'<div class="learning-empty">暂无倒数日。</div>'}</div><div class="learning-section-card"><h4>自主学习记录</h4><div class="learning-free-row"><select id="freeTrack"><option>英语</option><option>财经</option><option>高数</option><option>其他</option></select><input id="freeText" type="text" placeholder="不推进正式队列的额外学习"><button class="btn" id="addFreeLog">记录</button></div>${free.length?free.map(x=>`<div class="learning-free-log"><span>${esc(x.track)} · ${esc(x.text)}</span><button class="x" data-free-id="${x.id}">×</button></div>`).join(''):'<div class="learning-empty">今天还没有自主学习记录。</div>'}</div><div class="learning-section-card"><h4>今天已经完成</h4>${todayItems.length?todayItems.map(x=>`<div class="learning-mini-line">✓ ${esc(x)}</div>`).join(''):'<div class="learning-empty">正式学习项目还没有打勾。</div>'}</div></div></div>`;
+  document.querySelectorAll('[data-energy]').forEach(b=>b.onclick=()=>setEnergy(b.dataset.energy,k));$('#reviewMorning').onchange=x=>setLearningReview('morning',x.target.checked,k);$('#reviewEvening').onchange=x=>setLearningReview('evening',x.target.checked,k);if(monday)$('#reviewWeekly').onchange=x=>setLearningReview('weekly',x.target.checked,k);
+  document.querySelectorAll('[data-cockpit-action]').forEach(b=>b.onclick=()=>{const a=b.dataset.cockpitAction;if(a==='weekly'){setLearningReview('weekly',true,k)}else if(a==='r1')learningMark(LS.english.round1,nextNumber(45,LS.english.round1),true,k);else if(a==='r2')learningMark(LS.english.round2,nextNumber(45,LS.english.round2),true,k);else if(a==='skill')learningMark(LS.english.skills,nextNumber(ENGLISH_SKILLS.length,LS.english.skills),true,k);else if(a==='finance')learningMark(LS.finance.completions,nextFinanceDay(),true,k);else if(a==='math')learningMark(LS.math.completions,nextMathDay(),true,k);renderLearningAll()});
+  $('#openTimerToday').onclick=()=>{activeLearningTab='timer';renderLearningAll()};$('#openReviewToday').onclick=()=>{activeLearningTab='review';renderLearningAll()};$('#openCountdownsToday').onclick=()=>{activeLearningTab='countdowns';renderLearningAll()};$('#addFreeLog').onclick=()=>addFreeLearningLog($('#freeTrack').value,$('#freeText').value,k);document.querySelectorAll('[data-free-id]').forEach(b=>b.onclick=()=>removeFreeLearningLog(b.dataset.freeId))
+};
+
+let editingCountdownId='';
+renderLearningCountdowns=function(){
+  const e=$('#learningPanel'),today=learningTodayKey(),mine=learningAllCountdowns(),edit=editingCountdownId?mine.find(x=>x.id===editingCountdownId):null;
+  const list=mine.length?mine.map(x=>{const end=x.endDate||x.date,past=end<today,n=dayDiff(parse(x.date),learningTodayDate()),cls=n===0?'today':'';return `<div class="learning-countdown-row ${past?'past':''}"><div><div class="learning-countdown-title">${esc(x.title)} <span class="learning-chip">${esc(x.kind||'考试')}</span></div><div class="learning-countdown-meta">${countdownLabel(x)}${x.note?` · ${esc(x.note)}`:''}</div></div><div class="learning-countdown-days ${cls}">${learningCountdownText(x.date,x.endDate)}</div><div class="countdown-actions"><button class="btn countdown-edit" data-countdown-edit="${x.id}">编辑</button><button class="x" data-countdown-remove="${x.id}" title="删除倒数日">×</button></div></div>`}).join(''):'<div class="learning-empty">还没有倒数日。</div>';
+  e.innerHTML=`<div class="learning-section-card"><div class="learning-row spread"><div><h4>${edit?'编辑倒数日':'添加考试 / 考证倒数日'}</h4><div class="learning-source-note">所有节点都由你控制：包括三级B和专转本预计窗口，也可以修改或删除。日期范围适合计算机考试、专转本“预计窗口”等情况。</div></div>${edit?'<button class="btn" id="cancelCountdownEdit">取消编辑</button>':''}</div><div class="learning-countdown-form v150"><input id="countdownTitle" type="text" placeholder="考试 / 考证名称" value="${edit?esc(edit.title):''}"><input id="countdownDate" type="date" value="${edit?.date||today}"><input id="countdownEndDate" type="date" value="${edit?.endDate||''}" title="结束日期（可选）"><select id="countdownKind">${['考试','考证','升学考试','报名','面试','其他'].map(k=>`<option ${edit?.kind===k?'selected':''}>${k}</option>`).join('')}</select><input id="countdownNote" type="text" placeholder="备注（可选）" value="${edit?esc(edit.note):''}"><button class="btn primary" id="saveCountdownBtn">${edit?'保存修改':'添加'}</button></div></div><div class="learning-section-card"><div class="learning-row spread"><h4>我的倒数日 · ${mine.length}</h4><span class="learning-chip blue">全部可编辑 / 删除</span></div><div class="learning-countdown-list">${list}</div></div>`;
+  $('#saveCountdownBtn').onclick=()=>{if(edit){if(saveCountdownEdit(edit.id,$('#countdownTitle').value,$('#countdownDate').value,$('#countdownEndDate').value,$('#countdownKind').value,$('#countdownNote').value)){editingCountdownId='';renderLearningAll()}}else addLearningCountdown($('#countdownTitle').value,$('#countdownDate').value,$('#countdownKind').value,$('#countdownNote').value,$('#countdownEndDate').value)};
+  if($('#cancelCountdownEdit'))$('#cancelCountdownEdit').onclick=()=>{editingCountdownId='';renderLearningAll()};document.querySelectorAll('[data-countdown-edit]').forEach(b=>b.onclick=()=>{editingCountdownId=b.dataset.countdownEdit;renderLearningAll()});document.querySelectorAll('[data-countdown-remove]').forEach(b=>b.onclick=()=>{editingCountdownId='';removeLearningCountdown(b.dataset.countdownRemove)})
+};
+renderLearningSchedule=function(){
+  const e=$('#learningPanel'),busy=Object.entries(LS.busyDates).sort((a,b)=>a[0].localeCompare(b[0])),milestones=[{date:LEARNING_CONFIG.resumeDate,text:'恢复正常上课：财经 / 高数正式队列开放。'},...(LS.countdowns||[]).map(x=>({date:x.date,text:`${esc(x.title)} <span class="learning-chip">${esc(x.kind||'考试')}</span> · ${countdownLabel(x)}`}))].sort((a,b)=>a.date.localeCompare(b.date));
+  e.innerHTML=`<div class="learning-section-card"><div class="learning-row spread"><h4>计划节点</h4><button class="btn" id="scheduleEditCountdowns">编辑倒数日</button></div><div class="learning-mini-line"><b>10/12—10/25</b> · 军训保护期：财经、高数冻结；英语照常。</div>${milestones.map(x=>`<div class="learning-mini-line"><b>${x.date}</b> · ${x.text}</div>`).join('')}</div><div class="learning-section-card"><h4>添加缓冲日</h4><div class="learning-free-row"><input id="busyDateInput" type="date" value="${learningTodayKey()}"><input id="busyReasonInput" type="text" placeholder="例如：志愿活动 / 普通话考试 / 临时作业"><button class="btn" id="addBusyDateBtn">设为缓冲</button></div><div class="learning-source-note" style="margin-top:6px">缓冲日不会删除任务；正式队列只是停住，恢复后继续下一项。</div><div class="learning-busy-list">${busy.length?busy.map(([k,v])=>`<div class="learning-busy-row"><b>${k}</b><span>${esc(v.reason||'临时忙')}</span><button class="x" data-busy-remove="${k}">×</button></div>`).join(''):'<div class="learning-empty">暂无手动缓冲日。</div>'}</div></div><div class="learning-section-card"><h4>调度规则</h4><div class="learning-status-box"><b>英语一轮</b>：周一总复习，周二—周日默认 1 Lesson；短课可连续学多个，队列即时前移。<br><b>英语二轮</b>：第一轮 45/45 后才独立开始，并与 38 节四级技巧课同步。<br><b>财经</b>：会计优先闭环，原 Day 编号保留。<br><b>高数</b>：保持机构 48 天顺序。<br><b>缓冲</b>：临时忙不算失败；恢复后接着下一项。<br><b>倒数日</b>：全部可编辑，不再存在不可修改的系统固定考试日期。</div></div>`;
+  $('#scheduleEditCountdowns').onclick=()=>{activeLearningTab='countdowns';renderLearningAll()};$('#addBusyDateBtn').onclick=()=>addBusyDate($('#busyDateInput').value,$('#busyReasonInput').value);document.querySelectorAll('[data-busy-remove]').forEach(b=>b.onclick=()=>removeBusyDate(b.dataset.busyRemove))
+};
+learningCalendarTags=function(d){const k=fmt(d),tags=[],cds=learningCountdownsOnDate(k);if(cds.length)tags.push(`<span class="tag learning-countdown">⌛ ${esc(cds[0].title)}${cds.length>1?` +${cds.length-1}`:''}</span>`);if(isMilitaryKey(k))tags.push('<span class="tag learning">军训</span>');if(isLearningBusyKey(k))tags.push('<span class="tag learning-busy">缓冲</span>');const n=learningCompletionItemsOnDate(k).length;if(n)tags.push(`<span class="tag learning">学 ${n}</span>`);return tags.slice(0,2).join('')};
+renderLearningMini=function(){const e=$('#learningMini');if(!e)return;const k=fmt(sel),isToday=k===learningTodayKey(),items=learningCompletionItemsOnDate(k),mil=isMilitaryKey(k),busy=isLearningBusyKey(k),cds=learningCountdownsOnDate(k),chips=[];if(cds.length)chips.push(`<span class="learning-chip blue">⌛ ${esc(cds[0].title)}${cds.length>1?` +${cds.length-1}`:''}</span>`);if(mil)chips.push('<span class="learning-chip orange">军训保护期</span>');if(busy)chips.push('<span class="learning-chip red">缓冲日</span>');if(items.length)chips.push(`<span class="learning-chip green">完成 ${items.length} 项</span>`);if(isToday&&LS.studyTimer.active)chips.push(`<span class="learning-chip green">计时 · ${esc(LS.studyTimer.active.subject)}</span>`);let lines=cds.map(x=>`<div class="learning-mini-line"><b>${esc(x.kind||'考试')}</b> · ${esc(x.title)} · ${countdownLabel(x)}</div>`).join('');if(items.length)lines+=items.slice(0,4).map(x=>`<div class="learning-mini-line">✓ ${esc(x)}</div>`).join('')+(items.length>4?`<div class="learning-source-note">还有 ${items.length-4} 项记录。</div>`:'');if(!items.length&&isToday){const r1=nextNumber(45,LS.english.round1),fd=nextFinanceDay(),md=nextMathDay();lines+=`<div class="learning-mini-line"><b>今天专注</b> · ${secHuman(todayStudySeconds())}　<b>能量</b> · ${energyLabel(energyFor())}</div>`;if(!englishRound1Complete())lines+=`<div class="learning-mini-line"><b>英语</b> · ${sel.getDay()===1?'周一总复习':`下一项 Lesson ${r1||'—'}`}</div>`;else lines+=`<div class="learning-mini-line"><b>英语</b> · 二轮 ${learningDoneCount(LS.english.round2)}/45 · 技巧 ${learningDoneCount(LS.english.skills)}/${ENGLISH_SKILLS.length}</div>`;if(!mil&&!busy&&isResumeOrLaterKey(k))lines+=`<div class="learning-mini-line"><b>财经</b> · ${fd?`原 Day ${fd}`:'已完成'}　<b>高数</b> · ${md?`Day ${md}`:'已完成'}</div>`}else if(!items.length&&!cds.length)lines='<div class="learning-empty">动态计划不提前锁死具体 Lesson；当天根据实时进度生成。</div>';e.innerHTML=`<div class="learning-mini-status">${chips.join('')||'<span class="learning-chip">动态队列</span>'}</div>${lines}`;$('#learningMiniStat').textContent=items.length?`${items.length} 项`:''};
+
+// 英语页中的收官日期随“英语三级B”倒数日自动变化。
+const v142RenderLearningEnglish=renderLearningEnglish;
+renderLearningEnglish=function(){v142RenderLearningEnglish();const deadline=englishContentDeadline();if(!deadline)return;const notes=document.querySelectorAll('#learningPanel .learning-source-note');notes.forEach(n=>{n.innerHTML=n.innerHTML.replace(/12月10日前/g,`${dateHuman(deadline)}前`).replace(/12\/11—12\/12/g,`${dateHuman(addDaysKey(deadline,1))}—${dateHuman(addDaysKey(deadline,2))}`)})};
+
 function snapshotData(){
   return {
-    version:15,
+    version:16,
     savedAt:new Date().toISOString(),
     tasks:T,
     recurringTasks:RT,
