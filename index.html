@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#f5efe9">
-<title>苏伊温德日历 V1.3.2</title>
+<title>苏伊温德日历 V1.4.0</title>
 <link rel="manifest" href="manifest.json">
 <script src="./supabase-local.js"></script>
 <style>
@@ -418,16 +418,105 @@ button{touch-action:manipulation}
   .deadline-add-row select{font-size:14px}
 }
 
+
+/* ===== V1.4.0 学习管理 ===== */
+.action-learning{background:#f3f0e7;border-color:#ded8c8}
+.learning-mini-card{display:flex;flex-direction:column;gap:8px}
+.learning-mini-status{display:flex;gap:6px;flex-wrap:wrap}
+.learning-chip{display:inline-flex;align-items:center;gap:4px;padding:3px 7px;border-radius:999px;font-size:10px;background:#f3eee9;color:#756a61;border:1px solid #e8dfd7}
+.learning-chip.green{background:#eaf3e8;color:#5e765a;border-color:#d5e4d1}
+.learning-chip.blue{background:#edf3f8;color:#577184;border-color:#d8e3eb}
+.learning-chip.orange{background:#fbf0dc;color:#8e6a35;border-color:#efdfbf}
+.learning-chip.red{background:#fbe8e8;color:#a25050;border-color:#efd0d0}
+.learning-mini-line{font-size:12px;line-height:1.5;padding:7px 9px;border-radius:9px;background:#fff;border:1px solid #eee7e1}
+.learning-mini-line b{font-weight:700}
+.learning-open-btn{width:100%;margin-top:2px}
+
+.learning-modalbox{width:min(1120px,100%);max-height:min(92vh,920px);overflow:auto}
+.learning-head{display:flex;justify-content:space-between;align-items:flex-start;gap:14px}
+.learning-head h3{margin:0}
+.learning-sub{font-size:11px;color:var(--muted);margin-top:4px;line-height:1.45}
+.learning-banner{margin-top:12px;padding:11px 12px;border-radius:12px;background:linear-gradient(135deg,#f7f1ea,#f1f4ed);border:1px solid #e6ddd4;display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.learning-banner strong{font-size:13px}
+.learning-banner .small{max-width:760px}
+.learning-overviews{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:12px}
+.learning-overview{border:1px solid #e9e2dc;border-radius:14px;background:#fff;padding:12px}
+.learning-overview-head{display:flex;justify-content:space-between;gap:10px;align-items:start}
+.learning-overview h4{margin:0;font-size:14px}
+.learning-overview .metric{font-size:12px;font-weight:750;white-space:nowrap}
+.learning-progress{height:7px;background:#eee9e5;border-radius:999px;overflow:hidden;margin:8px 0 6px}
+.learning-progress>i{display:block;height:100%;background:var(--accent);border-radius:999px}
+.learning-overview .note{margin:0;font-size:10px;line-height:1.45}
+.learning-tabs{display:flex;gap:7px;flex-wrap:wrap;margin:13px 0 10px;position:sticky;top:-16px;z-index:4;background:var(--card);padding:8px 0}
+.learning-tabs .btn.active{background:var(--accent);color:white;border-color:var(--accent)}
+.learning-panel{min-height:260px}
+.learning-section-card{border:1px solid #e9e2dc;border-radius:14px;background:#fff;padding:13px;margin-bottom:10px}
+.learning-section-card h4{margin:0 0 8px;font-size:14px}
+.learning-section-card h5{margin:12px 0 7px;font-size:12px;color:#665d56}
+.learning-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.learning-row.spread{justify-content:space-between}
+.learning-status-box{padding:10px;border-radius:11px;background:#faf7f4;border:1px solid #eee6df;line-height:1.55;font-size:12px}
+.learning-status-box.safe{background:#edf5eb;border-color:#d7e7d2}
+.learning-status-box.warn{background:#fff5e6;border-color:#f1dfba}
+.learning-status-box.danger{background:#fceaea;border-color:#efcfcf}
+.learning-big-next{font-size:15px;font-weight:750;margin:3px 0 4px}
+.learning-item-list{display:flex;flex-direction:column;gap:0;border-top:1px dashed #ebe3dc;margin-top:7px}
+.learning-item{display:grid;grid-template-columns:22px minmax(0,1fr) auto;gap:8px;align-items:start;padding:9px 0;border-bottom:1px dashed #eee7e1}
+.learning-item.done{opacity:.6}
+.learning-item.done .learning-item-title{text-decoration:line-through}
+.learning-item input[type=checkbox]{margin-top:2px}
+.learning-item-title{font-size:12px;line-height:1.45;font-weight:650}
+.learning-item-meta{font-size:10px;color:var(--muted);line-height:1.45;margin-top:2px}
+.learning-item-date{font-size:9px;color:var(--muted);white-space:nowrap;padding-top:2px}
+.learning-phase{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin:8px 0}
+.learning-phase>div{padding:9px;border-radius:10px;background:#faf7f4;border:1px solid #eee6df}
+.learning-phase small{display:block;color:var(--muted);font-size:9px}
+.learning-phase b{font-size:12px}
+.learning-review-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.learning-review-check{display:flex;align-items:flex-start;gap:7px;padding:9px;border:1px solid #eae2dc;border-radius:10px;background:#fff}
+.learning-review-check b{font-size:11px;display:block}
+.learning-review-check small{display:block;font-size:9px;color:var(--muted);margin-top:2px;line-height:1.4}
+.learning-free-row{display:grid;grid-template-columns:100px minmax(0,1fr) auto;gap:7px;margin-top:8px}
+.learning-free-log{display:flex;justify-content:space-between;gap:10px;padding:6px 0;border-bottom:1px dashed #eee7e1;font-size:11px}
+.learning-free-log:last-child{border-bottom:0}
+.learning-source-note{font-size:10px;color:var(--muted);line-height:1.55}
+.learning-course-detail{margin-top:6px;padding:8px 9px;border-radius:9px;background:#faf7f4;font-size:10px;line-height:1.55}
+.learning-course-detail ul{padding-left:17px;margin:5px 0}
+.learning-course-detail li{margin:3px 0}
+.learning-module-title{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:12px 0 4px;font-size:12px;font-weight:750}
+.learning-lock{padding:16px;text-align:center;color:var(--muted);border:1px dashed #dcd2ca;border-radius:12px;background:#faf8f6}
+.learning-empty{padding:10px;text-align:center;color:var(--muted);font-size:11px}
+.learning-busy-list{margin-top:8px}
+.learning-busy-row{display:grid;grid-template-columns:100px minmax(0,1fr) auto;gap:8px;align-items:center;padding:7px 0;border-bottom:1px dashed #eee7e1;font-size:11px}
+.learning-danger-btn{border-color:#e7cccc;color:#9a4d4d;background:#fff8f8}
+.tag.learning{background:#edf3ec;color:#60765d;border:1px solid #d8e4d5}
+.tag.learning-exam{background:#f7e9df;color:#8e5c45;border:1px solid #e9d0bf}
+.tag.learning-busy{background:#f4f0e6;color:#7a6d4d;border:1px solid #e3dbc5}
+@media(max-width:900px){
+  .learning-overviews{grid-template-columns:1fr}
+  .learning-phase{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .learning-review-grid{grid-template-columns:1fr}
+}
+@media(max-width:620px){
+  .learning-modalbox{max-height:96vh;padding:14px}
+  .learning-free-row{grid-template-columns:1fr}
+  .learning-busy-row{grid-template-columns:82px minmax(0,1fr) auto}
+  .learning-item{grid-template-columns:22px minmax(0,1fr)}
+  .learning-item-date{grid-column:2}
+  .learning-tabs{top:-14px}
+}
+
 </style>
 </head>
 <body>
 <div class="app">
   <div class="top">
-    <div class="brand"><h1>苏伊温德日历 <span class="version">V1.3.2</span></h1><p>生命如暗室，不妨我明写春诗</p></div>
+    <div class="brand"><h1>苏伊温德日历 <span class="version">V1.4.0</span></h1><p>生命如暗室，不妨我明写春诗</p></div>
     <div class="actions">
       <button class="btn action-btn action-today" id="todayBtn"><span class="action-icon">⌂</span><span>回到今天</span></button>
       <button class="btn action-btn action-anniv" id="annivBtn"><span class="action-icon">♡</span><span>纪念日</span></button>
       <button class="btn action-btn action-review" id="reviewBtn"><span class="action-icon">↺</span><span>复盘中心</span></button>
+      <button class="btn action-btn action-learning" id="learningBtn"><span class="action-icon">▣</span><span>学习管理</span></button>
             <button class="btn action-btn action-cloud" id="cloudBtn"><span class="action-icon">☁</span><span>云同步</span></button>
       <span class="cloud-status" title="云同步状态"><i class="cloud-dot" id="cloudDot"></i><span id="cloudText">仅本地</span></span>
       <button class="btn action-btn action-notify" id="notifyBtn"><span class="action-icon">♢</span><span class="notify-label">开启提醒</span></button>
@@ -507,6 +596,12 @@ button{touch-action:manipulation}
         <div class="schedule-rule-note" id="scheduleRuleNote"></div>
       </section>
 
+      <section class="section" id="learningMiniSection">
+        <h3>学习管理 <span id="learningMiniStat"></span></h3>
+        <div class="learning-mini-card" id="learningMini"></div>
+        <button class="btn learning-open-btn" id="openLearningFromSide" type="button">打开学习管理 →</button>
+      </section>
+
       <section class="section">
         <h3>今日任务 <span id="taskStat"></span></h3>
         <div id="tasks"></div>
@@ -550,6 +645,43 @@ button{touch-action:manipulation}
     </aside>
   </div>
 </div>
+
+<div class="modal" id="learningModal"><div class="modalbox learning-modalbox">
+  <div class="learning-head">
+    <div>
+      <h3>学习管理 · 动态计划引擎</h3>
+      <div class="learning-sub">提前学就整体前移，临时忙就整体顺延；不制造“过期红字”，只维护顺序、进度和硬截止。</div>
+    </div>
+    <button class="x" id="closeLearning">✕</button>
+  </div>
+  <div class="learning-banner" id="learningBanner"></div>
+  <div class="learning-overviews">
+    <article class="learning-overview">
+      <div class="learning-overview-head"><h4>英语</h4><span class="metric" id="learnEnglishMetric">0 / 45</span></div>
+      <div class="learning-progress"><i id="learnEnglishBar" style="width:0%"></i></div>
+      <div class="note" id="learnEnglishNote">词汇第一轮</div>
+    </article>
+    <article class="learning-overview">
+      <div class="learning-overview-head"><h4>财经综合</h4><span class="metric" id="learnFinanceMetric">0 / 80</span></div>
+      <div class="learning-progress"><i id="learnFinanceBar" style="width:0%"></i></div>
+      <div class="note" id="learnFinanceNote">会计优先闭环</div>
+    </article>
+    <article class="learning-overview">
+      <div class="learning-overview-head"><h4>高数</h4><span class="metric" id="learnMathMetric">0 / 48</span></div>
+      <div class="learning-progress"><i id="learnMathBar" style="width:0%"></i></div>
+      <div class="note" id="learnMathNote">机构 48 天计划</div>
+    </article>
+  </div>
+  <div class="learning-tabs">
+    <button class="btn active" data-learning-tab="today">今日</button>
+    <button class="btn" data-learning-tab="english">英语</button>
+    <button class="btn" data-learning-tab="finance">财经</button>
+    <button class="btn" data-learning-tab="math">高数</button>
+    <button class="btn" data-learning-tab="schedule">调度</button>
+  </div>
+  <div class="learning-panel" id="learningPanel"></div>
+</div></div>
+
 <div class="modal" id="cloudModal"><div class="modalbox" style="width:min(620px,100%)">
   <div style="display:flex;justify-content:space-between;align-items:center;gap:10px">
     <h3 style="margin:0">账号与云同步</h3><button class="x" id="closeCloud">✕</button>
@@ -769,7 +901,21 @@ button{touch-action:manipulation}
 const $=s=>document.querySelector(s);
 const S={g:(k,f)=>{try{return JSON.parse(localStorage.getItem('zx_'+k))??f}catch{return f}},s:(k,v)=>localStorage.setItem('zx_'+k,JSON.stringify(v))};
 
+
 let T=S.g('tasks',{}), WG=S.g('weekGoals',{}), MG=S.g('monthGoals',{}), R=S.g('reflections',{}), A=S.g('anniversaries',[]), RT=S.g('recurringTasks',[]), DG=S.g('deadlineGoals',[]), SO=S.g('scheduleOverrides',{}), SC=S.g('scheduleConfig',{disabledCourseIds:[]});
+const LEARNING_CONFIG={militaryStart:'2026-10-12',militaryEnd:'2026-10-25',resumeDate:'2026-10-26',examDate:'2026-12-13',contentDeadline:'2026-12-10',round1SoftTarget:'2026-11-18'};
+const FINANCE_PLAN=[{"originalDay":1,"subject":"会计基础","title":"会计概述","target":"2个掌握考点","sourcePage":3},{"originalDay":2,"subject":"会计基础","title":"会计科目与账户","target":"3个掌握考点","sourcePage":3},{"originalDay":3,"subject":"会计基础","title":"会计记账方法","target":"4个掌握考点","sourcePage":3},{"originalDay":4,"subject":"会计基础","title":"会计凭证","target":"2个掌握考点","sourcePage":3},{"originalDay":5,"subject":"会计基础","title":"会计账簿","target":"3个掌握考点","sourcePage":3},{"originalDay":6,"subject":"会计基础","title":"账务处理程序","target":"2个掌握考点","sourcePage":3},{"originalDay":7,"subject":"会计基础","title":"经济业务核算——筹资与采购","target":"3个掌握考点","sourcePage":3},{"originalDay":8,"subject":"会计基础","title":"经济业务核算——生产","target":"3个掌握考点","sourcePage":3},{"originalDay":9,"subject":"会计基础","title":"经济业务核算——销售与财务成果","target":"4个掌握考点","sourcePage":3},{"originalDay":10,"subject":"会计基础","title":"财产清查","target":"3个掌握考点","sourcePage":3},{"originalDay":11,"subject":"会计基础","title":"会计报表","target":"2个掌握考点","sourcePage":3},{"originalDay":12,"subject":"财务管理","title":"总论","target":"1个掌握考点","sourcePage":3},{"originalDay":13,"subject":"财务管理","title":"货币时间价值","target":"4个掌握考点","sourcePage":3},{"originalDay":14,"subject":"财务管理","title":"筹资管理","target":"2个掌握考点","sourcePage":3},{"originalDay":15,"subject":"财务管理","title":"资金预测","target":"3个掌握考点","sourcePage":3},{"originalDay":16,"subject":"财务管理","title":"资本成本","target":"3个掌握考点","sourcePage":3},{"originalDay":17,"subject":"财务管理","title":"投资管理","target":"4个掌握考点","sourcePage":3},{"originalDay":18,"subject":"财务管理","title":"营运资本管理","target":"4个掌握考点","sourcePage":3},{"originalDay":19,"subject":"财务管理","title":"股利分配管理","target":"3个掌握考点","sourcePage":3},{"originalDay":20,"subject":"经济学","title":"经济学概述","target":"1个掌握考点","sourcePage":3},{"originalDay":21,"subject":"经济学","title":"供给与需求","target":"5个掌握考点","sourcePage":3},{"originalDay":22,"subject":"经济学","title":"消费者行为","target":"3个掌握考点","sourcePage":3},{"originalDay":23,"subject":"经济学","title":"生产者行为","target":"3个掌握考点","sourcePage":4},{"originalDay":24,"subject":"经济学","title":"成本与收益","target":"4个掌握考点","sourcePage":4},{"originalDay":25,"subject":"经济学","title":"市场结构","target":"2个掌握考点","sourcePage":4},{"originalDay":26,"subject":"经济学","title":"收入分配","target":"1个掌握考点","sourcePage":4},{"originalDay":27,"subject":"经济学","title":"市场失灵与政府干预","target":"2个掌握考点","sourcePage":4},{"originalDay":28,"subject":"经济学","title":"国民收入","target":"3个掌握考点","sourcePage":4},{"originalDay":29,"subject":"经济学","title":"经济周期与增长","target":"0个掌握考点","sourcePage":4},{"originalDay":30,"subject":"经济学","title":"失业与通货膨胀","target":"2个掌握考点","sourcePage":4},{"originalDay":31,"subject":"经济学","title":"宏观经济政策","target":"3个掌握考点","sourcePage":4},{"originalDay":32,"subject":"三科综合","title":"考纲划重点直播课","target":"2个掌握考点","sourcePage":4},{"originalDay":33,"subject":"三科综合","title":"薄弱点清单","target":"1个掌握考点","sourcePage":4},{"originalDay":34,"subject":"会计基础","title":"第1-2章","target":"1个掌握考点","sourcePage":5},{"originalDay":35,"subject":"会计基础","title":"第3章借贷记账法","target":"3个掌握考点","sourcePage":5},{"originalDay":36,"subject":"会计基础","title":"第4-6章","target":"2个掌握考点","sourcePage":5},{"originalDay":37,"subject":"会计基础","title":"第7章（上）筹资采购生产","target":"3个掌握考点","sourcePage":5},{"originalDay":38,"subject":"会计基础","title":"第7章（下）销售与财务成果","target":"3个掌握考点","sourcePage":5},{"originalDay":39,"subject":"会计基础","title":"第8-9章","target":"3个掌握考点","sourcePage":5},{"originalDay":40,"subject":"会计基础","title":"综合套题与错题","target":"2个掌握考点","sourcePage":5},{"originalDay":41,"subject":"财务管理","title":"第1-2章","target":"3个掌握考点","sourcePage":5},{"originalDay":42,"subject":"财务管理","title":"第3-4章","target":"3个掌握考点","sourcePage":5},{"originalDay":43,"subject":"财务管理","title":"第5章资本成本","target":"3个掌握考点","sourcePage":5},{"originalDay":44,"subject":"财务管理","title":"第6章投资管理","target":"3个掌握考点","sourcePage":5},{"originalDay":45,"subject":"财务管理","title":"第7章营运资本","target":"3个掌握考点","sourcePage":5},{"originalDay":46,"subject":"财务管理","title":"第8章股利分配","target":"2个掌握考点","sourcePage":5},{"originalDay":47,"subject":"财务管理","title":"综合套题与错题","target":"2个掌握考点","sourcePage":5},{"originalDay":48,"subject":"经济学","title":"第1-2章","target":"3个掌握考点","sourcePage":5},{"originalDay":49,"subject":"经济学","title":"第3-4章","target":"2个掌握考点","sourcePage":5},{"originalDay":50,"subject":"经济学","title":"第5章成本与收益","target":"3个掌握考点","sourcePage":5},{"originalDay":51,"subject":"经济学","title":"第6章市场结构","target":"3个掌握考点","sourcePage":5},{"originalDay":52,"subject":"经济学","title":"第7-8章","target":"1个掌握考点","sourcePage":5},{"originalDay":53,"subject":"经济学","title":"第9章国民收入","target":"3个掌握考点","sourcePage":5},{"originalDay":54,"subject":"经济学","title":"第10-11章","target":"1个掌握考点","sourcePage":5},{"originalDay":55,"subject":"经济学","title":"第12章宏观经济政策","target":"3个掌握考点","sourcePage":5},{"originalDay":56,"subject":"经济学","title":"综合套题与错题","target":"2个掌握考点","sourcePage":5},{"originalDay":57,"subject":"会计基础","title":"筹资采购与生产业务","target":"4个掌握考点","sourcePage":5},{"originalDay":58,"subject":"会计基础","title":"销售财务成果与综合默写","target":"4个掌握考点","sourcePage":6},{"originalDay":59,"subject":"财务管理","title":"时间价值筹资与投资","target":"4个掌握考点","sourcePage":6},{"originalDay":60,"subject":"财务管理","title":"营运资本与股利分配","target":"3个掌握考点","sourcePage":6},{"originalDay":61,"subject":"经济学","title":"微观图形（趋势及原因）","target":"2个掌握考点","sourcePage":6},{"originalDay":62,"subject":"经济学","title":"宏观图形与速记（趋势及原因）","target":"2个掌握考点","sourcePage":6},{"originalDay":63,"subject":"会计基础","title":"会计（试算平衡与错账更正）","target":"2个掌握考点","sourcePage":6},{"originalDay":64,"subject":"会计基础","title":"会计（经济业务核算）","target":"4个掌握考点","sourcePage":6},{"originalDay":65,"subject":"会计基础","title":"会计（报表与成本折旧）","target":"2个掌握考点","sourcePage":6},{"originalDay":66,"subject":"会计基础","title":"会计（综合提高）","target":"2个掌握考点","sourcePage":6},{"originalDay":67,"subject":"财务管理","title":"财管（货币时间价值与资金预测）","target":"2个掌握考点","sourcePage":6},{"originalDay":68,"subject":"财务管理","title":"财管（资本成本）","target":"2个掌握考点","sourcePage":6},{"originalDay":69,"subject":"财务管理","title":"财管（投资决策）","target":"3个掌握考点","sourcePage":6},{"originalDay":70,"subject":"财务管理","title":"财管（营运资本管理）","target":"2个掌握考点","sourcePage":6},{"originalDay":71,"subject":"财务管理","title":"财管（综合提高）","target":"2个掌握考点","sourcePage":6},{"originalDay":72,"subject":"经济学","title":"经济学（弹性与消费者均衡）","target":"3个掌握考点","sourcePage":6},{"originalDay":73,"subject":"经济学","title":"经济学（成本与厂商均衡）","target":"3个掌握考点","sourcePage":6},{"originalDay":74,"subject":"经济学","title":"经济学（GDP与乘数）","target":"2个掌握考点","sourcePage":6},{"originalDay":75,"subject":"经济学","title":"经济学（综合提高）","target":"2个掌握考点","sourcePage":6},{"originalDay":76,"subject":"三科综合","title":"三科易混点对比梳理","target":"3个掌握考点","sourcePage":6},{"originalDay":77,"subject":"三科综合","title":"三科错题回顾","target":"3个掌握考点","sourcePage":6},{"originalDay":78,"subject":"三科综合","title":"薄弱点最后突破","target":"2个掌握考点","sourcePage":6},{"originalDay":79,"subject":"三科综合","title":"必背清单过一遍","target":"3个掌握考点","sourcePage":6},{"originalDay":80,"subject":"三科综合","title":"年前学习收官总结","target":"3个掌握考点","sourcePage":6}];
+const FINANCE_EXEC_ORDER=[1,2,3,4,5,6,7,8,9,10,11,34,35,36,37,38,39,40,57,58,63,64,65,66,12,13,14,15,16,17,18,19,41,42,43,44,45,46,47,59,60,67,68,69,70,71,20,21,22,23,24,25,26,27,28,29,30,31,48,49,50,51,52,53,54,55,56,61,62,72,73,74,75,32,33,76,77,78,79,80];
+const MATH_PLAN=[{"day":1,"lectures":[{"title":"第1讲-分数运算和去括号","duration":"9:37"},{"title":"第2讲-分式运算","duration":"11:23"},{"title":"第3讲-解方程根与系数的关系","duration":"11:28"},{"title":"第4讲-绝对值","duration":"3:19"},{"title":"第5讲-直线方程","duration":"6:24"},{"title":"第6讲-圆的方程","duration":"9:45"},{"title":"第7讲-抛物线方程","duration":"7:15"},{"title":"第8讲-三角函数","duration":"9:47"}],"drills":[1,2,3,4],"sourcePage":1},{"day":2,"lectures":[{"title":"第9讲-区间表示","duration":"4:39"},{"title":"第10讲-函数定义和表示","duration":"14:59"},{"title":"第11讲-函数性质奇偶性","duration":"9:46"},{"title":"第12讲-函数性质单调有界周期性","duration":"9:07"},{"title":"第13讲-复合函数和反函数","duration":"8:51"},{"title":"第14讲-幂函数","duration":"10:42"},{"title":"第15讲-指数函数","duration":"7:05"}],"drills":[5,6,7,8],"sourcePage":1},{"day":3,"lectures":[{"title":"第16讲-对数函数","duration":"7:19"},{"title":"第17讲-三角函数","duration":"9:34"},{"title":"第18讲-三角函数公式","duration":"6:14"},{"title":"第19讲-反正弦和反余弦三角函数","duration":"12:21"},{"title":"第20讲-反正切和反余切三角函数","duration":"7:39"},{"title":"第21讲-初等函数和分段函数","duration":"5:56"}],"drills":[9],"sourcePage":1},{"day":4,"lectures":[{"title":"第22讲-数列极限","duration":"10:15"},{"title":"第23讲-无穷处极限","duration":"8:30"},{"title":"第24讲-某一点处极限","duration":"8:48"},{"title":"第25讲-极限运算法则","duration":"9:55"},{"title":"第26讲-两个重要极限","duration":"14:32"}],"drills":[10,11,12,13,14,15,16,17,18],"sourcePage":2},{"day":5,"lectures":[{"title":"第27讲-无穷小量和无穷大量","duration":"14:33"},{"title":"第28讲-无穷小的比较","duration":"10:05"},{"title":"第29讲-等价无穷小","duration":"9:48"}],"drills":[19,20,21],"sourcePage":2},{"day":6,"lectures":[{"title":"第30讲-连续定义和判断","duration":"11:27"},{"title":"第31讲-间断点的分类和判断","duration":"18:12"},{"title":"第32讲-连续性定理","duration":"11:14"}],"drills":[22,23,24,25,26],"sourcePage":2},{"day":7,"lectures":[{"title":"第33讲-导数的定义","duration":"22:25"},{"title":"第34讲-利用导数定义求极限","duration":"9:07"},{"title":"第35讲-导数的几何意义","duration":"10:45"},{"title":"第36讲-连续可导的关系","duration":"13:11"},{"title":"第37讲-求导法则和基本函数求导公式","duration":"9:16"}],"drills":[27,28,29,30,31,32,33],"sourcePage":2},{"day":8,"lectures":[{"title":"第38讲-复合函数和反函数求导法则","duration":"12:30"},{"title":"第39讲-高阶导数","duration":"19:31"},{"title":"第40讲-分段函数求导法则","duration":"12:10"},{"title":"第41讲-隐函数求导法则","duration":"10:37"},{"title":"第42讲-含参求导法则","duration":"18:44"},{"title":"第43讲-微分","duration":"4:08"}],"drills":[34,35,36,37,38,39,40,41,42,43,44,45],"sourcePage":3},{"day":9,"lectures":[{"title":"第44讲-罗尔定理","duration":"8:06"},{"title":"第45讲-拉格朗日定理","duration":"9:34"}],"drills":[46,47,48,49],"sourcePage":3},{"day":10,"lectures":[{"title":"第46讲-洛必达法则0比0无穷比无穷","duration":"12:56"},{"title":"第47讲-洛必达法则其它类型","duration":"10:05"}],"drills":[50,51,52],"sourcePage":3},{"day":11,"lectures":[{"title":"第48讲-单调性证明一个不等号","duration":"15:30"},{"title":"第49讲-单调性证明两个不等号","duration":"12:11"}],"drills":[53,54,55],"sourcePage":3},{"day":12,"lectures":[{"title":"第50讲-极值的定义","duration":"11:49"},{"title":"第51讲-极值点的注意事项","duration":"9:44"},{"title":"第52讲-二导判定极值点法则","duration":"5:52"},{"title":"第53讲-最值","duration":"14:19"}],"drills":[56,57,58],"sourcePage":3},{"day":13,"lectures":[{"title":"第54讲-凹凸性","duration":"15:27"},{"title":"第55讲-渐近线","duration":"7:35"},{"title":"第56讲-函数性态综合研究","duration":"7:03"}],"drills":[59,60,61,62],"sourcePage":4},{"day":14,"lectures":[{"title":"第57讲-原函数与不定积分的概念","duration":"11:25"},{"title":"第58讲-不定积分的性质","duration":"5:08"},{"title":"第59讲-不定积分的基本公式","duration":"6:20"},{"title":"第60讲-直接积分法","duration":"9:25"}],"drills":[63,64,65,66,67],"sourcePage":4},{"day":15,"lectures":[{"title":"第61讲-凑微分法幂函数型","duration":"11:30"},{"title":"第62讲-凑微分法指数和对数型","duration":"10:15"},{"title":"第63讲-凑微分法反正弦和反正切型","duration":"14:22"},{"title":"第64讲-凑微分法综合型","duration":"8:14"}],"drills":[68,69,70,71],"sourcePage":4},{"day":16,"lectures":[{"title":"第65讲-第二类三角换元法","duration":"14:56"},{"title":"第66讲-第二类整体换元倒代法","duration":"9:15"}],"drills":[72,73,74],"sourcePage":4},{"day":17,"lectures":[{"title":"第67讲-分部积分法幂指幂三","duration":"10:08"},{"title":"第68讲-分部积分法幂函对幂反三","duration":"11:11"},{"title":"第69讲-分部积分法指三原函数","duration":"14:44"}],"drills":[75,76,77,78,79],"sourcePage":5},{"day":18,"lectures":[{"title":"第70讲-有理函数和无理函数积分","duration":"11:58"},{"title":"第71讲-定积分的定义","duration":"13:00"},{"title":"第72讲-定积分的几何意义","duration":"8:41"},{"title":"第73讲-定积分的性质-1","duration":"8:46"},{"title":"第74讲-定积分的性质-2","duration":"11:17"}],"drills":[80,81,82,83],"sourcePage":5},{"day":19,"lectures":[{"title":"第75讲-变上限积分","duration":"14:46"},{"title":"第76讲-牛顿莱布尼兹公式","duration":"7:54"}],"drills":[84,85,86,87,88,89,90],"sourcePage":5},{"day":20,"lectures":[{"title":"第77讲-定积分的换元积分法","duration":"8:17"},{"title":"第78讲-定积分的分部积分法","duration":"13:48"}],"drills":[91,92,93,94,95,96],"sourcePage":6},{"day":21,"lectures":[{"title":"第79讲-定积分的倒代法","duration":"3:12"},{"title":"第80讲-对称区间上的定积分","duration":"7:46"},{"title":"第81讲-点火公式","duration":"7:36"},{"title":"第82讲-无穷区间的反常积分广义积分","duration":"18:48"},{"title":"第83讲-无穷间断点的反常积分瑕积分","duration":"4:28"}],"drills":[97,98,99,100],"sourcePage":6},{"day":22,"lectures":[{"title":"第84讲-求面积","duration":"21:11"},{"title":"第85讲-旋转体的体积","duration":"10:08"},{"title":"第86讲-柱壳法","duration":"11:16"}],"drills":[101,102,103,104,105,106,107],"sourcePage":6},{"day":23,"lectures":[{"title":"第87讲-多元函数概念","duration":"12:43"},{"title":"第88讲-多元函数极限和连续","duration":"12:10"},{"title":"第89讲-多元函数的偏导数","duration":"16:10"},{"title":"第90讲-全微分","duration":"12:09"}],"drills":[108,109,110,111,112,113],"sourcePage":7},{"day":24,"lectures":[{"title":"第91讲-二阶偏导数","duration":"10:34"},{"title":"第92讲-多元复合函数偏导数","duration":"16:47"},{"title":"第93讲-隐函数求二阶偏导","duration":"13:22"}],"drills":[114,115,116,117,118,119],"sourcePage":7},{"day":25,"lectures":[{"title":"第94讲-二元函数的极值","duration":"17:49"},{"title":"第95讲-二元函数的最值","duration":"8:59"},{"title":"第96讲-条件极值","duration":"12:33"}],"drills":[120,121,122],"sourcePage":7},{"day":26,"lectures":[{"title":"第97讲-二重积分的概念和性质","duration":"11:11"},{"title":"第98讲-二重积分的积分区域分类","duration":"18:50"},{"title":"第99讲-二次积分和交换积分次序","duration":"13:34"}],"drills":[123,124,125,126],"sourcePage":8},{"day":27,"lectures":[{"title":"第100讲-直角坐标系下二重积分的计算","duration":"16:07"}],"drills":[127,128,129,130,131],"sourcePage":8},{"day":28,"lectures":[{"title":"第101讲-极坐标系如何表示积分区域","duration":"20:43"},{"title":"第102讲-极坐标系下二重积分的计算","duration":"8:37"},{"title":"第103讲-利用对称性简化二重积分的计算","duration":"12:42"}],"drills":[132,133,134,135,136,137],"sourcePage":8},{"day":29,"lectures":[{"title":"第104讲-无穷级数的概念","duration":"11:12"},{"title":"第105讲-几何级数","duration":"11:00"},{"title":"第106讲-常数项级数的性质","duration":"13:19"},{"title":"第107讲-正项级数的比较判别法","duration":"12:36"},{"title":"第108讲-正项级数的比较判别法极限形式","duration":"7:26"},{"title":"第109讲-正项级数的比值判别法","duration":"7:59"}],"drills":[138,139,140,141,142],"sourcePage":9},{"day":30,"lectures":[{"title":"第110讲-交错级数的莱布尼兹判别法","duration":"11:17"},{"title":"第111讲-幂级数收敛半径和收敛域","duration":"10:33"},{"title":"第112讲-幂级数的各种变型","duration":"18:24"}],"drills":[143,144,145,146,147,148],"sourcePage":9},{"day":31,"lectures":[{"title":"第113讲-常微分方程基本概念","duration":"17:44"},{"title":"第114讲-一阶变量可分离微分方程","duration":"9:33"},{"title":"第115讲-一阶齐次微分方程","duration":"10:08"}],"drills":[149,150,151,152,153,154,155],"sourcePage":9},{"day":32,"lectures":[{"title":"第116讲-一阶线性微分方程","duration":"13:52"},{"title":"第117讲-一阶微分方程解简单应用题","duration":"12:10"}],"drills":[156,157,158,159,160,161],"sourcePage":10},{"day":33,"lectures":[{"title":"第118讲-二阶线性微分方程解的性质","duration":"13:51"},{"title":"第119讲-二阶常系数齐次线性微分方程通解求法","duration":"8:52"}],"drills":[162,163,164,165],"sourcePage":10},{"day":34,"lectures":[{"title":"第120讲-二阶常系数非齐次线性微分方程通解求法","duration":"17:04"},{"title":"第121讲-二阶常系数非齐次线性微分方程通解典型案例","duration":"7:15"}],"drills":[166,167,168,169],"sourcePage":10},{"day":35,"lectures":[{"title":"第122讲-二阶三阶行列式求法","duration":"13:55"},{"title":"第123讲-排列与逆序数","duration":"10:13"},{"title":"第124讲-对换与n阶行列式定义","duration":"14:01"},{"title":"第125讲-几种特殊行列式","duration":"8:20"},{"title":"第126讲-行列式性质-转置和交换","duration":"8:31"},{"title":"第127讲-行列式性质-数乘","duration":"8:42"},{"title":"第128讲-行列式性质-拆分","duration":"10:12"},{"title":"第129讲-行列式性质-倍加","duration":"11:44"}],"drills":[170],"sourcePage":11},{"day":36,"lectures":[{"title":"第130讲-综合应用行列式性质计算","duration":"14:58"}],"drills":[171,172,173,174,175,176,177,178],"sourcePage":11},{"day":37,"lectures":[{"title":"第131讲-余子式和代数余子式","duration":"12:08"},{"title":"第132讲-行列式按行或列展开","duration":"9:47"},{"title":"第133讲-逆用行列式按行或列展开","duration":"10:54"},{"title":"第134讲-逆用行列式按行或列展开典型案例","duration":"14:44"}],"drills":[179,180,181,182,183],"sourcePage":11},{"day":38,"lectures":[{"title":"第135讲-矩阵概念和几种特殊矩阵","duration":"14:58"},{"title":"第136讲-矩阵加法和数乘运算","duration":"6:36"},{"title":"第137讲-矩阵的乘法","duration":"13:45"},{"title":"第138讲-方幂和可交换矩阵","duration":"12:00"},{"title":"第139讲-矩阵的转置和对称矩阵","duration":"9:24"},{"title":"第140讲-方阵的行列式","duration":"9:42"}],"drills":[184,185,186,187],"sourcePage":12},{"day":39,"lectures":[{"title":"第141讲-分块矩阵","duration":"8:40"},{"title":"第142讲-分块方式","duration":"9:54"},{"title":"第143讲-分块矩阵的典型案例","duration":"7:00"},{"title":"第144讲-逆矩阵的定义","duration":"14:19"},{"title":"第145讲-非奇异矩阵和伴随矩阵","duration":"11:32"},{"title":"第146讲-矩阵可逆的充分必要条件","duration":"6:49"}],"drills":[188,189,190],"sourcePage":12},{"day":40,"lectures":[{"title":"第147讲-逆矩阵的性质","duration":"10:38"},{"title":"第148讲-初等变换与初等矩阵","duration":"21:37"},{"title":"第149讲-初等矩阵的逆矩阵","duration":"8:49"},{"title":"第150讲-行阶梯形最简形矩阵和等价标准形","duration":"18:47"}],"drills":[191,192,193,194],"sourcePage":12},{"day":41,"lectures":[{"title":"第151讲-等价矩阵","duration":"6:57"},{"title":"第152讲-初等行变换求逆矩阵","duration":"12:48"},{"title":"第153讲-矩阵可逆充要条件和几种特殊逆矩阵的求法","duration":"9:44"},{"title":"第154讲-矩阵方程的求法1","duration":"11:15"},{"title":"第155讲-矩阵方程的求法2","duration":"10:36"}],"drills":[195,196,197,198,199,200],"sourcePage":13},{"day":42,"lectures":[{"title":"第156讲-k阶子式和矩阵的秩","duration":"11:02"},{"title":"第157讲-求矩阵秩的方法1","duration":"9:09"},{"title":"第158讲-求矩阵秩的方法2","duration":"9:05"},{"title":"第159讲-求矩阵秩的方法3","duration":"10:44"}],"drills":[201,202,203],"sourcePage":13},{"day":43,"lectures":[{"title":"第160讲-秩的性质","duration":"5:00"},{"title":"第161讲-伴随矩阵的性质","duration":"7:34"},{"title":"第162讲-向量定义和运算","duration":"11:54"},{"title":"第163讲-线性方程组的消元法","duration":"15:37"}],"drills":[204,205,206],"sourcePage":13},{"day":44,"lectures":[{"title":"第164讲-非齐次线性方程组解的判定1","duration":"11:57"},{"title":"第165讲-非齐次线性方程组解的判定2","duration":"8:51"},{"title":"第166讲-齐次线性方程组解的判定","duration":"10:46"},{"title":"第167讲-系数为方阵的线性方程组解的判定","duration":"13:21"}],"drills":[207,208,209,210,211,212],"sourcePage":14},{"day":45,"lectures":[{"title":"第168讲-向量组的线性组合和表示条件","duration":"14:19"},{"title":"第169讲-向量组线性表示","duration":"13:13"},{"title":"第170讲-等价向量组","duration":"8:41"}],"drills":[213,214,215,216],"sourcePage":14},{"day":46,"lectures":[{"title":"第171讲-向量线性相关与无关的定义","duration":"15:42"},{"title":"第172讲-向量组线性相关性的判定","duration":"12:51"},{"title":"第173讲-向量组线性相关性的性质","duration":"14:58"},{"title":"第174讲-极大线性无关组和向量组的秩的定义","duration":"9:49"},{"title":"第175讲-极大线性无关组和向量组的秩的求法","duration":"13:04"}],"drills":[217,218,219],"sourcePage":14},{"day":47,"lectures":[{"title":"第176讲-矩阵的秩与向量组秩的关系","duration":"9:33"},{"title":"第177讲-齐次线性方程组解的结构","duration":"6:11"},{"title":"第178讲-齐次线性方程组解的基础解系和通解1","duration":"12:47"},{"title":"第179讲-齐次线性方程组解的基础解系和通解2","duration":"11:44"}],"drills":[222,223,224,225,226],"sourcePage":15},{"day":48,"lectures":[{"title":"第180讲-非齐次线性方程组解的结构","duration":"8:41"},{"title":"第181讲-非齐次线性方程组的通解求法1、2","duration":"20:55"}],"drills":[227,228,229,230,231],"sourcePage":15}];
+const ENGLISH_SKILLS=[{"id":1,"module":"写作","title":"写作题型概述+写作提分秘诀1","duration":"52:25"},{"id":2,"module":"写作","title":"写作提分秘诀2（扩写与改写）","duration":"41:04"},{"id":3,"module":"写作","title":"写作论证方式与典型例题","duration":"58:31"},{"id":4,"module":"写作","title":"写作题型精讲1—议论文","duration":"58:14"},{"id":5,"module":"写作","title":"写作题型精讲2—书信+应用文","duration":"33:42"},{"id":6,"module":"翻译","title":"翻译题型概述+选词组句妙招1","duration":"36:53"},{"id":7,"module":"翻译","title":"翻译组句妙招2（长短句形意合）","duration":"40:17"},{"id":8,"module":"翻译","title":"翻译步骤及典型例题+名师带练1","duration":"26:09"},{"id":9,"module":"翻译","title":"翻译名师带练2+3","duration":"26:55"},{"id":10,"module":"听力","title":"听力理解题型概述+短篇新闻 典型例题","duration":"56:45"},{"id":11,"module":"听力","title":"短篇新闻 名师带练1（2023.12.2）","duration":"49:49"},{"id":12,"module":"听力","title":"短篇新闻 名师带练2（2024.12.2）","duration":"44:27"},{"id":13,"module":"听力","title":"长对话解题密钥+典型例题（2023.6.2）","duration":"70:33"},{"id":14,"module":"听力","title":"长对话 名师带练1（2024.12.2）","duration":"50:13"},{"id":15,"module":"听力","title":"长对话 名师带练2（2024.6.2）","duration":"61:38"},{"id":16,"module":"听力","title":"篇章听力解题密钥+典型例题（2024.6.1）","duration":"51:07"},{"id":17,"module":"听力","title":"篇章听力 名师带练1（2024.12.2）","duration":"50:40"},{"id":18,"module":"听力","title":"篇章听力 名师带练2（2023.6.2）","duration":"53:01"},{"id":19,"module":"阅读","title":"仔细阅读概述+例题1","duration":"62:04"},{"id":20,"module":"阅读","title":"仔细阅读主旨细节例题2-8","duration":"51:10"},{"id":21,"module":"阅读","title":"仔细阅读出题点总结","duration":"18:10"},{"id":22,"module":"阅读","title":"仔细阅读 典型例题1","duration":"48:33"},{"id":23,"module":"阅读","title":"仔细阅读 典型例题2","duration":"35:35"},{"id":24,"module":"阅读","title":"仔细阅读 名师带练1","duration":"41:25"},{"id":25,"module":"阅读","title":"仔细阅读 名师带练2","duration":"34:25"},{"id":26,"module":"阅读","title":"仔细阅读 名师带练3","duration":"45:00"},{"id":27,"module":"阅读","title":"仔细阅读 名师带练4","duration":"31:29"},{"id":28,"module":"阅读","title":"仔细阅读 名师带练5","duration":"27:15"},{"id":29,"module":"阅读","title":"仔细阅读 名师带练6","duration":"27:55"},{"id":30,"module":"阅读","title":"长篇阅读概述+例题分析","duration":"43:41"},{"id":31,"module":"阅读","title":"长篇阅读 典型例题","duration":"33:14"},{"id":32,"module":"阅读","title":"长篇阅读 名师带练1","duration":"45:43"},{"id":33,"module":"阅读","title":"长篇阅读 名师带练2","duration":"19:49"},{"id":34,"module":"阅读","title":"词汇理解概述+例题分析","duration":"20:39"},{"id":35,"module":"阅读","title":"词汇理解 典型例题","duration":"27:56"},{"id":36,"module":"阅读","title":"词汇理解 名师带练1","duration":"37:04"},{"id":37,"module":"阅读","title":"词汇理解 名师带练2","duration":"31:02"},{"id":38,"module":"阅读","title":"告别的话","duration":"05:42"}];
+const FINANCE_PHASES=[
+  {name:'会计闭环',start:0,end:23,total:24,note:'基础 → 习题 → 分录 → 计算/综合'},
+  {name:'财管闭环',start:24,end:45,total:22,note:'基础 → 习题 → 公式 → 计算'},
+  {name:'经济学闭环',start:46,end:72,total:27,note:'基础 → 习题 → 图形 → 计算'},
+  {name:'三科收官',start:73,end:79,total:7,note:'考纲 / 薄弱点 / 错题 / 必背 / 总结'}
+];
+let LS=normalizeLearningState(S.g('learningState',{}));
+
 const now=new Date(), pad=n=>String(n).padStart(2,'0'), fmt=d=>`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
 const parse=s=>{const[a,b,c]=s.split('-').map(Number);return new Date(a,b-1,c,12)};
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
@@ -1120,7 +1266,7 @@ function renderCal(){
     const dots=arr.filter(x=>!x.done).slice(0,4).map(x=>`<i class="pd ${x.priority||'medium'}"></i>`).join('');
     const schoolWeek=(d.getDay()===1)?schoolWeekNumber(d):null;
     b.innerHTML=`<div class="dtop"><span class="date-left"><span class="num">${d.getDate()}</span>${same(d,now)?'<span class="today-chip">今天</span>':''}</span><span class="lunar">${esc(li.text)}</span></div>
-      <div class="tags">${schoolWeek?`<span class="school-week-badge">第${schoolWeek}周</span>`:''}${ddl.length?`<span class="tag deadline ${ddl.every(x=>x.done)?'done':''}">${ddl.every(x=>x.done)?'✓':'⌛'} 截止${ddl.length>1?` ${ddl.length}`:''}</span>`:''}${h?`<span class="tag ${h.type}">${h.type==='holiday'?'休':'班'} · ${esc(h.name)}</span>`:''}${li.term?`<span class="tag term">${esc(li.term)}</span>`:''}${li.fest.slice(0,1).map(x=>`<span class="tag">${esc(x)}</span>`).join('')}${an.slice(0,1).map(x=>`<span class="tag">♥ ${esc(x.name)}</span>`).join('')}</div>
+      <div class="tags">${schoolWeek?`<span class="school-week-badge">第${schoolWeek}周</span>`:''}${learningCalendarTags(d)}${ddl.length?`<span class="tag deadline ${ddl.every(x=>x.done)?'done':''}">${ddl.every(x=>x.done)?'✓':'⌛'} 截止${ddl.length>1?` ${ddl.length}`:''}</span>`:''}${h?`<span class="tag ${h.type}">${h.type==='holiday'?'休':'班'} · ${esc(h.name)}</span>`:''}${li.term?`<span class="tag term">${esc(li.term)}</span>`:''}${li.fest.slice(0,1).map(x=>`<span class="tag">${esc(x)}</span>`).join('')}${an.slice(0,1).map(x=>`<span class="tag">♥ ${esc(x.name)}</span>`).join('')}</div>
       <div class="mini"><span>${arr.length?`✓ ${done}/${arr.length}`:''}</span><span class="priority-dots">${dots}</span></div>`;
     b.onclick=()=>{sel=new Date(d);renderCal();renderSide()};g.appendChild(b)
   }
@@ -1275,7 +1421,7 @@ function renderSide(){
   const distanceEl=$('#dateDistance');distanceEl.textContent=selectedDistanceText(sel);distanceEl.className=`date-distance ${distance===0?'today':distance>0?'future':'past'}`;
   $('#dateSub').textContent=[`农历${li.fullText}`,school,li.term,...li.fest,h?.name].filter(Boolean).join(' · ');
   if(!$('#deadlineInput').value.trim())$('#deadlineDate').value=fmt(sel);
-  renderSchedule();renderTasks();renderDeadlines();renderGoals();['q1','q2','q3'].forEach(id=>$('#'+id).value=r[id]||'');renderReflectionState(r)
+  renderSchedule();renderLearningMini();renderTasks();renderDeadlines();renderGoals();['q1','q2','q3'].forEach(id=>$('#'+id).value=r[id]||'');renderReflectionState(r)
 }
 let timer;
 function saveR(){
@@ -1466,9 +1612,429 @@ function openReview(){
 
 
 
+/* ===== V1.4.0 学习管理逻辑 ===== */
+function defaultLearningState(){
+  return {
+    version:1,
+    busyDates:{},
+    freeLogs:[],
+    english:{round1:{},round2:{},skills:{},reviews:{}},
+    finance:{completions:{}},
+    math:{completions:{}}
+  }
+}
+function normalizeLearningState(raw){
+  const d=defaultLearningState(),x=(raw&&typeof raw==='object')?raw:{};
+  d.busyDates=(x.busyDates&&typeof x.busyDates==='object')?x.busyDates:{};
+  d.freeLogs=Array.isArray(x.freeLogs)?x.freeLogs:[];
+  const en=x.english||{};
+  d.english.round1=(en.round1&&typeof en.round1==='object')?en.round1:{};
+  d.english.round2=(en.round2&&typeof en.round2==='object')?en.round2:{};
+  d.english.skills=(en.skills&&typeof en.skills==='object')?en.skills:{};
+  d.english.reviews=(en.reviews&&typeof en.reviews==='object')?en.reviews:{};
+  d.finance.completions=(x.finance?.completions&&typeof x.finance.completions==='object')?x.finance.completions:{};
+  d.math.completions=(x.math?.completions&&typeof x.math.completions==='object')?x.math.completions:{};
+  return d
+}
+function learningSave(){
+  S.s('learningState',LS);
+  renderLearningOverview();
+  renderLearningMini();
+  renderCal()
+}
+function learningTodayDate(){const d=new Date();return new Date(d.getFullYear(),d.getMonth(),d.getDate(),12)}
+function learningTodayKey(){return fmt(learningTodayDate())}
+function learningEntryDate(v){
+  if(!v)return '';
+  if(typeof v==='string')return v.slice(0,10);
+  return v.date||String(v.at||'').slice(0,10)
+}
+function learningDoneCount(map){return Object.keys(map||{}).filter(k=>!!map[k]).length}
+function learningPct(done,total){return total?Math.min(100,Math.round(done/total*100)):0}
+function learningMark(map,id,checked,dateKey=learningTodayKey()){
+  const key=String(id);
+  if(checked)map[key]={date:dateKey,at:new Date().toISOString()};
+  else delete map[key];
+  learningSave()
+}
+function isMilitaryKey(k){return k>=LEARNING_CONFIG.militaryStart&&k<=LEARNING_CONFIG.militaryEnd}
+function isLearningBusyKey(k){return !!LS.busyDates[k]}
+function isExamKey(k){return k===LEARNING_CONFIG.examDate}
+function isResumeOrLaterKey(k){return k>=LEARNING_CONFIG.resumeDate}
+function englishRound1Complete(){return learningDoneCount(LS.english.round1)>=45}
+function englishRound2Complete(){return learningDoneCount(LS.english.round2)>=45}
+function englishSkillsComplete(){return learningDoneCount(LS.english.skills)>=ENGLISH_SKILLS.length}
+function nextNumber(total,map){
+  for(let i=1;i<=total;i++)if(!map[String(i)])return i;
+  return null
+}
+function nextFinanceDay(){
+  for(const d of FINANCE_EXEC_ORDER)if(!LS.finance.completions[String(d)])return d;
+  return null
+}
+function nextMathDay(){
+  for(let d=1;d<=48;d++)if(!LS.math.completions[String(d)])return d;
+  return null
+}
+function financeItem(day){return FINANCE_PLAN.find(x=>x.originalDay===Number(day))}
+function mathItem(day){return MATH_PLAN.find(x=>x.day===Number(day))}
+function financeExecPosition(day){return FINANCE_EXEC_ORDER.indexOf(Number(day))}
+function financePhaseByPosition(pos){return FINANCE_PHASES.find(x=>pos>=x.start&&pos<=x.end)||FINANCE_PHASES[FINANCE_PHASES.length-1]}
+function financePhaseDone(phase){
+  return FINANCE_EXEC_ORDER.slice(phase.start,phase.end+1).filter(d=>LS.finance.completions[String(d)]).length
+}
+function learningCompletionItemsOnDate(k){
+  const out=[];
+  for(let i=1;i<=45;i++){
+    if(learningEntryDate(LS.english.round1[String(i)])===k)out.push(`英语一轮 Lesson ${i}`);
+    if(learningEntryDate(LS.english.round2[String(i)])===k)out.push(`英语二轮 Lesson ${i}`)
+  }
+  ENGLISH_SKILLS.forEach(s=>{if(learningEntryDate(LS.english.skills[String(s.id)])===k)out.push(`四级技巧 · ${s.module} ${s.id}`)});
+  FINANCE_EXEC_ORDER.forEach(d=>{if(learningEntryDate(LS.finance.completions[String(d)])===k){const x=financeItem(d);out.push(`财经 · ${x?.subject||''} ${x?.title||`Day${d}`}`)}});
+  for(let d=1;d<=48;d++)if(learningEntryDate(LS.math.completions[String(d)])===k)out.push(`高数 · Day ${d}`);
+  LS.freeLogs.filter(x=>x.date===k).forEach(x=>out.push(`自主 · ${x.track||'学习'} ${x.text||''}`));
+  return out
+}
+function learningCalendarTags(d){
+  const k=fmt(d),tags=[];
+  if(isExamKey(k))tags.push('<span class="tag learning-exam">英语三级B</span>');
+  if(isMilitaryKey(k))tags.push('<span class="tag learning">军训</span>');
+  if(isLearningBusyKey(k))tags.push('<span class="tag learning-busy">缓冲</span>');
+  const n=learningCompletionItemsOnDate(k).length;
+  if(n)tags.push(`<span class="tag learning">学 ${n}</span>`);
+  return tags.slice(0,2).join('')
+}
+function learningReviewFor(k){
+  if(!LS.english.reviews[k])LS.english.reviews[k]={morning:false,evening:false,weekly:false};
+  return LS.english.reviews[k]
+}
+function setLearningReview(kind,checked,k=learningTodayKey()){
+  const r=learningReviewFor(k);r[kind]=!!checked;learningSave()
+}
+function toggleLearningBusy(k=learningTodayKey()){
+  if(LS.busyDates[k]){
+    delete LS.busyDates[k];learningSave();renderLearningAll();return
+  }
+  const reason=prompt('今天为什么需要缓冲？可以写“志愿 / 普通话考试 / 临时任务”，也可以留空。','');
+  if(reason===null)return;
+  LS.busyDates[k]={reason:reason.trim(),createdAt:new Date().toISOString()};
+  learningSave();renderLearningAll()
+}
+function addBusyDate(date,reason){
+  if(!date)return;
+  LS.busyDates[date]={reason:(reason||'').trim(),createdAt:new Date().toISOString()};
+  learningSave();renderLearningAll()
+}
+function removeBusyDate(date){
+  delete LS.busyDates[date];learningSave();renderLearningAll()
+}
+function addFreeLearningLog(track,text,k=learningTodayKey()){
+  if(!text.trim())return;
+  LS.freeLogs.push({id:uuid(),date:k,track,text:text.trim(),at:new Date().toISOString()});
+  learningSave();renderLearningAll()
+}
+function removeFreeLearningLog(id){
+  LS.freeLogs=LS.freeLogs.filter(x=>x.id!==id);learningSave();renderLearningAll()
+}
+function addDaysKey(k,n){const d=parse(k);d.setDate(d.getDate()+n);return fmt(d)}
+function maxDateKey(a,b){return a>b?a:b}
+function countEligibleEnglishDays(startKey,endKey){
+  if(startKey>endKey)return 0;
+  let d=parse(startKey),e=parse(endKey),n=0;
+  for(;d<=e;d.setDate(d.getDate()+1)){
+    const k=fmt(d);
+    if(d.getDay()!==1&&!isLearningBusyKey(k))n++
+  }
+  return n
+}
+function englishRecentPace(map){
+  const cutoff=parse(addDaysKey(learningTodayKey(),-20)),byDay={};
+  Object.values(map||{}).forEach(v=>{
+    const k=learningEntryDate(v);if(!k)return;
+    const d=parse(k);if(d>=cutoff)byDay[k]=(byDay[k]||0)+1
+  });
+  const vals=Object.values(byDay);
+  if(!vals.length)return 1;
+  return Math.max(.75,Math.min(3,vals.reduce((a,b)=>a+b,0)/vals.length))
+}
+function projectEnglishRound1(){
+  const done=learningDoneCount(LS.english.round1),rem=Math.max(0,45-done);
+  if(!rem)return {date:learningEntryDate(LS.english.round1['45'])||learningTodayKey(),pace:0};
+  const pace=englishRecentPace(LS.english.round1);
+  let d=learningTodayDate(),left=rem,guard=0;
+  if(fmt(d)<LEARNING_CONFIG.militaryStart)d=parse(LEARNING_CONFIG.militaryStart);
+  while(left>0&&guard<180){
+    const k=fmt(d);
+    if(d.getDay()!==1&&!isLearningBusyKey(k))left-=pace;
+    if(left>0)d.setDate(d.getDate()+1);
+    guard++
+  }
+  return {date:fmt(d),pace}
+}
+function dateHuman(k){if(!k)return '—';const d=parse(k);return `${d.getMonth()+1}月${d.getDate()}日`}
+function learningStatusClass(projected,target){
+  if(projected<=target)return 'safe';
+  if(projected<=addDaysKey(target,7))return 'warn';
+  return 'danger'
+}
+function durationSeconds(s){
+  if(!s)return 0;const a=s.split(':').map(Number);return a.length===2?a[0]*60+a[1]:0
+}
+function durationHuman(sec){
+  if(!sec)return '—';const m=Math.round(sec/60);return m>=60?`${Math.floor(m/60)}小时${m%60?`${m%60}分`:''}`:`约${m}分钟`
+}
+function mathDayDuration(x){return (x?.lectures||[]).reduce((s,l)=>s+durationSeconds(l.duration),0)}
+function renderLearningOverview(){
+  if(!$('#learnEnglishMetric'))return;
+  const r1=learningDoneCount(LS.english.round1),r2=learningDoneCount(LS.english.round2),sk=learningDoneCount(LS.english.skills);
+  if(!englishRound1Complete()){
+    $('#learnEnglishMetric').textContent=`${r1} / 45`;
+    $('#learnEnglishBar').style.width=`${learningPct(r1,45)}%`;
+    $('#learnEnglishNote').textContent=`词汇第一轮 · 下一个 Lesson ${nextNumber(45,LS.english.round1)||'—'}`
+  }else{
+    const done=r2+sk,total=45+ENGLISH_SKILLS.length;
+    $('#learnEnglishMetric').textContent=`${done} / ${total}`;
+    $('#learnEnglishBar').style.width=`${learningPct(done,total)}%`;
+    $('#learnEnglishNote').textContent=`第二轮 ${r2}/45 · 技巧 ${sk}/${ENGLISH_SKILLS.length}`
+  }
+  const f=learningDoneCount(LS.finance.completions),m=learningDoneCount(LS.math.completions);
+  $('#learnFinanceMetric').textContent=`${f} / 80`;$('#learnFinanceBar').style.width=`${learningPct(f,80)}%`;
+  const fd=nextFinanceDay(),fp=fd?financePhaseByPosition(financeExecPosition(fd)):null;
+  $('#learnFinanceNote').textContent=fd?`${fp.name} · 下一项原 Day ${fd}`:'80 天全部完成';
+  $('#learnMathMetric').textContent=`${m} / 48`;$('#learnMathBar').style.width=`${learningPct(m,48)}%`;
+  $('#learnMathNote').textContent=nextMathDay()?`下一项 Day ${nextMathDay()}`:'48 天全部完成'
+}
+let activeLearningTab='today';
+function openLearning(tab='today'){
+  activeLearningTab=tab;
+  $('#learningModal').classList.add('show');
+  renderLearningAll()
+}
+function closeLearning(){$('#learningModal').classList.remove('show')}
+function renderLearningAll(){
+  renderLearningOverview();renderLearningBanner();renderLearningPanel();renderLearningMini()
+}
+function renderLearningBanner(){
+  const e=$('#learningBanner');if(!e)return;
+  const k=learningTodayKey(),mil=isMilitaryKey(k),busy=isLearningBusyKey(k),examLeft=dayDiff(parse(LEARNING_CONFIG.examDate),learningTodayDate());
+  let title=mil?'军训保护期':busy?'今天已设为缓冲日':'动态计划正常运行';
+  let desc=mil?'10/12—10/25：财经、高数正式进度冻结；英语照常，周一总复习、周二到周日推进新 Lesson。':busy?'今天不强制推进正式队列；英语复习仍可保留，想学多少都可以手动完成。':'完成得快，后面的队列自动前移；临时忙，未完成内容不会过期，只会继续成为下一项。';
+  e.innerHTML=`<div><strong>${title}</strong><div class="small">${desc}</div></div><div class="learning-row"><span class="learning-chip orange">三级B ${LEARNING_CONFIG.examDate.slice(5).replace('-','/')} · ${examLeft>=0?`还有 ${examLeft} 天`:'已结束'}</span><button class="btn ${busy?'':'learning-danger-btn'}" id="toggleBusyToday">${busy?'恢复正常计划':'今天很忙'}</button></div>`;
+  $('#toggleBusyToday').onclick=()=>toggleLearningBusy(k)
+}
+function renderLearningPanel(){
+  document.querySelectorAll('[data-learning-tab]').forEach(b=>b.classList.toggle('active',b.dataset.learningTab===activeLearningTab));
+  if(activeLearningTab==='english')renderLearningEnglish();
+  else if(activeLearningTab==='finance')renderLearningFinance();
+  else if(activeLearningTab==='math')renderLearningMath();
+  else if(activeLearningTab==='schedule')renderLearningSchedule();
+  else renderLearningToday()
+}
+function renderLearningToday(){
+  const e=$('#learningPanel'),k=learningTodayKey(),d=learningTodayDate(),mil=isMilitaryKey(k),busy=isLearningBusyKey(k),monday=d.getDay()===1;
+  const r=learningReviewFor(k),r1=learningDoneCount(LS.english.round1),todayItems=learningCompletionItemsOnDate(k);
+  const nextR1=nextNumber(45,LS.english.round1),nextR2=nextNumber(45,LS.english.round2),nextSkill=nextNumber(ENGLISH_SKILLS.length,LS.english.skills);
+  const fd=nextFinanceDay(),md=nextMathDay(),free=LS.freeLogs.filter(x=>x.date===k);
+  let englishCore='';
+  if(!englishRound1Complete()){
+    englishCore=k<LEARNING_CONFIG.militaryStart
+      ? `<div class="learning-lock">英语一轮从 ${dateHuman(LEARNING_CONFIG.militaryStart)} 启动。周一作为总复习 / 重启整理日，周二开始推进 Lesson 1。</div>`
+      : monday
+        ? `<div class="learning-status-box"><b>周一：不安排新 Lesson</b><br>今天只做本周总复习。需要额外学也可以去“英语”页手动完成。</div>`
+        : `<div class="learning-status-box ${busy?'warn':'safe'}"><div class="learning-big-next">词汇一轮 · Lesson ${nextR1||'全部完成'}</div><div class="learning-source-note">${busy?'今天是缓冲日，不强制推进。':'这是今天的核心新词任务；如果这一节短、状态好，完成后可以继续下一节。'}</div>${nextR1?`<div class="learning-row" style="margin-top:8px"><button class="btn primary" id="todayDoneEnglish">${r1===0?'完成本节':'完成 Lesson '+nextR1}</button><span class="learning-chip">今日已背 ${Object.values(LS.english.round1).filter(v=>learningEntryDate(v)===k).length} 节</span></div>`:''}</div>`
+  }else{
+    const days=Math.max(1,dayDiff(parse(LEARNING_CONFIG.contentDeadline),d)+1),eligible=Math.max(1,countEligibleEnglishDays(k,LEARNING_CONFIG.contentDeadline));
+    const r2rem=45-learningDoneCount(LS.english.round2),skrem=ENGLISH_SKILLS.length-learningDoneCount(LS.english.skills);
+    englishCore=`<div class="learning-status-box ${busy?'warn':'safe'}"><div class="learning-big-next">第二轮 + 四级技巧课</div><div class="learning-source-note">第一轮已经完整结束。到 ${dateHuman(LEARNING_CONFIG.contentDeadline)} 前，按当前余量建议平均每个非周一学习日约 ${Math.max(0,(r2rem/eligible)).toFixed(1)} 节二轮词汇；技巧课平均每天约 ${(skrem/days).toFixed(1)} 节。</div><div class="learning-row" style="margin-top:8px">${nextR2?`<button class="btn primary" id="todayDoneR2">完成二轮 Lesson ${nextR2}</button>`:''}${nextSkill?`<button class="btn" id="todayDoneSkill">完成技巧课 ${nextSkill}</button>`:''}</div></div>`
+  }
+  e.innerHTML=`
+    <div class="learning-section-card">
+      <div class="learning-row spread"><div><h4>今天 · ${k} · 周${wd(d)}</h4><div class="learning-source-note">${mil?'军训保护期：财经 / 高数不推进正式计划。':isResumeOrLaterKey(k)?'已进入正常学习阶段。':'学习计划准备期。'}${busy?' · 已设为缓冲日。':''}</div></div><span class="learning-chip ${mil?'orange':busy?'red':'green'}">${mil?'军训':busy?'缓冲':'正常'}</span></div>
+    </div>
+    <div class="learning-section-card">
+      <h4>英语固定复习</h4>
+      <div class="learning-review-grid">
+        <label class="learning-review-check"><input type="checkbox" id="reviewMorning" ${r.morning?'checked':''}><span><b>早上复习昨日词汇</b><small>起床后快速回忆前一天新背内容。</small></span></label>
+        <label class="learning-review-check"><input type="checkbox" id="reviewEvening" ${r.evening?'checked':''}><span><b>晚上复习昨日词汇</b><small>睡前再次检索，重点看卡壳词。</small></span></label>
+        <label class="learning-review-check" style="${monday?'':'opacity:.48'}"><input type="checkbox" id="reviewWeekly" ${r.weekly?'checked':''} ${monday?'':'disabled'}><span><b>周一一周总复习</b><small>${monday?'今天执行，不安排新的核心 Lesson。':'仅周一开启。'}</small></span></label>
+      </div>
+    </div>
+    <div class="learning-section-card"><h4>英语今日推进</h4>${englishCore}</div>
+    <div class="learning-section-card">
+      <h4>财经 / 高数</h4>
+      ${(!isResumeOrLaterKey(k))?`<div class="learning-lock">${mil?'军训期间正式进度冻结。想学可以记为“自主学习”，不会推进 Day 队列。':'财经和高数正式计划从 10/26 恢复正常上课后启动。'}</div>`:busy?'<div class="learning-lock">今天是缓冲日，不自动推进财经和高数。</div>':`
+        <div class="learning-row">
+          ${fd?`<button class="btn" id="todayDoneFinance">完成财经下一项 · 原 Day ${fd}</button>`:'<span class="learning-chip green">财经已完成</span>'}
+          ${md?`<button class="btn" id="todayDoneMath">完成高数 Day ${md}</button>`:'<span class="learning-chip green">高数已完成</span>'}
+        </div>`}
+    </div>
+    <div class="learning-section-card">
+      <h4>自主学习记录 <span class="learning-chip">不推进正式计划</span></h4>
+      <div class="learning-free-row"><select id="freeTrack"><option>英语</option><option>财经</option><option>高数</option><option>其他</option></select><input id="freeText" type="text" placeholder="例如：军训后顺手看了会计第1章思维导图"><button class="btn" id="addFreeLog">记录</button></div>
+      <div id="freeLogList">${free.length?free.map(x=>`<div class="learning-free-log"><span>${esc(x.track)} · ${esc(x.text)}</span><button class="x" data-free-id="${x.id}">×</button></div>`).join(''):'<div class="learning-empty">今天还没有自主学习记录。</div>'}</div>
+    </div>
+    <div class="learning-section-card">
+      <h4>今天已经完成</h4>
+      ${todayItems.length?todayItems.map(x=>`<div class="learning-mini-line">✓ ${esc(x)}</div>`).join(''):'<div class="learning-empty">正式学习项目还没有打勾。</div>'}
+    </div>`;
+  $('#reviewMorning').onchange=x=>setLearningReview('morning',x.target.checked,k);
+  $('#reviewEvening').onchange=x=>setLearningReview('evening',x.target.checked,k);
+  if(monday)$('#reviewWeekly').onchange=x=>setLearningReview('weekly',x.target.checked,k);
+  if($('#todayDoneEnglish'))$('#todayDoneEnglish').onclick=()=>{learningMark(LS.english.round1,nextNumber(45,LS.english.round1),true,k);renderLearningAll()};
+  if($('#todayDoneR2'))$('#todayDoneR2').onclick=()=>{learningMark(LS.english.round2,nextNumber(45,LS.english.round2),true,k);renderLearningAll()};
+  if($('#todayDoneSkill'))$('#todayDoneSkill').onclick=()=>{learningMark(LS.english.skills,nextNumber(ENGLISH_SKILLS.length,LS.english.skills),true,k);renderLearningAll()};
+  if($('#todayDoneFinance'))$('#todayDoneFinance').onclick=()=>{learningMark(LS.finance.completions,nextFinanceDay(),true,k);renderLearningAll()};
+  if($('#todayDoneMath'))$('#todayDoneMath').onclick=()=>{learningMark(LS.math.completions,nextMathDay(),true,k);renderLearningAll()};
+  $('#addFreeLog').onclick=()=>{addFreeLearningLog($('#freeTrack').value,$('#freeText').value,k)};
+  document.querySelectorAll('[data-free-id]').forEach(b=>b.onclick=()=>removeFreeLearningLog(b.dataset.freeId))
+}
+function renderLearningEnglish(){
+  const e=$('#learningPanel'),r1=learningDoneCount(LS.english.round1),r2=learningDoneCount(LS.english.round2),sk=learningDoneCount(LS.english.skills),next=nextNumber(45,LS.english.round1);
+  const proj=projectEnglishRound1(),eligible=Math.max(1,countEligibleEnglishDays(maxDateKey(learningTodayKey(),LEARNING_CONFIG.militaryStart),LEARNING_CONFIG.round1SoftTarget)),required=Math.max(0,(45-r1)/eligible);
+  const cls=learningStatusClass(proj.date,LEARNING_CONFIG.round1SoftTarget);
+  const r1list=Array.from({length:45},(_,i)=>i+1).map(i=>{
+    const v=LS.english.round1[String(i)],done=!!v;
+    return `<label class="learning-item ${done?'done':''}"><input type="checkbox" data-en-r1="${i}" ${done?'checked':''}><div><div class="learning-item-title">Lesson ${i}</div><div class="learning-item-meta">${done?'第一轮已完成':'等待第一轮学习'}</div></div><span class="learning-item-date">${done?esc(learningEntryDate(v)):''}</span></label>`
+  }).join('');
+  let unlocked='';
+  if(!englishRound1Complete()){
+    unlocked=`<div class="learning-lock">完整完成第一轮 45/45 后，才会正式解锁“第二轮 + 38 节四级技巧课”。每周一的总复习属于第一轮内部的复盘，不计作二轮。</div>`
+  }else{
+    const r2list=Array.from({length:45},(_,i)=>i+1).map(i=>{
+      const v=LS.english.round2[String(i)],done=!!v;
+      return `<label class="learning-item ${done?'done':''}"><input type="checkbox" data-en-r2="${i}" ${done?'checked':''}><div><div class="learning-item-title">二轮 Lesson ${i}</div><div class="learning-item-meta">建议倍速重学 + 主动检索，不与第一轮完成记录混用。</div></div><span class="learning-item-date">${done?esc(learningEntryDate(v)):''}</span></label>`
+    }).join('');
+    const modules=['写作','翻译','听力','阅读'];
+    const skillHtml=modules.map(mod=>{
+      const arr=ENGLISH_SKILLS.filter(x=>x.module===mod),doneN=arr.filter(x=>LS.english.skills[String(x.id)]).length;
+      return `<div class="learning-module-title"><span>${mod}篇</span><span>${doneN}/${arr.length}</span></div><div class="learning-item-list">${arr.map(s=>{
+        const v=LS.english.skills[String(s.id)],done=!!v;
+        return `<label class="learning-item ${done?'done':''}"><input type="checkbox" data-en-skill="${s.id}" ${done?'checked':''}><div><div class="learning-item-title">${String(s.id).padStart(2,'0')} · ${esc(s.title)}</div><div class="learning-item-meta">${esc(s.duration)} · 刘晓燕《就这样过英语四级》</div></div><span class="learning-item-date">${done?esc(learningEntryDate(v)):''}</span></label>`
+      }).join('')}</div>`
+    }).join('');
+    unlocked=`
+      <div class="learning-section-card">
+        <div class="learning-row spread"><h4>第二轮词汇 · ${r2}/45</h4>${nextNumber(45,LS.english.round2)?`<button class="btn primary" id="doneNextR2">今天完成 Lesson ${nextNumber(45,LS.english.round2)}</button>`:'<span class="learning-chip green">已完成</span>'}</div>
+        <div class="learning-item-list">${r2list}</div>
+      </div>
+      <div class="learning-section-card">
+        <div class="learning-row spread"><h4>四级通关技巧 · ${sk}/${ENGLISH_SKILLS.length}</h4>${nextNumber(ENGLISH_SKILLS.length,LS.english.skills)?`<button class="btn primary" id="doneNextSkill">今天完成第 ${nextNumber(ENGLISH_SKILLS.length,LS.english.skills)} 节</button>`:'<span class="learning-chip green">已完成</span>'}</div>
+        <div class="learning-source-note">与词汇二轮同步进行；内容必须在 ${dateHuman(LEARNING_CONFIG.contentDeadline)} 前尽量收官，为 12/11—12/12 留出三级B题型与错题缓冲。</div>
+        ${skillHtml}
+      </div>`
+  }
+  e.innerHTML=`
+    <div class="learning-section-card">
+      <div class="learning-row spread"><div><h4>英语四级词汇 · 第一轮 ${r1}/45</h4><div class="learning-source-note">周一只做一周总复习；周二到周日默认至少推进 1 个 Lesson。短课可以连续学 2 个甚至更多，完成后队列立即前移。</div></div>${next?`<button class="btn primary" id="doneNextR1">今天完成 Lesson ${next}</button>`:'<span class="learning-chip green">第一轮完成</span>'}</div>
+      <div class="learning-status-box ${cls}" style="margin-top:9px"><b>动态预测：${dateHuman(proj.date)}</b><br>软目标 ${dateHuman(LEARNING_CONFIG.round1SoftTarget)}。按当前记录估算节奏约 ${proj.pace.toFixed(1)} Lesson / 实际学习日；若想守住软目标，从现在到目标日平均需要约 ${required.toFixed(1)} Lesson / 非周一学习日。</div>
+      <div class="learning-item-list">${r1list}</div>
+    </div>
+    ${unlocked}`;
+  document.querySelectorAll('[data-en-r1]').forEach(x=>x.onchange=ev=>{learningMark(LS.english.round1,x.dataset.enR1,ev.target.checked);renderLearningAll()});
+  document.querySelectorAll('[data-en-r2]').forEach(x=>x.onchange=ev=>{learningMark(LS.english.round2,x.dataset.enR2,ev.target.checked);renderLearningAll()});
+  document.querySelectorAll('[data-en-skill]').forEach(x=>x.onchange=ev=>{learningMark(LS.english.skills,x.dataset.enSkill,ev.target.checked);renderLearningAll()});
+  if($('#doneNextR1'))$('#doneNextR1').onclick=()=>{learningMark(LS.english.round1,nextNumber(45,LS.english.round1),true);renderLearningAll()};
+  if($('#doneNextR2'))$('#doneNextR2').onclick=()=>{learningMark(LS.english.round2,nextNumber(45,LS.english.round2),true);renderLearningAll()};
+  if($('#doneNextSkill'))$('#doneNextSkill').onclick=()=>{learningMark(LS.english.skills,nextNumber(ENGLISH_SKILLS.length,LS.english.skills),true);renderLearningAll()}
+}
+function renderLearningFinance(){
+  const e=$('#learningPanel'),done=learningDoneCount(LS.finance.completions),next=nextFinanceDay(),pos=next?financeExecPosition(next):-1,item=next?financeItem(next):null,phase=next?financePhaseByPosition(pos):FINANCE_PHASES[3],k=learningTodayKey(),paused=isMilitaryKey(k)||!isResumeOrLaterKey(k);
+  const phaseHtml=FINANCE_PHASES.map(p=>`<div><small>${p.name}</small><b>${financePhaseDone(p)} / ${p.total}</b><div class="learning-source-note">${p.note}</div></div>`).join('');
+  const list=FINANCE_EXEC_ORDER.map((d,idx)=>{
+    const x=financeItem(d),v=LS.finance.completions[String(d)],isdone=!!v,p=financePhaseByPosition(idx);
+    return `<label class="learning-item ${isdone?'done':''}"><input type="checkbox" data-fin="${d}" ${isdone?'checked':''}><div><div class="learning-item-title">实际 ${idx+1} · 原 Day ${d} · ${esc(x.subject)}｜${esc(x.title)}</div><div class="learning-item-meta">${esc(p.name)} · ${esc(x.target||'')} · 机构原表第 ${x.sourcePage} 页摘要</div></div><span class="learning-item-date">${isdone?esc(learningEntryDate(v)):''}</span></label>`
+  }).join('');
+  e.innerHTML=`
+    <div class="learning-section-card">
+      <h4>财经综合 · 会计优先闭环</h4>
+      <div class="learning-source-note">执行顺序已从机构原来的“会计基础 → 财管基础 → 经济学基础 → 统一强化”，调整为“会计完整闭环 → 财管完整闭环 → 经济学完整闭环 → 三科收官”。原 80 天内容一个不删，只改变执行顺序，用会计同时覆盖本学期基础会计闭卷期末。</div>
+      <div class="learning-phase">${phaseHtml}</div>
+    </div>
+    <div class="learning-section-card">
+      <div class="learning-row spread"><div><h4>下一项</h4>${item?`<div class="learning-big-next">${phase.name} · 原 Day ${next} · ${esc(item.title)}</div><div class="learning-source-note">${esc(item.subject)} · ${esc(item.target||'')}</div>`:'<div class="learning-big-next">80 天全部完成</div>'}</div>${item&&!paused?`<button class="btn primary" id="doneNextFin">今天完成</button>`:''}</div>
+      ${paused&&item?`<div class="learning-lock" style="margin-top:8px">10/12—10/25 军训保护期：正式财经队列冻结。自主学习请到“今日”页记录，不推进这里的 Day。</div>`:''}
+    </div>
+    <div class="learning-section-card"><h4>完整执行队列 · ${done}/80</h4><div class="learning-item-list">${list}</div></div>`;
+  document.querySelectorAll('[data-fin]').forEach(x=>x.onchange=ev=>{
+    if(!isResumeOrLaterKey(learningTodayKey())&&ev.target.checked){ev.target.checked=false;alert('财经正式计划从 10/26 开始。此前的学习请在“今日”页记为自主学习，不推进正式 Day。');return}
+    learningMark(LS.finance.completions,x.dataset.fin,ev.target.checked);renderLearningAll()
+  });
+  if($('#doneNextFin'))$('#doneNextFin').onclick=()=>{learningMark(LS.finance.completions,nextFinanceDay(),true);renderLearningAll()}
+}
+function renderLearningMath(){
+  const e=$('#learningPanel'),done=learningDoneCount(LS.math.completions),next=nextMathDay(),x=next?mathItem(next):null,k=learningTodayKey(),paused=isMilitaryKey(k)||!isResumeOrLaterKey(k);
+  const nextDetail=x?`<div class="learning-course-detail"><b>视频：</b> ${x.lectures.length} 节 · ${durationHuman(mathDayDuration(x))}<ul>${x.lectures.map(l=>`<li>${esc(l.title)}${l.duration?` <span class="learning-chip">${esc(l.duration)}</span>`:''}</li>`).join('')}</ul><b>打铁：</b> ${x.drills.length?`${Math.min(...x.drills)}—${Math.max(...x.drills)}（共 ${x.drills.length} 项）`:'本日无配套编号'}</div>`:'';
+  const list=MATH_PLAN.map(x=>{
+    const v=LS.math.completions[String(x.day)],isdone=!!v,dur=mathDayDuration(x),dr=x.drills.length?`${Math.min(...x.drills)}—${Math.max(...x.drills)}`:'—';
+    return `<div class="learning-item ${isdone?'done':''}"><input type="checkbox" data-math="${x.day}" ${isdone?'checked':''}><div><div class="learning-item-title">Day ${x.day} · ${x.lectures[0]?esc(x.lectures[0].title.replace(/^第\d+讲-/,'')):'高数学习'}</div><div class="learning-item-meta">${x.lectures.length} 节视频 · ${durationHuman(dur)} · 打铁 ${dr} · 原表第 ${x.sourcePage} 页</div><details class="learning-course-detail"><summary>查看当天明细</summary><ul>${x.lectures.map(l=>`<li>${esc(l.title)}${l.duration?` · ${esc(l.duration)}`:''}</li>`).join('')}</ul><div>打铁：${x.drills.join('、')||'—'}</div></details></div><span class="learning-item-date">${isdone?esc(learningEntryDate(v)):''}</span></div>`
+  }).join('');
+  e.innerHTML=`
+    <div class="learning-section-card">
+      <h4>高数 · 机构 48 天零基础计划</h4>
+      <div class="learning-source-note">保持机构原 48 天顺序。每个 Day 内的视频和“打铁”配套题作为一个整体完成；提前完成就立即推进下一 Day，临时忙则停在当前 Day，不产生逾期。</div>
+    </div>
+    <div class="learning-section-card">
+      <div class="learning-row spread"><div><h4>下一项</h4>${x?`<div class="learning-big-next">高数 Day ${next}</div>`:'<div class="learning-big-next">48 天全部完成</div>'}</div>${x&&!paused?`<button class="btn primary" id="doneNextMath">今天完成 Day ${next}</button>`:''}</div>
+      ${paused&&x?'<div class="learning-lock" style="margin-top:8px">军训期间正式高数计划冻结；想看课可以记为自主学习，不推进 Day。</div>':''}
+      ${nextDetail}
+    </div>
+    <div class="learning-section-card"><h4>完整 48 天计划 · ${done}/48</h4><div class="learning-item-list">${list}</div></div>`;
+  document.querySelectorAll('[data-math]').forEach(x=>x.onchange=ev=>{
+    if(!isResumeOrLaterKey(learningTodayKey())&&ev.target.checked){ev.target.checked=false;alert('高数正式计划从 10/26 开始。此前的学习请在“今日”页记为自主学习，不推进正式 Day。');return}
+    learningMark(LS.math.completions,x.dataset.math,ev.target.checked);renderLearningAll()
+  });
+  if($('#doneNextMath'))$('#doneNextMath').onclick=()=>{learningMark(LS.math.completions,nextMathDay(),true);renderLearningAll()}
+}
+function renderLearningSchedule(){
+  const e=$('#learningPanel'),busy=Object.entries(LS.busyDates).sort((a,b)=>a[0].localeCompare(b[0]));
+  e.innerHTML=`
+    <div class="learning-section-card">
+      <h4>固定节点</h4>
+      <div class="learning-mini-line"><b>10/12—10/25</b> · 军训保护期：财经、高数冻结；英语照常。</div>
+      <div class="learning-mini-line"><b>10/26</b> · 恢复正常上课：财经 / 高数正式队列开放。</div>
+      <div class="learning-mini-line"><b>12/10</b> · 英语内容收官目标：第二轮 + 38 节技巧课尽量结束。</div>
+      <div class="learning-mini-line"><b>12/13</b> · 英语三级 B 考试（硬节点）。</div>
+    </div>
+    <div class="learning-section-card">
+      <h4>添加缓冲日</h4>
+      <div class="learning-free-row"><input id="busyDateInput" type="date" value="${learningTodayKey()}"><input id="busyReasonInput" type="text" placeholder="例如：志愿活动 / 普通话考试 / 临时作业"><button class="btn" id="addBusyDateBtn">设为缓冲</button></div>
+      <div class="learning-source-note" style="margin-top:6px">缓冲日不会删除任务；它只让正式队列停住，下一次学习继续从未完成的第一项开始。</div>
+      <div class="learning-busy-list">${busy.length?busy.map(([k,v])=>`<div class="learning-busy-row"><b>${k}</b><span>${esc(v.reason||'临时忙')}</span><button class="x" data-busy-remove="${k}">×</button></div>`).join(''):'<div class="learning-empty">暂无手动缓冲日。</div>'}</div>
+    </div>
+    <div class="learning-section-card">
+      <h4>调度规则</h4>
+      <div class="learning-status-box"><b>英语一轮</b>：周一总复习，周二—周日默认 1 Lesson；短课可当天连续完成多个，后续自动前移。<br><b>英语二轮</b>：第一轮 45/45 后才独立开始，和 38 节四级技巧课同步推进。<br><b>财经</b>：会计优先闭环，原 Day 编号保留，实际执行序号独立。<br><b>高数</b>：保持 48 天原顺序。<br><b>缓冲</b>：临时忙不算失败，不生成逾期；恢复后接着下一项。</div>
+    </div>`;
+  $('#addBusyDateBtn').onclick=()=>addBusyDate($('#busyDateInput').value,$('#busyReasonInput').value);
+  document.querySelectorAll('[data-busy-remove]').forEach(b=>b.onclick=()=>removeBusyDate(b.dataset.busyRemove))
+}
+function renderLearningMini(){
+  const e=$('#learningMini');if(!e)return;
+  const k=fmt(sel),isToday=k===learningTodayKey(),items=learningCompletionItemsOnDate(k),mil=isMilitaryKey(k),busy=isLearningBusyKey(k);
+  const chips=[];
+  if(isExamKey(k))chips.push('<span class="learning-chip red">英语三级B考试</span>');
+  if(mil)chips.push('<span class="learning-chip orange">军训保护期</span>');
+  if(busy)chips.push('<span class="learning-chip red">缓冲日</span>');
+  if(items.length)chips.push(`<span class="learning-chip green">完成 ${items.length} 项</span>`);
+  let lines='';
+  if(items.length)lines=items.slice(0,4).map(x=>`<div class="learning-mini-line">✓ ${esc(x)}</div>`).join('')+(items.length>4?`<div class="learning-source-note">还有 ${items.length-4} 项记录。</div>`:'');
+  else if(isToday){
+    const r1=nextNumber(45,LS.english.round1),fd=nextFinanceDay(),md=nextMathDay();
+    if(!englishRound1Complete())lines+=`<div class="learning-mini-line"><b>英语</b> · ${sel.getDay()===1?'周一总复习':`下一项 Lesson ${r1||'—'}`}</div>`;
+    else lines+=`<div class="learning-mini-line"><b>英语</b> · 二轮 ${learningDoneCount(LS.english.round2)}/45 · 技巧 ${learningDoneCount(LS.english.skills)}/${ENGLISH_SKILLS.length}</div>`;
+    if(!mil&&!busy&&isResumeOrLaterKey(k)){
+      lines+=`<div class="learning-mini-line"><b>财经</b> · ${fd?`原 Day ${fd}`:'已完成'}　<b>高数</b> · ${md?`Day ${md}`:'已完成'}</div>`
+    }
+  }else{
+    lines='<div class="learning-empty">动态学习计划不提前锁死具体 Lesson；当天会根据实时进度生成。这里显示该日已完成记录。</div>'
+  }
+  e.innerHTML=`<div class="learning-mini-status">${chips.join('')||'<span class="learning-chip">动态队列</span>'}</div>${lines}`;
+  $('#learningMiniStat').textContent=items.length?`${items.length} 项`:'';
+}
+
 function snapshotData(){
   return {
-    version:13,
+    version:14,
     savedAt:new Date().toISOString(),
     tasks:T,
     recurringTasks:RT,
@@ -1480,7 +2046,8 @@ function snapshotData(){
     reflections:R,
     anniversaries:A,
     reviewNotes:S.g('reviewNotes',{}),
-    aiSummaries:S.g('aiSummaries',{})
+    aiSummaries:S.g('aiSummaries',{}),
+    learningState:LS
   }
 }
 let syncSuppressed=false;
@@ -1492,14 +2059,15 @@ function applySnapshot(data){
     DG=(data.deadlineGoals||[]).map(g=>({...g,id:g.id||uuid(),priority:g.priority||'medium',done:!!g.done,completedAt:g.completedAt||''}));
     SO=data.scheduleOverrides||{};SC=data.scheduleConfig||{disabledCourseIds:[]};if(!Array.isArray(SC.disabledCourseIds))SC.disabledCourseIds=[];
     R=data.reflections||{};A=(data.anniversaries||[]).map(a=>({...a,id:a.id||uuid()}));
+    LS=normalizeLearningState(data.learningState||{});
     S.s('tasks',T);S.s('recurringTasks',RT);S.s('weekGoals',WG);S.s('monthGoals',MG);S.s('deadlineGoals',DG);
     S.s('scheduleOverrides',SO);S.s('scheduleConfig',SC);
     S.s('reflections',R);S.s('anniversaries',A);S.s('reviewNotes',data.reviewNotes||{});
-    S.s('aiSummaries',data.aiSummaries||{});
+    S.s('aiSummaries',data.aiSummaries||{});S.s('learningState',LS);
   }finally{syncSuppressed=false}
   
 
-renderCal();renderSide();renderAnniv();renderStreak();renderAIStored();
+renderCal();renderSide();renderAnniv();renderStreak();renderAIStored();renderLearningMini();
 }
 
 let sb=null,sbUser=null,sbAccessToken='',syncTimer=null;
@@ -1866,6 +2434,13 @@ $('#uploadCloud').onclick=()=>uploadCloud(false);$('#downloadCloud').onclick=dow
 $('#aiWeekBtn').onclick=()=>generateAI('week');$('#aiMonthBtn').onclick=()=>generateAI('month');
 $('#copyWeekAI').onclick=()=>copyText($('#weekAI').textContent);$('#copyMonthAI').onclick=()=>copyText($('#monthAI').textContent);
 
+
+$('#learningBtn').onclick=()=>openLearning('today');
+$('#openLearningFromSide').onclick=()=>openLearning('today');
+$('#closeLearning').onclick=closeLearning;
+$('#learningModal').onclick=e=>{if(e.target===$('#learningModal'))closeLearning()};
+document.querySelectorAll('[data-learning-tab]').forEach(b=>b.onclick=()=>{activeLearningTab=b.dataset.learningTab;renderLearningPanel()});
+
 $('#reviewBtn').onclick=openReview;
 $('#closeReview').onclick=()=>$('#reviewModal').classList.remove('show');
 $('#reviewModal').onclick=e=>{if(e.target===$('#reviewModal'))$('#reviewModal').classList.remove('show')};
@@ -1930,7 +2505,7 @@ window.addEventListener('pagehide',()=>{flushCloudSyncOnLeave()});
 window.addEventListener('pageshow',()=>{recoverSessionAndRetrySync()});
 window.addEventListener('focus',()=>{recoverSessionAndRetrySync()});
 
-renderCal();renderSide();renderAnniv();renderStreak();nextTerm();updateNotifyUI();checkReminders();renderAIStored();initSupabase();setTimeout(recoverSessionAndRetrySync,1800);window.addEventListener('load',()=>setTimeout(recoverSessionAndRetrySync,500));
+renderCal();renderSide();renderAnniv();renderStreak();nextTerm();updateNotifyUI();checkReminders();renderAIStored();renderLearningMini();renderLearningOverview();initSupabase();setTimeout(recoverSessionAndRetrySync,1800);window.addEventListener('load',()=>setTimeout(recoverSessionAndRetrySync,500));
 setInterval(checkReminders,30000);setTimeout(()=>{renderCal();renderSide();nextTerm()},900);
 if('serviceWorker'in navigator&&location.protocol.startsWith('http'))navigator.serviceWorker.register('./sw.js').catch(()=>{});
 })();
