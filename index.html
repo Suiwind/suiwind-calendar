@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#eef2ea">
-<title>苏伊温德日历 V1.5.3</title>
+<title>苏伊温德日历 V1.5.4</title>
 <link rel="manifest" href="manifest.json">
 <script src="./supabase-local.js"></script>
 <style>
@@ -575,7 +575,7 @@ button{touch-action:manipulation}
 <body>
 <div class="app">
   <div class="top">
-    <div class="brand"><h1>苏伊温德日历 <span class="version">V1.5.3</span></h1><p>生命如暗室，不妨我明写春诗</p></div>
+    <div class="brand"><h1>苏伊温德日历 <span class="version">V1.5.4</span></h1><p>生命如暗室，不妨我明写春诗</p></div>
     <div class="actions">
       <button class="btn action-btn action-today" id="todayBtn"><span class="action-icon">⌂</span><span>回到今天</span></button>
       <button class="btn action-btn action-anniv" id="annivBtn"><span class="action-icon">♡</span><span>纪念日</span></button>
@@ -988,18 +988,71 @@ const FINANCE_PLAN=[{"originalDay":1,"subject":"会计基础","title":"会计概
 const FINANCE_EXEC_ORDER=[1,2,3,4,5,6,7,8,9,10,11,34,35,36,37,38,39,40,57,58,63,64,65,66,12,13,14,15,16,17,18,19,41,42,43,44,45,46,47,59,60,67,68,69,70,71,20,21,22,23,24,25,26,27,28,29,30,31,48,49,50,51,52,53,54,55,56,61,62,72,73,74,75,32,33,76,77,78,79,80];
 const MATH_PLAN=[{"day":1,"lectures":[{"title":"第1讲-分数运算和去括号","duration":"9:37"},{"title":"第2讲-分式运算","duration":"11:23"},{"title":"第3讲-解方程根与系数的关系","duration":"11:28"},{"title":"第4讲-绝对值","duration":"3:19"},{"title":"第5讲-直线方程","duration":"6:24"},{"title":"第6讲-圆的方程","duration":"9:45"},{"title":"第7讲-抛物线方程","duration":"7:15"},{"title":"第8讲-三角函数","duration":"9:47"}],"drills":[1,2,3,4],"sourcePage":1},{"day":2,"lectures":[{"title":"第9讲-区间表示","duration":"4:39"},{"title":"第10讲-函数定义和表示","duration":"14:59"},{"title":"第11讲-函数性质奇偶性","duration":"9:46"},{"title":"第12讲-函数性质单调有界周期性","duration":"9:07"},{"title":"第13讲-复合函数和反函数","duration":"8:51"},{"title":"第14讲-幂函数","duration":"10:42"},{"title":"第15讲-指数函数","duration":"7:05"}],"drills":[5,6,7,8],"sourcePage":1},{"day":3,"lectures":[{"title":"第16讲-对数函数","duration":"7:19"},{"title":"第17讲-三角函数","duration":"9:34"},{"title":"第18讲-三角函数公式","duration":"6:14"},{"title":"第19讲-反正弦和反余弦三角函数","duration":"12:21"},{"title":"第20讲-反正切和反余切三角函数","duration":"7:39"},{"title":"第21讲-初等函数和分段函数","duration":"5:56"}],"drills":[9],"sourcePage":1},{"day":4,"lectures":[{"title":"第22讲-数列极限","duration":"10:15"},{"title":"第23讲-无穷处极限","duration":"8:30"},{"title":"第24讲-某一点处极限","duration":"8:48"},{"title":"第25讲-极限运算法则","duration":"9:55"},{"title":"第26讲-两个重要极限","duration":"14:32"}],"drills":[10,11,12,13,14,15,16,17,18],"sourcePage":2},{"day":5,"lectures":[{"title":"第27讲-无穷小量和无穷大量","duration":"14:33"},{"title":"第28讲-无穷小的比较","duration":"10:05"},{"title":"第29讲-等价无穷小","duration":"9:48"}],"drills":[19,20,21],"sourcePage":2},{"day":6,"lectures":[{"title":"第30讲-连续定义和判断","duration":"11:27"},{"title":"第31讲-间断点的分类和判断","duration":"18:12"},{"title":"第32讲-连续性定理","duration":"11:14"}],"drills":[22,23,24,25,26],"sourcePage":2},{"day":7,"lectures":[{"title":"第33讲-导数的定义","duration":"22:25"},{"title":"第34讲-利用导数定义求极限","duration":"9:07"},{"title":"第35讲-导数的几何意义","duration":"10:45"},{"title":"第36讲-连续可导的关系","duration":"13:11"},{"title":"第37讲-求导法则和基本函数求导公式","duration":"9:16"}],"drills":[27,28,29,30,31,32,33],"sourcePage":2},{"day":8,"lectures":[{"title":"第38讲-复合函数和反函数求导法则","duration":"12:30"},{"title":"第39讲-高阶导数","duration":"19:31"},{"title":"第40讲-分段函数求导法则","duration":"12:10"},{"title":"第41讲-隐函数求导法则","duration":"10:37"},{"title":"第42讲-含参求导法则","duration":"18:44"},{"title":"第43讲-微分","duration":"4:08"}],"drills":[34,35,36,37,38,39,40,41,42,43,44,45],"sourcePage":3},{"day":9,"lectures":[{"title":"第44讲-罗尔定理","duration":"8:06"},{"title":"第45讲-拉格朗日定理","duration":"9:34"}],"drills":[46,47,48,49],"sourcePage":3},{"day":10,"lectures":[{"title":"第46讲-洛必达法则0比0无穷比无穷","duration":"12:56"},{"title":"第47讲-洛必达法则其它类型","duration":"10:05"}],"drills":[50,51,52],"sourcePage":3},{"day":11,"lectures":[{"title":"第48讲-单调性证明一个不等号","duration":"15:30"},{"title":"第49讲-单调性证明两个不等号","duration":"12:11"}],"drills":[53,54,55],"sourcePage":3},{"day":12,"lectures":[{"title":"第50讲-极值的定义","duration":"11:49"},{"title":"第51讲-极值点的注意事项","duration":"9:44"},{"title":"第52讲-二导判定极值点法则","duration":"5:52"},{"title":"第53讲-最值","duration":"14:19"}],"drills":[56,57,58],"sourcePage":3},{"day":13,"lectures":[{"title":"第54讲-凹凸性","duration":"15:27"},{"title":"第55讲-渐近线","duration":"7:35"},{"title":"第56讲-函数性态综合研究","duration":"7:03"}],"drills":[59,60,61,62],"sourcePage":4},{"day":14,"lectures":[{"title":"第57讲-原函数与不定积分的概念","duration":"11:25"},{"title":"第58讲-不定积分的性质","duration":"5:08"},{"title":"第59讲-不定积分的基本公式","duration":"6:20"},{"title":"第60讲-直接积分法","duration":"9:25"}],"drills":[63,64,65,66,67],"sourcePage":4},{"day":15,"lectures":[{"title":"第61讲-凑微分法幂函数型","duration":"11:30"},{"title":"第62讲-凑微分法指数和对数型","duration":"10:15"},{"title":"第63讲-凑微分法反正弦和反正切型","duration":"14:22"},{"title":"第64讲-凑微分法综合型","duration":"8:14"}],"drills":[68,69,70,71],"sourcePage":4},{"day":16,"lectures":[{"title":"第65讲-第二类三角换元法","duration":"14:56"},{"title":"第66讲-第二类整体换元倒代法","duration":"9:15"}],"drills":[72,73,74],"sourcePage":4},{"day":17,"lectures":[{"title":"第67讲-分部积分法幂指幂三","duration":"10:08"},{"title":"第68讲-分部积分法幂函对幂反三","duration":"11:11"},{"title":"第69讲-分部积分法指三原函数","duration":"14:44"}],"drills":[75,76,77,78,79],"sourcePage":5},{"day":18,"lectures":[{"title":"第70讲-有理函数和无理函数积分","duration":"11:58"},{"title":"第71讲-定积分的定义","duration":"13:00"},{"title":"第72讲-定积分的几何意义","duration":"8:41"},{"title":"第73讲-定积分的性质-1","duration":"8:46"},{"title":"第74讲-定积分的性质-2","duration":"11:17"}],"drills":[80,81,82,83],"sourcePage":5},{"day":19,"lectures":[{"title":"第75讲-变上限积分","duration":"14:46"},{"title":"第76讲-牛顿莱布尼兹公式","duration":"7:54"}],"drills":[84,85,86,87,88,89,90],"sourcePage":5},{"day":20,"lectures":[{"title":"第77讲-定积分的换元积分法","duration":"8:17"},{"title":"第78讲-定积分的分部积分法","duration":"13:48"}],"drills":[91,92,93,94,95,96],"sourcePage":6},{"day":21,"lectures":[{"title":"第79讲-定积分的倒代法","duration":"3:12"},{"title":"第80讲-对称区间上的定积分","duration":"7:46"},{"title":"第81讲-点火公式","duration":"7:36"},{"title":"第82讲-无穷区间的反常积分广义积分","duration":"18:48"},{"title":"第83讲-无穷间断点的反常积分瑕积分","duration":"4:28"}],"drills":[97,98,99,100],"sourcePage":6},{"day":22,"lectures":[{"title":"第84讲-求面积","duration":"21:11"},{"title":"第85讲-旋转体的体积","duration":"10:08"},{"title":"第86讲-柱壳法","duration":"11:16"}],"drills":[101,102,103,104,105,106,107],"sourcePage":6},{"day":23,"lectures":[{"title":"第87讲-多元函数概念","duration":"12:43"},{"title":"第88讲-多元函数极限和连续","duration":"12:10"},{"title":"第89讲-多元函数的偏导数","duration":"16:10"},{"title":"第90讲-全微分","duration":"12:09"}],"drills":[108,109,110,111,112,113],"sourcePage":7},{"day":24,"lectures":[{"title":"第91讲-二阶偏导数","duration":"10:34"},{"title":"第92讲-多元复合函数偏导数","duration":"16:47"},{"title":"第93讲-隐函数求二阶偏导","duration":"13:22"}],"drills":[114,115,116,117,118,119],"sourcePage":7},{"day":25,"lectures":[{"title":"第94讲-二元函数的极值","duration":"17:49"},{"title":"第95讲-二元函数的最值","duration":"8:59"},{"title":"第96讲-条件极值","duration":"12:33"}],"drills":[120,121,122],"sourcePage":7},{"day":26,"lectures":[{"title":"第97讲-二重积分的概念和性质","duration":"11:11"},{"title":"第98讲-二重积分的积分区域分类","duration":"18:50"},{"title":"第99讲-二次积分和交换积分次序","duration":"13:34"}],"drills":[123,124,125,126],"sourcePage":8},{"day":27,"lectures":[{"title":"第100讲-直角坐标系下二重积分的计算","duration":"16:07"}],"drills":[127,128,129,130,131],"sourcePage":8},{"day":28,"lectures":[{"title":"第101讲-极坐标系如何表示积分区域","duration":"20:43"},{"title":"第102讲-极坐标系下二重积分的计算","duration":"8:37"},{"title":"第103讲-利用对称性简化二重积分的计算","duration":"12:42"}],"drills":[132,133,134,135,136,137],"sourcePage":8},{"day":29,"lectures":[{"title":"第104讲-无穷级数的概念","duration":"11:12"},{"title":"第105讲-几何级数","duration":"11:00"},{"title":"第106讲-常数项级数的性质","duration":"13:19"},{"title":"第107讲-正项级数的比较判别法","duration":"12:36"},{"title":"第108讲-正项级数的比较判别法极限形式","duration":"7:26"},{"title":"第109讲-正项级数的比值判别法","duration":"7:59"}],"drills":[138,139,140,141,142],"sourcePage":9},{"day":30,"lectures":[{"title":"第110讲-交错级数的莱布尼兹判别法","duration":"11:17"},{"title":"第111讲-幂级数收敛半径和收敛域","duration":"10:33"},{"title":"第112讲-幂级数的各种变型","duration":"18:24"}],"drills":[143,144,145,146,147,148],"sourcePage":9},{"day":31,"lectures":[{"title":"第113讲-常微分方程基本概念","duration":"17:44"},{"title":"第114讲-一阶变量可分离微分方程","duration":"9:33"},{"title":"第115讲-一阶齐次微分方程","duration":"10:08"}],"drills":[149,150,151,152,153,154,155],"sourcePage":9},{"day":32,"lectures":[{"title":"第116讲-一阶线性微分方程","duration":"13:52"},{"title":"第117讲-一阶微分方程解简单应用题","duration":"12:10"}],"drills":[156,157,158,159,160,161],"sourcePage":10},{"day":33,"lectures":[{"title":"第118讲-二阶线性微分方程解的性质","duration":"13:51"},{"title":"第119讲-二阶常系数齐次线性微分方程通解求法","duration":"8:52"}],"drills":[162,163,164,165],"sourcePage":10},{"day":34,"lectures":[{"title":"第120讲-二阶常系数非齐次线性微分方程通解求法","duration":"17:04"},{"title":"第121讲-二阶常系数非齐次线性微分方程通解典型案例","duration":"7:15"}],"drills":[166,167,168,169],"sourcePage":10},{"day":35,"lectures":[{"title":"第122讲-二阶三阶行列式求法","duration":"13:55"},{"title":"第123讲-排列与逆序数","duration":"10:13"},{"title":"第124讲-对换与n阶行列式定义","duration":"14:01"},{"title":"第125讲-几种特殊行列式","duration":"8:20"},{"title":"第126讲-行列式性质-转置和交换","duration":"8:31"},{"title":"第127讲-行列式性质-数乘","duration":"8:42"},{"title":"第128讲-行列式性质-拆分","duration":"10:12"},{"title":"第129讲-行列式性质-倍加","duration":"11:44"}],"drills":[170],"sourcePage":11},{"day":36,"lectures":[{"title":"第130讲-综合应用行列式性质计算","duration":"14:58"}],"drills":[171,172,173,174,175,176,177,178],"sourcePage":11},{"day":37,"lectures":[{"title":"第131讲-余子式和代数余子式","duration":"12:08"},{"title":"第132讲-行列式按行或列展开","duration":"9:47"},{"title":"第133讲-逆用行列式按行或列展开","duration":"10:54"},{"title":"第134讲-逆用行列式按行或列展开典型案例","duration":"14:44"}],"drills":[179,180,181,182,183],"sourcePage":11},{"day":38,"lectures":[{"title":"第135讲-矩阵概念和几种特殊矩阵","duration":"14:58"},{"title":"第136讲-矩阵加法和数乘运算","duration":"6:36"},{"title":"第137讲-矩阵的乘法","duration":"13:45"},{"title":"第138讲-方幂和可交换矩阵","duration":"12:00"},{"title":"第139讲-矩阵的转置和对称矩阵","duration":"9:24"},{"title":"第140讲-方阵的行列式","duration":"9:42"}],"drills":[184,185,186,187],"sourcePage":12},{"day":39,"lectures":[{"title":"第141讲-分块矩阵","duration":"8:40"},{"title":"第142讲-分块方式","duration":"9:54"},{"title":"第143讲-分块矩阵的典型案例","duration":"7:00"},{"title":"第144讲-逆矩阵的定义","duration":"14:19"},{"title":"第145讲-非奇异矩阵和伴随矩阵","duration":"11:32"},{"title":"第146讲-矩阵可逆的充分必要条件","duration":"6:49"}],"drills":[188,189,190],"sourcePage":12},{"day":40,"lectures":[{"title":"第147讲-逆矩阵的性质","duration":"10:38"},{"title":"第148讲-初等变换与初等矩阵","duration":"21:37"},{"title":"第149讲-初等矩阵的逆矩阵","duration":"8:49"},{"title":"第150讲-行阶梯形最简形矩阵和等价标准形","duration":"18:47"}],"drills":[191,192,193,194],"sourcePage":12},{"day":41,"lectures":[{"title":"第151讲-等价矩阵","duration":"6:57"},{"title":"第152讲-初等行变换求逆矩阵","duration":"12:48"},{"title":"第153讲-矩阵可逆充要条件和几种特殊逆矩阵的求法","duration":"9:44"},{"title":"第154讲-矩阵方程的求法1","duration":"11:15"},{"title":"第155讲-矩阵方程的求法2","duration":"10:36"}],"drills":[195,196,197,198,199,200],"sourcePage":13},{"day":42,"lectures":[{"title":"第156讲-k阶子式和矩阵的秩","duration":"11:02"},{"title":"第157讲-求矩阵秩的方法1","duration":"9:09"},{"title":"第158讲-求矩阵秩的方法2","duration":"9:05"},{"title":"第159讲-求矩阵秩的方法3","duration":"10:44"}],"drills":[201,202,203],"sourcePage":13},{"day":43,"lectures":[{"title":"第160讲-秩的性质","duration":"5:00"},{"title":"第161讲-伴随矩阵的性质","duration":"7:34"},{"title":"第162讲-向量定义和运算","duration":"11:54"},{"title":"第163讲-线性方程组的消元法","duration":"15:37"}],"drills":[204,205,206],"sourcePage":13},{"day":44,"lectures":[{"title":"第164讲-非齐次线性方程组解的判定1","duration":"11:57"},{"title":"第165讲-非齐次线性方程组解的判定2","duration":"8:51"},{"title":"第166讲-齐次线性方程组解的判定","duration":"10:46"},{"title":"第167讲-系数为方阵的线性方程组解的判定","duration":"13:21"}],"drills":[207,208,209,210,211,212],"sourcePage":14},{"day":45,"lectures":[{"title":"第168讲-向量组的线性组合和表示条件","duration":"14:19"},{"title":"第169讲-向量组线性表示","duration":"13:13"},{"title":"第170讲-等价向量组","duration":"8:41"}],"drills":[213,214,215,216],"sourcePage":14},{"day":46,"lectures":[{"title":"第171讲-向量线性相关与无关的定义","duration":"15:42"},{"title":"第172讲-向量组线性相关性的判定","duration":"12:51"},{"title":"第173讲-向量组线性相关性的性质","duration":"14:58"},{"title":"第174讲-极大线性无关组和向量组的秩的定义","duration":"9:49"},{"title":"第175讲-极大线性无关组和向量组的秩的求法","duration":"13:04"}],"drills":[217,218,219],"sourcePage":14},{"day":47,"lectures":[{"title":"第176讲-矩阵的秩与向量组秩的关系","duration":"9:33"},{"title":"第177讲-齐次线性方程组解的结构","duration":"6:11"},{"title":"第178讲-齐次线性方程组解的基础解系和通解1","duration":"12:47"},{"title":"第179讲-齐次线性方程组解的基础解系和通解2","duration":"11:44"}],"drills":[222,223,224,225,226],"sourcePage":15},{"day":48,"lectures":[{"title":"第180讲-非齐次线性方程组解的结构","duration":"8:41"},{"title":"第181讲-非齐次线性方程组的通解求法1、2","duration":"20:55"}],"drills":[227,228,229,230,231],"sourcePage":15}];
 const ENGLISH_SKILLS=[{"id":1,"module":"写作","title":"写作题型概述+写作提分秘诀1","duration":"52:25"},{"id":2,"module":"写作","title":"写作提分秘诀2（扩写与改写）","duration":"41:04"},{"id":3,"module":"写作","title":"写作论证方式与典型例题","duration":"58:31"},{"id":4,"module":"写作","title":"写作题型精讲1—议论文","duration":"58:14"},{"id":5,"module":"写作","title":"写作题型精讲2—书信+应用文","duration":"33:42"},{"id":6,"module":"翻译","title":"翻译题型概述+选词组句妙招1","duration":"36:53"},{"id":7,"module":"翻译","title":"翻译组句妙招2（长短句形意合）","duration":"40:17"},{"id":8,"module":"翻译","title":"翻译步骤及典型例题+名师带练1","duration":"26:09"},{"id":9,"module":"翻译","title":"翻译名师带练2+3","duration":"26:55"},{"id":10,"module":"听力","title":"听力理解题型概述+短篇新闻 典型例题","duration":"56:45"},{"id":11,"module":"听力","title":"短篇新闻 名师带练1（2023.12.2）","duration":"49:49"},{"id":12,"module":"听力","title":"短篇新闻 名师带练2（2024.12.2）","duration":"44:27"},{"id":13,"module":"听力","title":"长对话解题密钥+典型例题（2023.6.2）","duration":"70:33"},{"id":14,"module":"听力","title":"长对话 名师带练1（2024.12.2）","duration":"50:13"},{"id":15,"module":"听力","title":"长对话 名师带练2（2024.6.2）","duration":"61:38"},{"id":16,"module":"听力","title":"篇章听力解题密钥+典型例题（2024.6.1）","duration":"51:07"},{"id":17,"module":"听力","title":"篇章听力 名师带练1（2024.12.2）","duration":"50:40"},{"id":18,"module":"听力","title":"篇章听力 名师带练2（2023.6.2）","duration":"53:01"},{"id":19,"module":"阅读","title":"仔细阅读概述+例题1","duration":"62:04"},{"id":20,"module":"阅读","title":"仔细阅读主旨细节例题2-8","duration":"51:10"},{"id":21,"module":"阅读","title":"仔细阅读出题点总结","duration":"18:10"},{"id":22,"module":"阅读","title":"仔细阅读 典型例题1","duration":"48:33"},{"id":23,"module":"阅读","title":"仔细阅读 典型例题2","duration":"35:35"},{"id":24,"module":"阅读","title":"仔细阅读 名师带练1","duration":"41:25"},{"id":25,"module":"阅读","title":"仔细阅读 名师带练2","duration":"34:25"},{"id":26,"module":"阅读","title":"仔细阅读 名师带练3","duration":"45:00"},{"id":27,"module":"阅读","title":"仔细阅读 名师带练4","duration":"31:29"},{"id":28,"module":"阅读","title":"仔细阅读 名师带练5","duration":"27:15"},{"id":29,"module":"阅读","title":"仔细阅读 名师带练6","duration":"27:55"},{"id":30,"module":"阅读","title":"长篇阅读概述+例题分析","duration":"43:41"},{"id":31,"module":"阅读","title":"长篇阅读 典型例题","duration":"33:14"},{"id":32,"module":"阅读","title":"长篇阅读 名师带练1","duration":"45:43"},{"id":33,"module":"阅读","title":"长篇阅读 名师带练2","duration":"19:49"},{"id":34,"module":"阅读","title":"词汇理解概述+例题分析","duration":"20:39"},{"id":35,"module":"阅读","title":"词汇理解 典型例题","duration":"27:56"},{"id":36,"module":"阅读","title":"词汇理解 名师带练1","duration":"37:04"},{"id":37,"module":"阅读","title":"词汇理解 名师带练2","duration":"31:02"},{"id":38,"module":"阅读","title":"告别的话","duration":"05:42"}];
+// V1.5.4：词汇课按真实课程层级管理：10 Unit × 4 Lesson = 40 个逻辑 Lesson。
+// 部分 Lesson 在课程平台拆成两个视频段，因此词汇正文共有 44 个视频段；加“使用说明”可见 45 个小节。
+const ENGLISH_LESSON_TOTAL=40;
+const ENGLISH_VIDEO_SEGMENT_TOTAL=44;
+const ENGLISH_VOCAB_LESSONS=[
+  {i:1,unit:1,lesson:1,range:'space → noticeable',seconds:3519,parts:1},
+  {i:2,unit:1,lesson:2,range:'coast → incline',seconds:2495,parts:1},
+  {i:3,unit:1,lesson:3,range:'ancestor → powder',seconds:4579,parts:2,partNames:['3-1 ancestor → aggressive','3-2 move → powder']},
+  {i:4,unit:1,lesson:4,range:'cure → namely',seconds:4918,parts:2,partNames:['4-1 cure → temporary','4-2 abundant → namely']},
+  {i:5,unit:2,lesson:1,range:'ambition → anxious',seconds:3960,parts:1},
+  {i:6,unit:2,lesson:2,range:'sign → tolerate',seconds:3133,parts:1},
+  {i:7,unit:2,lesson:3,range:'beam → basin',seconds:2978,parts:1},
+  {i:8,unit:2,lesson:4,range:'engage → compass',seconds:4983,parts:2,partNames:['4-1 engage → flavour','4-2 typical → compass']},
+  {i:9,unit:3,lesson:1,range:'count → decade',seconds:3483,parts:1},
+  {i:10,unit:3,lesson:2,range:'outcome → fold',seconds:2827,parts:1},
+  {i:11,unit:3,lesson:3,range:'substance → employment',seconds:3487,parts:1},
+  {i:12,unit:3,lesson:4,range:'luxury → thrust',seconds:3600,parts:1},
+  {i:13,unit:4,lesson:1,range:'observe → obtain',seconds:3660,parts:1},
+  {i:14,unit:4,lesson:2,range:'species → pursue',seconds:2923,parts:1},
+  {i:15,unit:4,lesson:3,range:'translate → click',seconds:2887,parts:1},
+  {i:16,unit:4,lesson:4,range:'pose → protest',seconds:3474,parts:1},
+  {i:17,unit:5,lesson:1,range:'conduct → hack',seconds:3367,parts:1},
+  {i:18,unit:5,lesson:2,range:'democratic → register',seconds:3147,parts:1},
+  {i:19,unit:5,lesson:3,range:'concentrate → version',seconds:3394,parts:1},
+  {i:20,unit:5,lesson:4,range:'tutor → infrastructure',seconds:2968,parts:1},
+  {i:21,unit:6,lesson:1,range:'paste → hardware',seconds:2772,parts:1},
+  {i:22,unit:6,lesson:2,range:'press → loophole',seconds:3595,parts:1},
+  {i:23,unit:6,lesson:3,range:'cause → collaborate',seconds:4181,parts:2,partNames:['3-1 cause → accompany','3-2 manage → collaborate']},
+  {i:24,unit:6,lesson:4,range:'profit → antique',seconds:3600,parts:1},
+  {i:25,unit:7,lesson:1,range:'margin → pessimistic',seconds:1913,parts:1},
+  {i:26,unit:7,lesson:2,range:'opt → oversight',seconds:2897,parts:1},
+  {i:27,unit:7,lesson:3,range:'device → steer',seconds:2756,parts:1},
+  {i:28,unit:7,lesson:4,range:'applaud → sweat',seconds:1994,parts:1},
+  {i:29,unit:8,lesson:1,range:'deliver → owe',seconds:2711,parts:1},
+  {i:30,unit:8,lesson:2,range:'combine → roar',seconds:3720,parts:1},
+  {i:31,unit:8,lesson:3,range:'bitter → scale',seconds:3281,parts:1},
+  {i:32,unit:8,lesson:4,range:'tap → ambassador',seconds:3082,parts:1},
+  {i:33,unit:9,lesson:1,range:'pack → queue',seconds:2426,parts:1},
+  {i:34,unit:9,lesson:2,range:'considerate → envy',seconds:3600,parts:1},
+  {i:35,unit:9,lesson:3,range:'apply → ankle',seconds:2130,parts:1},
+  {i:36,unit:9,lesson:4,range:'respond → address',seconds:3388,parts:1},
+  {i:37,unit:10,lesson:1,range:'giant → potential',seconds:2189,parts:1},
+  {i:38,unit:10,lesson:2,range:'scent → comprehend',seconds:2875,parts:1},
+  {i:39,unit:10,lesson:3,range:'drama → limb',seconds:3137,parts:1},
+  {i:40,unit:10,lesson:4,range:'caution → furthermore',seconds:2975,parts:1}
+];
+function englishLessonInfo(i){return ENGLISH_VOCAB_LESSONS[Number(i)-1]||null}
+function englishLessonLabel(i){const x=englishLessonInfo(i);return x?`Unit ${x.unit} · Lesson ${x.lesson}`:'—'}
+function englishLessonMeta(i){const x=englishLessonInfo(i);if(!x)return '';const split=x.parts>1?` · ${x.parts} 段视频（${x.partNames.join('；')}）`:'';return `${x.range} · ${durationHuman(x.seconds)}${split}`}
+function englishDoneCount(map){let n=0;for(let i=1;i<=ENGLISH_LESSON_TOTAL;i++)if(map?.[String(i)])n++;return n}
+function nextEnglishLesson(map){return nextNumber(ENGLISH_LESSON_TOTAL,map)}
+function englishMapValues(map){const out=[];for(let i=1;i<=ENGLISH_LESSON_TOTAL;i++)if(map?.[String(i)])out.push(map[String(i)]);return out}
+function formalAdvanceAllowed(k=learningTodayKey()){return isMilitaryKey(k)||isResumeOrLaterKey(k)}
+
 const FINANCE_PHASES=[
   {name:'会计闭环',start:0,end:23,total:24,note:'基础 → 习题 → 分录 → 计算/综合'},
   {name:'财管闭环',start:24,end:45,total:22,note:'基础 → 习题 → 公式 → 计算'},
   {name:'经济学闭环',start:46,end:72,total:27,note:'基础 → 习题 → 图形 → 计算'},
   {name:'三科收官',start:73,end:79,total:7,note:'考纲 / 薄弱点 / 错题 / 必背 / 总结'}
 ];
-let LS=normalizeLearningState(S.g('learningState',{}));
-
 const now=new Date(), pad=n=>String(n).padStart(2,'0'), fmt=d=>`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
 const parse=s=>{const[a,b,c]=s.split('-').map(Number);return new Date(a,b-1,c,12)};
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
 const uuid=()=>crypto.randomUUID?.()||Date.now().toString(36)+Math.random().toString(36).slice(2);
+let LS=normalizeLearningState(S.g('learningState',{}));
 let view=new Date(now.getFullYear(),now.getMonth(),1), sel=new Date(now.getFullYear(),now.getMonth(),now.getDate());
 
 const H={};function range(a,b,type,name){let d=parse(a),e=parse(b);for(;d<=e;d.setDate(d.getDate()+1))H[fmt(d)]={type,name}}
@@ -1695,21 +1748,27 @@ function openReview(){
 /* ===== V1.4.2 学习管理逻辑 ===== */
 function defaultLearningState(){
   return {
-    version:2,
+    version:8,
     busyDates:{},
     freeLogs:[],
     countdowns:DEFAULT_LEARNING_COUNTDOWNS.map(x=>({...x})),
     english:{round1:{},round2:{},skills:{},reviews:{}},
     finance:{completions:{}},
-    math:{completions:{}}
+    math:{completions:{}},
+    energy:{},
+    studyTimer:{active:null,sessions:[],deletedSessionIds:[]},
+    spacedReviews:{done:{},settings:{finance:true,math:true,skills:true}},
+    burndown:{targets:{english1:'2026-11-18',english2:'',skills:'',finance:'',math:''},selected:'english1'},
+    migrations:{}
   }
 }
 function normalizeLearningState(raw){
   const d=defaultLearningState(),x=(raw&&typeof raw==='object')?raw:{};
+  d.version=Math.max(2,Number(x.version)||0);
   d.busyDates=(x.busyDates&&typeof x.busyDates==='object')?x.busyDates:{};
   d.freeLogs=Array.isArray(x.freeLogs)?x.freeLogs:[];
   const rawCountdowns=Array.isArray(x.countdowns)?x.countdowns:DEFAULT_LEARNING_COUNTDOWNS;
-  d.countdowns=rawCountdowns.filter(c=>c&&c.title&&/^\d{4}-\d{2}-\d{2}$/.test(String(c.date||''))).map(c=>({id:String(c.id||uuid()),title:String(c.title).trim(),date:String(c.date),kind:String(c.kind||'考试'),note:String(c.note||''),createdAt:String(c.createdAt||'')}));
+  d.countdowns=rawCountdowns.filter(c=>c&&c.title&&/^\d{4}-\d{2}-\d{2}$/.test(String(c.date||''))).map(c=>({id:String(c.id||uuid()),title:String(c.title).trim(),date:String(c.date),endDate:/^\d{4}-\d{2}-\d{2}$/.test(String(c.endDate||''))?String(c.endDate):'',kind:String(c.kind||'考试'),note:String(c.note||''),createdAt:String(c.createdAt||'')}));
   const en=x.english||{};
   d.english.round1=(en.round1&&typeof en.round1==='object')?en.round1:{};
   d.english.round2=(en.round2&&typeof en.round2==='object')?en.round2:{};
@@ -1717,6 +1776,17 @@ function normalizeLearningState(raw){
   d.english.reviews=(en.reviews&&typeof en.reviews==='object')?en.reviews:{};
   d.finance.completions=(x.finance?.completions&&typeof x.finance.completions==='object')?x.finance.completions:{};
   d.math.completions=(x.math?.completions&&typeof x.math.completions==='object')?x.math.completions:{};
+  d.energy=(x.energy&&typeof x.energy==='object')?x.energy:{};
+  d.studyTimer=(x.studyTimer&&typeof x.studyTimer==='object')?x.studyTimer:{active:null,sessions:[],deletedSessionIds:[]};
+  if(!Array.isArray(d.studyTimer.sessions))d.studyTimer.sessions=[];
+  if(!Array.isArray(d.studyTimer.deletedSessionIds))d.studyTimer.deletedSessionIds=[];
+  d.studyTimer.active=d.studyTimer.active&&typeof d.studyTimer.active==='object'?d.studyTimer.active:null;
+  d.spacedReviews=(x.spacedReviews&&typeof x.spacedReviews==='object')?x.spacedReviews:d.spacedReviews;
+  if(!d.spacedReviews.done||typeof d.spacedReviews.done!=='object')d.spacedReviews.done={};
+  d.spacedReviews.settings={finance:d.spacedReviews.settings?.finance!==false,math:d.spacedReviews.settings?.math!==false,skills:d.spacedReviews.settings?.skills!==false};
+  d.burndown=(x.burndown&&typeof x.burndown==='object')?x.burndown:d.burndown;
+  if(!d.burndown.targets||typeof d.burndown.targets!=='object')d.burndown.targets={english1:'2026-11-18',english2:'',skills:'',finance:'',math:''};
+  d.migrations=(x.migrations&&typeof x.migrations==='object')?x.migrations:{};
   return d
 }
 function learningSave(){
@@ -2043,7 +2113,7 @@ function renderLearningEnglish(){
   }).join('');
   let unlocked='';
   if(!englishRound1Complete()){
-    unlocked=`<div class="learning-lock">完整完成第一轮 45/45 后，才会正式解锁“第二轮 + 38 节四级技巧课”。每周一的总复习属于第一轮内部的复盘，不计作二轮。</div>`
+    unlocked=`<div class="learning-lock">完整完成第一轮 40/40 后，才会正式解锁“第二轮 + 38 节四级技巧课”。每周一的总复习属于第一轮内部的复盘，不计作二轮。</div>`
   }else{
     const r2list=Array.from({length:45},(_,i)=>i+1).map(i=>{
       const v=LS.english.round2[String(i)],done=!!v;
@@ -2083,7 +2153,7 @@ function renderLearningEnglish(){
   if($('#doneNextSkill'))$('#doneNextSkill').onclick=()=>{learningMark(LS.english.skills,nextNumber(ENGLISH_SKILLS.length,LS.english.skills),true);renderLearningAll()}
 }
 function renderLearningFinance(){
-  const e=$('#learningPanel'),done=learningDoneCount(LS.finance.completions),next=nextFinanceDay(),pos=next?financeExecPosition(next):-1,item=next?financeItem(next):null,phase=next?financePhaseByPosition(pos):FINANCE_PHASES[3],k=learningTodayKey(),paused=isMilitaryKey(k)||!isResumeOrLaterKey(k);
+  const e=$('#learningPanel'),done=learningDoneCount(LS.finance.completions),next=nextFinanceDay(),pos=next?financeExecPosition(next):-1,item=next?financeItem(next):null,phase=next?financePhaseByPosition(pos):FINANCE_PHASES[3],k=learningTodayKey(),paused=!formalAdvanceAllowed(k);
   const phaseHtml=FINANCE_PHASES.map(p=>`<div><small>${p.name}</small><b>${financePhaseDone(p)} / ${p.total}</b><div class="learning-source-note">${p.note}</div></div>`).join('');
   const list=FINANCE_EXEC_ORDER.map((d,idx)=>{
     const x=financeItem(d),v=LS.finance.completions[String(d)],isdone=!!v,p=financePhaseByPosition(idx);
@@ -2101,13 +2171,13 @@ function renderLearningFinance(){
     </div>
     <div class="learning-section-card"><h4>完整执行队列 · ${done}/80</h4><div class="learning-item-list">${list}</div></div>`;
   document.querySelectorAll('[data-fin]').forEach(x=>x.onchange=ev=>{
-    if(!isResumeOrLaterKey(learningTodayKey())&&ev.target.checked){ev.target.checked=false;alert('财经正式计划从 10/26 开始。此前的学习请在“今日”页记为自主学习，不推进正式 Day。');return}
+    if(!formalAdvanceAllowed(learningTodayKey())&&ev.target.checked){ev.target.checked=false;alert('当前日期尚未进入军训弹性期或正式阶段，暂不推进财经 Day。');return}
     learningMark(LS.finance.completions,x.dataset.fin,ev.target.checked);renderLearningAll()
   });
   if($('#doneNextFin'))$('#doneNextFin').onclick=()=>{learningMark(LS.finance.completions,nextFinanceDay(),true);renderLearningAll()}
 }
 function renderLearningMath(){
-  const e=$('#learningPanel'),done=learningDoneCount(LS.math.completions),next=nextMathDay(),x=next?mathItem(next):null,k=learningTodayKey(),paused=isMilitaryKey(k)||!isResumeOrLaterKey(k);
+  const e=$('#learningPanel'),done=learningDoneCount(LS.math.completions),next=nextMathDay(),x=next?mathItem(next):null,k=learningTodayKey(),paused=!formalAdvanceAllowed(k);
   const nextDetail=x?`<div class="learning-course-detail"><b>视频：</b> ${x.lectures.length} 节 · ${durationHuman(mathDayDuration(x))}<ul>${x.lectures.map(l=>`<li>${esc(l.title)}${l.duration?` <span class="learning-chip">${esc(l.duration)}</span>`:''}</li>`).join('')}</ul><b>打铁：</b> ${x.drills.length?`${Math.min(...x.drills)}—${Math.max(...x.drills)}（共 ${x.drills.length} 项）`:'本日无配套编号'}</div>`:'';
   const list=MATH_PLAN.map(x=>{
     const v=LS.math.completions[String(x.day)],isdone=!!v,dur=mathDayDuration(x),dr=x.drills.length?`${Math.min(...x.drills)}—${Math.max(...x.drills)}`:'—';
@@ -2125,7 +2195,7 @@ function renderLearningMath(){
     </div>
     <div class="learning-section-card"><h4>完整 48 天计划 · ${done}/48</h4><div class="learning-item-list">${list}</div></div>`;
   document.querySelectorAll('[data-math]').forEach(x=>x.onchange=ev=>{
-    if(!isResumeOrLaterKey(learningTodayKey())&&ev.target.checked){ev.target.checked=false;alert('高数正式计划从 10/26 开始。此前的学习请在“今日”页记为自主学习，不推进正式 Day。');return}
+    if(!formalAdvanceAllowed(learningTodayKey())&&ev.target.checked){ev.target.checked=false;alert('当前日期尚未进入军训弹性期或正式阶段，暂不推进高数 Day。');return}
     learningMark(LS.math.completions,x.dataset.math,ev.target.checked);renderLearningAll()
   });
   if($('#doneNextMath'))$('#doneNextMath').onclick=()=>{learningMark(LS.math.completions,nextMathDay(),true);renderLearningAll()}
@@ -2191,7 +2261,7 @@ function renderLearningSchedule(){
     </div>
     <div class="learning-section-card">
       <h4>调度规则</h4>
-      <div class="learning-status-box"><b>英语一轮</b>：周一总复习，周二—周日默认 1 Lesson；短课可当天连续完成多个，后续自动前移。<br><b>英语二轮</b>：第一轮 45/45 后才独立开始，和 38 节四级技巧课同步推进。<br><b>财经</b>：会计优先闭环，原 Day 编号保留，实际执行序号独立。<br><b>高数</b>：保持 48 天原顺序。<br><b>缓冲</b>：临时忙不算失败，不生成逾期；恢复后接着下一项。</div>
+      <div class="learning-status-box"><b>英语一轮</b>：周一总复习，周二—周日默认 1 Lesson；短课可当天连续完成多个，后续自动前移。<br><b>英语二轮</b>：第一轮 40/40 后才独立开始，和 38 节四级技巧课同步推进。<br><b>财经</b>：会计优先闭环，原 Day 编号保留，实际执行序号独立。<br><b>高数</b>：保持 48 天原顺序。<br><b>缓冲</b>：临时忙不算失败，不生成逾期；恢复后接着下一项。</div>
     </div>`;
   $('#addBusyDateBtn').onclick=()=>addBusyDate($('#busyDateInput').value,$('#busyReasonInput').value);
   document.querySelectorAll('[data-busy-remove]').forEach(b=>b.onclick=()=>removeBusyDate(b.dataset.busyRemove))
@@ -2282,6 +2352,43 @@ function v150EnsureState(){
     if(!already){LS.studyTimer.sessions.push({id:'v153-recover-math-20261012-2142-55',recoveryKey:'math-20261012-2142-55',deviceId:'v153-recovery',subject:'高数',energy:'normal',note:'补记：高数学习 55 分钟',startAt:'2026-10-12T13:42:00.000Z',endAt:'2026-10-12T14:37:00.000Z',focusSeconds:3300,breakSeconds:0,blocks:1,recordedAt:new Date().toISOString()})}
     LS.migrations.v153PersonalFixes=true;
   }
+  if(!LS.migrations.v154PersonalFixes){
+    // 英语原先误按 45 个连续 Lesson 建模；实际逻辑 Lesson 为 10 Unit × 4 = 40。
+    // 41—45 若曾产生旧记录，先存档再从正式进度中移出，避免错误计数。
+    const overflow={round1:{},round2:{}};
+    for(const n of ['41','42','43','44','45']){
+      if(LS.english.round1?.[n]){overflow.round1[n]=LS.english.round1[n];delete LS.english.round1[n]}
+      if(LS.english.round2?.[n]){overflow.round2[n]=LS.english.round2[n];delete LS.english.round2[n]}
+    }
+    if(Object.keys(overflow.round1).length||Object.keys(overflow.round2).length)LS.migrations.v154LegacyEnglishOverflow=overflow;
+
+    // 用户明确确认：2026-10-13 已完整完成高数 Day 1、Day 2。
+    if(!LS.math.completions['1'])LS.math.completions['1']={date:'2026-10-13',at:new Date().toISOString(),note:'军训弹性推进'};
+    if(!LS.math.completions['2'])LS.math.completions['2']={date:'2026-10-13',at:new Date().toISOString(),note:'军训弹性推进'};
+
+    // 补回当天中午漏记的高数 70 分钟；手动补记不伪造具体起止时间。
+    const mathRecoveryId='v154-recover-math-20261013-70';
+    if(!(LS.studyTimer.sessions||[]).some(x=>x?.id===mathRecoveryId||x?.recoveryKey==='math-20261013-70')){
+      LS.studyTimer.sessions.push({id:mathRecoveryId,recoveryKey:'math-20261013-70',manual:true,dateKey:'2026-10-13',deviceId:'v154-recovery',subject:'高数',energy:'normal',note:'补记：中午高数 Day 1 漏记 70 分钟',startAt:'2026-10-13T04:00:00.000Z',endAt:'2026-10-13T05:10:00.000Z',focusSeconds:4200,breakSeconds:0,blocks:0,recordedAt:new Date().toISOString()});
+    }
+
+    // 英语当天误多计 30 分钟：从 2026-10-13 的英语学习账本中精确扣除 1800 秒。
+    let subtract=1800;
+    const deleted=new Set(LS.studyTimer.deletedSessionIds||[]);
+    const eng=(LS.studyTimer.sessions||[]).filter(x=>x?.subject==='英语'&&beijingDateKey(x.startAt||x.endAt)==='2026-10-13').sort((a,b)=>String(b.endAt||b.recordedAt||'').localeCompare(String(a.endAt||a.recordedAt||'')));
+    for(const old of eng){
+      if(subtract<=0)break;
+      const sec=Math.max(0,Number(old.focusSeconds||0));if(!sec)continue;
+      deleted.add(old.id);
+      LS.studyTimer.sessions=LS.studyTimer.sessions.filter(x=>x.id!==old.id);
+      if(sec>subtract){
+        LS.studyTimer.sessions.push({...old,id:`v154-adjust-${old.id}`,focusSeconds:sec-subtract,note:[old.note,'V1.5.4：扣除误多计 30 分钟'].filter(Boolean).join(' · '),recordedAt:new Date().toISOString()});subtract=0;
+      }else subtract-=sec;
+    }
+    LS.studyTimer.deletedSessionIds=[...deleted].slice(-1000);
+    LS.migrations.v154PersonalFixes=true;
+  }
+  LS.version=Math.max(8,Number(LS.version)||0);
   S.s('learningState',LS)
 }
 v150EnsureState();
@@ -2289,7 +2396,7 @@ v150EnsureState();
 // 覆盖导入时的学习状态规范化：保留 V1.5 新字段和可编辑日期范围。
 normalizeLearningState=function(raw){
   const x=(raw&&typeof raw==='object')?raw:{};
-  const d={version:7,busyDates:{},freeLogs:[],countdowns:[],english:{round1:{},round2:{},skills:{},reviews:{}},finance:{completions:{}},math:{completions:{}},energy:{},studyTimer:{active:null,sessions:[],deletedSessionIds:[]},spacedReviews:{done:{},settings:{finance:true,math:true,skills:true}},burndown:{targets:{english1:'2026-11-18',english2:'',skills:'',finance:'',math:''},selected:'english1'},migrations:{}};
+  const d={version:8,busyDates:{},freeLogs:[],countdowns:[],english:{round1:{},round2:{},skills:{},reviews:{}},finance:{completions:{}},math:{completions:{}},energy:{},studyTimer:{active:null,sessions:[],deletedSessionIds:[]},spacedReviews:{done:{},settings:{finance:true,math:true,skills:true}},burndown:{targets:{english1:'2026-11-18',english2:'',skills:'',finance:'',math:''},selected:'english1'},migrations:{}};
   d.busyDates=(x.busyDates&&typeof x.busyDates==='object')?x.busyDates:{};d.freeLogs=Array.isArray(x.freeLogs)?x.freeLogs:[];
   d.countdowns=(Array.isArray(x.countdowns)?x.countdowns:[]).map(v150Countdown).filter(Boolean);
   const en=x.english||{};d.english.round1=(en.round1&&typeof en.round1==='object')?en.round1:{};d.english.round2=(en.round2&&typeof en.round2==='object')?en.round2:{};d.english.skills=(en.skills&&typeof en.skills==='object')?en.skills:{};d.english.reviews=(en.reviews&&typeof en.reviews==='object')?en.reviews:{};
@@ -2509,7 +2616,7 @@ function renderLearningBurndown(){
   document.querySelectorAll('[data-bd-track]').forEach(b=>b.onclick=()=>{LS.burndown.selected=b.dataset.bdTrack;persistLearningState();renderLearningAll()});$('#saveBdTarget').onclick=()=>setBurndownTarget(key,$('#bdTargetDate').value)
 }
 
-/* ===== V1.5.3 学科趋势前置 + 北京时间 + 多设备学习记录修复 ===== */
+/* ===== V1.5.4 学科趋势前置 + 北京时间 + 多设备学习记录修复 ===== */
 function burndownInlineHtml(keys,title='进度趋势与预计完成'){
   keys=Array.isArray(keys)&&keys.length?keys:['english1'];
   let selected=String(LS.burndown?.selected||'');if(!keys.includes(selected))selected=keys[0];
@@ -2565,7 +2672,7 @@ renderLearningPanel=function(){
 renderLearningToday=function(){
   const e=$('#learningPanel'),k=learningTodayKey(),d=learningTodayDate(),mil=isMilitaryKey(k),busy=isLearningBusyKey(k),monday=d.getDay()===1,mode=energyFor(k),r=learningReviewFor(k),todayItems=learningCompletionItemsOnDate(k),due=dueReviews(),free=LS.freeLogs.filter(x=>x.date===k),fd=nextFinanceDay(),md=nextMathDay(),nextR1=nextNumber(45,LS.english.round1),nextR2=nextNumber(45,LS.english.round2),nextSkill=nextNumber(ENGLISH_SKILLS.length,LS.english.skills);
   const nearest=learningUpcomingCountdowns().slice(0,3);let tasks=[];
-  if(monday&&!englishRound1Complete()){if(!r.weekly)tasks.push({rank:'必须',cls:'must',title:'英语 · 一周总复习',meta:'周一不默认安排新 Lesson，把本周词汇重新检索一遍。',action:'weekly'})}else if(!englishRound1Complete()&&k>=LEARNING_CONFIG.militaryStart&&nextR1)tasks.push({rank:'核心',cls:'core',title:`英语一轮 · Lesson ${nextR1}`,meta:'完成后如果这一节短、状态好，可以继续下一 Lesson。',action:'r1'});else if(englishRound1Complete()){if(nextR2)tasks.push({rank:'核心',cls:'core',title:`英语二轮 · Lesson ${nextR2}`,meta:'正式二轮，从 0/45 独立重新推进。',action:'r2'});if(nextSkill)tasks.push({rank:'核心',cls:'core',title:`四级技巧 · 第 ${nextSkill} 节`,meta:'与二轮同步，不提前占用一轮词汇时间。',action:'skill'})}
+  if(monday&&!englishRound1Complete()){if(!r.weekly)tasks.push({rank:'必须',cls:'must',title:'英语 · 一周总复习',meta:'周一不默认安排新 Lesson，把本周词汇重新检索一遍。',action:'weekly'})}else if(!englishRound1Complete()&&k>=LEARNING_CONFIG.militaryStart&&nextR1)tasks.push({rank:'核心',cls:'core',title:`英语一轮 · Lesson ${nextR1}`,meta:'完成后如果这一节短、状态好，可以继续下一 Lesson。',action:'r1'});else if(englishRound1Complete()){if(nextR2)tasks.push({rank:'核心',cls:'core',title:`英语二轮 · Lesson ${nextR2}`,meta:'正式二轮，从 0/40 独立重新推进。',action:'r2'});if(nextSkill)tasks.push({rank:'核心',cls:'core',title:`四级技巧 · 第 ${nextSkill} 节`,meta:'与二轮同步，不提前占用一轮词汇时间。',action:'skill'})}
   if(!mil&&!busy&&isResumeOrLaterKey(k)){if(fd)tasks.push({rank:mode==='low'?'可后移':'核心',cls:mode==='low'?'extra':'core',title:`财经 · 原 Day ${fd}`,meta:`${financeItem(fd)?.subject||''} · ${financeItem(fd)?.title||''}`,action:'finance'});if(md&&(mode==='high'||mode==='normal'))tasks.push({rank:mode==='high'?'核心':'建议',cls:mode==='high'?'core':'extra',title:`高数 · Day ${md}`,meta:`${mathItem(md)?.lectures?.length||0} 个视频 · ${durationHuman(mathDayDuration(mathItem(md)))}`,action:'math'})}
   if(busy)tasks=tasks.filter(x=>x.action==='weekly'||x.action==='r1'||x.action==='r2');if(mil)tasks=tasks.filter(x=>['weekly','r1','r2','skill'].includes(x.action));if(!tasks.length)tasks.push({rank:'完成',cls:'extra',title:'今天没有必须推进的新内容',meta:'可以做复习、计时学习，或者直接休息。',action:''});
   const taskHtml=tasks.map((x,i)=>`<div class="cockpit-task ${x.cls}"><span class="rank">${x.rank}</span><div><div class="cockpit-task-title">${esc(x.title)}</div><div class="cockpit-task-meta">${esc(x.meta)}</div></div>${x.action?`<button class="btn" data-cockpit-action="${x.action}">完成</button>`:''}</div>`).join('');
@@ -2585,7 +2692,7 @@ renderLearningCountdowns=function(){
 };
 renderLearningSchedule=function(){
   const e=$('#learningPanel'),busy=Object.entries(LS.busyDates).sort((a,b)=>a[0].localeCompare(b[0])),milestones=[{date:LEARNING_CONFIG.resumeDate,text:'恢复正常上课：财经 / 高数正式队列开放。'},...(LS.countdowns||[]).map(x=>({date:x.date,text:`${esc(x.title)} <span class="learning-chip">${esc(x.kind||'考试')}</span> · ${countdownLabel(x)}`}))].sort((a,b)=>a.date.localeCompare(b.date));
-  e.innerHTML=`<div class="learning-section-card"><div class="learning-row spread"><h4>计划节点</h4><button class="btn" id="scheduleEditCountdowns">编辑倒数日</button></div><div class="learning-mini-line"><b>10/12—10/25</b> · 军训保护期：财经、高数冻结；英语照常。</div>${milestones.map(x=>`<div class="learning-mini-line"><b>${x.date}</b> · ${x.text}</div>`).join('')}</div><div class="learning-section-card"><h4>添加缓冲日</h4><div class="learning-free-row"><input id="busyDateInput" type="date" value="${learningTodayKey()}"><input id="busyReasonInput" type="text" name="busy_reason_v152" autocomplete="off" autocapitalize="sentences" data-lpignore="true" data-1p-ignore="true" data-bwignore="true" placeholder="例如：志愿活动 / 普通话考试 / 临时作业"><button class="btn" id="addBusyDateBtn">设为缓冲</button></div><div class="learning-source-note" style="margin-top:6px">缓冲日不会删除任务；正式队列只是停住，恢复后继续下一项。</div><div class="learning-busy-list">${busy.length?busy.map(([k,v])=>`<div class="learning-busy-row"><b>${k}</b><span>${esc(v.reason||'临时忙')}</span><button class="x" data-busy-remove="${k}">×</button></div>`).join(''):'<div class="learning-empty">暂无手动缓冲日。</div>'}</div></div><div class="learning-section-card"><h4>调度规则</h4><div class="learning-status-box"><b>英语一轮</b>：周一总复习，周二—周日默认 1 Lesson；短课可连续学多个，队列即时前移。<br><b>英语二轮</b>：第一轮 45/45 后才独立开始，并与 38 节四级技巧课同步。<br><b>财经</b>：会计优先闭环，原 Day 编号保留。<br><b>高数</b>：保持机构 48 天顺序。<br><b>缓冲</b>：临时忙不算失败；恢复后接着下一项。<br><b>倒数日</b>：全部可编辑，不再存在不可修改的系统固定考试日期。</div></div>`;
+  e.innerHTML=`<div class="learning-section-card"><div class="learning-row spread"><h4>计划节点</h4><button class="btn" id="scheduleEditCountdowns">编辑倒数日</button></div><div class="learning-mini-line"><b>10/12—10/25</b> · 军训保护期：财经、高数冻结；英语照常。</div>${milestones.map(x=>`<div class="learning-mini-line"><b>${x.date}</b> · ${x.text}</div>`).join('')}</div><div class="learning-section-card"><h4>添加缓冲日</h4><div class="learning-free-row"><input id="busyDateInput" type="date" value="${learningTodayKey()}"><input id="busyReasonInput" type="text" name="busy_reason_v152" autocomplete="off" autocapitalize="sentences" data-lpignore="true" data-1p-ignore="true" data-bwignore="true" placeholder="例如：志愿活动 / 普通话考试 / 临时作业"><button class="btn" id="addBusyDateBtn">设为缓冲</button></div><div class="learning-source-note" style="margin-top:6px">缓冲日不会删除任务；正式队列只是停住，恢复后继续下一项。</div><div class="learning-busy-list">${busy.length?busy.map(([k,v])=>`<div class="learning-busy-row"><b>${k}</b><span>${esc(v.reason||'临时忙')}</span><button class="x" data-busy-remove="${k}">×</button></div>`).join(''):'<div class="learning-empty">暂无手动缓冲日。</div>'}</div></div><div class="learning-section-card"><h4>调度规则</h4><div class="learning-status-box"><b>英语一轮</b>：周一总复习，周二—周日默认 1 Lesson；短课可连续学多个，队列即时前移。<br><b>英语二轮</b>：第一轮 40/40 后才独立开始，并与 38 节四级技巧课同步。<br><b>财经</b>：会计优先闭环，原 Day 编号保留。<br><b>高数</b>：保持机构 48 天顺序。<br><b>缓冲</b>：临时忙不算失败；恢复后接着下一项。<br><b>倒数日</b>：全部可编辑，不再存在不可修改的系统固定考试日期。</div></div>`;
   $('#scheduleEditCountdowns').onclick=()=>{activeLearningTab='countdowns';renderLearningAll()};$('#addBusyDateBtn').onclick=()=>addBusyDate($('#busyDateInput').value,$('#busyReasonInput').value);document.querySelectorAll('[data-busy-remove]').forEach(b=>b.onclick=()=>removeBusyDate(b.dataset.busyRemove))
 };
 learningCalendarTags=function(d){const k=fmt(d),tags=[],cds=learningCountdownsOnDate(k);if(cds.length)tags.push(`<span class="tag learning-countdown">⌛ ${esc(cds[0].title)}${cds.length>1?` +${cds.length-1}`:''}</span>`);if(isMilitaryKey(k))tags.push('<span class="tag learning">军训</span>');if(isLearningBusyKey(k))tags.push('<span class="tag learning-busy">缓冲</span>');const n=learningCompletionItemsOnDate(k).length;if(n)tags.push(`<span class="tag learning">学 ${n}</span>`);return tags.slice(0,2).join('')};
@@ -2598,11 +2705,120 @@ renderLearningEnglish=function(){v142RenderLearningEnglish();const deadline=engl
 const v152RenderEnglishBase=renderLearningEnglish, v152RenderFinanceBase=renderLearningFinance, v152RenderMathBase=renderLearningMath;
 renderLearningEnglish=function(){v152RenderEnglishBase();appendSubjectBurndown(englishRound1Complete()?['english1','english2','skills']:['english1'],'英语进度趋势')};
 renderLearningFinance=function(){v152RenderFinanceBase();appendSubjectBurndown(['finance'],'财经进度趋势')};
+
 renderLearningMath=function(){v152RenderMathBase();appendSubjectBurndown(['math'],'高数进度趋势')};
+
+/* ===== V1.5.4 词汇结构 / 计时可靠性 / 军训弹性推进 ===== */
+englishRound1Complete=function(){return englishDoneCount(LS.english.round1)>=ENGLISH_LESSON_TOTAL};
+englishRound2Complete=function(){return englishDoneCount(LS.english.round2)>=ENGLISH_LESSON_TOTAL};
+englishRecentPace=function(map){
+  const cutoff=parse(addDaysKey(learningTodayKey(),-20)),byDay={};
+  englishMapValues(map).forEach(v=>{const k=learningEntryDate(v);if(!k)return;const d=parse(k);if(d>=cutoff)byDay[k]=(byDay[k]||0)+1});
+  const vals=Object.values(byDay);if(!vals.length)return 1;return Math.max(.75,Math.min(3,vals.reduce((a,b)=>a+b,0)/vals.length))
+};
+projectEnglishRound1=function(){
+  const done=englishDoneCount(LS.english.round1),rem=Math.max(0,ENGLISH_LESSON_TOTAL-done);
+  if(!rem){const last=[...Array(ENGLISH_LESSON_TOTAL)].map((_,i)=>learningEntryDate(LS.english.round1[String(i+1)])).filter(Boolean).sort().pop();return {date:last||learningTodayKey(),pace:0}}
+  const pace=englishRecentPace(LS.english.round1);let d=learningTodayDate(),left=rem,guard=0;if(fmt(d)<LEARNING_CONFIG.militaryStart)d=parse(LEARNING_CONFIG.militaryStart);
+  while(left>0&&guard<180){const k=fmt(d);if(d.getDay()!==1&&!isLearningBusyKey(k))left-=pace;if(left>0)d.setDate(d.getDate()+1);guard++}return {date:fmt(d),pace}
+};
+learningCompletionItemsOnDate=function(k){
+  const out=[];for(let i=1;i<=ENGLISH_LESSON_TOTAL;i++){if(learningEntryDate(LS.english.round1[String(i)])===k)out.push(`英语一轮 · ${englishLessonLabel(i)}`);if(learningEntryDate(LS.english.round2[String(i)])===k)out.push(`英语二轮 · ${englishLessonLabel(i)}`)}
+  ENGLISH_SKILLS.forEach(s=>{if(learningEntryDate(LS.english.skills[String(s.id)])===k)out.push(`四级技巧 · ${s.module} ${s.id}`)});
+  FINANCE_EXEC_ORDER.forEach(d=>{if(learningEntryDate(LS.finance.completions[String(d)])===k){const x=financeItem(d);out.push(`财经 · ${x?.subject||''} ${x?.title||`Day${d}`}`)}});
+  for(let d=1;d<=48;d++)if(learningEntryDate(LS.math.completions[String(d)])===k)out.push(`高数 · Day ${d}`);
+  if(LS.english.reviews?.[k]?.weekly)out.push('英语 · 一周总复习');LS.freeLogs.filter(x=>x.date===k).forEach(x=>out.push(`自主 · ${x.track||'学习'} ${x.text||''}`));return out
+};
+
+BURNDOWN_TRACKS.english1.total=ENGLISH_LESSON_TOTAL;BURNDOWN_TRACKS.english2.total=ENGLISH_LESSON_TOTAL;
+BURNDOWN_TRACKS.english1.unit='Lesson';BURNDOWN_TRACKS.english2.unit='Lesson';
+BURNDOWN_TRACKS.finance.start=()=>burndownEarliestCompletion(LS.finance.completions)||LEARNING_CONFIG.resumeDate;
+BURNDOWN_TRACKS.math.start=()=>burndownEarliestCompletion(LS.math.completions)||LEARNING_CONFIG.resumeDate;
+burndownRound1CompletedDate=function(){const a=burndownCompletionDates(LS.english.round1);return englishRound1Complete()?(a[a.length-1]||''):''};
+
+function englishRoundListHtml(map,round){
+  return Array.from({length:10},(_,u)=>u+1).map(unit=>{
+    const arr=ENGLISH_VOCAB_LESSONS.filter(x=>x.unit===unit),doneN=arr.filter(x=>!!map[String(x.i)]).length;
+    const rows=arr.map(x=>{const v=map[String(x.i)],done=!!v;return `<label class="learning-item ${done?'done':''}"><input type="checkbox" data-en-r${round}="${x.i}" ${done?'checked':''}><div><div class="learning-item-title">Unit ${x.unit} · Lesson ${x.lesson}</div><div class="learning-item-meta">${esc(x.range)} · ${durationHuman(x.seconds)}${x.parts>1?` · 分 ${x.parts} 段：${esc(x.partNames.join('；'))}`:''}${round===2?' · 二轮建议倍速 + 主动检索':''}</div></div><span class="learning-item-date">${done?esc(learningEntryDate(v)):''}</span></label>`}).join('');
+    return `<div class="learning-module-title"><span>Unit ${unit}</span><span>${doneN}/4</span></div><div class="learning-item-list">${rows}</div>`
+  }).join('')
+}
+
+renderLearningOverview=function(){
+  if(!$('#learnEnglishMetric'))return;const r1=englishDoneCount(LS.english.round1),r2=englishDoneCount(LS.english.round2),sk=learningDoneCount(LS.english.skills),n1=nextEnglishLesson(LS.english.round1);
+  if(!englishRound1Complete()){$('#learnEnglishMetric').textContent=`${r1} / ${ENGLISH_LESSON_TOTAL}`;$('#learnEnglishBar').style.width=`${learningPct(r1,ENGLISH_LESSON_TOTAL)}%`;$('#learnEnglishNote').textContent=`词汇第一轮 · ${n1?englishLessonLabel(n1):'已完成'}`}else{const done=r2+sk,total=ENGLISH_LESSON_TOTAL+ENGLISH_SKILLS.length;$('#learnEnglishMetric').textContent=`${done} / ${total}`;$('#learnEnglishBar').style.width=`${learningPct(done,total)}%`;$('#learnEnglishNote').textContent=`第二轮 ${r2}/${ENGLISH_LESSON_TOTAL} · 技巧 ${sk}/${ENGLISH_SKILLS.length}`}
+  const f=learningDoneCount(LS.finance.completions),m=learningDoneCount(LS.math.completions);$('#learnFinanceMetric').textContent=`${f} / 80`;$('#learnFinanceBar').style.width=`${learningPct(f,80)}%`;const fd=nextFinanceDay(),fp=fd?financePhaseByPosition(financeExecPosition(fd)):null;$('#learnFinanceNote').textContent=fd?`${fp.name} · 下一项原 Day ${fd}`:'80 天全部完成';$('#learnMathMetric').textContent=`${m} / 48`;$('#learnMathBar').style.width=`${learningPct(m,48)}%`;$('#learnMathNote').textContent=nextMathDay()?`下一项 Day ${nextMathDay()}`:'48 天全部完成';
+  const nearest=learningNearestCountdown();if(nearest){const left=dayDiff(parse(nearest.date),learningTodayDate());$('#learnCountdownMetric').textContent=left>0?`还有 ${left} 天`:left===0?'今天':(nearest.endDate&&nearest.endDate>=learningTodayKey()?'进行中':'已结束');$('#learnCountdownNote').textContent=`${nearest.title} · ${countdownLabel(nearest)} · ${nearest.kind}`;const horizon=60;$('#learnCountdownBar').style.width=`${left<=0?100:left>=horizon?6:Math.max(6,Math.round((1-left/horizon)*100))}%`}else{$('#learnCountdownMetric').textContent='暂无';$('#learnCountdownNote').textContent='可在“倒数日”中添加';$('#learnCountdownBar').style.width='0%'}
+  const w=weekStudySeconds();$('#learnStudyMetric').textContent=secHuman(w);$('#learnStudyBar').style.width=`${Math.min(100,Math.round(w/(20*3600)*100))}%`;$('#learnStudyNote').textContent=`今天 ${secHuman(todayStudySeconds())} · ${LS.studyTimer.active?'正在计时':'未开始计时'}`
+};
+renderLearningBanner=function(){
+  const e=$('#learningBanner');if(!e)return;const k=learningTodayKey(),mil=isMilitaryKey(k),busy=isLearningBusyKey(k),nearest=learningNearestCountdown(),mode=energyFor(k);let title=mil?'军训弹性保护期':busy?'今天已设为缓冲日':`今日能量：${energyLabel(mode)}`;let desc=mil?'10/12—10/25：英语照常；高数/财经可以自愿推进正式 Day，但不设每日欠账，累了就停。':busy?'今天不强制推进正式队列；先保留最轻的复习和必要任务。':'提前完成就整体前移；临时忙就整体顺延。学习时间只记录真实专注，不用为了维持数字硬撑。';const nearChip=nearest?`<span class="learning-chip blue">${esc(nearest.title)} · ${learningCountdownText(nearest.date,nearest.endDate)}</span>`:'';e.innerHTML=`<div><strong>${title}</strong><div class="small">${desc}</div></div><div class="learning-row">${nearChip}<button class="btn ${busy?'':'learning-danger-btn'}" id="toggleBusyToday">${busy?'恢复正常计划':'今天很忙'}</button></div>`;$('#toggleBusyToday').onclick=()=>toggleLearningBusy(k)
+};
+
+renderLearningEnglish=function(){
+  const e=$('#learningPanel'),r1=englishDoneCount(LS.english.round1),r2=englishDoneCount(LS.english.round2),sk=learningDoneCount(LS.english.skills),next=nextEnglishLesson(LS.english.round1),proj=projectEnglishRound1(),eligible=Math.max(1,countEligibleEnglishDays(maxDateKey(learningTodayKey(),LEARNING_CONFIG.militaryStart),LEARNING_CONFIG.round1SoftTarget)),required=Math.max(0,(ENGLISH_LESSON_TOTAL-r1)/eligible),cls=learningStatusClass(proj.date,LEARNING_CONFIG.round1SoftTarget);
+  const r1list=englishRoundListHtml(LS.english.round1,1);let unlocked='';
+  if(!englishRound1Complete())unlocked=`<div class="learning-lock">完整完成第一轮 ${ENGLISH_LESSON_TOTAL}/${ENGLISH_LESSON_TOTAL} 后，才正式解锁“第二轮 + ${ENGLISH_SKILLS.length} 节四级技巧课”。周一总复习属于第一轮内部复盘，不计作二轮。</div>`;
+  else{const r2list=englishRoundListHtml(LS.english.round2,2),modules=['写作','翻译','听力','阅读'],skillHtml=modules.map(mod=>{const arr=ENGLISH_SKILLS.filter(x=>x.module===mod),doneN=arr.filter(x=>LS.english.skills[String(x.id)]).length;return `<div class="learning-module-title"><span>${mod}篇</span><span>${doneN}/${arr.length}</span></div><div class="learning-item-list">${arr.map(s=>{const v=LS.english.skills[String(s.id)],done=!!v;return `<label class="learning-item ${done?'done':''}"><input type="checkbox" data-en-skill="${s.id}" ${done?'checked':''}><div><div class="learning-item-title">${String(s.id).padStart(2,'0')} · ${esc(s.title)}</div><div class="learning-item-meta">${esc(s.duration)} · 刘晓燕《就这样过英语四级》</div></div><span class="learning-item-date">${done?esc(learningEntryDate(v)):''}</span></label>`}).join('')}</div>`}).join(''),n2=nextEnglishLesson(LS.english.round2),ns=nextNumber(ENGLISH_SKILLS.length,LS.english.skills);unlocked=`<div class="learning-section-card"><div class="learning-row spread"><h4>第二轮词汇 · ${r2}/${ENGLISH_LESSON_TOTAL}</h4>${n2?`<button class="btn primary" id="doneNextR2">今天完成 ${englishLessonLabel(n2)}</button>`:'<span class="learning-chip green">已完成</span>'}</div>${r2list}</div><div class="learning-section-card"><div class="learning-row spread"><h4>四级通关技巧 · ${sk}/${ENGLISH_SKILLS.length}</h4>${ns?`<button class="btn primary" id="doneNextSkill">今天完成第 ${ns} 节</button>`:'<span class="learning-chip green">已完成</span>'}</div><div class="learning-source-note">与词汇二轮同步；尽量在 ${dateHuman(englishContentDeadline())} 前收官，为考试前两天留整理与模拟空间。</div>${skillHtml}</div>`}
+  e.innerHTML=burndownInlineHtml(englishRound1Complete()?['english1','english2','skills']:['english1'],'英语进度趋势')+`<div class="learning-section-card"><div class="learning-row spread"><div><h4>英语四级词汇 · 第一轮 ${r1}/${ENGLISH_LESSON_TOTAL}</h4><div class="learning-source-note">真实课程结构：10 个 Unit，每个 Unit 都是 Lesson 1—4；正文共 40 个逻辑 Lesson。4 个 Lesson 被拆成两段视频，所以正文是 44 个视频段；“使用说明”单独不计学习进度。</div></div>${next?`<button class="btn primary" id="doneNextR1">今天完成 ${englishLessonLabel(next)}</button>`:'<span class="learning-chip green">第一轮完成</span>'}</div><div class="learning-status-box ${cls}" style="margin-top:9px"><b>动态预测：${dateHuman(proj.date)}</b><br>软目标 ${dateHuman(LEARNING_CONFIG.round1SoftTarget)}。当前约 ${proj.pace.toFixed(1)} Lesson / 实际学习日；守住软目标平均还需约 ${required.toFixed(1)} Lesson / 非周一学习日。</div>${r1list}</div>${unlocked}`;
+  bindInlineBurndown(englishRound1Complete()?['english1','english2','skills']:['english1']);document.querySelectorAll('[data-en-r1]').forEach(x=>x.onchange=ev=>{learningMark(LS.english.round1,x.dataset.enR1,ev.target.checked);renderLearningAll()});document.querySelectorAll('[data-en-r2]').forEach(x=>x.onchange=ev=>{learningMark(LS.english.round2,x.dataset.enR2,ev.target.checked);renderLearningAll()});document.querySelectorAll('[data-en-skill]').forEach(x=>x.onchange=ev=>{learningMark(LS.english.skills,x.dataset.enSkill,ev.target.checked);renderLearningAll()});if($('#doneNextR1'))$('#doneNextR1').onclick=()=>{learningMark(LS.english.round1,nextEnglishLesson(LS.english.round1),true);renderLearningAll()};if($('#doneNextR2'))$('#doneNextR2').onclick=()=>{learningMark(LS.english.round2,nextEnglishLesson(LS.english.round2),true);renderLearningAll()};if($('#doneNextSkill'))$('#doneNextSkill').onclick=()=>{learningMark(LS.english.skills,nextNumber(ENGLISH_SKILLS.length,LS.english.skills),true);renderLearningAll()}
+};
+
+renderLearningToday=function(){
+  const e=$('#learningPanel'),k=learningTodayKey(),d=learningTodayDate(),mil=isMilitaryKey(k),busy=isLearningBusyKey(k),monday=d.getDay()===1,mode=energyFor(k),r=learningReviewFor(k),todayItems=learningCompletionItemsOnDate(k),due=dueReviews(),free=LS.freeLogs.filter(x=>x.date===k),fd=nextFinanceDay(),md=nextMathDay(),nextR1=nextEnglishLesson(LS.english.round1),nextR2=nextEnglishLesson(LS.english.round2),nextSkill=nextNumber(ENGLISH_SKILLS.length,LS.english.skills),nearest=learningUpcomingCountdowns().slice(0,3);let tasks=[];
+  if(monday&&!englishRound1Complete()){if(!r.weekly)tasks.push({rank:'必须',cls:'must',title:'英语 · 一周总复习',meta:'周一不默认安排新 Lesson，把本周词汇重新检索一遍。',action:'weekly'})}else if(!englishRound1Complete()&&k>=LEARNING_CONFIG.militaryStart&&nextR1)tasks.push({rank:'核心',cls:'core',title:`英语一轮 · ${englishLessonLabel(nextR1)}`,meta:englishLessonMeta(nextR1),action:'r1'});else if(englishRound1Complete()){if(nextR2)tasks.push({rank:'核心',cls:'core',title:`英语二轮 · ${englishLessonLabel(nextR2)}`,meta:'正式二轮，从 0/40 独立推进。',action:'r2'});if(nextSkill)tasks.push({rank:'核心',cls:'core',title:`四级技巧 · 第 ${nextSkill} 节`,meta:'与二轮同步，不提前占用一轮词汇时间。',action:'skill'})}
+  if(!busy&&formalAdvanceAllowed(k)){if(fd)tasks.push({rank:mil?'自选':(mode==='low'?'可后移':'核心'),cls:mil||mode==='low'?'extra':'core',title:`财经 · 原 Day ${fd}${mil?'（自愿推进）':''}`,meta:`${financeItem(fd)?.subject||''} · ${financeItem(fd)?.title||''}`,action:'finance'});if(md&&(mil||mode==='high'||mode==='normal'))tasks.push({rank:mil?'自选':(mode==='high'?'核心':'建议'),cls:mil||mode!=='high'?'extra':'core',title:`高数 · Day ${md}${mil?'（自愿推进）':''}`,meta:`${mathItem(md)?.lectures?.length||0} 个视频 · ${durationHuman(mathDayDuration(mathItem(md)))}`,action:'math'})}
+  if(busy)tasks=tasks.filter(x=>x.action==='weekly'||x.action==='r1'||x.action==='r2');if(!tasks.length)tasks.push({rank:'完成',cls:'extra',title:'今天没有必须推进的新内容',meta:'可以做复习、计时学习，或者直接休息。',action:''});
+  const taskHtml=tasks.map(x=>`<div class="cockpit-task ${x.cls}"><span class="rank">${x.rank}</span><div><div class="cockpit-task-title">${esc(x.title)}</div><div class="cockpit-task-meta">${esc(x.meta)}</div></div>${x.action?`<button class="btn" data-cockpit-action="${x.action}">完成</button>`:''}</div>`).join('');
+  e.innerHTML=`<div class="learning-section-card"><div class="learning-row spread"><div><h4>今日学习 · ${k} · 周${wd(d)}</h4><div class="learning-source-note">${mil?'军训弹性保护：高数/财经可自愿推进，但不形成每日欠账。':'状态决定建议强度，不改掉真实记录。'}</div></div><span class="learning-chip ${mil?'orange':busy?'red':'green'}">${mil?'军训弹性':busy?'缓冲':'正常'}</span></div><div class="energy-switch" style="margin-top:9px"><button class="btn ${mode==='high'?'active':''}" data-energy="high">高能量</button><button class="btn ${mode==='normal'?'active':''}" data-energy="normal">标准</button><button class="btn ${mode==='low'?'active':''}" data-energy="low">低负荷</button></div></div><div class="cockpit-grid"><div class="cockpit-stack"><div class="learning-section-card"><div class="learning-row spread"><h4>今天先做什么</h4><span class="learning-chip">${energyLabel(mode)}模式</span></div>${taskHtml}</div><div class="learning-section-card"><div class="learning-row spread"><h4>固定词汇复习</h4><span class="learning-chip">早晚 + 周一</span></div><div class="learning-review-grid"><label class="learning-review-check"><input type="checkbox" id="reviewMorning" ${r.morning?'checked':''}><span><b>早上复习昨日词汇</b><small>快速主动回忆。</small></span></label><label class="learning-review-check"><input type="checkbox" id="reviewEvening" ${r.evening?'checked':''}><span><b>晚上复习昨日词汇</b><small>睡前检索卡壳词。</small></span></label><label class="learning-review-check" style="${monday?'':'opacity:.48'}"><input type="checkbox" id="reviewWeekly" ${r.weekly?'checked':''} ${monday?'':'disabled'}><span><b>周一一周总复习</b><small>${monday?'今天执行。':'仅周一开启。'}</small></span></label></div></div><div class="learning-section-card"><div class="learning-row spread"><h4>到期复习</h4><button class="btn" id="openReviewToday">查看复习</button></div>${due.length?due.slice(0,4).map(x=>`<div class="learning-mini-line"><b>${esc(x.track)}</b> · ${esc(x.title)} · 第${x.offset}天</div>`).join(''):'<div class="learning-empty">今天没有自动到期复习。</div>'}</div></div><div class="cockpit-stack"><div class="learning-section-card"><div class="learning-row spread"><h4>专注计时</h4><b>${secHuman(todayStudySeconds())}</b></div><button class="btn primary" id="openTimerToday" style="width:100%;margin-top:9px">开始 / 查看计时</button></div><div class="learning-section-card"><div class="learning-row spread"><h4>近期节点</h4><button class="btn" id="openCountdownsToday">管理</button></div>${nearest.length?nearest.map(x=>`<div class="learning-mini-line"><b>${esc(x.title)}</b> · ${learningCountdownText(x.date,x.endDate)}</div>`).join(''):'<div class="learning-empty">暂无倒数日。</div>'}</div><div class="learning-section-card"><h4>自主学习记录</h4><div class="learning-free-row"><select id="freeTrack"><option>英语</option><option>财经</option><option>高数</option><option>其他</option></select><input id="freeText" type="text" autocomplete="off" data-lpignore="true" data-1p-ignore="true" data-bwignore="true" placeholder="写下额外学习内容"><button class="btn" id="addFreeLog">记录</button></div>${free.length?free.map(x=>`<div class="learning-free-log"><span>${esc(x.track)} · ${esc(x.text)}</span><button class="x" data-free-id="${x.id}">×</button></div>`).join(''):'<div class="learning-empty">今天还没有自主学习记录。</div>'}</div><div class="learning-section-card"><h4>今天已经完成</h4>${todayItems.length?todayItems.map(x=>`<div class="learning-mini-line">✓ ${esc(x)}</div>`).join(''):'<div class="learning-empty">正式学习项目还没有打勾。</div>'}</div></div></div>`;
+  document.querySelectorAll('[data-energy]').forEach(b=>b.onclick=()=>setEnergy(b.dataset.energy,k));$('#reviewMorning').onchange=x=>setLearningReview('morning',x.target.checked,k);$('#reviewEvening').onchange=x=>setLearningReview('evening',x.target.checked,k);if(monday)$('#reviewWeekly').onchange=x=>setLearningReview('weekly',x.target.checked,k);document.querySelectorAll('[data-cockpit-action]').forEach(b=>b.onclick=()=>{const a=b.dataset.cockpitAction;if(a==='weekly')setLearningReview('weekly',true,k);else if(a==='r1')learningMark(LS.english.round1,nextEnglishLesson(LS.english.round1),true,k);else if(a==='r2')learningMark(LS.english.round2,nextEnglishLesson(LS.english.round2),true,k);else if(a==='skill')learningMark(LS.english.skills,nextNumber(ENGLISH_SKILLS.length,LS.english.skills),true,k);else if(a==='finance')learningMark(LS.finance.completions,nextFinanceDay(),true,k);else if(a==='math')learningMark(LS.math.completions,nextMathDay(),true,k);renderLearningAll()});$('#openTimerToday').onclick=()=>{activeLearningTab='timer';renderLearningAll()};$('#openReviewToday').onclick=()=>{activeLearningTab='review';renderLearningAll()};$('#openCountdownsToday').onclick=()=>{activeLearningTab='countdowns';renderLearningAll()};$('#addFreeLog').onclick=()=>addFreeLearningLog($('#freeTrack').value,$('#freeText').value,k);document.querySelectorAll('[data-free-id]').forEach(b=>b.onclick=()=>removeFreeLearningLog(b.dataset.freeId))
+};
+
+renderLearningSchedule=function(){
+  const e=$('#learningPanel'),busy=Object.entries(LS.busyDates).sort((a,b)=>a[0].localeCompare(b[0])),milestones=[{date:LEARNING_CONFIG.resumeDate,text:'军训结束：财经 / 高数恢复正常每日队列。'},...(LS.countdowns||[]).map(x=>({date:x.date,text:`${esc(x.title)} <span class="learning-chip">${esc(x.kind||'考试')}</span> · ${countdownLabel(x)}`}))].sort((a,b)=>a.date.localeCompare(b.date));
+  e.innerHTML=`<div class="learning-section-card"><div class="learning-row spread"><h4>计划节点</h4><button class="btn" id="scheduleEditCountdowns">编辑倒数日</button></div><div class="learning-mini-line"><b>10/12—10/25</b> · 军训弹性保护：英语照常；财经/高数可自愿推进，但没有“今天必须完成”的欠账。</div>${milestones.map(x=>`<div class="learning-mini-line"><b>${x.date}</b> · ${x.text}</div>`).join('')}</div><div class="learning-section-card"><h4>添加缓冲日</h4><div class="learning-free-row"><input id="busyDateInput" type="date" value="${learningTodayKey()}"><input id="busyReasonInput" type="text" autocomplete="off" data-lpignore="true" data-1p-ignore="true" data-bwignore="true" placeholder="例如：志愿活动 / 普通话考试 / 临时作业"><button class="btn" id="addBusyDateBtn">设为缓冲</button></div><div class="learning-source-note" style="margin-top:6px">缓冲日不会删除任务；正式队列只是停住，恢复后继续下一项。</div><div class="learning-busy-list">${busy.length?busy.map(([k,v])=>`<div class="learning-busy-row"><b>${k}</b><span>${esc(v.reason||'临时忙')}</span><button class="x" data-busy-remove="${k}">×</button></div>`).join(''):'<div class="learning-empty">暂无手动缓冲日。</div>'}</div></div><div class="learning-section-card"><h4>调度规则</h4><div class="learning-status-box"><b>英语一轮</b>：按 Unit 1—10，每个 Unit 的 Lesson 1—4 推进；周一总复习。<br><b>英语二轮</b>：第一轮 40/40 后独立开始，并与 ${ENGLISH_SKILLS.length} 节技巧课同步。<br><b>军训期</b>：高数/财经是“可推进、不欠账”；10/26 后恢复正常队列。<br><b>财经</b>：会计优先闭环，原 Day 编号保留。<br><b>高数</b>：保持机构 48 天顺序。<br><b>缓冲</b>：临时忙不算失败；恢复后接着下一项。</div></div>`;$('#scheduleEditCountdowns').onclick=()=>{activeLearningTab='countdowns';renderLearningAll()};$('#addBusyDateBtn').onclick=()=>addBusyDate($('#busyDateInput').value,$('#busyReasonInput').value);document.querySelectorAll('[data-busy-remove]').forEach(b=>b.onclick=()=>removeBusyDate(b.dataset.busyRemove))
+};
+
+// 军训期允许在学科页自愿勾选正式 Day；页面顶部明确提示“可推进、不欠账”。
+renderLearningFinance=function(){v152RenderFinanceBase();appendSubjectBurndown(['finance'],'财经进度趋势');if(isMilitaryKey(learningTodayKey()))$('#learningPanel')?.insertAdjacentHTML('afterbegin','<div class="learning-status-box safe" style="margin-bottom:10px"><b>军训弹性保护</b>：今天可以自愿完成财经正式 Day；不学也不会形成逾期或欠账。</div>')};
+renderLearningMath=function(){v152RenderMathBase();appendSubjectBurndown(['math'],'高数进度趋势');if(isMilitaryKey(learningTodayKey()))$('#learningPanel')?.insertAdjacentHTML('afterbegin','<div class="learning-status-box safe" style="margin-bottom:10px"><b>军训弹性保护</b>：今天可以自愿完成高数正式 Day；不学也不会形成逾期或欠账。</div>')};
+
+renderLearningMini=function(){
+  const e=$('#learningMini');if(!e)return;const k=fmt(sel),isToday=k===learningTodayKey(),items=learningCompletionItemsOnDate(k),mil=isMilitaryKey(k),busy=isLearningBusyKey(k),cds=learningCountdownsOnDate(k),chips=[];if(cds.length)chips.push(`<span class="learning-chip blue">⌛ ${esc(cds[0].title)}${cds.length>1?` +${cds.length-1}`:''}</span>`);if(mil)chips.push('<span class="learning-chip orange">军训弹性保护</span>');if(busy)chips.push('<span class="learning-chip red">缓冲日</span>');if(items.length)chips.push(`<span class="learning-chip green">完成 ${items.length} 项</span>`);if(isToday&&LS.studyTimer.active)chips.push(`<span class="learning-chip green">计时 · ${esc(LS.studyTimer.active.subject)}</span>`);let lines=cds.map(x=>`<div class="learning-mini-line"><b>${esc(x.kind||'考试')}</b> · ${esc(x.title)} · ${countdownLabel(x)}</div>`).join('');if(items.length)lines+=items.slice(0,4).map(x=>`<div class="learning-mini-line">✓ ${esc(x)}</div>`).join('')+(items.length>4?`<div class="learning-source-note">还有 ${items.length-4} 项记录。</div>`:'');if(!items.length&&isToday){const r1=nextEnglishLesson(LS.english.round1),fd=nextFinanceDay(),md=nextMathDay();lines+=`<div class="learning-mini-line"><b>今天专注</b> · ${secHuman(todayStudySeconds())}　<b>能量</b> · ${energyLabel(energyFor())}</div>`;if(!englishRound1Complete())lines+=`<div class="learning-mini-line"><b>英语</b> · ${sel.getDay()===1?'周一总复习':(r1?englishLessonLabel(r1):'第一轮完成')}</div>`;else lines+=`<div class="learning-mini-line"><b>英语</b> · 二轮 ${englishDoneCount(LS.english.round2)}/${ENGLISH_LESSON_TOTAL} · 技巧 ${learningDoneCount(LS.english.skills)}/${ENGLISH_SKILLS.length}</div>`;if(!busy&&formalAdvanceAllowed(k))lines+=`<div class="learning-mini-line"><b>${mil?'可选推进':'今日队列'}</b> · 财经 ${fd?`原 Day ${fd}`:'已完成'}　高数 ${md?`Day ${md}`:'已完成'}</div>`}else if(!items.length&&!cds.length)lines='<div class="learning-empty">动态计划不提前锁死具体内容；当天根据实时进度生成。</div>';e.innerHTML=`<div class="learning-mini-status">${chips.join('')||'<span class="learning-chip">动态队列</span>'}</div>${lines}`;$('#learningMiniStat').textContent=items.length?`${items.length} 项`:''
+};
+
+// 手动补记与更可靠的结束落账。
+let studyTimerNotice='';
+sessionDate=function(s){return String(s?.dateKey||'')||beijingDateKey(s?.startAt||s?.endAt||'')};
+function beijingAnchorIso(dateKey,time='12:00'){
+  const [y,m,d]=String(dateKey||'').split('-').map(Number),[hh,mm]=String(time||'12:00').split(':').map(Number);if(!y||!m||!d)return new Date().toISOString();return new Date(Date.UTC(y,m-1,d,(hh||0)-8,mm||0,0)).toISOString()
+}
+function forceStudyLedgerSyncSoon(){
+  clearTimeout(window.__studyLedgerSyncTimer);window.__studyLedgerSyncTimer=setTimeout(async()=>{try{if(sb&&sbUser)await uploadCloud(true)}catch{}},120)
+}
+function addManualStudySession(subject,dateKey,minutes,note=''){
+  const min=Math.round(Number(minutes));if(!STUDY_SUBJECTS.includes(subject))subject='其他';if(!/^\d{4}-\d{2}-\d{2}$/.test(String(dateKey||''))){alert('请选择日期。');return}if(!Number.isFinite(min)||min<=0||min>720){alert('学习时长请填写 1—720 分钟。');return}
+  const startAt=beijingAnchorIso(dateKey,'12:00'),endAt=new Date(Date.parse(startAt)+min*60000).toISOString();LS.studyTimer.sessions.push({id:'manual-'+uuid(),manual:true,dateKey,deviceId:learningDeviceId(),subject,energy:'normal',note:String(note||'').trim(),startAt,endAt,focusSeconds:min*60,breakSeconds:0,blocks:0,recordedAt:new Date().toISOString()});persistLearningState();studyTimerNotice=`已手动补记：${subject} · ${min} 分钟`;forceStudyLedgerSyncSoon();renderLearningTimer();renderLearningOverview()
+}
+finishStudy=function(){
+  const a=LS.studyTimer.active;if(!a)return;let focus=Number(a.focusAccumSec||0),br=Number(a.breakAccumSec||0);if(a.phase==='focus')focus+=Math.max(0,Math.floor((Date.now()-Date.parse(a.phaseStartedAt))/1000));else if(a.phase==='break')br+=currentPhaseSeconds();focus=Math.max(0,Math.round(focus));
+  const rec={id:a.id||uuid(),deviceId:learningDeviceId(),subject:a.subject,energy:a.energy,note:a.note,startAt:a.sessionStartedAt||a.phaseStartedAt||new Date().toISOString(),endAt:new Date().toISOString(),focusSeconds:focus,breakSeconds:Math.max(0,Math.round(br)),blocks:a.blocksCompleted||0,recordedAt:new Date().toISOString()};LS.studyTimer.sessions=mergeStudyLedger([...(LS.studyTimer.sessions||[]),rec],LS.studyTimer.deletedSessionIds||[],[],[]).sessions;LS.studyTimer.active=null;persistLearningState();studyTimerNotice=`已记录：${rec.subject} · ${secHuman(rec.focusSeconds)}`;renderLearningAll();forceStudyLedgerSyncSoon()
+};
+renderLearningTimer=function(){
+  const e=$('#learningPanel'),a=LS.studyTimer.active,mode=energyFor(),todayTotal=todayStudySeconds(),notice=studyTimerNotice?`<div class="learning-status-box safe" style="margin-bottom:10px"><b>${esc(studyTimerNotice)}</b> · 已先保存到本机，并立即尝试同步云端。</div>`:'';
+  const controls=a?`<div class="timer-controls">${a.phase==='focus'&&a.focusDueNotified||a.phase==='break_due'?'<button class="btn primary" id="startBreakBtn">开始休息</button><button class="btn" id="skipBreakBtn">继续下一轮</button>':a.phase==='ready'?'<button class="btn primary" id="nextFocusBtn">开始下一轮</button>':''}<button class="btn learning-danger-btn" id="finishStudyBtn">结束并保存</button></div>`:'';
+  const recent=[...(LS.studyTimer.sessions||[])].sort((x,y)=>String(y.recordedAt||y.endAt||'').localeCompare(String(x.recordedAt||x.endAt||''))).slice(0,5);
+  e.innerHTML=notice+`<div class="learning-section-card"><div class="learning-row spread"><div><h4>学习计时</h4><div class="learning-source-note">点击“结束并保存”时会先写入本机账本，再立即尝试同步云端。即使云端暂时失败，本机记录仍保留。</div></div><span class="learning-chip green">今天 ${secHuman(todayTotal)}</span></div>${!a?`<div class="timer-start-grid" style="margin-top:10px"><select id="studySubject">${STUDY_SUBJECTS.map(x=>`<option>${x}</option>`).join('')}</select><select id="studyEnergy"><option value="normal" ${mode==='normal'?'selected':''}>标准 · 50/10</option><option value="high" ${mode==='high'?'selected':''}>高能量 · 50/10</option><option value="low" ${mode==='low'?'selected':''}>低负荷 · 25/5</option></select><input id="studyNote" type="text" autocomplete="off" data-lpignore="true" data-1p-ignore="true" data-bwignore="true" placeholder="可选：今天具体学什么"><button class="btn primary" id="startStudyBtn">开始学习</button></div>`:''}</div><div class="timer-shell"><div class="timer-face"><div class="timer-subject">${a?`${esc(a.subject)} · ${energyLabel(a.energy)}`:'科学学习节奏'}</div><div class="timer-clock" id="liveTimerClock">00:00</div><div class="timer-phase" id="liveTimerPhase">${a?'准备中':'尚未开始'}</div><div class="timer-hint" id="liveTimerHint"></div>${controls}</div><div class="learning-section-card"><h4>默认节奏</h4><div class="eye-rule"><div><b>50 分钟专注</b><small>标准 / 高能量；低负荷 25 分钟。</small></div><div><b>10 分钟离屏</b><small>每两轮后长休息；低负荷更短。</small></div><div><b>20-20-20 护眼</b><small>每 20 分钟看约 6 米外至少 20 秒。</small></div></div></div></div><div class="learning-section-card"><div class="learning-row spread"><div><h4>手动补记</h4><div class="learning-source-note">自动计时漏记、忘记开始计时，或者需要修复某天的数据时使用。这里只补“真实专注时间”。</div></div><span class="learning-chip blue">兜底</span></div><div class="timer-start-grid" style="margin-top:10px"><select id="manualStudySubject">${STUDY_SUBJECTS.map(x=>`<option>${x}</option>`).join('')}</select><input id="manualStudyDate" type="date" value="${learningTodayKey()}"><input id="manualStudyMinutes" type="number" min="1" max="720" inputmode="numeric" placeholder="分钟数"><button class="btn primary" id="manualStudyAdd">补记</button></div><input id="manualStudyNote" type="text" autocomplete="off" data-lpignore="true" data-1p-ignore="true" data-bwignore="true" placeholder="备注（可选，例如：午休后高数 Day 1）" style="width:100%;margin-top:8px"></div><div class="learning-section-card"><div class="learning-row spread"><h4>最近 5 条学习记录</h4><button class="btn" id="openStatsFromTimer">查看全部</button></div>${recent.length?recent.map(x=>`<div class="study-log-row"><b>${esc(x.subject)}</b><span>${secHuman(x.focusSeconds)}</span><span>${x.manual?`${esc(sessionDate(x))} · 手动补记`:beijingDateTimeLabel(x.startAt)}${x.note?` · ${esc(x.note)}`:''}</span><button class="x" data-study-remove="${x.id}">×</button></div>`).join(''):'<div class="learning-empty">还没有学习记录。</div>'}</div>`;
+  if($('#startStudyBtn'))$('#startStudyBtn').onclick=()=>{studyTimerNotice='';startStudy($('#studySubject').value,$('#studyEnergy').value,$('#studyNote').value)};if($('#startBreakBtn'))$('#startBreakBtn').onclick=startStudyBreak;if($('#skipBreakBtn'))$('#skipBreakBtn').onclick=skipBreakAndContinue;if($('#nextFocusBtn'))$('#nextFocusBtn').onclick=startNextFocus;if($('#finishStudyBtn'))$('#finishStudyBtn').onclick=finishStudy;$('#manualStudyAdd').onclick=()=>addManualStudySession($('#manualStudySubject').value,$('#manualStudyDate').value,$('#manualStudyMinutes').value,$('#manualStudyNote').value);$('#openStatsFromTimer').onclick=()=>{activeLearningTab='stats';renderLearningAll()};document.querySelectorAll('[data-study-remove]').forEach(b=>b.onclick=()=>removeStudySession(b.dataset.studyRemove));updateTimerDOM()
+};
+renderLearningStats=function(){
+  const e=$('#learningPanel'),[wa,wb]=studyWeekRange(),sessions=[...(LS.studyTimer.sessions||[])].sort((a,b)=>String(b.recordedAt||b.endAt||'').localeCompare(String(a.recordedAt||a.endAt||''))).slice(0,40),weekTotal=weekStudySeconds();const cards=STUDY_SUBJECTS.map(sub=>{const sec=weekStudySeconds(sub),w=weekTotal?Math.round(sec/weekTotal*100):0;return `<div class="study-stat"><small>${sub} · 本周</small><b>${secHuman(sec)}</b><i style="--w:${w}%"></i></div>`}).join('');
+  e.innerHTML=`<div class="learning-section-card"><div class="learning-row spread"><div><h4>学习时间统计</h4><div class="learning-source-note">自动计时和手动补记统一进入同一份账本；日期与时间按北京时间统计。</div></div><span class="learning-chip blue">${wa} — ${wb}</span></div><div class="study-stat-grid" style="margin-top:10px">${cards}</div></div><div class="learning-section-card"><h4>今天 / 本周 / 本月</h4><div class="study-stat-grid"><div class="study-stat"><small>今天</small><b>${secHuman(todayStudySeconds())}</b></div><div class="study-stat"><small>本周</small><b>${secHuman(weekTotal)}</b></div><div class="study-stat"><small>本月</small><b>${secHuman(monthStudySeconds())}</b></div><div class="study-stat"><small>已记录学习段</small><b>${LS.studyTimer.sessions.length}</b></div></div></div><div class="learning-section-card"><h4>最近学习记录</h4>${sessions.length?sessions.map(x=>`<div class="study-log-row"><b>${esc(x.subject)}</b><span>${secHuman(x.focusSeconds)}</span><span>${x.manual?`${esc(sessionDate(x))} · 手动补记`:beijingDateTimeLabel(x.startAt)}${x.note?` · ${esc(x.note)}`:''}</span><button class="x" data-study-remove="${x.id}">×</button></div>`).join(''):'<div class="learning-empty">还没有计时记录。</div>'}</div>`;document.querySelectorAll('[data-study-remove]').forEach(b=>b.onclick=()=>removeStudySession(b.dataset.studyRemove))
+};
 
 function snapshotData(){
   return {
-    version:19,
+    version:20,
     savedAt:new Date().toISOString(),
     tasks:T,
     recurringTasks:RT,
