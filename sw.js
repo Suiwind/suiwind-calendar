@@ -1,4 +1,4 @@
-const CACHE='suiwind-calendar-v155';
+const CACHE='suiwind-calendar-v156';
 const CORE=['./','./index.html','./manifest.json','./supabase-local.js'];
 
 self.addEventListener('install',event=>{

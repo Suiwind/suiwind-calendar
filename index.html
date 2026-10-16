@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#eef2ea">
-<title>苏伊温德日历 V1.5.4</title>
+<title>苏伊温德日历 V1.5.6</title>
 <link rel="manifest" href="manifest.json">
 <script src="./supabase-local.js"></script>
 <style>
@@ -585,20 +585,41 @@ button{touch-action:manipulation}
 .sleep-form{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}.sleep-form label{font-size:10px;color:var(--muted)}.sleep-form input,.sleep-form select{width:100%;margin-top:4px}.sleep-row{display:grid;grid-template-columns:92px 1fr auto;gap:8px;align-items:center;padding:9px 0;border-bottom:1px dashed #eee6df;font-size:11px}.sleep-row:last-child{border-bottom:0}.sleep-score{font-weight:750}.sleep-summary{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.sleep-summary>div{padding:10px;border:1px solid var(--line);border-radius:12px;background:#fff}.sleep-summary small{display:block;color:var(--muted);font-size:9px}.sleep-summary b{display:block;font-size:17px;margin-top:4px}
 @media(max-width:700px){.v155-quick-timer{align-items:flex-start;flex-wrap:wrap}.v155-quick-time{margin-left:auto}.sleep-form{grid-template-columns:1fr 1fr}.sleep-summary{grid-template-columns:1fr 1fr}.sleep-row{grid-template-columns:78px 1fr auto}}
 
+/* ===== V1.5.6 高频入口 / 低频纪念日 / 强确认反馈 ===== */
+.action-learning{font-weight:760;background:#eef4eb;border-color:#cad8c5;color:#536b50;box-shadow:0 6px 16px rgba(91,113,83,.08)}
+.action-anniv{opacity:.82}
+.anniv-late-section{margin-top:12px;padding:13px;border:1px solid var(--line);border-radius:16px;background:rgba(251,252,248,.72)}
+.anniv-late-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
+.anniv-late-head>div{min-width:0}.anniv-late-head b{font-size:14px}.anniv-late-head small{display:block;margin-top:3px;color:var(--muted);font-size:10px;line-height:1.4}
+.anniv-late-section .annivs{margin-bottom:0}
+.btn.v156-important{font-weight:720}
+.btn.v156-confirm-pop{animation:v156ConfirmPop .32s ease}
+@keyframes v156ConfirmPop{0%{transform:scale(1)}35%{transform:scale(.94)}72%{transform:scale(1.035);box-shadow:0 0 0 5px rgba(111,135,110,.11)}100%{transform:scale(1);box-shadow:none}}
+.v156-toast{position:fixed;left:50%;bottom:calc(22px + env(safe-area-inset-bottom));transform:translate(-50%,14px);z-index:1200;max-width:min(88vw,420px);padding:10px 14px;border-radius:999px;background:rgba(62,70,60,.94);color:#fff;font-size:12px;font-weight:720;box-shadow:0 12px 32px rgba(30,35,29,.22);opacity:0;pointer-events:none;transition:opacity .16s ease,transform .16s ease;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.v156-toast.show{opacity:1;transform:translate(-50%,0)}
+.v156-toast.success{background:rgba(80,105,76,.96)}
+.v156-feedback-capability{font-size:10px;color:var(--muted);line-height:1.45;flex-basis:100%}
+@media(max-width:700px){
+  .anniv-late-section{margin-top:10px;padding:11px;border-radius:14px}
+  .anniv-late-head{align-items:flex-start}.anniv-late-head small{max-width:60vw}
+  .action-learning{position:relative}
+  .action-learning:after{content:'高频';font-size:8px;padding:1px 4px;border-radius:999px;background:#dbe8d7;color:#547050;margin-left:2px}
+}
+
 </style>
 </head>
 <body>
 <div class="app">
   <div class="top">
-    <div class="brand"><h1>苏伊温德日历 <span class="version">V1.5.4</span></h1><p>生命如暗室，不妨我明写春诗</p></div>
+    <div class="brand"><h1>苏伊温德日历 <span class="version">V1.5.6</span></h1><p>生命如暗室，不妨我明写春诗</p></div>
     <div class="actions">
-      <button class="btn action-btn action-today" id="todayBtn"><span class="action-icon">⌂</span><span>回到今天</span></button>
-      <button class="btn action-btn action-anniv" id="annivBtn"><span class="action-icon">♡</span><span>纪念日</span></button>
-      <button class="btn action-btn action-review" id="reviewBtn"><span class="action-icon">↺</span><span>复盘中心</span></button>
       <button class="btn action-btn action-learning" id="learningBtn"><span class="action-icon">▣</span><span>学习管理</span></button>
-            <button class="btn action-btn action-cloud" id="cloudBtn"><span class="action-icon">☁</span><span>云同步</span></button>
+      <button class="btn action-btn action-today" id="todayBtn"><span class="action-icon">⌂</span><span>回到今天</span></button>
+      <button class="btn action-btn action-review" id="reviewBtn"><span class="action-icon">↺</span><span>复盘中心</span></button>
+      <button class="btn action-btn action-cloud" id="cloudBtn"><span class="action-icon">☁</span><span>云同步</span></button>
       <span class="cloud-status" title="云同步状态"><i class="cloud-dot" id="cloudDot"></i><span id="cloudText">仅本地</span></span>
       <button class="btn action-btn action-notify" id="notifyBtn"><span class="action-icon">♢</span><span class="notify-label">开启提醒</span></button>
+      <button class="btn action-btn action-anniv" id="annivBtn"><span class="action-icon">♡</span><span>纪念日</span></button>
     </div>
   </div>
 
@@ -611,8 +632,6 @@ button{touch-action:manipulation}
     <div class="stat"><small>今日待办</small><b id="todayTodo">0 项</b><div class="hint" id="todayHigh"></div></div>
   </div>
 
-
-  <div class="annivs" id="annivCards"></div>
 
   <section class="goal-overviews" aria-label="任务概览">
     <article class="panel goal-overview week-overview">
@@ -723,6 +742,14 @@ button{touch-action:manipulation}
       </section>
     </aside>
   </div>
+
+  <section class="anniv-late-section" aria-label="纪念日">
+    <div class="anniv-late-head">
+      <div><b>纪念日</b><small>低频信息放在页面后部，不占用首页首屏。</small></div>
+      <button class="btn" id="annivManageBtn" type="button">管理纪念日</button>
+    </div>
+    <div class="annivs" id="annivCards"></div>
+  </section>
 </div>
 
 <div class="modal" id="learningModal"><div class="modalbox learning-modalbox">
@@ -3330,14 +3357,27 @@ renderLearningAll=function(){v155RenderAllBase();ensureQuickTimerBar();renderBut
 const v155UpdateTimerDOMBase=updateTimerDOM;
 updateTimerDOM=function(){v155UpdateTimerDOMBase();const x=$('#v155QuickTime');if(x&&LS.studyTimer.active)x.textContent=secHuman(timerActiveSeconds())};
 
-function feedbackClick(){
-  if(LS.uiFeedback.haptic&&navigator.vibrate)try{navigator.vibrate(8)}catch{}
-  if(!LS.uiFeedback.sound)return;try{const C=window.AudioContext||window.webkitAudioContext;if(!C)return;const c=window.__v155Audio||(window.__v155Audio=new C()),o=c.createOscillator(),g=c.createGain();o.frequency.value=520;g.gain.setValueAtTime(.025,c.currentTime);g.gain.exponentialRampToValueAtTime(.0001,c.currentTime+.045);o.connect(g);g.connect(c.destination);o.start();o.stop(c.currentTime+.05)}catch{}
+function v156TouchDevice(){return !!(navigator.maxTouchPoints>0||matchMedia('(pointer:coarse)').matches)}
+function v156ImportantButton(b){
+  if(!b)return false;
+  if(b.matches('.primary,.learning-danger-btn,.reflect-confirm,[data-review-done]'))return true;
+  return ['startStudyBtn','finishStudyBtn','v155QuickBtn','manualStudyAdd','slSave','completeReflection','saveA','addTask','addDeadline','addWeek','addMonth','addScheduleCourse','saveCloudConfig','signInBtn','uploadCloud','downloadCloud','todayDoneEnglish','todayDoneR2','todayDoneSkill','todayDoneFinance','todayDoneMath','doneNextR1','doneNextR2','doneNextSkill','doneNextFin','doneNextMath'].includes(b.id);
+}
+function v156EnsureToast(){let t=$('#v156Toast');if(!t){t=document.createElement('div');t.id='v156Toast';t.className='v156-toast';t.setAttribute('role','status');t.setAttribute('aria-live','polite');document.body.appendChild(t)}return t}
+let v156ToastTimer=null;
+function v156Toast(message,success=false){const t=v156EnsureToast();t.textContent=message;t.className='v156-toast'+(success?' success':'');requestAnimationFrame(()=>t.classList.add('show'));clearTimeout(v156ToastTimer);v156ToastTimer=setTimeout(()=>t.classList.remove('show'),1150)}
+function v156PlayTone(strong=false,force=false){if(!force&&!LS.uiFeedback.sound)return;try{const C=window.AudioContext||window.webkitAudioContext;if(!C)return;const c=window.__v155Audio||(window.__v155Audio=new C());if(c.state==='suspended')c.resume();const now=c.currentTime;[strong?520:470,strong?690:520].slice(0,strong?2:1).forEach((f,i)=>{const o=c.createOscillator(),g=c.createGain();o.frequency.value=f;g.gain.setValueAtTime(strong ? .032 : .02,now+i*.035);g.gain.exponentialRampToValueAtTime(.0001,now+.07+i*.035);o.connect(g);g.connect(c.destination);o.start(now+i*.035);o.stop(now+.08+i*.035)})}catch{}}
+function feedbackClick(button,{forceHaptic=false,forceSound=false,showToast=true}={}){
+  const important=v156ImportantButton(button),touch=v156TouchDevice();
+  if((forceHaptic||LS.uiFeedback.haptic)&&touch&&navigator.vibrate)try{navigator.vibrate(important||forceHaptic?22:7)}catch{}
+  if(forceSound||LS.uiFeedback.sound)v156PlayTone(important,forceSound);
+  if(important){button.classList.add('v156-important','v156-confirm-pop');setTimeout(()=>button.classList.remove('v156-confirm-pop'),340);if(showToast){const label=(button.textContent||'操作').trim().replace(/\s+/g,' ').slice(0,24);v156Toast(`✓ 已确认 · ${label}`,true)}}
 }
 document.addEventListener('pointerdown',e=>{const b=e.target.closest('.btn');if(!b)return;b.classList.add('press-feedback');setTimeout(()=>b.classList.remove('press-feedback'),140)},true);
-document.addEventListener('click',e=>{if(e.target.closest('.btn'))feedbackClick()},true);
+document.addEventListener('click',e=>{const b=e.target.closest('.btn');if(b&&b.id!=='v156FeedbackTest')feedbackClick(b)},true);
+document.addEventListener('change',e=>{const x=e.target;if(!(x instanceof HTMLInputElement)||x.type!=='checkbox')return;if(!x.closest('.task,.deadline-item,.learning-item,.learning-review-check,.review-due'))return;if(x.checked){if(LS.uiFeedback.haptic&&v156TouchDevice()&&navigator.vibrate)try{navigator.vibrate(18)}catch{};v156Toast('✓ 已标记完成',true)}},true);
 function renderButtonFeedbackSettingsIfNeeded(){
-  if(activeLearningTab!=='timer')return;const host=$('#learningPanel .learning-section-card');if(!host||$('#v155FeedbackSettings'))return;const d=document.createElement('div');d.id='v155FeedbackSettings';d.className='v155-feedback-row';d.innerHTML=`<label><input type="checkbox" id="v155Haptic" ${LS.uiFeedback.haptic?'checked':''}> 轻触震动</label><label><input type="checkbox" id="v155Sound" ${LS.uiFeedback.sound?'checked':''}> 点击音效</label><span class="learning-source-note">动画始终开启；音效默认关闭，适合图书馆/晚自习。</span>`;host.appendChild(d);$('#v155Haptic').onchange=e=>{LS.uiFeedback.haptic=e.target.checked;v155Save()};$('#v155Sound').onchange=e=>{LS.uiFeedback.sound=e.target.checked;v155Save()}
+  if(activeLearningTab!=='timer')return;const host=$('#learningPanel .learning-section-card');if(!host||$('#v155FeedbackSettings'))return;const touch=v156TouchDevice(),vib=!!navigator.vibrate;const d=document.createElement('div');d.id='v155FeedbackSettings';d.className='v155-feedback-row';d.innerHTML=`<label><input type="checkbox" id="v155Haptic" ${LS.uiFeedback.haptic?'checked':''}> 手机震动</label><label><input type="checkbox" id="v155Sound" ${LS.uiFeedback.sound?'checked':''}> 点击音效</label><button class="btn" id="v156FeedbackTest" type="button">测试确认反馈</button><span class="v156-feedback-capability">视觉回弹始终开启；重要操作反馈更强。${touch?(vib?'当前设备可尝试震动，仍可能受系统/浏览器设置限制。':'当前浏览器未提供震动接口。'):'当前为桌面/鼠标环境，不执行震动。'} 音效默认关闭。</span>`;host.appendChild(d);$('#v155Haptic').onchange=e=>{LS.uiFeedback.haptic=e.target.checked;v155Save()};$('#v155Sound').onchange=e=>{LS.uiFeedback.sound=e.target.checked;v155Save()};$('#v156FeedbackTest').onclick=()=>{const b=$('#v156FeedbackTest');b.classList.add('v156-important');feedbackClick(b,{forceHaptic:true,forceSound:LS.uiFeedback.sound,showToast:false});v156Toast('✓ 确认反馈已触发',true)}
 }
 
 function energyModeExplanation(mode){return mode==='high'?'<b>高能量</b>完成当天核心量后，额外给 1 个“可选加量”任务；不做不欠账。':mode==='low'?'<b>低负荷</b>只保留最核心任务，复习和第二主科可以后移。':'<b>标准</b>只完成当天计划量，不主动加量；这是默认模式。'}
@@ -3373,6 +3413,9 @@ const v155StatsBase=renderLearningStats;
 renderLearningStats=function(){v155StatsBase();const arr=Object.values(LS.sleep.records||{}).filter(Boolean).sort((a,b)=>b.date.localeCompare(a.date)).slice(0,7);if(arr.length){const avg=sleepAvg(arr,sleepDurationMin),box=document.createElement('div');box.className='learning-section-card';box.innerHTML=`<div class="learning-row spread"><div><h4>睡眠 × 学习</h4><div class="learning-source-note">近 ${arr.length} 天平均睡眠 ${sleepHuman(avg)}。用这组数据观察“睡多久时，高数/财经最清醒”。</div></div><button class="btn" id="v155OpenSleep">记录睡眠</button></div>`;$('#learningPanel').prepend(box);$('#v155OpenSleep').onclick=()=>{activeLearningTab='sleep';renderLearningAll()}}};
 
 v155Save();
+
+// V1.5.6：页面底部“管理纪念日”复用顶部纪念日管理入口。
+if($('#annivManageBtn'))$('#annivManageBtn').onclick=()=>$('#annivBtn').click();
 
 renderCal();renderSide();renderAnniv();renderStreak();nextTerm();updateNotifyUI();checkReminders();renderAIStored();renderLearningMini();renderLearningOverview();initSupabase();setTimeout(recoverSessionAndRetrySync,1800);window.addEventListener('load',()=>setTimeout(recoverSessionAndRetrySync,500));
 setInterval(checkReminders,30000);setTimeout(()=>{renderCal();renderSide();nextTerm()},900);
