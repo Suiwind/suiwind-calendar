@@ -570,6 +570,21 @@ button{touch-action:manipulation}
 .subject-burndown{margin-top:10px}.subject-burndown>summary{cursor:pointer;list-style:none;font-weight:780;font-size:13px;display:flex;align-items:center;justify-content:space-between;gap:10px}.subject-burndown>summary::-webkit-details-marker{display:none}.subject-burndown>summary:after{content:'展开';font-size:9px;color:var(--muted);font-weight:500}.subject-burndown[open]>summary:after{content:'收起'}.subject-burndown-body{padding-top:10px}.subject-burndown .burndown-chart{min-height:210px}.subject-burndown .burndown-metrics{grid-template-columns:repeat(4,minmax(0,1fr))}.subject-burndown-tabs{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0}.subject-burndown-tabs .btn.active{background:var(--accent);color:#fff;border-color:var(--accent)}
 @media(max-width:760px){.subject-burndown .burndown-metrics{grid-template-columns:1fr 1fr}}
 
+
+/* ===== V1.5.5 高频计时 / 反馈 / 复习预算 / 睡眠 ===== */
+.lt-sleep{--tab:#6e7891}
+.btn{transition:transform .14s ease,box-shadow .14s ease,filter .14s ease,background-color .14s ease,border-color .14s ease}
+.btn:active,.btn.press-feedback{transform:scale(.965);filter:brightness(.98)}
+.v155-quick-timer{margin:10px 0 12px;border:1px solid #d9e2d5;border-radius:16px;padding:12px 14px;background:linear-gradient(135deg,#f5f8f2,#fffdfa);display:flex;align-items:center;justify-content:space-between;gap:12px;box-shadow:0 8px 24px rgba(80,92,75,.06)}
+.v155-quick-timer.running{border-color:#b8c9b2;background:linear-gradient(135deg,#edf4e9,#fffdfa)}
+.v155-quick-main{min-width:0}.v155-quick-main b{font-size:14px}.v155-quick-main small{display:block;color:var(--muted);font-size:10px;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.v155-quick-time{font-size:20px;font-weight:850;font-variant-numeric:tabular-nums;white-space:nowrap}
+.v155-feedback-row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:10px}.v155-feedback-row label{font-size:11px;display:flex;align-items:center;gap:5px;padding:6px 8px;border:1px solid var(--line);border-radius:10px;background:#fffdfa}
+.v155-mode-note{border-radius:12px;padding:10px 11px;margin-top:9px;font-size:11px;line-height:1.55;background:#faf7f1;border:1px solid #e9e1d9}.v155-mode-note b{margin-right:5px}
+.v155-review-budget{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}.v155-review-budget>div{padding:10px;border:1px solid var(--line);border-radius:12px;background:#fff}.v155-review-budget small{display:block;color:var(--muted);font-size:9px}.v155-review-budget b{display:block;margin-top:3px;font-size:16px}
+.sleep-form{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}.sleep-form label{font-size:10px;color:var(--muted)}.sleep-form input,.sleep-form select{width:100%;margin-top:4px}.sleep-row{display:grid;grid-template-columns:92px 1fr auto;gap:8px;align-items:center;padding:9px 0;border-bottom:1px dashed #eee6df;font-size:11px}.sleep-row:last-child{border-bottom:0}.sleep-score{font-weight:750}.sleep-summary{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.sleep-summary>div{padding:10px;border:1px solid var(--line);border-radius:12px;background:#fff}.sleep-summary small{display:block;color:var(--muted);font-size:9px}.sleep-summary b{display:block;font-size:17px;margin-top:4px}
+@media(max-width:700px){.v155-quick-timer{align-items:flex-start;flex-wrap:wrap}.v155-quick-time{margin-left:auto}.sleep-form{grid-template-columns:1fr 1fr}.sleep-summary{grid-template-columns:1fr 1fr}.sleep-row{grid-template-columns:78px 1fr auto}}
+
 </style>
 </head>
 <body>
@@ -750,6 +765,7 @@ button{touch-action:manipulation}
     <button class="btn active lt-today" data-learning-tab="today"><span class="lt-icon">☀</span><span>今日学习</span></button>
     <button class="btn lt-timer" data-learning-tab="timer"><span class="lt-icon">◷</span><span>计时</span></button>
     <button class="btn lt-stats" data-learning-tab="stats"><span class="lt-icon">▥</span><span>统计</span></button>
+    <button class="btn lt-sleep" data-learning-tab="sleep"><span class="lt-icon">☾</span><span>睡眠</span></button>
     <button class="btn lt-review" data-learning-tab="review"><span class="lt-icon">↻</span><span>复习</span></button>
     <button class="btn lt-english" data-learning-tab="english"><span class="lt-icon">Aa</span><span>英语</span></button>
     <button class="btn lt-finance" data-learning-tab="finance"><span class="lt-icon">¥</span><span>财经</span></button>
@@ -1757,7 +1773,9 @@ function defaultLearningState(){
     math:{completions:{}},
     energy:{},
     studyTimer:{active:null,sessions:[],deletedSessionIds:[]},
-    spacedReviews:{done:{},settings:{finance:true,math:true,skills:true}},
+    spacedReviews:{done:{},settings:{finance:true,math:true,skills:true,dailyBudgetMin:15}},
+    uiFeedback:{sound:false,haptic:true},
+    sleep:{records:{}},
     burndown:{targets:{english1:'2026-11-18',english2:'',skills:'',finance:'',math:''},selected:'english1'},
     migrations:{}
   }
@@ -1783,7 +1801,9 @@ function normalizeLearningState(raw){
   d.studyTimer.active=d.studyTimer.active&&typeof d.studyTimer.active==='object'?d.studyTimer.active:null;
   d.spacedReviews=(x.spacedReviews&&typeof x.spacedReviews==='object')?x.spacedReviews:d.spacedReviews;
   if(!d.spacedReviews.done||typeof d.spacedReviews.done!=='object')d.spacedReviews.done={};
-  d.spacedReviews.settings={finance:d.spacedReviews.settings?.finance!==false,math:d.spacedReviews.settings?.math!==false,skills:d.spacedReviews.settings?.skills!==false};
+  d.spacedReviews.settings={finance:d.spacedReviews.settings?.finance!==false,math:d.spacedReviews.settings?.math!==false,skills:d.spacedReviews.settings?.skills!==false,dailyBudgetMin:Math.max(5,Math.min(45,Number(d.spacedReviews.settings?.dailyBudgetMin)||15))};
+  d.uiFeedback=(x.uiFeedback&&typeof x.uiFeedback==='object')?{sound:!!x.uiFeedback.sound,haptic:x.uiFeedback.haptic!==false}:{sound:false,haptic:true};
+  d.sleep=(x.sleep&&typeof x.sleep==='object')?x.sleep:{records:{}};if(!d.sleep.records||typeof d.sleep.records!=='object')d.sleep.records={};
   d.burndown=(x.burndown&&typeof x.burndown==='object')?x.burndown:d.burndown;
   if(!d.burndown.targets||typeof d.burndown.targets!=='object')d.burndown.targets={english1:'2026-11-18',english2:'',skills:'',finance:'',math:''};
   d.migrations=(x.migrations&&typeof x.migrations==='object')?x.migrations:{};
@@ -3289,6 +3309,70 @@ document.addEventListener('visibilitychange',()=>{if(document.visibilityState===
 window.addEventListener('pagehide',()=>{flushCloudSyncOnLeave()});
 window.addEventListener('pageshow',()=>{recoverSessionAndRetrySync()});
 window.addEventListener('focus',()=>{recoverSessionAndRetrySync()});
+
+
+/* ===== V1.5.5 高频计时 / 按钮反馈 / 复习预算 / 睡眠统计 ===== */
+LS.uiFeedback=LS.uiFeedback&&typeof LS.uiFeedback==='object'?LS.uiFeedback:{sound:false,haptic:true};
+LS.sleep=LS.sleep&&typeof LS.sleep==='object'?LS.sleep:{records:{}};
+if(!LS.sleep.records||typeof LS.sleep.records!=='object')LS.sleep.records={};
+if(!LS.spacedReviews.settings||typeof LS.spacedReviews.settings!=='object')LS.spacedReviews.settings={};
+if(!Number.isFinite(Number(LS.spacedReviews.settings.dailyBudgetMin)))LS.spacedReviews.settings.dailyBudgetMin=15;
+
+function v155Save(){persistLearningState()}
+function timerActiveSeconds(){const a=LS.studyTimer.active;if(!a)return 0;let sec=Number(a.focusAccumSec||0);if(a.phase==='focus')sec+=Math.max(0,Math.floor((Date.now()-Date.parse(a.phaseStartedAt))/1000));return sec}
+function ensureQuickTimerBar(){
+  const panel=$('#learningPanel');if(!panel)return;let q=$('#v155QuickTimer');if(!q){q=document.createElement('div');q.id='v155QuickTimer';panel.parentNode.insertBefore(q,panel)}
+  const a=LS.studyTimer.active,sec=a?timerActiveSeconds():todayStudySeconds();q.className='v155-quick-timer'+(a?' running':'');q.innerHTML=`<div class="v155-quick-main"><b>${a?`正在学习 · ${esc(a.subject)}`:'学习计时'}</b><small>${a?(a.note?esc(a.note):'已先保存在本机，结束后立即同步'):`今天已记录 ${secHuman(todayStudySeconds())} · 高频入口`}</small></div><div class="v155-quick-time" id="v155QuickTime">${a?secHuman(sec):secHuman(todayStudySeconds())}</div><button class="btn ${a?'learning-danger-btn':'primary'}" id="v155QuickBtn">${a?'结束并保存':'打开计时'}</button>`;
+  $('#v155QuickBtn').onclick=()=>{if(LS.studyTimer.active)finishStudy();else{activeLearningTab='timer';renderLearningAll()}}
+}
+const v155RenderAllBase=renderLearningAll;
+renderLearningAll=function(){v155RenderAllBase();ensureQuickTimerBar();renderButtonFeedbackSettingsIfNeeded()};
+const v155UpdateTimerDOMBase=updateTimerDOM;
+updateTimerDOM=function(){v155UpdateTimerDOMBase();const x=$('#v155QuickTime');if(x&&LS.studyTimer.active)x.textContent=secHuman(timerActiveSeconds())};
+
+function feedbackClick(){
+  if(LS.uiFeedback.haptic&&navigator.vibrate)try{navigator.vibrate(8)}catch{}
+  if(!LS.uiFeedback.sound)return;try{const C=window.AudioContext||window.webkitAudioContext;if(!C)return;const c=window.__v155Audio||(window.__v155Audio=new C()),o=c.createOscillator(),g=c.createGain();o.frequency.value=520;g.gain.setValueAtTime(.025,c.currentTime);g.gain.exponentialRampToValueAtTime(.0001,c.currentTime+.045);o.connect(g);g.connect(c.destination);o.start();o.stop(c.currentTime+.05)}catch{}
+}
+document.addEventListener('pointerdown',e=>{const b=e.target.closest('.btn');if(!b)return;b.classList.add('press-feedback');setTimeout(()=>b.classList.remove('press-feedback'),140)},true);
+document.addEventListener('click',e=>{if(e.target.closest('.btn'))feedbackClick()},true);
+function renderButtonFeedbackSettingsIfNeeded(){
+  if(activeLearningTab!=='timer')return;const host=$('#learningPanel .learning-section-card');if(!host||$('#v155FeedbackSettings'))return;const d=document.createElement('div');d.id='v155FeedbackSettings';d.className='v155-feedback-row';d.innerHTML=`<label><input type="checkbox" id="v155Haptic" ${LS.uiFeedback.haptic?'checked':''}> 轻触震动</label><label><input type="checkbox" id="v155Sound" ${LS.uiFeedback.sound?'checked':''}> 点击音效</label><span class="learning-source-note">动画始终开启；音效默认关闭，适合图书馆/晚自习。</span>`;host.appendChild(d);$('#v155Haptic').onchange=e=>{LS.uiFeedback.haptic=e.target.checked;v155Save()};$('#v155Sound').onchange=e=>{LS.uiFeedback.sound=e.target.checked;v155Save()}
+}
+
+function energyModeExplanation(mode){return mode==='high'?'<b>高能量</b>完成当天核心量后，额外给 1 个“可选加量”任务；不做不欠账。':mode==='low'?'<b>低负荷</b>只保留最核心任务，复习和第二主科可以后移。':'<b>标准</b>只完成当天计划量，不主动加量；这是默认模式。'}
+const v155TodayBase=renderLearningToday;
+renderLearningToday=function(){v155TodayBase();const e=$('#learningPanel'),mode=energyFor();const sw=e.querySelector('.energy-switch');if(sw&&!e.querySelector('.v155-mode-note')){const n=document.createElement('div');n.className='v155-mode-note';n.innerHTML=energyModeExplanation(mode);sw.parentNode.appendChild(n)}
+  if(mode==='high'&&!e.querySelector('#v155HighExtra')){const first=e.querySelector('.cockpit-stack .learning-section-card');if(first){const n=document.createElement('div');n.id='v155HighExtra';n.className='learning-status-box safe';const nextE=nextEnglishLesson(englishRound1Complete()?LS.english.round2:LS.english.round1),fd=nextFinanceDay(),md=nextMathDay();let tip=nextE?`英语再推进 ${englishLessonLabel(nextE)}`:(md?`高数再推进 Day ${md}`:(fd?`财经再推进原 Day ${fd}`:'做 20—30 分钟错题/回忆'));n.innerHTML=`<b>高能量加量（可选）</b><br>${tip}。只在核心量完成且仍然清醒时做，不完成不形成欠账。`;first.appendChild(n)}}
+};
+
+function reviewBacklog(){const k=learningTodayKey();return spacedReviewItems().filter(x=>x.due<=k&&!x.done)}
+dueReviews=function(){const all=reviewBacklog().sort((a,b)=>a.due.localeCompare(b.due)||b.offset-a.offset),budget=Math.max(5,Number(LS.spacedReviews.settings.dailyBudgetMin)||15),limit=Math.max(1,Math.floor(budget/5));return all.slice(0,limit)};
+renderSpacedReviews=function(){
+  const e=$('#learningPanel'),all=reviewBacklog(),due=dueReviews(),up=upcomingReviews(),settings=LS.spacedReviews.settings,budget=Math.max(5,Number(settings.dailyBudgetMin)||15);
+  const row=x=>`<div class="review-due"><div><div class="review-due-title">${esc(x.track)} · ${esc(x.title)}</div><div class="review-due-meta">第 ${x.offset} 天 · 原计划 ${x.due}</div></div><button class="btn" data-review-done="${x.key}">完成</button></div>`;
+  e.innerHTML=`<div class="learning-section-card"><div class="learning-row spread"><div><h4>复习预算</h4><div class="learning-source-note">不再把逾期复习无限堆成“欠债”。每天只拿固定预算做最值得的几项，其余留在队列里等待。</div></div><span class="learning-chip green">今天最多 ${budget} 分钟</span></div><div class="v155-review-budget"><div><small>今日建议</small><b>${due.length} 项</b></div><div><small>总待复习</small><b>${all.length} 项</b></div><div><small>单项默认预算</small><b>≈ 5 分钟</b></div></div><div class="learning-row" style="margin-top:10px"><label class="small">每日预算 <input id="v155ReviewBudget" type="number" min="5" max="45" step="5" value="${budget}" style="width:72px"> 分钟</label><label class="check"><input id="revFinance" type="checkbox" ${settings.finance!==false?'checked':''}>财经</label><label class="check"><input id="revMath" type="checkbox" ${settings.math!==false?'checked':''}>高数</label><label class="check"><input id="revSkills" type="checkbox" ${settings.skills!==false?'checked':''}>四级技巧</label></div></div><div class="learning-section-card"><h4>今天只做这些</h4>${due.length?due.map(row).join(''):'<div class="learning-empty">今天没有必须占用复习预算的项目，放心推进新内容。</div>'}</div><div class="learning-section-card"><h4>后面的队列</h4><div class="learning-source-note">没有做完的不会变红催债，只保留顺序。</div>${up.length?up.slice(0,8).map(x=>`<div class="learning-mini-line"><b>${x.due}</b> · ${esc(x.track)} · ${esc(x.title)}</div>`).join(''):'<div class="learning-empty">暂无未来复习任务。</div>'}</div>`;
+  $('#v155ReviewBudget').onchange=x=>{LS.spacedReviews.settings.dailyBudgetMin=Math.max(5,Math.min(45,Number(x.target.value)||15));v155Save();renderLearningAll()};$('#revFinance').onchange=x=>setReviewSetting('finance',x.target.checked);$('#revMath').onchange=x=>setReviewSetting('math',x.target.checked);$('#revSkills').onchange=x=>setReviewSetting('skills',x.target.checked);document.querySelectorAll('[data-review-done]').forEach(b=>b.onclick=()=>markReviewDone(b.dataset.reviewDone))
+};
+
+function sleepMinutes(bed,wake){if(!/^\d{2}:\d{2}$/.test(bed||'')||!/^\d{2}:\d{2}$/.test(wake||''))return 0;const [bh,bm]=bed.split(':').map(Number),[wh,wm]=wake.split(':').map(Number);let a=bh*60+bm,b=wh*60+wm;if(b<=a)b+=1440;return Math.max(0,b-a)}
+function sleepRecord(k){return LS.sleep.records[k]||null}
+function saveSleepRecord(k,bed,asleep,wake,difficulty,sleepiness,nap,note){if(!k||!bed||!asleep||!wake){alert('请填写日期、上床/估计睡着/起床时间。');return}LS.sleep.records[k]={date:k,bed,asleep,wake,difficulty:Number(difficulty)||3,sleepiness:Number(sleepiness)||3,nap:Math.max(0,Number(nap)||0),note:String(note||'').trim(),updatedAt:new Date().toISOString()};v155Save();renderLearningAll()}
+function sleepDurationMin(r){return r?sleepMinutes(r.asleep,r.wake):0}
+function sleepAvg(arr,fn){return arr.length?arr.reduce((s,x)=>s+fn(x),0)/arr.length:0}
+function sleepHuman(min){return `${Math.floor(min/60)}小时${Math.round(min%60)}分`}
+function renderSleep(){const e=$('#learningPanel'),today=learningTodayKey(),r=sleepRecord(today)||{},arr=Object.values(LS.sleep.records).filter(Boolean).sort((a,b)=>b.date.localeCompare(a.date)),recent=arr.slice(0,7),avg=sleepAvg(recent,sleepDurationMin),avgD=sleepAvg(recent,x=>Number(x.difficulty||0)),avgS=sleepAvg(recent,x=>Number(x.sleepiness||0)),nap=sleepAvg(recent,x=>Number(x.nap||0));let verdict='数据还少，先连续记录。';if(recent.length>=4){if(avg>=465&&avgD<=2.5&&avgS<=2.5)verdict='目前更像“睡够了”：白天状态和起床难度都不错。';else if(avg<450||avgD>=3.5||avgS>=3.5)verdict='目前有睡眠不足信号，先别为了早起硬砍睡眠。';else verdict='处在中间区间，再记录几天看趋势。'}
+  e.innerHTML=`<div class="learning-section-card"><div class="learning-row spread"><div><h4>睡眠实验</h4><div class="learning-source-note">记录“估计睡着时间”，不追求精确到分钟；重点看睡眠时长和第二天状态是否匹配。</div></div><span class="learning-chip blue">近 7 天 ${recent.length} 条</span></div><div class="sleep-summary" style="margin-top:10px"><div><small>平均睡眠</small><b>${recent.length?sleepHuman(avg):'—'}</b></div><div><small>起床难度</small><b>${recent.length?avgD.toFixed(1)+'/5':'—'}</b></div><div><small>白天困意</small><b>${recent.length?avgS.toFixed(1)+'/5':'—'}</b></div><div><small>平均午睡</small><b>${recent.length?Math.round(nap)+' 分':'—'}</b></div></div><div class="learning-status-box ${recent.length>=4&&avg<450?'warn':'safe'}" style="margin-top:10px"><b>阶段判断</b><br>${verdict}</div></div><div class="learning-section-card"><h4>今天 / 今早记录</h4><div class="sleep-form"><label>日期<input id="slDate" type="date" value="${today}"></label><label>上床<input id="slBed" type="time" value="${r.bed||'21:45'}"></label><label>估计睡着<input id="slAsleep" type="time" value="${r.asleep||'22:30'}"></label><label>起床<input id="slWake" type="time" value="${r.wake||'05:30'}"></label><label>起床难度<select id="slDiff">${[1,2,3,4,5].map(x=>`<option value="${x}" ${Number(r.difficulty||2)===x?'selected':''}>${x} / 5</option>`).join('')}</select></label><label>白天困意<select id="slSleepy">${[1,2,3,4,5].map(x=>`<option value="${x}" ${Number(r.sleepiness||2)===x?'selected':''}>${x} / 5</option>`).join('')}</select></label><label>午睡分钟<input id="slNap" type="number" min="0" max="240" value="${Number(r.nap||0)}"></label><label>备注<input id="slNote" type="text" autocomplete="off" value="${esc(r.note||'')}" placeholder="军训很累 / 无异常"></label></div><button class="btn primary" id="slSave" style="margin-top:10px">保存睡眠记录</button></div><div class="learning-section-card"><h4>最近记录</h4>${arr.length?arr.slice(0,10).map(x=>`<div class="sleep-row"><b>${x.date.slice(5)}</b><span>${x.asleep}→${x.wake} · ${sleepHuman(sleepDurationMin(x))} · 午睡 ${Number(x.nap||0)} 分</span><span class="sleep-score">困 ${x.sleepiness}/5</span></div>`).join(''):'<div class="learning-empty">还没有睡眠记录。</div>'}</div>`;
+  $('#slSave').onclick=()=>saveSleepRecord($('#slDate').value,$('#slBed').value,$('#slAsleep').value,$('#slWake').value,$('#slDiff').value,$('#slSleepy').value,$('#slNap').value,$('#slNote').value)
+}
+const v155PanelBase=renderLearningPanel;
+renderLearningPanel=function(){if(activeLearningTab==='sleep'){document.querySelectorAll('[data-learning-tab]').forEach(b=>b.classList.toggle('active',b.dataset.learningTab==='sleep'));renderSleep()}else v155PanelBase();ensureQuickTimerBar();renderButtonFeedbackSettingsIfNeeded()};
+
+// 学习统计页顺带显示最近睡眠均值，方便对照精力与学习时长。
+const v155StatsBase=renderLearningStats;
+renderLearningStats=function(){v155StatsBase();const arr=Object.values(LS.sleep.records||{}).filter(Boolean).sort((a,b)=>b.date.localeCompare(a.date)).slice(0,7);if(arr.length){const avg=sleepAvg(arr,sleepDurationMin),box=document.createElement('div');box.className='learning-section-card';box.innerHTML=`<div class="learning-row spread"><div><h4>睡眠 × 学习</h4><div class="learning-source-note">近 ${arr.length} 天平均睡眠 ${sleepHuman(avg)}。用这组数据观察“睡多久时，高数/财经最清醒”。</div></div><button class="btn" id="v155OpenSleep">记录睡眠</button></div>`;$('#learningPanel').prepend(box);$('#v155OpenSleep').onclick=()=>{activeLearningTab='sleep';renderLearningAll()}}};
+
+v155Save();
 
 renderCal();renderSide();renderAnniv();renderStreak();nextTerm();updateNotifyUI();checkReminders();renderAIStored();renderLearningMini();renderLearningOverview();initSupabase();setTimeout(recoverSessionAndRetrySync,1800);window.addEventListener('load',()=>setTimeout(recoverSessionAndRetrySync,500));
 setInterval(checkReminders,30000);setTimeout(()=>{renderCal();renderSide();nextTerm()},900);
