@@ -753,13 +753,82 @@ button{touch-action:manipulation}
   .learning-tabs-shell .learning-tabs{grid-template-columns:repeat(6,minmax(0,1fr))}
 }
 
+
+/* ===== 八字合盘 · V5 原版引擎容器（不侵入原日历） ===== */
+#baziBtn{background:color-mix(in srgb,var(--accent) 12%,var(--card));border-color:color-mix(in srgb,var(--accent) 27%,var(--line))}
+.bazi-page{position:fixed;inset:0;z-index:115;background:linear-gradient(135deg,#edf2e9,#f6f4ec);overflow:auto;display:none;overscroll-behavior:contain}
+.bazi-page.bazi-open{display:block}
+.bazi-wrap{max-width:1550px;margin:auto;padding:16px 20px 28px}
+.bazi-head{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin:0 0 14px}
+.bazi-title{margin:0;font-size:24px;color:var(--text)}
+.bazi-subtitle{margin:4px 0 0;font-size:12px;color:var(--muted)}
+.bazi-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.bazi-grid{display:grid;grid-template-columns:minmax(0,1fr) 294px;gap:14px;align-items:start}
+.bazi-card{background:var(--card);border:1px solid var(--line);border-radius:17px;box-shadow:var(--shadow);min-width:0}
+.bazi-content{padding:12px;min-height:calc(100vh - 112px);display:flex;flex-direction:column;gap:10px}
+.bazi-iframe{border:1px solid var(--line);width:100%;min-height:calc(100vh - 150px);flex:1;background:#fff;border-radius:12px}
+.bazi-empty{margin:auto;text-align:center;padding:38px 12px;max-width:530px}
+.bazi-empty h3{font-size:20px;margin:0 0 11px}.bazi-empty p{line-height:1.8;font-size:13px;color:var(--muted)}
+.bazi-hidden{display:none!important}
+.bazi-side{padding:16px;position:sticky;top:14px}
+.bazi-side h2{font-size:16px;margin:0 0 6px}.bazi-side h3{font-size:12px;margin:18px 0 8px;color:var(--muted)}
+.bazi-record{border-top:1px solid var(--line);padding:10px 0;display:flex;flex-direction:column;gap:5px}
+.bazi-record .bazi-score{font-size:22px;font-weight:750;color:var(--accent)}
+.bazi-record .bazi-recordname{font-size:12px;font-weight:700}
+.bazi-record .bazi-births{font-size:11px;color:var(--muted);overflow-wrap:anywhere;line-height:1.5}
+.bazi-record button{align-self:start;margin-top:4px;font-size:11px;padding:6px 11px}
+.bazi-small{font-size:11px;line-height:1.6;color:var(--muted)}
+.bazi-compare{margin:12px 0 0;padding:11px;background:var(--accent-soft);border-radius:11px;font-size:12px;line-height:1.65}
+.bazi-scores{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}
+.bazi-score-input{display:flex;gap:5px}.bazi-score-input input{min-width:0;width:95px;flex:1}
+.bazi-error{color:#a94d4d}.bazi-ok{color:var(--green)}
+.bazi-loading{display:none}
+@media(max-width:950px){.bazi-grid{grid-template-columns:1fr}.bazi-side{position:static;order:2}.bazi-content{min-height:630px}.bazi-iframe{min-height:640px}.bazi-wrap{padding:10px}}
+@media(max-width:580px){.bazi-title{font-size:21px}.bazi-content{padding:7px;min-height:640px}.bazi-iframe{min-height:680px}.bazi-head{align-items:flex-start}.bazi-side{padding:12px}}
+
 </style>
 </head>
 <body>
+
+<!-- 八字合盘集成面板：源码引擎以独立 iframe 完整运行，避免影响日历和学习记录。 -->
+<section id="baziPage" class="bazi-page" aria-hidden="true" aria-label="八字合盘 V5.0">
+  <div class="bazi-wrap">
+    <header class="bazi-head">
+      <div><h1 class="bazi-title">八字合盘 <span style="font-weight:400;font-size:12px;color:var(--muted)">V5.0</span></h1><p class="bazi-subtitle">苏伊温德日历 · 原版排盘与评分引擎</p></div>
+      <div class="bazi-actions">
+        <input id="baziFile" type="file" accept=".html,.htm,text/html" class="bazi-hidden">
+        <button type="button" class="btn" id="baziImport">导入 V5 原版 HTML</button>
+        <button type="button" class="btn primary" id="baziClose">返回日历</button>
+      </div>
+    </header>
+    <div class="bazi-grid">
+      <main class="bazi-card bazi-content" aria-label="八字合盘计算器">
+        <div id="baziStatus" class="bazi-small" role="status">原始 V5.0 HTML 将在此面板运行；所有排盘与得分均由原版 JavaScript 计算。</div>
+        <div id="baziEmpty" class="bazi-empty"><h3>导入合盘 V5.0 完整工具</h3><p>点击上方「导入 V5 原版 HTML」，选择《合盘随身工具_V5.0_纪录更新版.html》。原文件的评分函数、节气数据与操作界面均不改写，保存在此浏览器的独立本地存储中，下次打开可以直接使用。</p><button type="button" class="btn primary" id="baziEmptyImport">选择原版 HTML 文件</button><p class="bazi-small">支持电脑及手机文件选择；无需外部评分 API。不同设备首次打开需分别导入，或将原 HTML 放到网站根目录并命名为 <code>bazi-hepan-v5.html</code>。</p></div>
+        <iframe id="baziFrame" class="bazi-iframe bazi-hidden" title="婚恋与通用人际八字合盘 V5.0" sandbox="allow-scripts allow-same-origin allow-downloads allow-modals" referrerpolicy="no-referrer"></iframe>
+      </main>
+      <aside class="bazi-card bazi-side" aria-label="V5.0纪录对照板">
+        <h2>纪录对照板</h2><p class="bazi-small">以下是 V5.0 已观察到的最高分，世界范围记录不代表数学意义的全球上界。</p>
+        <h3>我的个人纪录</h3>
+        <div id="baziPersonalRecords"></div>
+        <h3>世界范围已发现纪录</h3>
+        <div id="baziWorldRecords"></div>
+        <div class="bazi-compare"><b>本次与纪录的差距</b><p class="bazi-small" id="baziDetected">等候原版计算结果。无法自动识别时，可在下方输入原版显示的得分。</p>
+          <div class="bazi-scores"><select id="baziCompareCategory" aria-label="比较纪录类别"><option value="0">我的爱情</option><option value="1">年龄相近友情</option><option value="2">含长辈友情</option><option value="3">双人爱情纪录</option><option value="4">双人友情纪录</option></select></div>
+          <div class="bazi-score-input"><input id="baziInputScore" type="number" step="0.001" min="0" max="100" placeholder="本次分数"><button id="baziComputeDifference" type="button" class="btn">比较</button></div>
+          <div id="baziDiff" class="bazi-small" aria-live="polite"></div>
+        </div>
+        <p class="bazi-small" style="margin-top:12px">按照原工具以北京时间（UTC+8）处理日期；真太阳时与子时换日差异以原版提示为准。传统八字合盘属于文化娱乐性分析，分数不代表真实的关系质量。</p>
+      </aside>
+    </div>
+  </div>
+</section>
+
 <div class="app">
   <div class="top">
     <div class="brand"><h1>苏伊温德日历 <span class="version">V1.7.3</span></h1><p>生命如暗室，不妨我明写春诗</p></div>
     <div class="actions">
+      <button class="btn action-btn" id="baziBtn" type="button" title="八字合盘 V5.0"><span class="action-icon">♡</span><span>八字合盘</span></button>
       <button class="btn action-btn action-learning" id="learningBtn"><span class="action-icon">▣</span><span>学习管理</span></button>
       <button class="btn action-btn" id="v170QuickBtn"><span class="action-icon">＋</span><span>快速记录</span></button>
       <button class="btn action-btn action-today" id="todayBtn"><span class="action-icon">⌂</span><span>回到今天</span></button>
@@ -4134,4 +4203,5 @@ setInterval(checkReminders,30000);setTimeout(()=>{renderCal();renderSide();nextT
 if('serviceWorker'in navigator&&location.protocol.startsWith('http'))navigator.serviceWorker.register('./sw.js').catch(()=>{});
 })();
 </script>
+<script defer src="./bazi-hepan.js"></script>
 </body></html>

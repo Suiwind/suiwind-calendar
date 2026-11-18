@@ -1,5 +1,5 @@
-const CACHE='suiwind-calendar-v173';
-const CORE=['./','./index.html','./manifest.json','./supabase-local.js'];
+const CACHE='suiwind-calendar-v173-bazi-v1';
+const CORE=['./','./index.html','./manifest.json','./supabase-local.js','./bazi-hepan.js'];
 
 self.addEventListener('install',event=>{
   event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(CORE)).then(()=>self.skipWaiting()));
