@@ -1,31 +1,60 @@
-const CACHE='suiwind-calendar-v173-bazi-v1';
-const CORE=['./','./index.html','./manifest.json','./supabase-local.js','./bazi-hepan.js'];
+const CACHE = 'suiwind-calendar-v200';
+const CORE = [
+  './',
+  './index.html',
+  './styles.css',
+  './app-data.js',
+  './app.js',
+  './supabase-local.js',
+  './bazi-hepan.js',
+  './manifest.json',
+  './favicon.svg'
+];
 
-self.addEventListener('install',event=>{
-  event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(CORE)).then(()=>self.skipWaiting()));
+self.addEventListener('install', event => {
+  event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(CORE)));
 });
 
-self.addEventListener('activate',event=>{
+self.addEventListener('activate', event => {
   event.waitUntil(
     caches.keys()
-      .then(keys=>Promise.all(keys.filter(key=>key!==CACHE).map(key=>caches.delete(key))))
-      .then(()=>self.clients.claim())
+      .then(keys => Promise.all(keys.filter(key => key !== CACHE).map(key => caches.delete(key))))
+      .then(() => self.clients.claim())
   );
 });
 
-self.addEventListener('fetch',event=>{
-  if(event.request.method!=='GET')return;
-  if(event.request.mode==='navigate'){
+self.addEventListener('message', event => {
+  if (event.data && event.data.type === 'SKIP_WAITING') self.skipWaiting();
+});
+
+self.addEventListener('fetch', event => {
+  if (event.request.method !== 'GET') return;
+  const url = new URL(event.request.url);
+  if (url.origin !== self.location.origin) return;
+
+  const isCoreAsset = event.request.mode === 'navigate' || /\.(html|css|js|json)$/i.test(url.pathname);
+  if (isCoreAsset) {
     event.respondWith(
       fetch(event.request)
-        .then(response=>{
-          const copy=response.clone();
-          caches.open(CACHE).then(cache=>cache.put('./index.html',copy));
-          return response
+        .then(response => {
+          if (response && response.ok) {
+            const copy = response.clone();
+            caches.open(CACHE).then(cache => cache.put(event.request, copy)).catch(() => {});
+          }
+          return response;
         })
-        .catch(()=>caches.match('./index.html'))
+        .catch(() => caches.match(event.request).then(hit => hit || caches.match('./index.html')))
     );
-    return
+    return;
   }
-  event.respondWith(caches.match(event.request).then(hit=>hit||fetch(event.request)))
+
+  event.respondWith(
+    caches.match(event.request).then(hit => hit || fetch(event.request).then(response => {
+      if (response && response.ok) {
+        const copy = response.clone();
+        caches.open(CACHE).then(cache => cache.put(event.request, copy)).catch(() => {});
+      }
+      return response;
+    }))
+  );
 });
