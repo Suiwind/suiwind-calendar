@@ -1,639 +1,1054 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#eef2eb">
-<title>苏伊温德日历 V2.0</title>
-<link rel="icon" type="image/svg+xml" href="./favicon.svg">
-<link rel="apple-touch-icon" href="./icons/apple-touch-icon.png">
-<link rel="manifest" href="./manifest.json">
-<link rel="stylesheet" href="./styles.css">
-<script>
-(function(){
-  try{
-    var t = localStorage.getItem('zx_theme');
-    if(t === 'dark'){
-      document.documentElement.setAttribute('data-theme', 'dark');
-      var m = document.querySelector('meta[name="theme-color"]');
-      if(m) m.setAttribute('content', '#141915');
-    }
-  }catch(e){}
-})();
-</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>素问 · 五行日历 & 八字合盘 V5.2</title>
+<style>
+  :root {
+    --bg: #F6F1E7;
+    --card: #FCF9F2;
+    --ink: #24201E;
+    --muted: #766E66;
+    --border: #E2D9C8;
+    --accent: #A63429;     /* 朱砂红 */
+    --accent-soft: #F3E1DD;
+    --jade: #366859;       /* 黛绿 */
+    --gold: #B68D40;       /* 泥金 */
+    --wood: #3A7D5C;
+    --fire: #C2493A;
+    --earth: #A67C46;
+    --metal: #7D848C;
+    --water: #356789;
+    --radius: 14px;
+    --shadow: 0 6px 24px rgba(45, 34, 24, 0.06);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Noto Sans SC", sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.6;
+    min-height: 100vh;
+    padding-bottom: 48px;
+  }
+  .serif { font-family: "Songti SC", "Noto Serif SC", "STSong", Georgia, serif; }
+  header {
+    background: linear-gradient(180deg, #EFE7D8 0%, var(--bg) 100%);
+    padding: 20px 16px 12px;
+    text-align: center;
+    border-bottom: 1px solid var(--border);
+  }
+  header h1 {
+    font-size: 22px;
+    letter-spacing: 3px;
+    color: var(--ink);
+    font-weight: 700;
+  }
+  header p {
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 4px;
+    letter-spacing: 1px;
+  }
+  .tabs {
+    display: flex;
+    max-width: 780px;
+    margin: 14px auto 0;
+    padding: 4px;
+    background: #EAE2D3;
+    border-radius: 12px;
+    gap: 4px;
+  }
+  .tab-btn {
+    flex: 1;
+    border: none;
+    background: transparent;
+    padding: 10px 12px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--muted);
+    border-radius: 9px;
+    cursor: pointer;
+    transition: all .2s;
+  }
+  .tab-btn.active {
+    background: var(--card);
+    color: var(--accent);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  }
+  .container {
+    max-width: 780px;
+    margin: 16px auto;
+    padding: 0 14px;
+  }
+  .panel { display: none; }
+  .panel.active { display: block; }
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 18px;
+    margin-bottom: 16px;
+    box-shadow: var(--shadow);
+  }
+  .card-title {
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-left: 3px solid var(--accent);
+    padding-left: 10px;
+  }
+  .badge {
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 99px;
+    background: var(--accent-soft);
+    color: var(--accent);
+    font-weight: 600;
+  }
+
+  /* 表单与按钮 */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  @media (max-width: 600px) { .grid-2 { grid-template-columns: 1fr; } }
+  .form-row { display: flex; flex-direction: column; gap: 5px; margin-bottom: 10px; }
+  .form-row label { font-size: 12px; color: var(--muted); font-weight: 600; }
+  input, select {
+    width: 100%;
+    padding: 9px 11px;
+    border: 1px solid var(--border);
+    border-radius: 9px;
+    background: #FFFDF9;
+    color: var(--ink);
+    font-size: 14px;
+    outline: none;
+  }
+  input:focus, select:focus { border-color: var(--accent); }
+  .inline-row { display: flex; gap: 8px; align-items: center; }
+  .checkbox-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: var(--muted);
+    cursor: pointer;
+    user-select: none;
+    white-space: nowrap;
+  }
+  .checkbox-label input { width: auto; }
+  .btn {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 10px;
+    background: var(--accent);
+    color: #fff;
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: opacity .2s;
+  }
+  .btn:hover { opacity: 0.92; }
+  .btn-sub {
+    background: #EAE2D3;
+    color: var(--ink);
+    width: auto;
+    padding: 7px 12px;
+    font-size: 12px;
+  }
+
+  /* 五行配色 */
+  .el-木 { color: var(--wood); } .bg-木 { background: var(--wood); }
+  .el-火 { color: var(--fire); } .bg-火 { background: var(--fire); }
+  .el-土 { color: var(--earth); } .bg-土 { background: var(--earth); }
+  .el-金 { color: var(--metal); } .bg-金 { background: var(--metal); }
+  .el-水 { color: var(--water); } .bg-水 { background: var(--water); }
+
+  /* 日历样式 */
+  .cal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+  }
+  .cal-nav { display: flex; gap: 6px; align-items: center; }
+  .cal-month-label { font-size: 17px; font-weight: 700; min-width: 120px; text-align: center; }
+  .cal-weekdays {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    text-align: center;
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 6px;
+  }
+  .cal-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 5px;
+  }
+  .cal-cell {
+    border: 1px solid transparent;
+    border-radius: 10px;
+    padding: 6px 2px;
+    text-align: center;
+    cursor: pointer;
+    background: #FFFDF8;
+    transition: all .15s;
+    position: relative;
+  }
+  .cal-cell:hover { border-color: var(--gold); }
+  .cal-cell.other-month { opacity: 0.35; }
+  .cal-cell.today { border-color: var(--jade); background: #EFF6F3; }
+  .cal-cell.selected { border-color: var(--accent); background: var(--accent-soft); }
+  .cal-day-num { font-size: 14px; font-weight: 700; }
+  .cal-gz { font-size: 11px; margin-top: 1px; }
+  .cal-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    margin: 3px auto 0;
+  }
+  .cal-tag {
+    font-size: 9px;
+    color: var(--accent);
+    font-weight: 600;
+    line-height: 1.1;
+  }
+
+  /* 四柱展示 */
+  .pillars {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    margin: 10px 0;
+  }
+  .pillar-box {
+    background: #FFFDF8;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 4px;
+    text-align: center;
+  }
+  .pillar-label { font-size: 11px; color: var(--muted); }
+  .pillar-gz { font-size: 20px; font-weight: 700; margin: 4px 0; letter-spacing: 2px; }
+  .pillar-sub { font-size: 11px; color: var(--muted); }
+
+  /* 五行进度条 */
+  .wx-bars { display: flex; flex-direction: column; gap: 7px; margin-top: 10px; }
+  .wx-bar-row { display: flex; align-items: center; gap: 8px; font-size: 12px; }
+  .wx-bar-track {
+    flex: 1; height: 8px; background: #ECE5D7; border-radius: 99px; overflow: hidden;
+  }
+  .wx-bar-fill { height: 100%; border-radius: 99px; transition: width .4s; }
+
+  /* 合盘结果 */
+  .score-hero {
+    text-align: center;
+    padding: 16px 10px;
+    background: linear-gradient(135deg, #FAF4E8 0%, #F4E8DC 100%);
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    margin-bottom: 14px;
+  }
+  .score-num { font-size: 42px; font-weight: 800; color: var(--accent); line-height: 1.1; }
+  .score-range { font-size: 13px; color: var(--jade); font-weight: 600; margin-top: 4px; }
+  .score-verdict { font-size: 14px; color: var(--ink); margin-top: 6px; }
+  .radar-wrap { display: flex; justify-content: center; margin: 10px 0; }
+  .dim-item {
+    border-top: 1px dashed var(--border);
+    padding: 10px 0;
+  }
+  .dim-head { display: flex; justify-content: space-between; font-size: 14px; font-weight: 700; }
+  .dim-desc { font-size: 13px; color: var(--muted); margin-top: 4px; }
+
+  /* 历史记录 */
+  .history-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    margin-bottom: 8px;
+    background: #FFFDF8;
+    cursor: pointer;
+  }
+  .history-item:hover { border-color: var(--gold); }
+  .history-meta { font-size: 12px; color: var(--muted); }
+  .del-btn {
+    border: none; background: transparent; color: var(--muted);
+    font-size: 12px; cursor: pointer; padding: 4px 8px;
+  }
+  .del-btn:hover { color: var(--accent); }
+  .hint { font-size: 12px; color: var(--muted); margin-top: 6px; }
+</style>
 </head>
 <body>
 
-<section id="baziPage" class="bazi-page" aria-hidden="true" aria-label="八字合盘 V5.0">
-  <div class="bazi-wrap">
-    <header class="bazi-head">
-      <div>
-        <h1 class="bazi-title">八字合盘 <span style="font-weight:400;font-size:13px;color:var(--muted)">V5.0</span></h1>
-        <p class="bazi-subtitle">苏伊温德日历 · 原版排盘与评分引擎</p>
-      </div>
-      <div class="bazi-actions">
-        <input id="baziFile" type="file" accept=".html,.htm,text/html" class="bazi-hidden">
-        <button type="button" class="btn" id="baziImport">导入 V5 原版 HTML</button>
-        <button type="button" class="btn primary" id="baziClose">返回日历</button>
-      </div>
-    </header>
-    <div class="bazi-grid">
-      <main class="bazi-card bazi-content" aria-label="八字合盘计算器">
-        <div id="baziStatus" class="bazi-small" role="status">原始 V5.0 HTML 将在此面板运行；所有排盘与得分均由原版 JavaScript 计算。</div>
-        <div id="baziEmpty" class="bazi-empty">
-          <h3>导入合盘 V5.0 完整工具</h3>
-          <p>点击上方「导入 V5 原版 HTML」，选择《合盘随身工具_V5.0_纪录更新版.html》。原文件的评分函数、节气数据与操作界面均不改写，保存在此浏览器的独立本地存储中，下次打开可以直接使用。</p>
-          <button type="button" class="btn primary" id="baziEmptyImport">选择原版 HTML 文件</button>
-          <p class="bazi-small">支持电脑及手机文件选择；无需外部评分 API。不同设备首次打开需分别导入，或将原 HTML 放到网站根目录并命名为 <code>bazi-hepan-v5.html</code>。</p>
-        </div>
-        <iframe id="baziFrame" class="bazi-iframe bazi-hidden" title="婚恋与通用人际八字合盘 V5.0" sandbox="allow-scripts allow-same-origin allow-downloads allow-modals" referrerpolicy="no-referrer"></iframe>
-      </main>
-      <aside class="bazi-card bazi-side" aria-label="V5.0纪录对照板">
-        <h2>纪录对照板</h2>
-        <p class="bazi-small">以下是 V5.0 已观察到的最高分，世界范围记录不代表数学意义的全球上界。</p>
-        <h3>我的个人纪录</h3>
-        <div id="baziPersonalRecords"></div>
-        <h3>世界范围已发现纪录</h3>
-        <div id="baziWorldRecords"></div>
-        <div class="bazi-compare">
-          <b>本次与纪录的差距</b>
-          <p class="bazi-small" id="baziDetected">等候原版计算结果。无法自动识别时，可在下方输入原版显示的得分。</p>
-          <div class="bazi-scores">
-            <select id="baziCompareCategory" aria-label="比较纪录类别">
-              <option value="0">我的爱情</option>
-              <option value="1">年龄相近友情</option>
-              <option value="2">含长辈友情</option>
-              <option value="3">双人爱情纪录</option>
-              <option value="4">双人友情纪录</option>
-            </select>
-          </div>
-          <div class="bazi-score-input">
-            <input id="baziInputScore" type="number" step="0.001" min="0" max="100" placeholder="本次分数">
-            <button id="baziComputeDifference" type="button" class="btn">比较</button>
-          </div>
-          <div id="baziDiff" class="bazi-small" aria-live="polite"></div>
-        </div>
-        <p class="bazi-small" style="margin-top:12px">按照原工具以北京时间（UTC+8）处理日期；真太阳时与子时换日差异以原版提示为准。传统八字合盘属于文化娱乐性分析，分数不代表真实的关系质量。</p>
-      </aside>
-    </div>
+<header>
+  <h1 class="serif">素问 · 五行日历与八字合盘</h1>
+  <p>V5.2 · Jean Meeus 节气算法 · 真太阳时校正 · 本地离线存储</p>
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('calendar')">五行日历</button>
+    <button class="tab-btn" onclick="switchTab('synastry')">八字合盘 V5.2</button>
   </div>
-</section>
+</header>
 
-<div class="app">
-  <header class="top">
-    <div class="brand">
-      <div class="brand-row">
-        <h1>苏伊温德日历</h1>
-        <span class="version">V2.0</span>
+<div class="container">
+  <!-- ==================== TAB 1: 五行日历 ==================== -->
+  <section id="tab-calendar" class="panel active">
+    <div class="card">
+      <div class="card-title">
+        <span>个人命局偏好（用于日历五行生克打分）</span>
+        <span class="badge">自动保存</span>
       </div>
-      <p>生命如暗室，不妨我明写春诗</p>
-    </div>
-    <nav class="actions" aria-label="主导航">
-      <button class="btn action-btn action-learning" id="learningBtn" type="button"><span class="action-icon">▣</span><span>学习管理</span></button>
-      <button class="btn action-btn action-quick" id="v170QuickBtn" type="button"><span class="action-icon">＋</span><span>快速记录</span></button>
-      <button class="btn action-btn" id="todayBtn" type="button"><span class="action-icon">⌂</span><span>今天</span></button>
-      <button class="btn action-btn" id="reviewBtn" type="button"><span class="action-icon">↺</span><span>复盘</span></button>
-      <button class="btn action-btn action-cloud" id="cloudBtn" type="button" title="账号与云同步">
-        <i class="cloud-dot" id="cloudDot"></i>
-        <span>云同步</span>
-        <span class="cloud-label-sub" id="cloudText">仅本地</span>
-      </button>
-      <button class="btn action-btn" id="themeToggleBtn" type="button" title="切换深浅护眼主题" aria-label="切换深浅主题"><span id="themeToggleIcon">☾</span></button>
-      <div class="more-menu-wrap">
-        <button class="btn action-btn" id="moreMenuBtn" type="button" aria-expanded="false" aria-haspopup="menu" title="更多工具"><span>⋯ 更多</span></button>
-        <div class="more-menu-dropdown" id="moreMenuDropdown" role="menu">
-          <button class="btn more-menu-item" id="baziBtn" type="button" role="menuitem"><span class="action-icon">♡</span><span>八字合盘 V5.0</span></button>
-          <button class="btn more-menu-item" id="annivBtn" type="button" role="menuitem"><span class="action-icon">♥</span><span>纪念日管理</span></button>
-          <div class="more-menu-sep"></div>
-          <button class="btn more-menu-item" id="notifyBtn" type="button" role="menuitem"><span class="action-icon">🔔</span><span class="notify-label">开启提醒</span></button>
+      <div class="grid-2">
+        <div class="form-row">
+          <label>我的日主（天干）</label>
+          <select id="myDayMaster" onchange="saveProfileAndRenderCal()">
+            <option value="0">甲木（阳木）</option><option value="1">乙木（阴木）</option>
+            <option value="2">丙火（阳火）</option><option value="3">丁火（阴火）</option>
+            <option value="4">戊土（阳土）</option><option value="5">己土（阴土）</option>
+            <option value="6">庚金（阳金）</option><option value="7">辛金（阴金）</option>
+            <option value="8">壬水（阳水）</option><option value="9">癸水（阴水）</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <label>我的喜用五行（主喜用组合）</label>
+          <select id="myFavorable" onchange="saveProfileAndRenderCal()">
+            <option value="木,火">喜木火（调候/通明）</option>
+            <option value="火,土">喜火土</option>
+            <option value="土,金">喜土金</option>
+            <option value="金,水">喜金水</option>
+            <option value="水,木">喜水木</option>
+          </select>
         </div>
       </div>
-    </nav>
-  </header>
+    </div>
 
-  <div class="banner" id="notifyBanner">
-    <span>任务提醒会在网页打开时触发；开启浏览器通知后，到点将弹出提醒。</span>
-    <button class="btn sm" id="bannerNotify" type="button">开启通知</button>
-  </div>
+    <div class="card">
+      <div class="cal-header">
+        <div class="cal-nav">
+          <button class="btn btn-sub" onclick="changeMonth(-1)">‹ 上月</button>
+          <div id="calMonthLabel" class="cal-month-label serif"></div>
+          <button class="btn btn-sub" onclick="changeMonth(1)">下月 ›</button>
+        </div>
+        <button class="btn btn-sub" onclick="goToday()">回到今日</button>
+      </div>
+      <div class="cal-weekdays">
+        <div>日</div><div>一</div><div>二</div><div>三</div><div>四</div><div>五</div><div>六</div>
+      </div>
+      <div id="calGrid" class="cal-grid"></div>
+      <p class="hint">注：圆点颜色代表当日日干五行（绿木 / 红火 / 褐土 / 灰金 / 蓝水）；标“喜”为契合个人喜用神之日。</p>
+    </div>
 
-  <section class="panel stats-strip" aria-label="关键统计">
-    <div class="stat-cell">
-      <div class="stat-cell-left"><small>本月任务完成</small><b id="monthProgress">0 / 0</b></div>
-      <div class="hint" id="monthRate"></div>
-    </div>
-    <div class="stat-cell">
-      <div class="stat-cell-left"><small>下一个节气</small><b id="nextTerm">载入中…</b></div>
-    </div>
-    <div class="stat-cell">
-      <div class="stat-cell-left"><small>连续复盘</small><b id="streak">0 天</b></div>
-    </div>
-    <div class="stat-cell">
-      <div class="stat-cell-left"><small>今日待办</small><b id="todayTodo">0 项</b></div>
-      <div class="hint" id="todayHigh"></div>
-    </div>
+    <div id="calDetailCard" class="card"></div>
   </section>
 
-  <section class="goal-overviews-shell" id="goalOverviewsShell" aria-label="任务概览">
-    <div class="goal-overviews-compact-bar">
-      <span id="goalOverviewsBarText">本周任务 · 本月任务 · 期限事项（当前暂无待办）</span>
-      <div class="goal-overviews-bar-right">
-        <button class="btn sm" id="toggleGoalOverviewsBtn" type="button">展开概览</button>
+  <!-- ==================== TAB 2: 八字合盘 ==================== -->
+  <section id="tab-synastry" class="panel">
+    <div class="grid-2">
+      <!-- 甲方 -->
+      <div class="card">
+        <div class="card-title"><span>甲方信息</span><span class="badge">Person A</span></div>
+        <div class="form-row">
+          <label>称呼</label>
+          <input id="nameA" type="text" value="甲方" placeholder="输入称呼">
+        </div>
+        <div class="form-row">
+          <label>公历出生日期</label>
+          <input id="dateA" type="date" value="2006-11-18">
+        </div>
+        <div class="form-row">
+          <label>出生时间（北京时间）</label>
+          <div class="inline-row">
+            <input id="timeA" type="time" value="12:00">
+            <label class="checkbox-label"><input id="unkA" type="checkbox" onchange="toggleTime('A')">未知时辰</label>
+          </div>
+        </div>
+        <div class="form-row">
+          <label>出生地经度（东经，默认南京 118.78°）</label>
+          <input id="lonA" type="number" step="0.01" value="118.78">
+        </div>
+      </div>
+
+      <!-- 乙方 -->
+      <div class="card">
+        <div class="card-title"><span>乙方信息</span><span class="badge">Person B</span></div>
+        <div class="form-row">
+          <label>称呼</label>
+          <input id="nameB" type="text" value="乙方" placeholder="输入称呼">
+        </div>
+        <div class="form-row">
+          <label>公历出生日期</label>
+          <input id="dateB" type="date" value="2006-05-20">
+        </div>
+        <div class="form-row">
+          <label>出生时间（北京时间）</label>
+          <div class="inline-row">
+            <input id="timeB" type="time" value="14:30">
+            <label class="checkbox-label"><input id="unkB" type="checkbox" onchange="toggleTime('B')">未知时辰</label>
+          </div>
+        </div>
+        <div class="form-row">
+          <label>出生地经度（东经，默认北京 116.40°）</label>
+          <input id="lonB" type="number" step="0.01" value="116.40">
+        </div>
       </div>
     </div>
-    <div class="goal-overviews">
-      <article class="panel goal-overview week-overview">
-        <div class="overview-head">
-          <div>
-            <div class="overview-kicker" id="weekOverviewLabel">本周</div>
-            <h2><span class="overview-symbol">□</span> 本周任务</h2>
-          </div>
-          <strong class="overview-progress" id="weekOverviewProgress">0 / 0</strong>
-        </div>
-        <div class="overview-list" id="weekOverviewList"></div>
-        <button class="overview-link" id="jumpWeekGoals" type="button">查看 / 编辑本周任务 →</button>
-      </article>
-      <article class="panel goal-overview month-overview">
-        <div class="overview-head">
-          <div>
-            <div class="overview-kicker" id="monthOverviewLabel">本月</div>
-            <h2><span class="overview-symbol">◇</span> 本月任务</h2>
-          </div>
-          <strong class="overview-progress" id="monthOverviewProgress">0 / 0</strong>
-        </div>
-        <div class="overview-list" id="monthOverviewList"></div>
-        <button class="overview-link" id="jumpMonthGoals" type="button">查看 / 编辑本月任务 →</button>
-      </article>
-      <article class="panel goal-overview deadline-overview">
-        <div class="overview-head">
-          <div>
-            <div class="overview-kicker" id="deadlineOverviewLabel">近期截止</div>
-            <h2><span class="overview-symbol">⌛</span> 期限事项</h2>
-          </div>
-          <strong class="overview-progress" id="deadlineOverviewProgress">0 / 0</strong>
-        </div>
-        <div class="overview-list" id="deadlineOverviewList"></div>
-        <div style="display:flex;justify-content:space-between;align-items:center">
-          <button class="overview-link" id="jumpDeadlineGoals" type="button">查看 / 编辑期限事项 →</button>
-          <button class="overview-link" id="collapseGoalOverviewsBtn" type="button">收起</button>
-        </div>
-      </article>
+
+    <div class="card" style="padding: 12px;">
+      <button class="btn" onclick="runSynastry()">开始真太阳时排盘与五维合盘</button>
     </div>
-  </section>
 
-  <div class="layout">
-    <main class="panel calendar">
-      <div class="calhead">
-        <div class="nav">
-          <button class="btn sm" id="prevBtn" type="button" aria-label="上个月">‹</button>
-          <button class="btn sm" id="nextBtn" type="button" aria-label="下个月">›</button>
-        </div>
-        <div class="calendar-period">
-          <select id="yearSelect" class="year-select" aria-label="选择年份"></select>
-          <div class="title" id="monthTitle"></div>
-        </div>
-        <div class="calhead-right">
-          <button class="btn sm ghost" id="calTodayBtn" type="button">回今日</button>
-        </div>
+    <div id="synastryResult"></div>
+
+    <div class="card">
+      <div class="card-title">
+        <span>本地合盘记录</span>
+        <button class="btn btn-sub" onclick="clearHistory()">清空</button>
       </div>
-      <div class="week"><div>一</div><div>二</div><div>三</div><div>四</div><div>五</div><div>六</div><div>日</div></div>
-      <div class="grid" id="calendar"></div>
-      <div class="legend">
-        <span class="legend-item"><i class="pd high"></i>高优先级</span>
-        <span class="legend-item"><i class="pd medium"></i>中优先级</span>
-        <span class="legend-item"><i class="pd low"></i>低优先级</span>
-        <span>休 = 法定/调休休息</span>
-        <span>班 = 调休上班</span>
-      </div>
-    </main>
-
-    <aside class="panel side">
-      <div class="hero">
-        <div class="hero-title-row">
-          <b id="dateTitle"></b>
-          <span class="date-distance" id="dateDistance">今天</span>
-        </div>
-        <div class="hero-sub" id="dateSub"></div>
-      </div>
-
-      <div class="side-tabs" role="tablist" aria-label="日期面板视图">
-        <button class="side-tab-btn active" type="button" role="tab" data-side-tab="action">今日行动</button>
-        <button class="side-tab-btn" type="button" role="tab" data-side-tab="tasks">任务目标 <span class="side-tab-badge" id="sideTaskBadge"></span></button>
-        <button class="side-tab-btn" type="button" role="tab" data-side-tab="reflect">每日复盘 <span class="side-tab-badge" id="sideReflectBadge"></span></button>
-      </div>
-
-      <div class="side-scroll">
-        <div class="side-pane active" id="sidePaneAction">
-          <section class="section v160-command-section" id="v160TodayCommand">
-            <h3><span>现在做什么</span><span id="v160CommandStat"></span></h3>
-            <div id="v160TodayCommandBody"></div>
-          </section>
-
-          <section class="section" id="learningMiniSection">
-            <h3><span>学习快照</span><span id="learningMiniStat"></span></h3>
-            <div class="learning-mini-card" id="learningMini"></div>
-            <button class="btn learning-open-btn" id="openLearningFromSide" type="button">进入学习管理中心 →</button>
-          </section>
-
-          <section class="section schedule-section" id="scheduleSection">
-            <h3>
-              <span>每日课表</span>
-              <span class="schedule-head-actions">
-                <span id="scheduleStat"></span>
-                <button class="schedule-edit-btn" id="scheduleEditBtn" type="button">调整 / 导入</button>
-              </span>
-            </h3>
-            <div class="schedule-list" id="dailySchedule"></div>
-            <div class="schedule-rule-note" id="scheduleRuleNote"></div>
-          </section>
-        </div>
-
-        <div class="side-pane" id="sidePaneTasks">
-          <section class="section">
-            <h3><span>今日任务</span><span id="taskStat"></span></h3>
-            <div id="tasks"></div>
-            <div class="taskcomposer">
-              <div class="wide">
-                <input id="taskInput" type="text" name="task_text_v200" autocomplete="off" autocapitalize="sentences" data-lpignore="true" data-1p-ignore="true" data-bwignore="true" placeholder="例如：完成高数错题整理">
-                <button class="btn primary" id="addTask" type="button">添加</button>
-              </div>
-              <select id="priority" aria-label="任务优先级"><option value="medium">中优先</option><option value="high">高优先</option><option value="low">低优先</option></select>
-              <input id="reminder" type="time" title="提醒时间" aria-label="提醒时间">
-              <select id="repeat" aria-label="重复周期"><option value="none">不重复</option><option value="daily">每天</option><option value="weekly">每周</option><option value="monthly">每月</option></select>
-              <button class="btn ghost" id="clearComposer" type="button" title="清空输入">清空</button>
-              <div class="repeat-end-wrap" id="repeatEndWrap" hidden>
-                <label for="repeatEnd">重复截止（含当天）</label>
-                <input id="repeatEnd" type="date" aria-label="重复截止日期">
-              </div>
-            </div>
-          </section>
-
-          <section class="section" id="deadlineGoalsSection">
-            <h3><span>期限事项</span><span id="deadlineStat"></span></h3>
-            <div class="deadline-list" id="deadlineGoals"></div>
-            <div class="deadline-add-row">
-              <input class="deadline-text-input" id="deadlineInput" type="text" autocomplete="off" data-lpignore="true" placeholder="例如：学完高数一轮">
-              <input id="deadlineDate" type="date" aria-label="截止日期">
-              <select id="deadlinePriority" aria-label="期限事项优先级"><option value="medium">中优先</option><option value="high">高优先</option><option value="low">低优先</option></select>
-              <button class="btn" id="addDeadline" type="button" title="添加期限事项">＋</button>
-            </div>
-            <div class="deadline-help">截止日前自由安排进度；提前完成时勾选会自动记录提前天数。</div>
-          </section>
-
-          <section class="section" id="weekGoalsSection">
-            <h3><span>本周任务</span><span id="weekLabel"></span></h3>
-            <div id="weekGoals"></div>
-            <div class="goal-add-row">
-              <input id="weekInput" type="text" name="week_goal_text_v200" autocomplete="off" data-lpignore="true" placeholder="本周最重要的目标">
-              <select id="weekPriority" aria-label="本周任务优先级"><option value="medium">中优先</option><option value="high">高优先</option><option value="low">低优先</option></select>
-              <button class="btn" id="addWeek" type="button">＋</button>
-            </div>
-          </section>
-
-          <section class="section" id="monthGoalsSection">
-            <h3><span>本月任务</span><span id="monthLabel"></span></h3>
-            <div id="monthGoals"></div>
-            <div class="goal-add-row">
-              <input id="monthInput" type="text" name="month_goal_text_v200" autocomplete="off" data-lpignore="true" placeholder="这个月想完成什么？">
-              <select id="monthPriority" aria-label="本月任务优先级"><option value="medium">中优先</option><option value="high">高优先</option><option value="low">低优先</option></select>
-              <button class="btn" id="addMonth" type="button">＋</button>
-            </div>
-          </section>
-        </div>
-
-        <div class="side-pane" id="sidePaneReflect">
-          <section class="section reflect" id="reflectSection">
-            <h3><span>今日复盘</span><span id="saved"></span></h3>
-            <label for="q1">我今天做错了什么？</label>
-            <textarea id="q1" placeholder="诚实一点，但不用苛责自己。"></textarea>
-            <label for="q2">我今天做对了什么？</label>
-            <textarea id="q2" placeholder="把做对的事情也认真记下来。"></textarea>
-            <label for="q3">明天该怎么做得更好？</label>
-            <textarea id="q3" placeholder="写一个明天真正能执行的小改变。"></textarea>
-            <div class="reflect-actions">
-              <button class="btn reflect-confirm" id="completeReflection" type="button">完成今日复盘</button>
-              <span class="reflect-feedback" id="reflectionFeedback">填写内容会自动保存草稿。</span>
-            </div>
-          </section>
-        </div>
-      </div>
-    </aside>
-  </div>
-
-  <section class="anniv-late-section" aria-label="纪念日">
-    <div class="anniv-late-head">
-      <div><b>纪念日</b><small>低频温馨信息放在页面后部，保持首页清爽。</small></div>
-      <button class="btn sm" id="annivManageBtn" type="button">管理纪念日</button>
+      <div id="historyList"></div>
     </div>
-    <div class="annivs" id="annivCards"></div>
   </section>
 </div>
 
-<div class="modal" id="learningModal">
-  <div class="modalbox learning-modalbox">
-    <div class="learning-head">
-      <div>
-        <h3>学习管理 · 动态计划引擎</h3>
-        <div class="learning-sub">提前学就整体前移，临时忙就整体顺延；不制造过期焦虑，只维护顺序、进度与真实能力变化。</div>
-      </div>
-      <button class="x" id="closeLearning" type="button" aria-label="关闭">✕</button>
-    </div>
-    <div class="learning-banner" id="learningBanner"></div>
-    <div class="learning-overviews">
-      <article class="learning-overview">
-        <div class="learning-overview-head"><h4>英语</h4><span class="metric" id="learnEnglishMetric">0/40</span></div>
-        <div class="learning-progress"><i id="learnEnglishBar" style="width:0%"></i></div>
-        <div class="note" id="learnEnglishNote">词汇 + 技巧并行</div>
-      </article>
-      <article class="learning-overview">
-        <div class="learning-overview-head"><h4>财经综合</h4><span class="metric" id="learnFinanceMetric">0 / 80</span></div>
-        <div class="learning-progress"><i id="learnFinanceBar" style="width:0%"></i></div>
-        <div class="note" id="learnFinanceNote">会计优先闭环</div>
-      </article>
-      <article class="learning-overview">
-        <div class="learning-overview-head"><h4>高数</h4><span class="metric" id="learnMathMetric">0 / 48</span></div>
-        <div class="learning-progress"><i id="learnMathBar" style="width:0%"></i></div>
-        <div class="note" id="learnMathNote">机构 48 天计划</div>
-      </article>
-      <article class="learning-overview">
-        <div class="learning-overview-head"><h4>最近考试 / 考证</h4><span class="metric" id="learnCountdownMetric">—</span></div>
-        <div class="learning-progress"><i id="learnCountdownBar" style="width:0%"></i></div>
-        <div class="note" id="learnCountdownNote">暂无倒数日</div>
-      </article>
-      <article class="learning-overview">
-        <div class="learning-overview-head"><h4>本周有效专注</h4><span class="metric" id="learnStudyMetric">0 分钟</span></div>
-        <div class="learning-progress"><i id="learnStudyBar" style="width:0%"></i></div>
-        <div class="note" id="learnStudyNote">开始学习后自动累计</div>
-      </article>
-    </div>
+<script>
+/* ================= 基础历法与五行常量 ================= */
+const STEMS = ['甲','乙','丙','丁','戊','己','庚','辛','壬','癸'];
+const BRANCHES = ['子','丑','寅','卯','辰','巳','午','未','申','酉','戌','亥'];
+const STEM_EL = ['木','木','火','火','土','土','金','金','水','水'];
+const BRANCH_EL = ['水','土','木','木','土','火','火','土','金','金','土','水'];
+const ELEMENTS = ['木','火','土','金','水'];
 
-    <div class="learning-nav-groups" role="tablist" aria-label="学习管理栏目分组">
-      <div class="lnav-group">
-        <span class="lnav-label">执行</span>
-        <button class="btn active lt-today" type="button" data-learning-tab="today"><span class="lt-icon">☀</span><span>今日学习</span></button>
-        <button class="btn lt-timer" type="button" data-learning-tab="timer"><span class="lt-icon">◷</span><span>计时</span></button>
-        <button class="btn lt-review" type="button" data-learning-tab="review"><span class="lt-icon">↻</span><span>复习</span></button>
-        <button class="btn lt-rhythm" type="button" data-learning-tab="rhythm"><span class="lt-icon">≈</span><span>节奏</span></button>
-      </div>
-      <div class="lnav-group">
-        <span class="lnav-label">三科</span>
-        <button class="btn lt-english" type="button" data-learning-tab="english"><span class="lt-icon">Aa</span><span>英语</span></button>
-        <button class="btn lt-finance" type="button" data-learning-tab="finance"><span class="lt-icon">¥</span><span>财经</span></button>
-        <button class="btn lt-math" type="button" data-learning-tab="math"><span class="lt-icon">∑</span><span>高数</span></button>
-      </div>
-      <div class="lnav-group">
-        <span class="lnav-label">复盘</span>
-        <button class="btn lt-stats" type="button" data-learning-tab="stats"><span class="lt-icon">▥</span><span>统计</span></button>
-        <button class="btn lt-quality" type="button" data-learning-tab="quality"><span class="lt-icon">◎</span><span>质量</span></button>
-        <button class="btn lt-reports" type="button" data-learning-tab="reports"><span class="lt-icon">✦</span><span>报告</span></button>
-        <button class="btn lt-search" type="button" data-learning-tab="search"><span class="lt-icon">⌕</span><span>搜索</span></button>
-      </div>
-      <div class="lnav-group">
-        <span class="lnav-label">生活</span>
-        <button class="btn lt-sleep" type="button" data-learning-tab="sleep"><span class="lt-icon">☾</span><span>睡眠</span></button>
-        <button class="btn lt-policy" type="button" data-learning-tab="policy"><span class="lt-icon">⚖</span><span>制度</span></button>
-        <button class="btn lt-life" type="button" data-learning-tab="life"><span class="lt-icon">♡</span><span>生活</span></button>
-        <button class="btn lt-projects" type="button" data-learning-tab="projects"><span class="lt-icon">▤</span><span>项目</span></button>
-      </div>
-      <div class="lnav-group">
-        <span class="lnav-label">规划</span>
-        <button class="btn lt-countdowns" type="button" data-learning-tab="countdowns"><span class="lt-icon">⌛</span><span>倒数日</span></button>
-        <button class="btn lt-roadmap" type="button" data-learning-tab="roadmap"><span class="lt-icon">◇</span><span>路线图</span></button>
-        <button class="btn lt-schedule" type="button" data-learning-tab="schedule"><span class="lt-icon">⇄</span><span>调度</span></button>
-      </div>
-    </div>
+// 地支藏干（主气、中气、余气权重）
+const HIDDEN_STEMS = [
+  [[9,1.0]],                     // 子: 癸
+  [[5,0.6],[9,0.25],[7,0.15]],   // 丑: 己癸辛
+  [[0,0.6],[2,0.25],[4,0.15]],   // 寅: 甲丙戊
+  [[1,1.0]],                     // 卯: 乙
+  [[4,0.6],[1,0.25],[9,0.15]],   // 辰: 戊乙癸
+  [[2,0.6],[6,0.25],[4,0.15]],   // 巳: 丙庚戊
+  [[3,0.7],[5,0.3]],             // 午: 丁己
+  [[5,0.6],[3,0.25],[1,0.15]],   // 未: 己丁乙
+  [[6,0.6],[8,0.25],[4,0.15]],   // 申: 庚壬戊
+  [[7,1.0]],                     // 酉: 辛
+  [[4,0.6],[7,0.25],[3,0.15]],   // 戌: 戊辛丁
+  [[8,0.7],[0,0.3]]              // 亥: 壬甲
+];
 
-    <div class="learning-panel" id="learningPanel"></div>
-  </div>
-</div>
+const SOLAR_TERMS = [
+  '春分','清明','谷雨','立夏','小满','芒种','夏至','小暑','大暑','立秋','处暑','白露',
+  '秋分','寒露','霜降','立冬','小雪','大雪','冬至','小寒','大寒','立春','雨水','惊蛰'
+];
 
-<div class="modal" id="cloudModal">
-  <div class="modalbox" style="width:min(640px,100%)">
-    <div style="display:flex;justify-content:space-between;align-items:center;gap:10px">
-      <h3 style="margin:0">账号与云同步</h3>
-      <button class="x" id="closeCloud" type="button" aria-label="关闭">✕</button>
-    </div>
-    <div class="warning">云同步是可选功能。Supabase URL 与 anon / publishable key 可放在浏览器端，请勿填写 service_role key。开启 RLS 后，每个账号仅能读写自己的数据。</div>
-    <div class="settings-grid" style="margin-top:12px">
-      <div class="full"><label class="small">Supabase Project URL</label><input id="sbUrl" type="text" placeholder="https://xxxx.supabase.co"></div>
-      <div class="full"><label class="small">Supabase anon / publishable key</label><input id="sbKey" type="text" placeholder="eyJ..."></div>
-      <div><label class="small">邮箱</label><input id="sbEmail" type="email" name="email" autocomplete="username" placeholder="you@example.com"></div>
-      <div><label class="small">密码</label><input id="sbPassword" type="password" name="password" autocomplete="current-password" placeholder="至少 6 位"></div>
-    </div>
-    <div class="sync-actions">
-      <button class="btn" id="saveCloudConfig" type="button">保存配置</button>
-      <button class="btn" id="signUpBtn" type="button">注册</button>
-      <button class="btn primary" id="signInBtn" type="button">登录</button>
-      <button class="btn" id="signOutBtn" type="button">退出</button>
-    </div>
-    <div class="account-card">
-      <b id="accountTitle">未登录</b>
-      <div class="small" id="accountInfo">当前所有数据只保存在本浏览器。</div>
-      <div class="sync-meta-grid">
-        <div class="sync-meta-item"><small>本地最后修改</small><b id="localUpdatedLabel">—</b></div>
-        <div class="sync-meta-item"><small>云端最后修改</small><b id="cloudUpdatedLabel">—</b></div>
-        <div class="sync-meta-item"><small>最近成功同步</small><b id="lastSyncedLabel">—</b></div>
-        <div class="sync-meta-item"><small>同步状态</small><b id="syncStateLabel">未连接</b></div>
-      </div>
-      <div class="sync-conflict" id="syncConflictBox">检测到本地和云端都发生了修改。为避免覆盖，自动同步已暂停。请先比较时间，再选择上传本地数据或下载云端数据。</div>
-      <div class="sync-actions">
-        <button class="btn" id="uploadCloud" type="button">上传本地数据</button>
-        <button class="btn" id="downloadCloud" type="button">下载云端数据</button>
-      </div>
-    </div>
+/* ================= Jean Meeus 太阳黄经 & 真太阳时 ================= */
+function toJulianDay(year, month, day, hourUTC) {
+  let y = year, m = month;
+  if (m <= 2) { y -= 1; m += 12; }
+  const A = Math.floor(y / 100);
+  const B = 2 - A + Math.floor(A / 4);
+  return Math.floor(365.25 * (y + 4716)) + Math.floor(30.6001 * (m + 1)) + day + hourUTC / 24 + B - 1524.5;
+}
 
-    <details class="backup-box" open>
-      <summary>本地备份与恢复</summary>
-      <div class="backup-inner">
-        <p>V2.0 最多保留 7 份浏览器内安全快照，并在导入备份、下载云端前自动留档。</p>
-        <div class="sync-actions">
-          <button class="btn" id="exportBtn" type="button">导出当前 JSON</button>
-          <button class="btn" id="v160CreateBackup" type="button">创建内部快照</button>
-          <button class="btn" id="importBtn" type="button">从 JSON 恢复</button>
-          <input class="file" id="importFile" type="file" accept="application/json">
+function getSunLongitude(jd) {
+  const T = (jd - 2451545.0) / 36525.0;
+  let L0 = (280.46646 + 36000.76983 * T + 0.0003032 * T * T) % 360;
+  if (L0 < 0) L0 += 360;
+  let M = (357.52911 + 35999.05029 * T - 0.0001537 * T * T) % 360;
+  if (M < 0) M += 360;
+  const Mrad = M * Math.PI / 180;
+  const C = (1.914602 - 0.004817 * T - 0.000014 * T * T) * Math.sin(Mrad)
+          + (0.019993 - 0.000101 * T) * Math.sin(2 * Mrad)
+          + 0.000289 * Math.sin(3 * Mrad);
+  const trueLon = L0 + C;
+  const omega = (125.04 - 1934.136 * T) * Math.PI / 180;
+  let lambda = (trueLon - 0.00569 - 0.00478 * Math.sin(omega)) % 360;
+  if (lambda < 0) lambda += 360;
+  return lambda;
+}
+
+function getTrueSolarOffsetMin(year, month, day, lon) {
+  const start = Date.UTC(year, 0, 0);
+  const cur = Date.UTC(year, month - 1, day);
+  const dayOfYear = Math.floor((cur - start) / 86400000);
+  const B = 2 * Math.PI * (dayOfYear - 81) / 365;
+  const eot = 9.87 * Math.sin(2 * B) - 7.53 * Math.cos(B) - 1.5 * Math.sin(B);
+  return (lon - 120) * 4 + eot;
+}
+
+function calcBazi(year, month, day, hour, minute, lon = 120, fixedHourBranch = null) {
+  const offsetMin = getTrueSolarOffsetMin(year, month, day, lon);
+  const baseMs = Date.UTC(year, month - 1, day, hour, minute);
+  const tstMs = baseMs + Math.round(offsetMin * 60000);
+  const tst = new Date(tstMs);
+
+  const ty = tst.getUTCFullYear();
+  const tm = tst.getUTCMonth() + 1;
+  const td = tst.getUTCDate();
+  const th = tst.getUTCHours();
+  const tmin = tst.getUTCMinutes();
+
+  const utcHour = (hour + minute / 60) - 8;
+  const jd = toJulianDay(year, month, day, utcHour);
+  const sunLon = getSunLongitude(jd);
+
+  // 1. 年柱（立春 315° 换年）
+  let baziYear = year;
+  if (month <= 2 && sunLon < 315 && sunLon > 260) baziYear = year - 1;
+  if (month === 12 && sunLon >= 315) baziYear = year + 1;
+  const yStem = ((baziYear - 4) % 10 + 10) % 10;
+  const yBranch = ((baziYear - 4) % 12 + 12) % 12;
+
+  // 2. 月柱（12节气换月，立春315°起寅月）
+  const shifted = (sunLon - 315 + 360) % 360;
+  const monthIdx = Math.floor(shifted / 30);
+  const mBranch = (monthIdx + 2) % 12;
+  const mStem = ((yStem % 5) * 2 + 2 + monthIdx) % 10;
+
+  // 3. 日柱（2000-01-01 为 戊午=54；23:00晚子时换日柱）
+  let dayShift = (fixedHourBranch === null && th >= 23) ? 1 : 0;
+  const daysSince2000 = Math.round((Date.UTC(ty, tm - 1, td) - Date.UTC(2000, 0, 1)) / 86400000) + dayShift;
+  const dIdx = ((54 + daysSince2000) % 60 + 60) % 60;
+  const dStem = dIdx % 10;
+  const dBranch = dIdx % 12;
+
+  // 4. 时柱（五鼠遁）
+  const hBranch = fixedHourBranch !== null ? fixedHourBranch : Math.floor(((th + 1) % 24) / 2);
+  const hStem = ((dStem % 5) * 2 + hBranch) % 10;
+
+  // 五行力量统计（月令加权 1.8，日支加权 1.2）
+  const scores = { '木':0, '火':0, '土':0, '金':0, '水':0 };
+  const sArr = [yStem, mStem, dStem, hStem];
+  const bArr = [yBranch, mBranch, dBranch, hBranch];
+  const bWeights = [1.0, 1.8, 1.2, 1.0];
+  sArr.forEach(s => { scores[STEM_EL[s]] += 1.0; });
+  bArr.forEach((b, idx) => {
+    HIDDEN_STEMS[b].forEach(([hs, w]) => {
+      scores[STEM_EL[hs]] += w * bWeights[idx];
+    });
+  });
+  const total = Object.values(scores).reduce((a, b) => a + b, 0);
+  const pct = {};
+  ELEMENTS.forEach(e => pct[e] = +(scores[e] / total * 100).toFixed(1));
+
+  const termIdx = Math.floor(sunLon / 15) % 24;
+
+  return {
+    pillars: [
+      { label:'年柱', s:yStem, b:yBranch },
+      { label:'月柱', s:mStem, b:mBranch },
+      { label:'日柱', s:dStem, b:dBranch },
+      { label:'时柱', s:hStem, b:hBranch }
+    ],
+    yStem, yBranch, mStem, mBranch, dStem, dBranch, hStem, hBranch,
+    pct, sunLon, termName: SOLAR_TERMS[termIdx],
+    tstStr: `${String(th).padStart(2,'0')}:${String(tmin).padStart(2,'0')}`,
+    offsetMin: Math.round(offsetMin)
+  };
+}
+
+function getTenGod(meStem, targetStem) {
+  const meEl = Math.floor(meStem / 2);
+  const tEl = Math.floor(targetStem / 2);
+  const samePol = (meStem % 2) === (targetStem % 2);
+  const diff = (tEl - meEl + 5) % 5;
+  const map = [
+    ['比肩','劫财'],
+    ['食神','伤官'],
+    ['偏财','正财'],
+    ['七杀','正官'],
+    ['偏印','正印']
+  ];
+  return map[diff][samePol ? 0 : 1];
+}
+
+/* ================= 五行日历逻辑 ================= */
+let calYear = new Date().getFullYear();
+let calMonth = new Date().getMonth() + 1;
+let selectedDateStr = formatDate(new Date());
+
+function formatDate(d) {
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+
+function loadProfile() {
+  const saved = JSON.parse(localStorage.getItem('suwen_profile') || '{}');
+  if (saved.dayMaster !== undefined) document.getElementById('myDayMaster').value = saved.dayMaster;
+  if (saved.favorable) document.getElementById('myFavorable').value = saved.favorable;
+}
+
+function saveProfileAndRenderCal() {
+  localStorage.setItem('suwen_profile', JSON.stringify({
+    dayMaster: document.getElementById('myDayMaster').value,
+    favorable: document.getElementById('myFavorable').value
+  }));
+  renderCalendar();
+}
+
+function changeMonth(delta) {
+  calMonth += delta;
+  if (calMonth > 12) { calMonth = 1; calYear++; }
+  if (calMonth < 1) { calMonth = 12; calYear--; }
+  renderCalendar();
+}
+
+function goToday() {
+  const now = new Date();
+  calYear = now.getFullYear();
+  calMonth = now.getMonth() + 1;
+  selectedDateStr = formatDate(now);
+  renderCalendar();
+}
+
+function renderCalendar() {
+  document.getElementById('calMonthLabel').textContent = `${calYear}年 ${calMonth}月`;
+  const grid = document.getElementById('calGrid');
+  grid.innerHTML = '';
+
+  const firstDay = new Date(calYear, calMonth - 1, 1);
+  const startWeek = firstDay.getDay();
+  const daysInMonth = new Date(calYear, calMonth, 0).getDate();
+  const prevMonthDays = new Date(calYear, calMonth - 1, 0).getDate();
+  const todayStr = formatDate(new Date());
+  const favs = document.getElementById('myFavorable').value.split(',');
+
+  const totalCells = Math.ceil((startWeek + daysInMonth) / 7) * 7;
+  for (let i = 0; i < totalCells; i++) {
+    let y = calYear, m = calMonth, d, isOther = false;
+    if (i < startWeek) {
+      d = prevMonthDays - startWeek + i + 1;
+      m -= 1; if (m < 1) { m = 12; y -= 1; }
+      isOther = true;
+    } else if (i >= startWeek + daysInMonth) {
+      d = i - startWeek - daysInMonth + 1;
+      m += 1; if (m > 12) { m = 1; y += 1; }
+      isOther = true;
+    } else {
+      d = i - startWeek + 1;
+    }
+    const ds = `${y}-${String(m).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const bz = calcBazi(y, m, d, 12, 0, 120);
+    const el = STEM_EL[bz.dStem];
+    const isFav = favs.includes(el) || favs.includes(BRANCH_EL[bz.dBranch]);
+
+    const cell = document.createElement('div');
+    cell.className = 'cal-cell'
+      + (isOther ? ' other-month' : '')
+      + (ds === todayStr ? ' today' : '')
+      + (ds === selectedDateStr ? ' selected' : '');
+    cell.innerHTML = `
+      <div class="cal-day-num">${d}</div>
+      <div class="cal-gz el-${el}">${STEMS[bz.dStem]}${BRANCHES[bz.dBranch]}</div>
+      <div class="cal-dot bg-${el}"></div>
+      ${isFav ? '<div class="cal-tag">喜</div>' : '<div class="cal-tag">&nbsp;</div>'}
+    `;
+    cell.onclick = () => {
+      selectedDateStr = ds;
+      if (isOther) { calYear = y; calMonth = m; }
+      renderCalendar();
+    };
+    grid.appendChild(cell);
+  }
+  renderCalDetail();
+}
+
+function renderCalDetail() {
+  const [y, m, d] = selectedDateStr.split('-').map(Number);
+  const bz = calcBazi(y, m, d, 12, 0, 120);
+  const myStem = Number(document.getElementById('myDayMaster').value);
+  const favs = document.getElementById('myFavorable').value.split(',');
+  const tg = getTenGod(myStem, bz.dStem);
+  const dayEl = STEM_EL[bz.dStem];
+  const branchEl = BRANCH_EL[bz.dBranch];
+  const matchCount = (favs.includes(dayEl) ? 1 : 0) + (favs.includes(branchEl) ? 1 : 0);
+
+  const energyTip = matchCount === 2
+    ? '干支双喜用：当日五行气场与你高度契合，适合推进重要决定、深度学习或社交。'
+    : matchCount === 1
+    ? '半喜用之日：能量平稳温和，适合按部就班完成日常计划与复盘。'
+    : '非喜用之日：外界耗能偏高，宜静守、蓄力、减少无谓内耗。';
+
+  const barsHtml = ELEMENTS.map(e => `
+    <div class="wx-bar-row">
+      <span class="el-${e}" style="width:24px;font-weight:700">${e}</span>
+      <div class="wx-bar-track"><div class="wx-bar-fill bg-${e}" style="width:${bz.pct[e]}%"></div></div>
+      <span style="width:42px;text-align:right;color:var(--muted)">${bz.pct[e]}%</span>
+    </div>
+  `).join('');
+
+  document.getElementById('calDetailCard').innerHTML = `
+    <div class="card-title">
+      <span>${y}年${m}月${d}日 · 节气【${bz.termName}】</span>
+      <span class="badge">流日十神：${tg}</span>
+    </div>
+    <div class="pillars">
+      ${bz.pillars.slice(0,3).map(p => `
+        <div class="pillar-box">
+          <div class="pillar-label">${p.label}</div>
+          <div class="pillar-gz serif">
+            <span class="el-${STEM_EL[p.s]}">${STEMS[p.s]}</span><span class="el-${BRANCH_EL[p.b]}">${BRANCHES[p.b]}</span>
+          </div>
+          <div class="pillar-sub">${STEM_EL[p.s]}${BRANCH_EL[p.b]}</div>
         </div>
-        <div id="v160BackupHistory" class="v160-backup-history"></div>
-      </div>
-    </details>
-
-    <details class="backup-box">
-      <summary>系统与同步诊断</summary>
-      <div class="backup-inner">
-        <p>只读检查：本地/云端记录数量、同步时间、Service Worker 缓存与浏览器存储占用。</p>
-        <div class="sync-actions"><button class="btn primary" id="v160RunDiagnostics" type="button">运行诊断</button></div>
-        <div id="v160Diagnostics" class="v160-diagnostics"></div>
-      </div>
-    </details>
-
-    <details class="backup-box">
-      <summary>同步差异预览</summary>
-      <div class="backup-inner">
-        <p>学习计时、睡眠、学习质量、项目和生活记录支持按唯一 ID / 更新时间自动安全合并；普通任务与日历结构由你决定以哪端为准。</p>
-        <div class="sync-actions">
-          <button class="btn primary" id="v170CompareCloud" type="button">比较本地与云端</button>
-          <button class="btn" id="v170UndoBtn" type="button">恢复最近快照</button>
+      `).join('')}
+      <div class="pillar-box">
+        <div class="pillar-label">当日契合</div>
+        <div class="pillar-gz serif" style="color:${matchCount===2?'var(--accent)':matchCount===1?'var(--jade)':'var(--muted)'}">
+          ${matchCount===2?'上吉':matchCount===1?'中平':'宜静'}
         </div>
-        <div id="v170CloudCompare" class="v170-sync-preview"></div>
+        <div class="pillar-sub">${tg}主事</div>
       </div>
-    </details>
-  </div>
-</div>
-
-<div class="modal" id="v170QuickModal">
-  <div class="modalbox" style="width:min(720px,100%)">
-    <div style="display:flex;justify-content:space-between;align-items:center;gap:10px">
-      <div><h3 style="margin:0">快速记录</h3><div class="small" style="margin-top:3px">少点几下，马上开始。这里不会给休息和生活打分。</div></div>
-      <button class="x" id="v170CloseQuick" type="button" aria-label="关闭">✕</button>
     </div>
-    <div id="v170QuickBody" style="margin-top:12px"></div>
-  </div>
-</div>
+    <p style="font-size:13px;margin:10px 0;color:var(--ink)">${energyTip}</p>
+    <div class="wx-bars">${barsHtml}</div>
+  `;
+}
 
-<div class="modal" id="reviewModal">
-  <div class="modalbox" style="width:min(920px,100%)">
-    <div style="display:flex;justify-content:space-between;align-items:center;gap:10px">
-      <h3 style="margin:0">复盘中心</h3>
-      <button class="x" id="closeReview" type="button" aria-label="关闭">✕</button>
+/* ================= 八字合盘五维评分引擎 ================= */
+const STEM_COMBINE = [[0,5],[1,6],[2,7],[3,8],[4,9]];
+const BRANCH_SIX_COMBINE = [[0,1],[2,11],[3,10],[4,9],[5,8],[6,7]];
+const BRANCH_CLASH = [[0,6],[1,7],[2,8],[3,9],[4,10],[5,11]];
+const BRANCH_HARM = [[0,7],[1,6],[2,5],[3,4],[8,11],[9,10]];
+const BRANCH_TRINE = [[8,0,4],[11,3,7],[2,6,10],[5,9,1]];
+
+function hasPair(list, a, b) {
+  return list.some(([x, y]) => (x === a && y === b) || (x === b && y === a));
+}
+function sameTrine(a, b) {
+  return a !== b && BRANCH_TRINE.some(g => g.includes(a) && g.includes(b));
+}
+function elRelation(e1, e2) {
+  const i1 = ELEMENTS.indexOf(e1), i2 = ELEMENTS.indexOf(e2);
+  if (i1 === i2) return '比和';
+  if ((i1 + 1) % 5 === i2 || (i2 + 1) % 5 === i1) return '相生';
+  return '相克';
+}
+
+function evaluatePair(bzA, bzB) {
+  let s1 = 72, d1 = '';
+  const elA = STEM_EL[bzA.dStem], elB = STEM_EL[bzB.dStem];
+  if (hasPair(STEM_COMBINE, bzA.dStem, bzB.dStem)) {
+    s1 = 94; d1 = `${STEMS[bzA.dStem]}${STEMS[bzB.dStem]}天干五合，天生具备强吸引力与默契底色。`;
+  } else {
+    const rel = elRelation(elA, elB);
+    if (rel === '相生') { s1 = 84; d1 = `日主${elA}与${elB}相生，相处自然顺畅，一方易给予另一方滋养。`; }
+    else if (rel === '比和') { s1 = 78; d1 = `日主同属${elA}，三观底色相近，像朋友一样自在，需注意固执碰撞。`; }
+    else { s1 = 62; d1 = `日主${elA}与${elB}相克，初期张力强，长久相处需要留出边界与磨合空间。`; }
+  }
+
+  let s2 = 74, d2 = '';
+  const bA = bzA.dBranch, bB = bzB.dBranch;
+  if (hasPair(BRANCH_SIX_COMBINE, bA, bB)) {
+    s2 = 95; d2 = `夫妻宫${BRANCHES[bA]}${BRANCHES[bB]}六合，生活习惯与亲密感高度粘合。`;
+  } else if (sameTrine(bA, bB)) {
+    s2 = 88; d2 = `夫妻宫${BRANCHES[bA]}${BRANCHES[bB]}半三合，步调一致，遇事容易拧成一股绳。`;
+  } else if (hasPair(BRANCH_CLASH, bA, bB)) {
+    s2 = 48; d2 = `夫妻宫${BRANCHES[bA]}${BRANCHES[bB]}六冲，生活节奏或情绪表达差异明显，忌冷战硬碰。`;
+  } else if (hasPair(BRANCH_HARM, bA, bB)) {
+    s2 = 56; d2 = `夫妻宫${BRANCHES[bA]}${BRANCHES[bB]}相害，易在细节琐事上产生误解，沟通宜直接摊开。`;
+  } else if (bA === bB) {
+    s2 = 76; d2 = `夫妻宫同为${BRANCHES[bA]}，生活习惯高度一致，默契好但略缺新鲜互补。`;
+  } else {
+    d2 = `夫妻宫${BRANCHES[bA]}与${BRANCHES[bB]}无明显合冲，关系平稳，取决于后天经营。`;
+  }
+
+  let compBonus = 0, compDetails = [];
+  ELEMENTS.forEach(e => {
+    const a = bzA.pct[e], b = bzB.pct[e];
+    if ((a < 14 && b > 22) || (b < 14 && a > 22)) {
+      compBonus += 12;
+      compDetails.push(e);
+    } else if (Math.abs(a - b) > 15) {
+      compBonus += 5;
+    }
+  });
+  let s3 = Math.min(96, Math.round(62 + compBonus));
+  let d3 = compDetails.length
+    ? `双方在【${compDetails.join('、')}】五行上形成明显互补，能平衡彼此的能量短板。`
+    : '双方五行分布结构较为接近，共鸣度高，但能量互补性相对平和。';
+
+  let s4 = 75, d4 = '';
+  const mA = bzA.mBranch, mB = bzB.mBranch;
+  if (hasPair(BRANCH_SIX_COMBINE, mA, mB) || sameTrine(mA, mB)) {
+    s4 = 89; d4 = `月令${BRANCHES[mA]}与${BRANCHES[mB]}相合，处事气场与现实节奏合拍。`;
+  } else if (hasPair(BRANCH_CLASH, mA, mB)) {
+    const coldWarm = ([11,0,1].includes(mA) && [5,6,7].includes(mB)) || ([11,0,1].includes(mB) && [5,6,7].includes(mA));
+    if (coldWarm) {
+      s4 = 78; d4 = `月令冬夏对冲，性格一冷一热，磨合好反而形成极佳的寒暖调候。`;
+    } else {
+      s4 = 58; d4 = `月令${BRANCHES[mA]}${BRANCHES[mB]}相冲，面对外部压力时的应激方式不同。`;
+    }
+  } else {
+    d4 = `月令气场平和（${BRANCHES[mA]}月与${BRANCHES[mB]}月），相处节奏舒适自然。`;
+  }
+
+  let s5 = 74, d5 = '';
+  if (hasPair(BRANCH_SIX_COMBINE, bzA.yBranch, bzB.yBranch) || sameTrine(bzA.yBranch, bzB.yBranch)) {
+    s5 = 88; d5 = `年支${BRANCHES[bzA.yBranch]}${BRANCHES[bzB.yBranch]}相合，原生背景与底层价值观契合度高。`;
+  } else if (hasPair(BRANCH_CLASH, bzA.yBranch, bzB.yBranch)) {
+    s5 = 56; d5 = `年支${BRANCHES[bzA.yBranch]}${BRANCHES[bzB.yBranch]}相冲，家庭观念或成长环境差异较大。`;
+  } else {
+    d5 = `年柱根基平稳，无明显代际或背景冲突。`;
+  }
+
+  const total = Math.round(s1 * 0.25 + s2 * 0.25 + s3 * 0.22 + s4 * 0.16 + s5 * 0.12);
+  return {
+    total,
+    dims: [
+      { name:'日主契合', score:s1, desc:d1 },
+      { name:'夫妻宫', score:s2, desc:d2 },
+      { name:'五行互补', score:s3, desc:d3 },
+      { name:'月令气场', score:s4, desc:d4 },
+      { name:'年柱根基', score:s5, desc:d5 }
+    ]
+  };
+}
+
+function toggleTime(who) {
+  const unk = document.getElementById('unk' + who).checked;
+  document.getElementById('time' + who).disabled = unk;
+}
+
+function buildRadarSVG(dims, minDims = null, maxDims = null) {
+  const cx = 140, cy = 135, r = 92;
+  const angles = dims.map((_, i) => -Math.PI / 2 + i * 2 * Math.PI / 5);
+  const pt = (val, i) => {
+    const rad = r * (val / 100);
+    return `${(cx + rad * Math.cos(angles[i])).toFixed(1)},${(cy + rad * Math.sin(angles[i])).toFixed(1)}`;
+  };
+
+  let gridSvg = '';
+  [25, 50, 75, 100].forEach(level => {
+    const pts = angles.map((_, i) => pt(level, i)).join(' ');
+    gridSvg += `<polygon points="${pts}" fill="none" stroke="#DDD3C0" stroke-width="1"/>`;
+  });
+  angles.forEach((_, i) => {
+    const [x, y] = pt(100, i).split(',');
+    gridSvg += `<line x1="${cx}" y1="${cy}" x2="${x}" y2="${y}" stroke="#DDD3C0" stroke-width="1"/>`;
+    const [lx, ly] = pt(118, i).split(',');
+    gridSvg += `<text x="${lx}" y="${ly}" text-anchor="middle" dominant-baseline="middle" font-size="11" fill="#5C534B" font-weight="600">${dims[i].name}</text>`;
+  });
+
+  const mainPts = dims.map((d, i) => pt(d.score, i)).join(' ');
+  let rangeSvg = '';
+  if (minDims && maxDims) {
+    const maxPts = maxDims.map((v, i) => pt(v, i)).join(' ');
+    rangeSvg = `<polygon points="${maxPts}" fill="rgba(54,104,89,0.12)" stroke="#366859" stroke-dasharray="4 3" stroke-width="1.5"/>`;
+  }
+
+  return `
+    <svg width="280" height="270" viewBox="0 0 280 270">
+      ${gridSvg}
+      ${rangeSvg}
+      <polygon points="${mainPts}" fill="rgba(166,52,41,0.22)" stroke="#A63429" stroke-width="2"/>
+      ${dims.map((d, i) => {
+        const [x, y] = pt(d.score, i).split(',');
+        return `<circle cx="${x}" cy="${y}" r="3.5" fill="#A63429"/>`;
+      }).join('')}
+    </svg>
+  `;
+}
+
+function renderPillarMini(name, bz, isUnknownHour) {
+  return `
+    <div style="margin-bottom:10px;">
+      <div style="font-size:13px;font-weight:700;margin-bottom:4px;">
+        ${name} <span style="font-weight:400;font-size:11px;color:var(--muted)">
+        ${isUnknownHour ? '（时辰未知 · 仅排三柱）' : `（真太阳时 ${bz.tstStr}，校正 ${bz.offsetMin >= 0 ? '+' : ''}${bz.offsetMin}分）`}
+        </span>
+      </div>
+      <div class="pillars">
+        ${bz.pillars.map((p, idx) => `
+          <div class="pillar-box">
+            <div class="pillar-label">${p.label}</div>
+            <div class="pillar-gz serif">
+              ${idx === 3 && isUnknownHour ? '<span style="color:var(--muted)">??</span>' :
+                `<span class="el-${STEM_EL[p.s]}">${STEMS[p.s]}</span><span class="el-${BRANCH_EL[p.b]}">${BRANCHES[p.b]}</span>`}
+            </div>
+            <div class="pillar-sub">${idx === 3 && isUnknownHour ? '遍历12时' : STEM_EL[p.s] + BRANCH_EL[p.b]}</div>
+          </div>
+        `).join('')}
+      </div>
     </div>
-    <div class="review-tabs" style="margin-top:12px">
-      <button class="btn active" id="weeklyTab" type="button">本周复盘</button>
-      <button class="btn" id="monthlyTab" type="button">本月复盘</button>
+  `;
+}
+
+function runSynastry(saveToHistory = true) {
+  const nameA = document.getElementById('nameA').value.trim() || '甲方';
+  const nameB = document.getElementById('nameB').value.trim() || '乙方';
+  const dateA = document.getElementById('dateA').value;
+  const dateB = document.getElementById('dateB').value;
+  const timeA = document.getElementById('timeA').value || '12:00';
+  const timeB = document.getElementById('timeB').value || '12:00';
+  const unkA = document.getElementById('unkA').checked;
+  const unkB = document.getElementById('unkB').checked;
+  const lonA = parseFloat(document.getElementById('lonA').value) || 120;
+  const lonB = parseFloat(document.getElementById('lonB').value) || 120;
+
+  if (!dateA || !dateB) return alert('请完整填写双方出生日期');
+  const [yA, mA, dA] = dateA.split('-').map(Number);
+  const [hA, minA] = timeA.split(':').map(Number);
+  const [yB, mB, dB] = dateB.split('-').map(Number);
+  const [hB, minB] = timeB.split(':').map(Number);
+
+  const baseA = calcBazi(yA, mA, dA, hA, minA, lonA);
+  const baseB = calcBazi(yB, mB, dB, hB, minB, lonB);
+
+  let evalRes, minScore, maxScore, maxDimArr = null, minDimArr = null;
+  if (!unkA && !unkB) {
+    evalRes = evaluatePair(baseA, baseB);
+    minScore = maxScore = evalRes.total;
+  } else {
+    const hoursA = unkA ? [...Array(12).keys()] : [null];
+    const hoursB = unkB ? [...Array(12).keys()] : [null];
+    let sumTotal = 0, count = 0;
+    minScore = 100; maxScore = 0;
+    const dimSums = [0,0,0,0,0];
+    maxDimArr = [0,0,0,0,0];
+    minDimArr = [100,100,100,100,100];
+    let sampleRes = null;
+
+    hoursA.forEach(hbA => {
+      const bzA = hbA === null ? baseA : calcBazi(yA, mA, dA, 12, 0, lonA, hbA);
+      hoursB.forEach(hbB => {
+        const bzB = hbB === null ? baseB : calcBazi(yB, mB, dB, 12, 0, lonB, hbB);
+        const r = evaluatePair(bzA, bzB);
+        if (!sampleRes) sampleRes = r;
+        sumTotal += r.total; count++;
+        if (r.total < minScore) minScore = r.total;
+        if (r.total > maxScore) maxScore = r.total;
+        r.dims.forEach((dm, idx) => {
+          dimSums[idx] += dm.score;
+          if (dm.score > maxDimArr[idx]) maxDimArr[idx] = dm.score;
+          if (dm.score < minDimArr[idx]) minDimArr[idx] = dm.score;
+        });
+      });
+    });
+
+    evalRes = {
+      total: Math.round(sumTotal / count),
+      dims: sampleRes.dims.map((dm, idx) => ({
+        name: dm.name,
+        score: Math.round(dimSums[idx] / count),
+        desc: dm.desc + (maxDimArr[idx] !== minDimArr[idx] ? `（时辰波动区间 ${minDimArr[idx]}–${maxDimArr[idx]} 分）` : '')
+      }))
+    };
+  }
+
+  const verdict = evalRes.total >= 85 ? '天作之合 · 气场深度共鸣'
+    : evalRes.total >= 75 ? '良缘可期 · 互补大于摩擦'
+    : evalRes.total >= 65 ? '平实相守 · 重在沟通磨合'
+    : '张力较强 · 需留足边界感';
+
+  document.getElementById('synastryResult').innerHTML = `
+    <div class="card">
+      <div class="score-hero">
+        <div style="font-size:13px;color:var(--muted)">${nameA} × ${nameB} · 综合默契指数</div>
+        <div class="score-num serif">${evalRes.total}</div>
+        ${(unkA || unkB) ? `<div class="score-range">未知时辰穷举区间：${minScore} – ${maxScore} 分（虚线为上限）</div>` : ''}
+        <div class="score-verdict">${verdict}</div>
+      </div>
+
+      ${renderPillarMini(nameA, baseA, unkA)}
+      ${renderPillarMini(nameB, baseB, unkB)}
+
+      <div class="radar-wrap">${buildRadarSVG(evalRes.dims, minDimArr, maxDimArr)}</div>
+
+      ${evalRes.dims.map(d => `
+        <div class="dim-item">
+          <div class="dim-head">
+            <span>${d.name}</span>
+            <span style="color:var(--accent)">${d.score} 分</span>
+          </div>
+          <div class="dim-desc">${d.desc}</div>
+        </div>
+      `).join('')}
     </div>
-    <section id="weeklyReview" class="review-section active">
-      <div class="review-summary">
-        <div class="review-metric"><small>任务完成</small><strong id="wDone">0 / 0</strong></div>
-        <div class="review-metric"><small>完成率</small><strong id="wRate">0%</strong></div>
-        <div class="review-metric"><small>复盘天数</small><strong id="wReflectDays">0 / 7</strong></div>
-        <div class="review-metric"><small>高优先级完成</small><strong id="wHigh">0 / 0</strong></div>
-      </div>
-      <div class="review-grid">
-        <div class="review-card"><h4>本周任务完成趋势</h4><div class="trend" id="weekTrend"></div></div>
-        <div class="review-card"><h4>自动汇总</h4><div class="autobox" id="weekAuto"></div></div>
-      </div>
-      <div class="review-grid" style="margin-top:12px">
-        <div class="review-card"><h4>这周做错了什么</h4><div class="review-list" id="weekWrong"></div></div>
-        <div class="review-card"><h4>这周做对了什么</h4><div class="review-list" id="weekRight"></div></div>
-      </div>
-      <div class="review-card" style="margin-top:12px"><h4>下周要怎么做得更好</h4><div class="review-list" id="weekBetter"></div></div>
-      <div class="review-card" style="margin-top:12px"><h4>我的本周总结</h4><textarea id="weekManual" placeholder="把这一周最重要的感受、问题、决定写下来。"></textarea></div>
-      <div class="review-card" style="margin-top:12px">
-        <h4>AI 本周总结</h4>
-        <div class="ai-result" id="weekAI">点击“生成 AI 总结”后，会基于本周任务与每日三问生成一份结构化总结。</div>
-        <div class="ai-actions"><button class="btn primary" id="aiWeekBtn" type="button">生成 AI 总结</button><button class="btn" id="copyWeekAI" type="button">复制</button></div>
-      </div>
-      <div class="export-row"><button class="btn" id="exportWeekMd" type="button">导出本周 Markdown</button></div>
-    </section>
+  `;
 
-    <section id="monthlyReview" class="review-section">
-      <div class="review-summary">
-        <div class="review-metric"><small>任务完成</small><strong id="mDone">0 / 0</strong></div>
-        <div class="review-metric"><small>完成率</small><strong id="mRate">0%</strong></div>
-        <div class="review-metric"><small>复盘天数</small><strong id="mReflectDays">0</strong></div>
-        <div class="review-metric"><small>高优先级完成</small><strong id="mHigh">0 / 0</strong></div>
-      </div>
-      <div class="review-grid">
-        <div class="review-card"><h4>每周任务完成趋势</h4><div class="trend" id="monthTrend"></div></div>
-        <div class="review-card"><h4>自动汇总</h4><div class="autobox" id="monthAuto"></div></div>
-      </div>
-      <div class="review-grid" style="margin-top:12px">
-        <div class="review-card"><h4>本月做错了什么</h4><div class="review-list" id="monthWrong"></div></div>
-        <div class="review-card"><h4>本月做对了什么</h4><div class="review-list" id="monthRight"></div></div>
-      </div>
-      <div class="review-card" style="margin-top:12px"><h4>下个月要怎么做得更好</h4><div class="review-list" id="monthBetter"></div></div>
-      <div class="review-card" style="margin-top:12px"><h4>我的本月总结</h4><textarea id="monthManual" placeholder="写下这个月最值得记住的变化、问题和下个月的重点。"></textarea></div>
-      <div class="review-card" style="margin-top:12px">
-        <h4>AI 本月总结</h4>
-        <div class="ai-result" id="monthAI">点击“生成 AI 总结”后，会基于本月任务与每日三问生成一份结构化总结。</div>
-        <div class="ai-actions"><button class="btn primary" id="aiMonthBtn" type="button">生成 AI 总结</button><button class="btn" id="copyMonthAI" type="button">复制</button></div>
-      </div>
-      <div class="export-row"><button class="btn" id="exportMonthMd" type="button">导出本月 Markdown</button></div>
-    </section>
-  </div>
-</div>
+  if (saveToHistory) {
+    saveHistory({
+      id: Date.now(),
+      nameA, dateA, timeA, unkA, lonA,
+      nameB, dateB, timeB, unkB, lonB,
+      score: evalRes.total,
+      range: (unkA || unkB) ? `${minScore}-${maxScore}` : null,
+      createdAt: new Date().toLocaleString('zh-CN', { hour12:false })
+    });
+  }
+}
 
-<div class="modal" id="scheduleModal">
-  <div class="modalbox schedule-modalbox">
-    <div class="modal-title-row">
+/* ================= 本地存储 History ================= */
+function getHistory() {
+  return JSON.parse(localStorage.getItem('suwen_synastry_history') || '[]');
+}
+function saveHistory(item) {
+  const list = getHistory();
+  list.unshift(item);
+  localStorage.setItem('suwen_synastry_history', JSON.stringify(list.slice(0, 20)));
+  renderHistory();
+}
+function deleteHistory(id, e) {
+  e.stopPropagation();
+  const list = getHistory().filter(x => x.id !== id);
+  localStorage.setItem('suwen_synastry_history', JSON.stringify(list));
+  renderHistory();
+}
+function clearHistory() {
+  localStorage.removeItem('suwen_synastry_history');
+  renderHistory();
+}
+function loadHistoryById(id) {
+  const item = getHistory().find(x => x.id === id);
+  if (!item) return;
+  document.getElementById('nameA').value = item.nameA;
+  document.getElementById('dateA').value = item.dateA;
+  document.getElementById('timeA').value = item.timeA;
+  document.getElementById('unkA').checked = item.unkA;
+  document.getElementById('lonA').value = item.lonA;
+  document.getElementById('nameB').value = item.nameB;
+  document.getElementById('dateB').value = item.dateB;
+  document.getElementById('timeB').value = item.timeB;
+  document.getElementById('unkB').checked = item.unkB;
+  document.getElementById('lonB').value = item.lonB;
+  toggleTime('A'); toggleTime('B');
+  runSynastry(false);
+}
+function renderHistory() {
+  const list = getHistory();
+  const el = document.getElementById('historyList');
+  if (!list.length) {
+    el.innerHTML = '<p class="hint">暂无合盘记录，点击上方按钮测算后将自动保存于本地浏览器。</p>';
+    return;
+  }
+  el.innerHTML = list.map(item => `
+    <div class="history-item" onclick="loadHistoryById(${item.id})">
       <div>
-        <h3 style="margin:0">课表管理与隐私导入</h3>
-        <div class="note" id="scheduleModalDate" style="margin-top:4px"></div>
+        <div style="font-size:14px;font-weight:700">${item.nameA} × ${item.nameB}
+          <span class="badge" style="margin-left:6px">${item.score}分${item.range ? ` (${item.range})` : ''}</span>
+        </div>
+        <div class="history-meta">${item.dateA} / ${item.dateB} · ${item.createdAt}</div>
       </div>
-      <button class="x" id="closeScheduleModal" type="button" aria-label="关闭">✕</button>
+      <button class="del-btn" onclick="deleteHistory(${item.id}, event)">删除</button>
     </div>
-    <div class="schedule-manager-section">
-      <h4>私密课表配置（仅存本地与个人私有云，不暴露在公网源码）</h4>
-      <div class="small" id="scheduleProfileStat">当前尚未导入固定课表。</div>
-      <div class="sync-actions" style="margin-top:8px">
-        <button class="btn primary sm" id="importScheduleBtn" type="button">导入私密课表 JSON</button>
-        <input class="file" id="importScheduleFile" type="file" accept="application/json">
-        <button class="btn sm" id="exportScheduleBtn" type="button">导出当前课表 JSON</button>
-        <button class="btn sm ghost" id="clearBaseScheduleBtn" type="button">清空固定课表</button>
-      </div>
-    </div>
-    <div class="schedule-manager-section">
-      <h4>为当天添加临时 / 补课安排</h4>
-      <label class="schedule-label" for="schedulePreset">从已有固定课程快速填充</label>
-      <select id="schedulePreset"><option value="">自定义 / 临时课程</option></select>
-      <div class="schedule-form-grid">
-        <input id="scheduleName" type="text" placeholder="课程名称">
-        <input id="scheduleStart" type="time" aria-label="开始时间">
-        <input id="scheduleEnd" type="time" aria-label="结束时间">
-        <input id="scheduleTeacher" type="text" placeholder="老师（可选）">
-        <input id="scheduleRoom" type="text" placeholder="教室（可选）">
-        <input id="scheduleNoteInput" type="text" placeholder="备注（可选）">
-      </div>
-      <div class="schedule-form-actions">
-        <button class="btn" id="clearScheduleForm" type="button">清空</button>
-        <button class="btn primary" id="addScheduleCourse" type="button">添加到这一天</button>
-      </div>
-    </div>
-    <div class="schedule-manager-section">
-      <h4>今天已取消的固定课程</h4>
-      <div id="cancelledScheduleList" class="schedule-manage-list"></div>
-    </div>
-    <details class="schedule-fixed-details">
-      <summary>固定课表开关</summary>
-      <div class="note">停用后，这门固定课程将不再自动出现在对应周次；以后可随时重新启用。</div>
-      <div id="fixedScheduleList" class="schedule-manage-list" style="margin-top:8px"></div>
-    </details>
-  </div>
-</div>
+  `).join('');
+}
 
-<div class="modal" id="repeatActionModal">
-  <div class="modalbox" style="width:min(440px,100%)">
-    <div style="display:flex;justify-content:space-between;align-items:center;gap:10px">
-      <h3 style="margin:0">处理重复任务</h3>
-      <button class="x" id="closeRepeatAction" type="button" aria-label="关闭">✕</button>
-    </div>
-    <div class="note" id="repeatActionDesc" style="margin-top:8px"></div>
-    <div class="repeat-action-buttons">
-      <button class="btn" id="repeatSkipOne" type="button">仅跳过这一天</button>
-      <button class="btn" id="repeatEndFromHere" type="button">从这一天起结束重复</button>
-      <button class="btn danger" id="repeatDeleteAll" type="button">删除整个重复任务</button>
-    </div>
-    <div class="repeat-action-note">“从这一天起结束重复”会保留此前所有日期和完成记录，只让当前日期及之后不再出现。</div>
-  </div>
-</div>
+/* ================= Tab 切换与初始化 ================= */
+function switchTab(name) {
+  document.querySelectorAll('.tab-btn').forEach((b, i) => {
+    b.classList.toggle('active', (i === 0 && name === 'calendar') || (i === 1 && name === 'synastry'));
+  });
+  document.getElementById('tab-calendar').classList.toggle('active', name === 'calendar');
+  document.getElementById('tab-synastry').classList.toggle('active', name === 'synastry');
+}
 
-<div class="modal" id="modal">
-  <div class="modalbox">
-    <h3 style="margin-top:0">纪念日管理</h3>
-    <input id="aName" type="text" autocomplete="off" placeholder="名称，例如：生日 / 重要节点">
-    <div class="row"><input id="aDate" type="date"></div>
-    <label class="check"><input id="aRepeat" type="checkbox" checked> 每年重复（生日、周年等）</label>
-    <div class="row"><button class="btn" id="cancelA" type="button">关闭</button><button class="btn primary" id="saveA" type="button">添加</button></div>
-    <div class="manage-list" id="annivManage"></div>
-  </div>
-</div>
-
-<div class="sw-update-bar" id="swUpdateBar" role="status" aria-live="polite">
-  <span>发现新版本，刷新即可启用</span>
-  <button class="btn primary sm" id="swUpdateApplyBtn" type="button">立即更新</button>
-  <button class="btn ghost sm" id="swUpdateDismissBtn" type="button">稍后</button>
-</div>
-
-<script src="./supabase-local.js"></script>
-<script src="./app-data.js"></script>
-<script defer src="./app.js"></script>
-<script defer src="./bazi-hepan.js"></script>
+loadProfile();
+renderCalendar();
+renderHistory();
+</script>
 </body>
 </html>
