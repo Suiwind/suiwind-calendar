@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#f2efe8">
-<title>苏伊温德日历 V3.0</title>
+<title>苏伊温德日历 V3.3</title>
 <link rel="icon" type="image/svg+xml" href="./favicon.svg">
 <link rel="apple-touch-icon" href="./icons/apple-touch-icon.png">
 <link rel="manifest" href="./manifest.json">
@@ -28,7 +28,7 @@
   <div class="bazi-wrap">
     <header class="bazi-head">
       <div>
-        <h1 class="bazi-title">八字合盘 <span class="version">V5.2 内置版</span></h1>
+        <h1 class="bazi-title">八字合盘 <span class="version">V5.4 内置版</span></h1>
         <p class="bazi-subtitle">苏伊温德日历 · 真太阳时排盘与五维合盘引擎</p>
       </div>
       <div class="bazi-actions">
@@ -49,21 +49,27 @@
       </main>
       <aside class="bazi-card bazi-side" aria-label="纪录对照板">
         <h2>纪录对照板</h2>
-        <p class="bazi-small">V5 已观察到的最高分对照，测算完成后会自动读取综合得分计算差值。</p>
-        <h3>个人纪录</h3>
+        <p class="bazi-small">透明展示双方公历出生时间与八字四柱，支持一键填入复现；可在左侧「测算个人理论上限」随时更新你的精确上限。</p>
+        <h3>我的理论上限（丙戌 己亥 甲辰）</h3>
+        <div id="baziMyCeilingRecords"></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:14px">
+          <h3 style="margin:0">我的实测最高纪录</h3>
+          <button type="button" class="btn sm ghost" id="baziResetPersonal" style="padding:2px 8px;font-size:11px">清空</button>
+        </div>
         <div id="baziPersonalRecords"></div>
-        <h3>双人高分纪录</h3>
+        <h3>V5.4 全局理论上限标杆</h3>
         <div id="baziWorldRecords"></div>
         <div class="bazi-compare">
           <b>本次与纪录的差距</b>
-          <p class="bazi-small" id="baziDetected">等候测算结果，或手动输入得分对比。</p>
+          <p class="bazi-small" id="baziDetected">在左侧完成测算后将自动读取得分。</p>
           <div class="bazi-scores">
             <select id="baziCompareCategory" aria-label="比较纪录类别">
-              <option value="0">我的爱情</option>
-              <option value="1">年龄相近友情</option>
-              <option value="2">含长辈友情</option>
-              <option value="3">双人爱情纪录</option>
-              <option value="4">双人友情纪录</option>
+              <option value="my-ceil-love">我的理论爱情上限</option>
+              <option value="my-ceil-friend">我的理论友情上限</option>
+              <option value="personal-love">我的实测婚恋最高</option>
+              <option value="personal-friend">我的实测友情最高</option>
+              <option value="bench-love">全局婚恋满配标杆 (94.500)</option>
+              <option value="bench-friend">全局友情满配标杆 (89.690)</option>
             </select>
           </div>
           <div class="bazi-score-input">
@@ -83,7 +89,7 @@
     <div>
       <div class="brand-row">
         <h1>苏伊温德日历</h1>
-        <span class="version">V3.0</span>
+        <span class="version">V3.3</span>
       </div>
       <p class="poetic-sub">生命如暗室，不妨我明写春诗</p>
     </div>

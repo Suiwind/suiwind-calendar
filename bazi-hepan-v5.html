@@ -3,44 +3,44 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>八字合盘 V5.2 · 苏伊温德日历内置引擎</title>
+<title>八字合盘 V5.4 · 苏伊温德日历内置引擎</title>
 <style>
   :root {
     --bg: #f2efe8;
     --card: #ffffff;
     --card-soft: #f4f2eb;
-    --line: #dbe2d6;
-    --line-soft: #e7ece3;
-    --text: #273026;
-    --text-2: #4b5649;
-    --muted: #6c7769;
+    --line: rgba(48, 60, 46, 0.10);
+    --line-soft: rgba(48, 60, 46, 0.06);
+    --text: #232b22;
+    --text-2: #4c574a;
+    --muted: #7b8477;
     --accent: #526e51;
-    --accent-strong: #4b6548;
-    --accent-soft: #e4ede1;
-    --warm: #b05c5c;
-    --warm-soft: #faeaea;
+    --accent-strong: #3f593e;
+    --accent-soft: #e6eee4;
+    --warm: #b5574b;
+    --warm-soft: #f8ebe9;
     --wood: #3e7a56;
     --fire: #b8534a;
     --earth: #9f7a3d;
     --metal: #6e7780;
     --water: #486e8a;
     --radius: 14px;
-    --shadow: 0 4px 16px rgba(45, 62, 43, 0.05);
+    --shadow: 0 4px 16px rgba(36, 48, 34, 0.045);
   }
   [data-theme="dark"] {
     --bg: #131713;
     --card: #212822;
     --card-soft: #1b221c;
-    --line: #313c32;
-    --line-soft: #2a332b;
-    --text: #e3e9e1;
-    --text-2: #bcc6ba;
-    --muted: #8f9d8c;
-    --accent: #7da178;
-    --accent-strong: #92b68d;
-    --accent-soft: rgba(125, 161, 120, 0.17);
-    --warm: #df8b8b;
-    --warm-soft: rgba(196, 98, 98, 0.18);
+    --line: rgba(220, 232, 218, 0.10);
+    --line-soft: rgba(220, 232, 218, 0.06);
+    --text: #e6eae2;
+    --text-2: #bac4b7;
+    --muted: #849182;
+    --accent: #82a47f;
+    --accent-strong: #96b893;
+    --accent-soft: rgba(130, 164, 127, 0.16);
+    --warm: #df887d;
+    --warm-soft: rgba(196, 98, 90, 0.18);
     --wood: #77b88d;
     --fire: #e08279;
     --earth: #d7b26d;
@@ -57,7 +57,7 @@
     padding: 14px 14px 36px;
   }
   .serif { font-family: "Songti SC", "Noto Serif SC", "STSong", Georgia, serif; }
-  .wrap { max-width: 960px; margin: 0 auto; }
+  .wrap { max-width: 980px; margin: 0 auto; }
 
   .mode-bar {
     display: flex;
@@ -75,10 +75,10 @@
   .mode-tabs {
     display: inline-flex;
     background: var(--card-soft);
-    border: 1px solid var(--line);
     border-radius: 10px;
     padding: 3px;
     gap: 4px;
+    flex-wrap: wrap;
   }
   .mode-btn {
     border: none;
@@ -91,17 +91,14 @@
     cursor: pointer;
     transition: all .18s;
   }
-  .mode-btn.active {
-    background: var(--accent);
-    color: #fff;
-  }
-  .engine-tag {
-    font-size: 12px;
-    color: var(--muted);
-  }
+  .mode-btn.active { background: var(--accent); color: #fff; }
+  .engine-tag { font-size: 12px; color: var(--muted); }
+
+  .view-panel { display: none; }
+  .view-panel.active { display: block; }
 
   .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-  @media (max-width: 680px) { .grid-2 { grid-template-columns: 1fr; } }
+  @media (max-width: 720px) { .grid-2 { grid-template-columns: 1fr; } }
 
   .card {
     background: var(--card);
@@ -118,6 +115,8 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+    gap: 8px;
+    flex-wrap: wrap;
     border-left: 3px solid var(--accent);
     padding-left: 9px;
   }
@@ -144,6 +143,30 @@
   }
   input:focus, select:focus { border-color: var(--accent); }
   .inline-row { display: flex; gap: 8px; align-items: center; }
+  .loc-grid { display: grid; grid-template-columns: 1fr 1fr 84px; gap: 6px; }
+  @media (max-width: 480px) { .loc-grid { grid-template-columns: 1fr 1fr; } .loc-grid input { grid-column: 1 / -1; } }
+
+  .gender-toggle {
+    display: inline-flex;
+    background: var(--card-soft);
+    border-radius: 9px;
+    padding: 3px;
+    gap: 3px;
+    border: 1px solid var(--line);
+  }
+  .gender-btn {
+    border: none;
+    background: transparent;
+    color: var(--muted);
+    padding: 5px 12px;
+    border-radius: 7px;
+    font-size: 12.5px;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .gender-btn.active { background: var(--accent); color: #fff; }
+
   .checkbox-label {
     display: inline-flex;
     align-items: center;
@@ -157,7 +180,7 @@
   .checkbox-label input { width: auto; }
 
   .btn {
-    padding: 10px 16px;
+    padding: 9px 15px;
     border: 1px solid var(--line);
     border-radius: 10px;
     background: var(--card-soft);
@@ -178,16 +201,19 @@
     letter-spacing: 1px;
   }
   .btn-primary:hover { background: var(--accent-strong); }
-  .btn-sm { padding: 5px 10px; font-size: 12px; }
+  .btn-soft {
+    background: var(--accent-soft);
+    border-color: transparent;
+    color: var(--accent-strong);
+  }
+  .btn-sm { padding: 5px 11px; font-size: 12px; }
 
-  /* 五行配色 */
   .el-木 { color: var(--wood); } .bg-木 { background: var(--wood); }
   .el-火 { color: var(--fire); } .bg-火 { background: var(--fire); }
   .el-土 { color: var(--earth); } .bg-土 { background: var(--earth); }
   .el-金 { color: var(--metal); } .bg-金 { background: var(--metal); }
   .el-水 { color: var(--water); } .bg-水 { background: var(--water); }
 
-  /* 结果头部 */
   .score-hero {
     text-align: center;
     padding: 18px 12px;
@@ -207,12 +233,11 @@
   .score-range { font-size: 12.5px; color: var(--warm); font-weight: 600; margin-top: 2px; }
   .score-verdict { font-size: 14px; color: var(--text); margin-top: 6px; font-weight: 600; }
 
-  /* 四柱 */
   .pillars {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 8px;
-    margin: 8px 0 12px;
+    margin: 8px 0 10px;
   }
   .pillar-box {
     background: var(--card-soft);
@@ -225,33 +250,45 @@
   .pillar-gz { font-size: 20px; font-weight: 700; margin: 3px 0; letter-spacing: 2px; }
   .pillar-sub { font-size: 11px; color: var(--muted); }
 
-  /* 五行对比条 */
-  .wx-bars { display: flex; flex-direction: column; gap: 6px; margin-top: 6px; }
+  .wx-bars { display: flex; flex-direction: column; gap: 5px; margin-top: 6px; }
   .wx-bar-row { display: flex; align-items: center; gap: 8px; font-size: 12px; }
   .wx-track { flex: 1; height: 7px; background: var(--line-soft); border-radius: 99px; overflow: hidden; }
   .wx-fill { height: 100%; border-radius: 99px; }
 
-  /* 雷达与维度拆解 */
   .result-split {
     display: grid;
     grid-template-columns: 280px minmax(0, 1fr);
     gap: 16px;
     align-items: center;
-    margin-top: 10px;
+    margin-top: 12px;
   }
   @media (max-width: 720px) { .result-split { grid-template-columns: 1fr; } }
   .radar-wrap { display: flex; justify-content: center; }
 
-  .dim-item {
-    border-top: 1px dashed var(--line);
-    padding: 9px 0;
-  }
+  .dim-item { border-top: 1px dashed var(--line); padding: 9px 0; }
   .dim-item:first-child { border-top: none; padding-top: 0; }
   .dim-head { display: flex; justify-content: space-between; font-size: 13.5px; font-weight: 700; }
   .dim-score { color: var(--accent-strong); }
   .dim-desc { font-size: 12.5px; color: var(--text-2); margin-top: 3px; }
 
-  /* 历史记录 */
+  .ceil-card {
+    background: var(--card-soft);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .ceil-score {
+    font-size: 32px;
+    font-weight: 800;
+    color: var(--accent-strong);
+    line-height: 1.1;
+  }
+  .ceil-meta { font-size: 12.5px; color: var(--text-2); line-height: 1.6; }
+  .ceil-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 4px; }
+
   .history-item {
     display: flex;
     justify-content: space-between;
@@ -263,14 +300,10 @@
     margin-bottom: 8px;
     background: var(--card-soft);
     cursor: pointer;
-    transition: border-color .15s;
   }
   .history-item:hover { border-color: var(--accent); }
   .history-meta { font-size: 11.5px; color: var(--muted); margin-top: 2px; }
-  .del-btn {
-    border: none; background: transparent; color: var(--muted);
-    font-size: 12px; cursor: pointer; padding: 4px 8px;
-  }
+  .del-btn { border: none; background: transparent; color: var(--muted); font-size: 12px; cursor: pointer; padding: 4px 8px; }
   .del-btn:hover { color: var(--warm); }
   .hint { font-size: 12px; color: var(--muted); }
 </style>
@@ -279,104 +312,153 @@
 <div class="wrap">
   <div class="mode-bar">
     <div class="mode-tabs" role="tablist">
-      <button type="button" class="mode-btn active" id="modeLove" onclick="setMode('love')">♡ 婚恋合盘模式</button>
-      <button type="button" class="mode-btn" id="modeFriend" onclick="setMode('friend')">✦ 友情 / 人际模式</button>
+      <button type="button" class="mode-btn active" id="modeLove" onclick="switchView('love')">♡ 婚恋合盘</button>
+      <button type="button" class="mode-btn" id="modeFriend" onclick="switchView('friend')">✦ 友情 / 人际</button>
+      <button type="button" class="mode-btn" id="modeCeiling" onclick="switchView('ceiling')">★ 测算个人理论上限</button>
     </div>
-    <span class="engine-tag">Jean Meeus 节气 · 真太阳时校正 · 未知时辰穷举</span>
+    <span class="engine-tag">V5.4 · 乾坤造区分 · 理论上限穷举引擎</span>
   </div>
 
-  <div class="grid-2">
-    <!-- 甲方 -->
+  <!-- ==================== 视图 1：双人合盘 ==================== -->
+  <div id="viewSynastry" class="view-panel active">
+    <div class="grid-2">
+      <!-- 甲方 -->
+      <div class="card">
+        <div class="card-title">
+          <span>甲方出生信息</span>
+          <div class="gender-toggle">
+            <button type="button" class="gender-btn active" id="gA_M" onclick="setGender('A','M')">男 · 乾造</button>
+            <button type="button" class="gender-btn" id="gA_F" onclick="setGender('A','F')">女 · 坤造</button>
+          </div>
+        </div>
+        <div class="form-row">
+          <label>称呼</label>
+          <input id="nameA" type="text" value="我（丙戌 己亥 甲辰）" placeholder="输入称呼">
+        </div>
+        <div class="form-row">
+          <label>公历出生日期</label>
+          <input id="dateA" type="date" value="2006-11-11">
+        </div>
+        <div class="form-row">
+          <label>出生时间（北京时间 UTC+8）</label>
+          <div class="inline-row">
+            <input id="timeA" type="time" value="12:00">
+            <label class="checkbox-label"><input id="unkA" type="checkbox" onchange="toggleTime('A')">未知时辰</label>
+          </div>
+        </div>
+        <div class="form-row">
+          <label>出生地（省 / 市联动自动匹配经度，右侧可手动微调）</label>
+          <div class="loc-grid">
+            <select id="provA" onchange="onProvChange('A')"></select>
+            <select id="cityA" onchange="onCityChange('A')"></select>
+            <input id="lonA" type="number" step="0.01" value="118.78" title="东经度数">
+          </div>
+        </div>
+      </div>
+
+      <!-- 乙方 -->
+      <div class="card">
+        <div class="card-title">
+          <span>乙方出生信息</span>
+          <div class="gender-toggle">
+            <button type="button" class="gender-btn" id="gB_M" onclick="setGender('B','M')">男 · 乾造</button>
+            <button type="button" class="gender-btn active" id="gB_F" onclick="setGender('B','F')">女 · 坤造</button>
+          </div>
+        </div>
+        <div class="form-row">
+          <label>称呼</label>
+          <input id="nameB" type="text" value="乙方" placeholder="输入称呼">
+        </div>
+        <div class="form-row">
+          <label>公历出生日期</label>
+          <input id="dateB" type="date" value="2005-03-26">
+        </div>
+        <div class="form-row">
+          <label>出生时间（北京时间 UTC+8）</label>
+          <div class="inline-row">
+            <input id="timeB" type="time" value="08:00">
+            <label class="checkbox-label"><input id="unkB" type="checkbox" onchange="toggleTime('B')">未知时辰</label>
+          </div>
+        </div>
+        <div class="form-row">
+          <label>出生地（省 / 市联动自动匹配经度，右侧可手动微调）</label>
+          <div class="loc-grid">
+            <select id="provB" onchange="onProvChange('B')"></select>
+            <select id="cityB" onchange="onCityChange('B')"></select>
+            <input id="lonB" type="number" step="0.01" value="120.00" title="东经度数">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="padding: 12px;">
+      <button type="button" class="btn btn-primary" onclick="runSynastry()">开始真太阳时排盘与五维合盘</button>
+    </div>
+
+    <div id="synastryResult"></div>
+
     <div class="card">
-      <div class="card-title"><span>甲方出生信息</span><span class="badge">Person A</span></div>
-      <div class="form-row">
-        <label>称呼</label>
-        <input id="nameA" type="text" value="甲方" placeholder="输入称呼">
+      <div class="card-title">
+        <span>本地合盘历史记录</span>
+        <button type="button" class="btn btn-sm" onclick="clearHistory()">清空</button>
       </div>
-      <div class="form-row">
-        <label>公历出生日期</label>
-        <input id="dateA" type="date" value="2006-11-18">
-      </div>
-      <div class="form-row">
-        <label>出生时间（北京时间 UTC+8）</label>
-        <div class="inline-row">
-          <input id="timeA" type="time" value="12:00">
-          <label class="checkbox-label"><input id="unkA" type="checkbox" onchange="toggleTime('A')">未知时辰</label>
-        </div>
-      </div>
-      <div class="form-row">
-        <label>出生地经度（东经，用于真太阳时校正）</label>
-        <div class="inline-row">
-          <select id="cityA" onchange="applyCity('A')" style="width:44%">
-            <option value="">常用城市…</option>
-            <option value="118.78" selected>南京 118.78°</option>
-            <option value="116.40">北京 116.40°</option>
-            <option value="121.47">上海 121.47°</option>
-            <option value="120.15">杭州 120.15°</option>
-            <option value="120.58">苏州 120.58°</option>
-            <option value="113.26">广州 113.26°</option>
-            <option value="114.05">深圳 114.05°</option>
-            <option value="104.06">成都 104.06°</option>
-            <option value="114.30">武汉 114.30°</option>
-            <option value="108.94">西安 108.94°</option>
-          </select>
-          <input id="lonA" type="number" step="0.01" value="118.78">
-        </div>
-      </div>
+      <div id="historyList"></div>
     </div>
+  </div>
 
-    <!-- 乙方 -->
+  <!-- ==================== 视图 2：测算任意人的理论爱情 & 友情上限 ==================== -->
+  <div id="viewCeiling" class="view-panel">
     <div class="card">
-      <div class="card-title"><span>乙方出生信息</span><span class="badge">Person B</span></div>
-      <div class="form-row">
-        <label>称呼</label>
-        <input id="nameB" type="text" value="乙方" placeholder="输入称呼">
-      </div>
-      <div class="form-row">
-        <label>公历出生日期</label>
-        <input id="dateB" type="date" value="2006-05-20">
-      </div>
-      <div class="form-row">
-        <label>出生时间（北京时间 UTC+8）</label>
-        <div class="inline-row">
-          <input id="timeB" type="time" value="14:30">
-          <label class="checkbox-label"><input id="unkB" type="checkbox" onchange="toggleTime('B')">未知时辰</label>
+      <div class="card-title">
+        <span>测算任意人的理论爱情 / 友情上限</span>
+        <div class="gender-toggle">
+          <button type="button" class="gender-btn active" id="gC_M" onclick="setGender('C','M')">男 · 乾造</button>
+          <button type="button" class="gender-btn" id="gC_F" onclick="setGender('C','F')">女 · 坤造</button>
         </div>
       </div>
-      <div class="form-row">
-        <label>出生地经度（东经，用于真太阳时校正）</label>
-        <div class="inline-row">
-          <select id="cityB" onchange="applyCity('B')" style="width:44%">
-            <option value="">常用城市…</option>
-            <option value="118.78">南京 118.78°</option>
-            <option value="116.40" selected>北京 116.40°</option>
-            <option value="121.47">上海 121.47°</option>
-            <option value="120.15">杭州 120.15°</option>
-            <option value="120.58">苏州 120.58°</option>
-            <option value="113.26">广州 113.26°</option>
-            <option value="114.05">深圳 114.05°</option>
-            <option value="104.06">成都 104.06°</option>
-            <option value="114.30">武汉 114.30°</option>
-            <option value="108.94">西安 108.94°</option>
+      <p class="hint" style="margin-bottom:12px;">
+        输入任意人的出生信息，系统将在指定年龄段内实时穷举所有高契合度真实公历日期与时辰，算出此人在 V5.4 算法下的<b>理论爱情上限</b>与<b>理论友情上限</b>，并给出具体可复现的最佳匹配八字与出生时间。
+      </p>
+      <div class="grid-2">
+        <div class="form-row">
+          <label>称呼</label>
+          <input id="nameC" type="text" value="我（丙戌 己亥 甲辰）" placeholder="输入姓名或称呼">
+        </div>
+        <div class="form-row">
+          <label>公历出生日期</label>
+          <input id="dateC" type="date" value="2006-11-11">
+        </div>
+        <div class="form-row">
+          <label>出生时间（北京时间 UTC+8）</label>
+          <div class="inline-row">
+            <input id="timeC" type="time" value="12:00">
+            <label class="checkbox-label"><input id="unkC" type="checkbox" onchange="toggleTime('C')">未知时辰(按午时估算)</label>
+          </div>
+        </div>
+        <div class="form-row">
+          <label>匹配搜索年龄段</label>
+          <select id="spanC">
+            <option value="5" selected>同龄段（出生前后 ±5 岁）</option>
+            <option value="10">较宽范围（出生前后 ±10 岁）</option>
+            <option value="15">大跨度（出生前后 ±15 岁）</option>
           </select>
-          <input id="lonB" type="number" step="0.01" value="116.40">
         </div>
       </div>
+      <div class="form-row">
+        <label>出生地（省 / 市联动自动匹配经度）</label>
+        <div class="loc-grid">
+          <select id="provC" onchange="onProvChange('C')"></select>
+          <select id="cityC" onchange="onCityChange('C')"></select>
+          <input id="lonC" type="number" step="0.01" value="118.78" title="东经度数">
+        </div>
+      </div>
+      <div class="inline-row" style="margin-top:12px;flex-wrap:wrap;">
+        <button type="button" class="btn btn-primary" style="flex:1;min-width:220px;" onclick="runCeilingFinder()">★ 一键测算理论爱情 & 友情上限</button>
+        <button type="button" class="btn btn-soft" onclick="copyFromAtoC()">从甲方同步信息</button>
+      </div>
     </div>
-  </div>
 
-  <div class="card" style="padding: 12px;">
-    <button type="button" class="btn btn-primary" onclick="runSynastry()">开始真太阳时排盘与五维合盘</button>
-  </div>
-
-  <div id="synastryResult"></div>
-
-  <div class="card">
-    <div class="card-title">
-      <span>本地合盘历史记录</span>
-      <button type="button" class="btn btn-sm" onclick="clearHistory()">清空</button>
-    </div>
-    <div id="historyList"></div>
+    <div id="ceilingResult"></div>
   </div>
 </div>
 
@@ -384,137 +466,181 @@
 /* ================= 与父页面同步深浅护眼主题 ================= */
 function syncParentTheme() {
   try {
-    const parentTheme = window.parent?.document?.documentElement?.getAttribute('data-theme');
-    if (parentTheme === 'dark') {
-      document.documentElement.setAttribute('data-theme', 'dark');
-    } else {
-      document.documentElement.removeAttribute('data-theme');
-    }
+    const t = window.parent?.document?.documentElement?.getAttribute('data-theme');
+    if (t === 'dark') document.documentElement.setAttribute('data-theme', 'dark');
+    else document.documentElement.removeAttribute('data-theme');
   } catch (_) {}
 }
 syncParentTheme();
 try {
-  const obs = new MutationObserver(syncParentTheme);
-  obs.observe(window.parent.document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+  new MutationObserver(syncParentTheme).observe(window.parent.document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
 } catch (_) {}
 
-/* ================= 基础历法与五行常量 ================= */
+/* ================= 全国省市经度数据库 ================= */
+const CHINA_LOC = {
+  '江苏': [['南京',118.78],['苏州',120.58],['无锡',120.31],['常州',119.97],['南通',120.89],['扬州',119.41],['镇江',119.42],['徐州',117.28],['连云港',119.22],['淮安',119.02],['盐城',120.16],['泰州',119.92],['宿迁',118.28]],
+  '北京': [['北京',116.40]],
+  '上海': [['上海',121.47]],
+  '天津': [['天津',117.20]],
+  '重庆': [['重庆',106.55]],
+  '浙江': [['杭州',120.15],['宁波',121.55],['温州',120.70],['嘉兴',120.76],['湖州',120.09],['绍兴',120.58],['金华',119.65],['衢州',118.87],['舟山',122.21],['台州',121.42],['丽水',119.92]],
+  '广东': [['广州',113.26],['深圳',114.05],['珠海',113.58],['汕头',116.68],['佛山',113.12],['韶关',113.60],['湛江',110.36],['肇庆',112.47],['江门',113.08],['茂名',110.92],['惠州',114.42],['梅州',116.12],['东莞',113.75],['中山',113.39],['潮州',116.62],['揭阳',116.37]],
+  '安徽': [['合肥',117.23],['芜湖',118.43],['蚌埠',117.39],['淮南',117.00],['马鞍山',118.51],['安庆',117.06],['黄山',118.34],['滁州',118.32],['阜阳',115.81],['宿州',116.96],['六安',116.52],['宣城',118.76]],
+  '山东': [['济南',117.12],['青岛',120.38],['淄博',118.05],['枣庄',117.32],['东营',118.67],['烟台',121.45],['潍坊',119.16],['济宁',116.59],['泰安',117.09],['威海',122.12],['日照',119.53],['临沂',118.36],['德州',116.36],['聊城',115.99],['菏泽',115.48]],
+  '四川': [['成都',104.06],['自贡',104.78],['攀枝花',101.72],['泸州',105.44],['德阳',104.40],['绵阳',104.68],['广元',105.84],['遂宁',105.59],['内江',105.06],['乐山',103.77],['南充',106.11],['宜宾',104.64],['达州',107.47]],
+  '湖北': [['武汉',114.30],['黄石',115.04],['十堰',110.80],['宜昌',111.29],['襄阳',112.12],['鄂州',114.89],['荆门',112.20],['孝感',113.92],['荆州',112.24],['黄冈',114.87],['咸宁',114.32],['恩施',109.49]],
+  '湖南': [['长沙',112.94],['株洲',113.13],['湘潭',112.94],['衡阳',112.57],['邵阳',111.47],['岳阳',113.13],['常德',111.70],['张家界',110.48],['益阳',112.36],['郴州',113.01],['永州',111.61],['怀化',110.00]],
+  '河南': [['郑州',113.63],['开封',114.31],['洛阳',112.45],['平顶山',113.19],['安阳',114.39],['新乡',113.93],['焦作',113.24],['许昌',113.85],['南阳',112.53],['商丘',115.66],['信阳',114.09],['周口',114.70],['驻马店',114.02]],
+  '河北': [['石家庄',114.51],['唐山',118.18],['秦皇岛',119.60],['邯郸',114.54],['邢台',114.50],['保定',115.46],['张家口',114.89],['承德',117.96],['沧州',116.84],['廊坊',116.68],['衡水',115.67]],
+  '福建': [['福州',119.30],['厦门',118.09],['莆田',119.01],['三明',117.64],['泉州',118.68],['漳州',117.65],['南平',118.18],['龙岩',117.02],['宁德',119.55]],
+  '江西': [['南昌',115.86],['景德镇',117.18],['萍乡',113.85],['九江',116.00],['新余',114.92],['鹰潭',117.07],['赣州',114.93],['吉安',114.99],['宜春',114.42],['抚州',116.36],['上饶',117.94]],
+  '陕西': [['西安',108.94],['铜川',108.95],['宝鸡',107.24],['咸阳',108.71],['渭南',109.51],['延安',109.49],['汉中',107.02],['榆林',109.73],['安康',109.03],['商洛',109.94]],
+  '辽宁': [['沈阳',123.43],['大连',121.61],['鞍山',122.99],['抚顺',123.96],['本溪',123.77],['丹东',124.35],['锦州',121.13],['营口',122.24],['辽阳',123.17],['盘锦',122.07]],
+  '吉林': [['长春',125.32],['吉林',126.55],['四平',124.35],['辽源',125.14],['通化',125.94],['延边',129.51]],
+  '黑龙江': [['哈尔滨',126.64],['齐齐哈尔',123.92],['鸡西',130.97],['大庆',125.10],['牡丹江',129.63],['佳木斯',130.32],['黑河',127.53]],
+  '山西': [['太原',112.55],['大同',113.30],['阳泉',113.58],['长治',113.12],['晋城',112.85],['晋中',112.75],['运城',111.01],['临汾',111.52]],
+  '广西': [['南宁',108.37],['柳州',109.43],['桂林',110.29],['梧州',111.28],['北海',109.12],['玉林',110.18],['百色',106.62]],
+  '云南': [['昆明',102.83],['曲靖',103.80],['玉溪',102.55],['保山',99.16],['丽江',100.23],['大理',100.23],['西双版纳',100.80]],
+  '贵州': [['贵阳',106.63],['六盘水',104.83],['遵义',106.93],['安顺',105.95],['毕节',105.29],['铜仁',109.19]],
+  '海南': [['海口',110.20],['三亚',109.51],['儋州',109.58]],
+  '甘肃': [['兰州',103.83],['天水',105.72],['武威',102.64],['张掖',100.45],['酒泉',98.49],['庆阳',107.64]],
+  '内蒙古': [['呼和浩特',111.75],['包头',109.84],['赤峰',118.89],['通辽',122.24],['鄂尔多斯',109.78],['呼伦贝尔',119.77]],
+  '新疆': [['乌鲁木齐',87.62],['克拉玛依',84.89],['吐鲁番',89.19],['哈密',93.51],['伊犁',81.32],['喀什',75.99]],
+  '宁夏': [['银川',106.23],['石嘴山',106.38],['吴忠',106.20],['固原',106.24]],
+  '青海': [['西宁',101.78],['海东',102.10],['格尔木',94.90]],
+  '西藏': [['拉萨',91.17],['日喀则',88.88],['林芝',94.36]],
+  '港澳台': [['香港',114.17],['澳门',113.54],['台北',121.56],['高雄',120.30],['台中',120.68]],
+  '海外/自定义': [['手动输入经度',120.00]]
+};
+
+function initLocationSelects(who, defProv, defCity) {
+  const pEl = document.getElementById('prov' + who);
+  pEl.innerHTML = Object.keys(CHINA_LOC).map(p => `<option value="${p}" ${p === defProv ? 'selected' : ''}>${p}</option>`).join('');
+  onProvChange(who, defCity);
+}
+function onProvChange(who, defCity = '') {
+  const p = document.getElementById('prov' + who).value;
+  const cities = CHINA_LOC[p] || [['默认', 120.00]];
+  const cEl = document.getElementById('city' + who);
+  cEl.innerHTML = cities.map(([name, lon]) => `<option value="${lon}" ${name === defCity ? 'selected' : ''}>${name}</option>`).join('');
+  onCityChange(who);
+}
+function onCityChange(who) {
+  const lon = document.getElementById('city' + who).value;
+  if (lon) document.getElementById('lon' + who).value = lon;
+}
+
+/* ================= 视图与性别状态 ================= */
+let genderA = 'M', genderB = 'F', genderC = 'M', currentMode = 'love';
+let lastCeilingResult = null;
+
+function setGender(who, g) {
+  if (who === 'A') genderA = g;
+  else if (who === 'B') genderB = g;
+  else genderC = g;
+  document.getElementById(`g${who}_M`).classList.toggle('active', g === 'M');
+  document.getElementById(`g${who}_F`).classList.toggle('active', g === 'F');
+  if (who !== 'C' && document.getElementById('synastryResult').innerHTML.trim()) runSynastry(false);
+}
+
+function switchView(v) {
+  const isCeil = v === 'ceiling';
+  if (!isCeil) currentMode = v;
+  document.getElementById('modeLove').classList.toggle('active', v === 'love');
+  document.getElementById('modeFriend').classList.toggle('active', v === 'friend');
+  document.getElementById('modeCeiling').classList.toggle('active', isCeil);
+  document.getElementById('viewSynastry').classList.toggle('active', !isCeil);
+  document.getElementById('viewCeiling').classList.toggle('active', isCeil);
+  if (!isCeil && document.getElementById('synastryResult').innerHTML.trim()) runSynastry(false);
+}
+
+function toggleTime(who) {
+  document.getElementById('time' + who).disabled = document.getElementById('unk' + who).checked;
+}
+
+function copyFromAtoC() {
+  document.getElementById('nameC').value = document.getElementById('nameA').value;
+  document.getElementById('dateC').value = document.getElementById('dateA').value;
+  document.getElementById('timeC').value = document.getElementById('timeA').value;
+  document.getElementById('unkC').checked = document.getElementById('unkA').checked;
+  document.getElementById('provC').value = document.getElementById('provA').value;
+  onProvChange('C');
+  document.getElementById('lonC').value = document.getElementById('lonA').value;
+  setGender('C', genderA);
+  toggleTime('C');
+}
+
+/* ================= 历法与五行核心 ================= */
 const STEMS = ['甲','乙','丙','丁','戊','己','庚','辛','壬','癸'];
 const BRANCHES = ['子','丑','寅','卯','辰','巳','午','未','申','酉','戌','亥'];
 const STEM_EL = ['木','木','火','火','土','土','金','金','水','水'];
 const BRANCH_EL = ['水','土','木','木','土','火','火','土','金','金','土','水'];
 const ELEMENTS = ['木','火','土','金','水'];
-
 const HIDDEN_STEMS = [
-  [[9,1.0]],                     // 子: 癸
-  [[5,0.6],[9,0.25],[7,0.15]],   // 丑: 己癸辛
-  [[0,0.6],[2,0.25],[4,0.15]],   // 寅: 甲丙戊
-  [[1,1.0]],                     // 卯: 乙
-  [[4,0.6],[1,0.25],[9,0.15]],   // 辰: 戊乙癸
-  [[2,0.6],[6,0.25],[4,0.15]],   // 巳: 丙庚戊
-  [[3,0.7],[5,0.3]],             // 午: 丁己
-  [[5,0.6],[3,0.25],[1,0.15]],   // 未: 己丁乙
-  [[6,0.6],[8,0.25],[4,0.15]],   // 申: 庚壬戊
-  [[7,1.0]],                     // 酉: 辛
-  [[4,0.6],[7,0.25],[3,0.15]],   // 戌: 戊辛丁
-  [[8,0.7],[0,0.3]]              // 亥: 壬甲
+  [[9,1.0]], [[5,0.6],[9,0.25],[7,0.15]], [[0,0.6],[2,0.25],[4,0.15]], [[1,1.0]],
+  [[4,0.6],[1,0.25],[9,0.15]], [[2,0.6],[6,0.25],[4,0.15]], [[3,0.7],[5,0.3]], [[5,0.6],[3,0.25],[1,0.15]],
+  [[6,0.6],[8,0.25],[4,0.15]], [[7,1.0]], [[4,0.6],[7,0.25],[3,0.15]], [[8,0.7],[0,0.3]]
 ];
 
-let currentMode = 'love';
-function setMode(m) {
-  currentMode = m;
-  document.getElementById('modeLove').classList.toggle('active', m === 'love');
-  document.getElementById('modeFriend').classList.toggle('active', m === 'friend');
-  if (document.getElementById('synastryResult').innerHTML.trim()) {
-    runSynastry(false);
-  }
-}
-
-function applyCity(who) {
-  const val = document.getElementById('city' + who).value;
-  if (val) document.getElementById('lon' + who).value = val;
-}
-
-function toggleTime(who) {
-  const unk = document.getElementById('unk' + who).checked;
-  document.getElementById('time' + who).disabled = unk;
-}
-
-/* ================= Jean Meeus 太阳黄经 & 真太阳时 ================= */
-function toJulianDay(year, month, day, hourUTC) {
-  let y = year, m = month;
+function toJulianDay(y, m, d, hUTC) {
   if (m <= 2) { y -= 1; m += 12; }
-  const A = Math.floor(y / 100);
-  const B = 2 - A + Math.floor(A / 4);
-  return Math.floor(365.25 * (y + 4716)) + Math.floor(30.6001 * (m + 1)) + day + hourUTC / 24 + B - 1524.5;
+  const A = Math.floor(y / 100), B = 2 - A + Math.floor(A / 4);
+  return Math.floor(365.25 * (y + 4716)) + Math.floor(30.6001 * (m + 1)) + d + hUTC / 24 + B - 1524.5;
 }
-
 function getSunLongitude(jd) {
   const T = (jd - 2451545.0) / 36525.0;
-  let L0 = (280.46646 + 36000.76983 * T + 0.0003032 * T * T) % 360;
-  if (L0 < 0) L0 += 360;
-  let M = (357.52911 + 35999.05029 * T - 0.0001537 * T * T) % 360;
-  if (M < 0) M += 360;
+  let L0 = (280.46646 + 36000.76983 * T + 0.0003032 * T * T) % 360; if (L0 < 0) L0 += 360;
+  let M = (357.52911 + 35999.05029 * T - 0.0001537 * T * T) % 360; if (M < 0) M += 360;
   const Mrad = M * Math.PI / 180;
-  const C = (1.914602 - 0.004817 * T - 0.000014 * T * T) * Math.sin(Mrad)
-          + (0.019993 - 0.000101 * T) * Math.sin(2 * Mrad)
-          + 0.000289 * Math.sin(3 * Mrad);
-  const trueLon = L0 + C;
+  const C = (1.914602 - 0.004817 * T - 0.000014 * T * T) * Math.sin(Mrad) + (0.019993 - 0.000101 * T) * Math.sin(2 * Mrad) + 0.000289 * Math.sin(3 * Mrad);
   const omega = (125.04 - 1934.136 * T) * Math.PI / 180;
-  let lambda = (trueLon - 0.00569 - 0.00478 * Math.sin(omega)) % 360;
-  if (lambda < 0) lambda += 360;
-  return lambda;
+  let lam = (L0 + C - 0.00569 - 0.00478 * Math.sin(omega)) % 360;
+  return lam < 0 ? lam + 360 : lam;
 }
-
-function getTrueSolarOffsetMin(year, month, day, lon) {
-  const start = Date.UTC(year, 0, 0);
-  const cur = Date.UTC(year, month - 1, day);
-  const dayOfYear = Math.floor((cur - start) / 86400000);
-  const B = 2 * Math.PI * (dayOfYear - 81) / 365;
+function getTrueSolarOffsetMin(y, m, d, lon) {
+  const doy = Math.floor((Date.UTC(y, m - 1, d) - Date.UTC(y, 0, 0)) / 86400000);
+  const B = 2 * Math.PI * (doy - 81) / 365;
   const eot = 9.87 * Math.sin(2 * B) - 7.53 * Math.cos(B) - 1.5 * Math.sin(B);
   return (lon - 120) * 4 + eot;
 }
+function getTenGod(meStem, targetStem) {
+  const meEl = Math.floor(meStem / 2), tEl = Math.floor(targetStem / 2);
+  const samePol = (meStem % 2) === (targetStem % 2);
+  const diff = (tEl - meEl + 5) % 5;
+  return [['比肩','劫财'],['食神','伤官'],['偏财','正财'],['七杀','正官'],['偏印','正印']][diff][samePol ? 0 : 1];
+}
+function getSpouseElement(dStem, gender) {
+  return ELEMENTS[(Math.floor(dStem / 2) + (gender === 'M' ? 2 : 3)) % 5];
+}
 
-function calcBazi(year, month, day, hour, minute, lon = 120, fixedHourBranch = null) {
+function calcBazi(year, month, day, hour, minute, lon = 120, gender = 'M', fixedHourBranch = null) {
   const offsetMin = getTrueSolarOffsetMin(year, month, day, lon);
-  const baseMs = Date.UTC(year, month - 1, day, hour, minute);
-  const tst = new Date(baseMs + Math.round(offsetMin * 60000));
-
-  const ty = tst.getUTCFullYear();
-  const tm = tst.getUTCMonth() + 1;
-  const td = tst.getUTCDate();
-  const th = tst.getUTCHours();
-  const tmin = tst.getUTCMinutes();
-
-  const utcHour = (hour + minute / 60) - 8;
-  const jd = toJulianDay(year, month, day, utcHour);
+  const tst = new Date(Date.UTC(year, month - 1, day, hour, minute) + Math.round(offsetMin * 60000));
+  const ty = tst.getUTCFullYear(), tm = tst.getUTCMonth() + 1, td = tst.getUTCDate(), th = tst.getUTCHours(), tmin = tst.getUTCMinutes();
+  const jd = toJulianDay(year, month, day, (hour + minute / 60) - 8);
   const sunLon = getSunLongitude(jd);
 
-  // 年柱（立春 315° 换年）
   let baziYear = year;
   if (month <= 2 && sunLon < 315 && sunLon > 260) baziYear = year - 1;
   if (month === 12 && sunLon >= 315) baziYear = year + 1;
   const yStem = ((baziYear - 4) % 10 + 10) % 10;
   const yBranch = ((baziYear - 4) % 12 + 12) % 12;
 
-  // 月柱（12节气换月）
-  const shifted = (sunLon - 315 + 360) % 360;
-  const monthIdx = Math.floor(shifted / 30);
+  const monthIdx = Math.floor(((sunLon - 315 + 360) % 360) / 30);
   const mBranch = (monthIdx + 2) % 12;
   const mStem = ((yStem % 5) * 2 + 2 + monthIdx) % 10;
 
-  // 日柱（2000-01-01 为 戊午=54；23:00晚子时换日柱）
   const dayShift = (fixedHourBranch === null && th >= 23) ? 1 : 0;
   const daysSince2000 = Math.round((Date.UTC(ty, tm - 1, td) - Date.UTC(2000, 0, 1)) / 86400000) + dayShift;
   const dIdx = ((54 + daysSince2000) % 60 + 60) % 60;
-  const dStem = dIdx % 10;
-  const dBranch = dIdx % 12;
+  const dStem = dIdx % 10, dBranch = dIdx % 12;
 
-  // 时柱（五鼠遁）
   const hBranch = fixedHourBranch !== null ? fixedHourBranch : Math.floor(((th + 1) % 24) / 2);
   const hStem = ((dStem % 5) * 2 + hBranch) % 10;
 
-  // 五行力量占比（月令 1.8，日支 1.2）
+  const isYangYear = (yStem % 2) === 0;
+  const dayunDir = ((isYangYear && gender === 'M') || (!isYangYear && gender === 'F')) ? '顺行大运' : '逆行大运';
+
   const scores = { '木':0, '火':0, '土':0, '金':0, '水':0 };
   [yStem, mStem, dStem, hStem].forEach(s => { scores[STEM_EL[s]] += 1.0; });
   [yBranch, mBranch, dBranch, hBranch].forEach((b, idx) => {
@@ -525,13 +651,16 @@ function calcBazi(year, month, day, hour, minute, lon = 120, fixedHourBranch = n
   const pct = {};
   ELEMENTS.forEach(e => pct[e] = +(scores[e] / total * 100).toFixed(1));
 
+  const spouseEl = getSpouseElement(dStem, gender);
+  const pillars = [
+    { label:'年柱', s:yStem, b:yBranch, tg:getTenGod(dStem, yStem) },
+    { label:'月柱', s:mStem, b:mBranch, tg:getTenGod(dStem, mStem) },
+    { label:'日柱', s:dStem, b:dBranch, tg:gender === 'M' ? '元男' : '元女' },
+    { label:'时柱', s:hStem, b:hBranch, tg:getTenGod(dStem, hStem) }
+  ];
   return {
-    pillars: [
-      { label:'年柱', s:yStem, b:yBranch },
-      { label:'月柱', s:mStem, b:mBranch },
-      { label:'日柱', s:dStem, b:dBranch },
-      { label:'时柱', s:hStem, b:hBranch }
-    ],
+    gender, dayunDir, spouseEl, pillars,
+    gz: pillars.map(p => STEMS[p.s] + BRANCHES[p.b]).join(' '),
     yStem, yBranch, mStem, mBranch, dStem, dBranch, hStem, hBranch,
     pct,
     tstStr: `${String(th).padStart(2,'0')}:${String(tmin).padStart(2,'0')}`,
@@ -546,13 +675,9 @@ const BRANCH_CLASH = [[0,6],[1,7],[2,8],[3,9],[4,10],[5,11]];
 const BRANCH_HARM = [[0,7],[1,6],[2,5],[3,4],[8,11],[9,10]];
 const BRANCH_TRINE = [[8,0,4],[11,3,7],[2,6,10],[5,9,1]];
 
-function hasPair(list, a, b) {
-  return list.some(([x, y]) => (x === a && y === b) || (x === b && y === a));
-}
-function sameTrine(a, b) {
-  return a !== b && BRANCH_TRINE.some(g => g.includes(a) && g.includes(b));
-}
-function elRelation(e1, e2) {
+const hasPair = (list, a, b) => list.some(([x, y]) => (x === a && y === b) || (x === b && y === a));
+const sameTrine = (a, b) => a !== b && BRANCH_TRINE.some(g => g.includes(a) && g.includes(b));
+function elRel(e1, e2) {
   const i1 = ELEMENTS.indexOf(e1), i2 = ELEMENTS.indexOf(e2);
   if (i1 === i2) return '比和';
   if ((i1 + 1) % 5 === i2 || (i2 + 1) % 5 === i1) return '相生';
@@ -560,343 +685,417 @@ function elRelation(e1, e2) {
 }
 
 function evaluatePair(bzA, bzB, mode = 'love') {
-  // 1. 日主契合
   let s1 = 72.0, d1 = '';
   const elA = STEM_EL[bzA.dStem], elB = STEM_EL[bzB.dStem];
   if (hasPair(STEM_COMBINE, bzA.dStem, bzB.dStem)) {
     s1 = mode === 'love' ? 94.5 : 88.0;
     d1 = `${STEMS[bzA.dStem]}${STEMS[bzB.dStem]}天干五合，核心磁场强烈相吸，天生具备高默契底色。`;
   } else {
-    const rel = elRelation(elA, elB);
-    if (rel === '相生') {
-      s1 = 84.5;
-      d1 = `日主${elA}与${elB}相生，相处自然顺畅，容易形成温和的滋养与托举。`;
-    } else if (rel === '比和') {
-      s1 = mode === 'friend' ? 86.0 : 77.5;
-      d1 = `日主同属${elA}，三观与底层逻辑相近，像知己般自在，需注意固执碰撞。`;
-    } else {
-      s1 = 62.5;
-      d1 = `日主${elA}与${elB}相克，初期张力感强，长久相处需要留出边界与磨合空间。`;
-    }
+    const rel = elRel(elA, elB);
+    if (rel === '相生') { s1 = 84.5; d1 = `日主${elA}与${elB}相生，相处自然顺畅，容易形成温和的滋养与托举。`; }
+    else if (rel === '比和') { s1 = mode === 'friend' ? 86.5 : 77.5; d1 = `日主同属${elA}，底层逻辑相近，像知己般自在，需注意固执碰撞。`; }
+    else { s1 = 62.5; d1 = `日主${elA}与${elB}相克，初期张力感强，长久相处需要留出边界与磨合空间。`; }
   }
 
-  // 2. 日支（夫妻宫 / 亲密相处）
   let s2 = 74.0, d2 = '';
   const bA = bzA.dBranch, bB = bzB.dBranch;
-  if (hasPair(BRANCH_SIX_COMBINE, bA, bB)) {
-    s2 = 95.0; d2 = `日支${BRANCHES[bA]}${BRANCHES[bB]}六合，生活习惯与亲密感高度贴合。`;
-  } else if (sameTrine(bA, bB)) {
-    s2 = 88.5; d2 = `日支${BRANCHES[bA]}${BRANCHES[bB]}半三合，日常步调一致，遇事容易拧成一股绳。`;
-  } else if (hasPair(BRANCH_CLASH, bA, bB)) {
-    s2 = mode === 'love' ? 48.0 : 58.0;
-    d2 = `日支${BRANCHES[bA]}${BRANCHES[bB]}六冲，生活节奏或情绪表达差异明显，忌冷战硬碰。`;
-  } else if (hasPair(BRANCH_HARM, bA, bB)) {
-    s2 = 57.5; d2 = `日支${BRANCHES[bA]}${BRANCHES[bB]}相害，易在细节琐事上产生误解，沟通宜直接摊开。`;
-  } else if (bA === bB) {
-    s2 = 77.0; d2 = `日支同为${BRANCHES[bA]}，生活习惯高度一致，默契好但略缺新鲜互补。`;
+  if (hasPair(BRANCH_SIX_COMBINE, bA, bB)) { s2 = 95.0; d2 = `日支${BRANCHES[bA]}${BRANCHES[bB]}六合，生活习惯与亲密感高度贴合。`; }
+  else if (sameTrine(bA, bB)) { s2 = 88.5; d2 = `日支${BRANCHES[bA]}${BRANCHES[bB]}半三合，日常步调一致，遇事容易拧成一股绳。`; }
+  else if (hasPair(BRANCH_CLASH, bA, bB)) { s2 = mode === 'love' ? 48.0 : 58.0; d2 = `日支${BRANCHES[bA]}${BRANCHES[bB]}六冲，生活节奏或情绪表达差异明显，忌冷战硬碰。`; }
+  else if (hasPair(BRANCH_HARM, bA, bB)) { s2 = 57.5; d2 = `日支${BRANCHES[bA]}${BRANCHES[bB]}相害，易在细节琐事上产生误解，沟通宜直接摊开。`; }
+  else if (bA === bB) { s2 = 77.0; d2 = `日支同为${BRANCHES[bA]}，生活习惯高度一致，默契好但略缺新鲜互补。`; }
+  else { d2 = `日支${BRANCHES[bA]}与${BRANCHES[bB]}无明显合冲，相处平稳，重在后天经营。`; }
+
+  let s3 = 72.0, d3 = '', dim3Name = mode === 'love' ? '配偶星感应' : '十神同频';
+  if (mode === 'love') {
+    const aSpouse = bzA.spouseEl, bSpouse = bzB.spouseEl;
+    const aRole = bzA.gender === 'M' ? '妻星(财)' : '夫星(官杀)';
+    const bRole = bzB.gender === 'M' ? '妻星(财)' : '夫星(官杀)';
+    let hit = 0, notes = [];
+    if (elB === aSpouse) { hit += 13; notes.push(`乙方日主(${elB})正合甲方${aRole}`); }
+    else if (bzB.pct[aSpouse] >= 22) { hit += 8; notes.push(`乙方命局${aSpouse}旺(${bzB.pct[aSpouse]}%)，呼应甲方${aRole}`); }
+    if (elA === bSpouse) { hit += 13; notes.push(`甲方日主(${elA})正合乙方${bRole}`); }
+    else if (bzA.pct[bSpouse] >= 22) { hit += 8; notes.push(`甲方命局${bSpouse}旺(${bzA.pct[bSpouse]}%)，呼应乙方${bRole}`); }
+    if (bzA.dayunDir === bzB.dayunDir) { hit += 3; notes.push(`双方同为${bzA.dayunDir}，大运节律同步`); }
+    s3 = Math.min(96.0, +(66.0 + hit).toFixed(1));
+    d3 = notes.length ? notes.join('；') + '。' : `甲方${aRole}为${aSpouse}、乙方${bRole}为${bSpouse}，双方配偶星交集较平淡。`;
   } else {
-    d2 = `日支${BRANCHES[bA]}与${BRANCHES[bB]}无明显合冲，相处平稳，重在后天经营。`;
+    const tgAB = getTenGod(bzA.dStem, bzB.dStem), tgBA = getTenGod(bzB.dStem, bzA.dStem);
+    const friendly = ['比肩','食神','正印','偏印','正财'];
+    s3 = Math.min(95.0, 68 + (friendly.includes(tgAB) ? 9 : 4) + (friendly.includes(tgBA) ? 9 : 4));
+    d3 = `甲方视乙方为【${tgAB}】，乙方视甲方为【${tgBA}】，日常交流与价值共振较为顺畅。`;
   }
 
-  // 3. 五行互补（基于连续能量差精细计算）
   let compScore = 62.0, compEls = [];
   ELEMENTS.forEach(e => {
     const a = bzA.pct[e], b = bzB.pct[e];
-    if ((a < 14 && b > 22) || (b < 14 && a > 22)) {
-      compScore += 11.5;
-      compEls.push(e);
-    } else {
-      compScore += Math.min(4.5, Math.abs(a - b) * 0.18);
-    }
+    if ((a < 14 && b > 22) || (b < 14 && a > 22)) { compScore += 11.5; compEls.push(e); }
+    else { compScore += Math.min(4.5, Math.abs(a - b) * 0.18); }
   });
-  let s3 = Math.min(96.5, +compScore.toFixed(2));
-  let d3 = compEls.length
-    ? `双方在【${compEls.join('、')}】五行上形成明显互补，能有效平衡彼此的能量短板。`
-    : '双方五行分布结构较为接近，共鸣度高，能量互补性相对平和。';
+  let s4 = Math.min(96.5, +compScore.toFixed(1));
+  let d4 = compEls.length ? `双方在【${compEls.join('、')}】五行上形成明显互补，能平衡彼此的能量短板。` : '双方五行分布结构较为接近，共鸣度高，能量互补性相对平和。';
 
-  // 4. 月令调候与气场
-  let s4 = 75.0, d4 = '';
-  const mA = bzA.mBranch, mB = bzB.mBranch;
-  if (hasPair(BRANCH_SIX_COMBINE, mA, mB) || sameTrine(mA, mB)) {
-    s4 = 89.5; d4 = `月令${BRANCHES[mA]}与${BRANCHES[mB]}相合，处事气场与现实节奏高度合拍。`;
-  } else if (hasPair(BRANCH_CLASH, mA, mB)) {
-    const coldWarm = ([11,0,1].includes(mA) && [5,6,7].includes(mB)) || ([11,0,1].includes(mB) && [5,6,7].includes(mA));
-    if (coldWarm) {
-      s4 = 79.0; d4 = `月令冬夏对冲，性格一冷一热，磨合好反而形成极佳的寒暖调候。`;
-    } else {
-      s4 = 59.0; d4 = `月令${BRANCHES[mA]}${BRANCHES[mB]}相冲，面对外部压力时的应激节奏不同。`;
-    }
-  } else {
-    d4 = `月令气场平和（${BRANCHES[mA]}月与${BRANCHES[mB]}月），相处节奏舒适自然。`;
-  }
-
-  // 5. 年柱根基与三观
   let s5 = 74.5, d5 = '';
-  if (hasPair(BRANCH_SIX_COMBINE, bzA.yBranch, bzB.yBranch) || sameTrine(bzA.yBranch, bzB.yBranch)) {
-    s5 = 88.5; d5 = `年支${BRANCHES[bzA.yBranch]}${BRANCHES[bzB.yBranch]}相合，原生背景与底层价值观契合度高。`;
-  } else if (hasPair(BRANCH_CLASH, bzA.yBranch, bzB.yBranch)) {
-    s5 = 56.5; d5 = `年支${BRANCHES[bzA.yBranch]}${BRANCHES[bzB.yBranch]}相冲，家庭观念或成长环境差异较大。`;
-  } else {
-    d5 = `年柱根基平稳，无明显代际或背景冲突。`;
-  }
+  const mA = bzA.mBranch, mB = bzB.mBranch;
+  if (hasPair(BRANCH_SIX_COMBINE, mA, mB) || sameTrine(mA, mB)) { s5 = 89.5; d5 = `月令${BRANCHES[mA]}${BRANCHES[mB]}相合，处事气场与现实节奏高度合拍。`; }
+  else if (hasPair(BRANCH_CLASH, mA, mB)) {
+    const cw = ([11,0,1].includes(mA) && [5,6,7].includes(mB)) || ([11,0,1].includes(mB) && [5,6,7].includes(mA));
+    s5 = cw ? 79.0 : 59.0;
+    d5 = cw ? `月令冬夏对冲，性格一冷一热，磨合好反而形成寒暖调候。` : `月令${BRANCHES[mA]}${BRANCHES[mB]}相冲，面对外部压力时的应激节奏不同。`;
+  } else { d5 = `月令气场平和（${BRANCHES[mA]}月与${BRANCHES[mB]}月），原生根基稳定。`; }
 
-  const w = mode === 'love'
-    ? [0.25, 0.28, 0.22, 0.15, 0.10]
-    : [0.26, 0.16, 0.24, 0.22, 0.12];
+  const w = mode === 'love' ? [0.22, 0.25, 0.23, 0.18, 0.12] : [0.24, 0.16, 0.22, 0.22, 0.16];
   const total = +(s1*w[0] + s2*w[1] + s3*w[2] + s4*w[3] + s5*w[4]).toFixed(3);
 
   return {
     total,
     dims: [
-      { name:'日主契合', score:+s1.toFixed(1), desc:d1 },
-      { name: mode === 'love' ? '夫妻宫' : '日常相处', score:+s2.toFixed(1), desc:d2 },
-      { name:'五行互补', score:+s3.toFixed(1), desc:d3 },
-      { name:'月令气场', score:+s4.toFixed(1), desc:d4 },
-      { name:'年柱根基', score:+s5.toFixed(1), desc:d5 }
+      { name:'日主契合', score:s1, desc:d1 },
+      { name:mode === 'love' ? '夫妻宫' : '日常相处', score:s2, desc:d2 },
+      { name:dim3Name, score:s3, desc:d3 },
+      { name:'五行互补', score:s4, desc:d4 },
+      { name:'月令根基', score:s5, desc:d5 }
     ]
   };
 }
 
+/* ================= 个人理论上限穷举引擎 ================= */
+function searchPersonalCeiling(meBz, birthYear, spanYears, targetGender, mode) {
+  const yStart = Math.max(1950, birthYear - spanYears);
+  const yEnd = Math.min(2030, birthYear + spanYears);
+  let best = null;
+
+  const startMs = Date.UTC(yStart, 0, 1);
+  const endMs = Date.UTC(yEnd, 11, 31);
+  const dayMs = 86400000;
+  const base2000 = Date.UTC(2000, 0, 1);
+  const hours = [0, 4, 8, 12, 16, 20];
+
+  for (let ms = startMs; ms <= endMs; ms += dayMs) {
+    const days2000 = Math.round((ms - base2000) / dayMs);
+    const dIdx = ((54 + days2000) % 60 + 60) % 60;
+    const dS = dIdx % 10, dB = dIdx % 12;
+
+    // 快速剪枝：只精算日支六合/半三合 且 日干五合/相生/比和的候选日
+    if (!(hasPair(BRANCH_SIX_COMBINE, meBz.dBranch, dB) || sameTrine(meBz.dBranch, dB))) continue;
+    if (!(hasPair(STEM_COMBINE, meBz.dStem, dS) || ['相生', '比和'].includes(elRel(STEM_EL[meBz.dStem], STEM_EL[dS])))) continue;
+
+    const dt = new Date(ms);
+    const y = dt.getUTCFullYear(), m = dt.getUTCMonth() + 1, d = dt.getUTCDate();
+    for (let hi = 0; hi < hours.length; hi++) {
+      const hh = hours[hi];
+      const cand = calcBazi(y, m, d, hh, 0, 120.0, targetGender);
+      const ev = evaluatePair(meBz, cand, mode);
+      if (!best || ev.total > best.score) {
+        best = {
+          score: ev.total,
+          dims: ev.dims,
+          date: `${y}-${String(m).padStart(2,'0')}-${String(d).padStart(2,'0')}`,
+          time: `${String(hh).padStart(2,'0')}:00`,
+          gender: targetGender,
+          bz: cand
+        };
+      }
+    }
+  }
+  return best;
+}
+
+function runCeilingFinder() {
+  const name = document.getElementById('nameC').value.trim() || '测算对象';
+  const dateStr = document.getElementById('dateC').value;
+  const timeStr = document.getElementById('timeC').value || '12:00';
+  const unk = document.getElementById('unkC').checked;
+  const lon = parseFloat(document.getElementById('lonC').value) || 120;
+  const span = Number(document.getElementById('spanC').value) || 5;
+  if (!dateStr) return alert('请填写公历出生日期');
+
+  const [y, m, d] = dateStr.split('-').map(Number);
+  const [hh, mm] = unk ? [12, 0] : timeStr.split(':').map(Number);
+  const meBz = calcBazi(y, m, d, hh, mm, lon, genderC);
+
+  const oppGender = genderC === 'M' ? 'F' : 'M';
+  const bestLove = searchPersonalCeiling(meBz, y, span, oppGender, 'love');
+  const bestFriend = searchPersonalCeiling(meBz, y, span, genderC, 'friend');
+
+  lastCeilingResult = {
+    me: { name, gender: genderC, date: dateStr, time: unk ? '12:00' : timeStr, unk, lon, bz: meBz },
+    love: bestLove,
+    friend: bestFriend
+  };
+
+  const renderBox = (title, mode, res) => {
+    if (!res) return '';
+    const gTxt = res.gender === 'M' ? '乾造 · 男' : '坤造 · 女';
+    return `
+      <div class="ceil-card">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <b>${title}</b>
+          <span class="badge">${gTxt}</span>
+        </div>
+        <div class="ceil-score serif">${res.score.toFixed(3)} <span style="font-size:14px;font-weight:500;">分</span></div>
+        <div class="ceil-meta">
+          <div><b>最佳匹配公历：</b>${res.date} ${res.time}</div>
+          <div><b>最佳匹配八字：</b>${res.bz.gz}</div>
+          <div><b>五维拆解：</b>${res.dims.map(x => `${x.name} ${x.score}`).join(' · ')}</div>
+        </div>
+        <div class="ceil-actions">
+          <button type="button" class="btn btn-sm btn-soft" onclick="applyCeilingToSynastry('${mode}')">一键带入合盘看雷达图</button>
+        </div>
+      </div>`;
+  };
+
+  document.getElementById('ceilingResult').innerHTML = `
+    <div class="card">
+      <div class="card-title">
+        <span>${name} 的理论上限报告（前后 ±${span} 岁实测）</span>
+        <button type="button" class="btn btn-sm btn-soft" onclick="pinCeilingToSidebar()">★ 同步设为右侧个人理论上限</button>
+      </div>
+      <div style="margin-bottom:14px;">${renderPersonCard(name, meBz, unk)}</div>
+      <div class="grid-2">
+        ${renderBox('♡ 理论爱情上限（异性最佳）', 'love', bestLove)}
+        ${renderBox('✦ 理论友情上限（同频最佳）', 'friend', bestFriend)}
+      </div>
+    </div>`;
+}
+
+function applyCeilingToSynastry(mode) {
+  if (!lastCeilingResult) return;
+  const me = lastCeilingResult.me;
+  const target = mode === 'love' ? lastCeilingResult.love : lastCeilingResult.friend;
+  if (!target) return;
+
+  switchView(mode);
+  setGender('A', me.gender);
+  setGender('B', target.gender);
+  document.getElementById('nameA').value = me.name;
+  document.getElementById('dateA').value = me.date;
+  document.getElementById('timeA').value = me.time;
+  document.getElementById('unkA').checked = me.unk;
+  document.getElementById('lonA').value = me.lon;
+
+  document.getElementById('nameB').value = mode === 'love' ? '理论爱情满配' : '理论友情满配';
+  document.getElementById('dateB').value = target.date;
+  document.getElementById('timeB').value = target.time;
+  document.getElementById('unkB').checked = false;
+  document.getElementById('lonB').value = 120.00;
+
+  toggleTime('A'); toggleTime('B');
+  runSynastry(false);
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function pinCeilingToSidebar() {
+  if (!lastCeilingResult) return;
+  const me = lastCeilingResult.me;
+  const makeRec = (mode, res, label) => ({
+    label, mode, score: res.score,
+    nameA: me.name, genderA: me.gender, dateA: me.date, timeA: me.time, unkA: me.unk, lonA: me.lon, gzA: me.bz.gz,
+    nameB: mode === 'love' ? '理论爱情满配' : '理论友情满配',
+    genderB: res.gender, dateB: res.date, timeB: res.time, unkB: false, lonB: 120.00, gzB: res.bz.gz,
+    note: res.dims.slice(0, 3).map(d => `${d.name}${d.score}`).join(' · ')
+  });
+  try {
+    if (window.parent && window.parent !== window) {
+      window.parent.postMessage({
+        type: 'BAZI_V54_SAVE_CEILING',
+        love: makeRec('love', lastCeilingResult.love, `${me.name} · 理论爱情上限`),
+        friend: makeRec('friend', lastCeilingResult.friend, `${me.name} · 理论友情上限`)
+      }, '*');
+    }
+  } catch (_) {}
+}
+
+/* ================= 渲染与双人合盘 ================= */
 function buildRadarSVG(dims, maxDims = null) {
   const cx = 138, cy = 132, r = 90;
   const angles = dims.map((_, i) => -Math.PI / 2 + i * 2 * Math.PI / 5);
-  const pt = (val, i) => {
-    const rad = r * (val / 100);
-    return `${(cx + rad * Math.cos(angles[i])).toFixed(1)},${(cy + rad * Math.sin(angles[i])).toFixed(1)}`;
-  };
+  const pt = (val, i) => `${(cx + r * (val / 100) * Math.cos(angles[i])).toFixed(1)},${(cy + r * (val / 100) * Math.sin(angles[i])).toFixed(1)}`;
   let gridSvg = '';
-  [25, 50, 75, 100].forEach(lv => {
-    gridSvg += `<polygon points="${angles.map((_, i) => pt(lv, i)).join(' ')}" fill="none" stroke="var(--line)" stroke-width="1"/>`;
-  });
+  [25, 50, 75, 100].forEach(lv => { gridSvg += `<polygon points="${angles.map((_, i) => pt(lv, i)).join(' ')}" fill="none" stroke="var(--line)" stroke-width="1"/>`; });
   angles.forEach((_, i) => {
-    const [x, y] = pt(100, i).split(',');
+    const [x, y] = pt(100, i).split(','), [lx, ly] = pt(116, i).split(',');
     gridSvg += `<line x1="${cx}" y1="${cy}" x2="${x}" y2="${y}" stroke="var(--line)" stroke-width="1"/>`;
-    const [lx, ly] = pt(116, i).split(',');
     gridSvg += `<text x="${lx}" y="${ly}" text-anchor="middle" dominant-baseline="middle" font-size="11" fill="var(--muted)" font-weight="600">${dims[i].name}</text>`;
   });
-  const mainPts = dims.map((d, i) => pt(d.score, i)).join(' ');
-  const rangeSvg = maxDims
-    ? `<polygon points="${maxDims.map((v, i) => pt(v, i)).join(' ')}" fill="rgba(176,92,92,0.10)" stroke="var(--warm)" stroke-dasharray="4 3" stroke-width="1.4"/>`
-    : '';
-  return `
-    <svg width="276" height="264" viewBox="0 0 276 264">
-      ${gridSvg}
-      ${rangeSvg}
-      <polygon points="${mainPts}" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="2"/>
-      ${dims.map((d, i) => {
-        const [x, y] = pt(d.score, i).split(',');
-        return `<circle cx="${x}" cy="${y}" r="3.5" fill="var(--accent-strong)"/>`;
-      }).join('')}
-    </svg>
-  `;
+  const rangeSvg = maxDims ? `<polygon points="${maxDims.map((v, i) => pt(v, i)).join(' ')}" fill="rgba(181,87,75,0.10)" stroke="var(--warm)" stroke-dasharray="4 3" stroke-width="1.4"/>` : '';
+  return `<svg width="276" height="264" viewBox="0 0 276 264">${gridSvg}${rangeSvg}<polygon points="${dims.map((d, i) => pt(d.score, i)).join(' ')}" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="2"/>${dims.map((d, i) => { const [x, y] = pt(d.score, i).split(','); return `<circle cx="${x}" cy="${y}" r="3.5" fill="var(--accent-strong)"/>`; }).join('')}</svg>`;
 }
 
 function renderPersonCard(name, bz, isUnk) {
-  const bars = ELEMENTS.map(e => `
-    <div class="wx-bar-row">
-      <span class="el-${e}" style="width:20px;font-weight:700">${e}</span>
-      <div class="wx-track"><div class="wx-fill bg-${e}" style="width:${bz.pct[e]}%"></div></div>
-      <span style="width:38px;text-align:right;color:var(--muted)">${bz.pct[e]}%</span>
+  const roleTag = bz.gender === 'M' ? '乾造 · 男' : '坤造 · 女';
+  const spLabel = bz.gender === 'M' ? `妻星(财)：${bz.spouseEl}` : `夫星(官杀)：${bz.spouseEl}`;
+  const bars = ELEMENTS.map(e => `<div class="wx-bar-row"><span class="el-${e}" style="width:20px;font-weight:700">${e}</span><div class="wx-track"><div class="wx-fill bg-${e}" style="width:${bz.pct[e]}%"></div></div><span style="width:38px;text-align:right;color:var(--muted)">${bz.pct[e]}%</span></div>`).join('');
+  return `<div>
+    <div style="font-size:13px;font-weight:700;margin-bottom:4px;">
+      ${name} <span class="badge">${roleTag}</span>
+      <span style="font-weight:400;font-size:11px;color:var(--muted);margin-left:4px">${bz.dayunDir} · ${spLabel}</span>
     </div>
-  `).join('');
-  return `
-    <div>
-      <div style="font-size:13px;font-weight:700;margin-bottom:4px;">
-        ${name}
-        <span style="font-weight:400;font-size:11px;color:var(--muted)">
-          ${isUnk ? '（时辰未知 · 仅排三柱）' : `（真太阳时 ${bz.tstStr}，校正 ${bz.offsetMin >= 0 ? '+' : ''}${bz.offsetMin}分）`}
-        </span>
-      </div>
-      <div class="pillars">
-        ${bz.pillars.map((p, idx) => `
-          <div class="pillar-box">
-            <div class="pillar-label">${p.label}</div>
-            <div class="pillar-gz serif">
-              ${idx === 3 && isUnk ? '<span style="color:var(--muted)">??</span>' :
-                `<span class="el-${STEM_EL[p.s]}">${STEMS[p.s]}</span><span class="el-${BRANCH_EL[p.b]}">${BRANCHES[p.b]}</span>`}
-            </div>
-            <div class="pillar-sub">${idx === 3 && isUnk ? '遍历12时' : STEM_EL[p.s] + BRANCH_EL[p.b]}</div>
-          </div>
-        `).join('')}
-      </div>
-      <div class="wx-bars">${bars}</div>
+    <div style="font-size:11px;color:var(--muted);margin-bottom:6px;">
+      ${isUnk ? '时辰未知 · 仅排三柱' : `真太阳时 ${bz.tstStr}（校正 ${bz.offsetMin >= 0 ? '+' : ''}${bz.offsetMin} 分）`}
     </div>
-  `;
+    <div class="pillars">${bz.pillars.map((p, idx) => `
+      <div class="pillar-box">
+        <div class="pillar-label">${p.label} · ${idx === 3 && isUnk ? '?' : p.tg}</div>
+        <div class="pillar-gz serif">${idx === 3 && isUnk ? '<span style="color:var(--muted)">??</span>' : `<span class="el-${STEM_EL[p.s]}">${STEMS[p.s]}</span><span class="el-${BRANCH_EL[p.b]}">${BRANCHES[p.b]}</span>`}</div>
+        <div class="pillar-sub">${idx === 3 && isUnk ? '遍历12时' : STEM_EL[p.s] + BRANCH_EL[p.b]}</div>
+      </div>`).join('')}
+    </div>
+    <div class="wx-bars">${bars}</div>
+  </div>`;
 }
 
 function runSynastry(save = true) {
   const nameA = document.getElementById('nameA').value.trim() || '甲方';
   const nameB = document.getElementById('nameB').value.trim() || '乙方';
-  const dateA = document.getElementById('dateA').value;
-  const dateB = document.getElementById('dateB').value;
-  const timeA = document.getElementById('timeA').value || '12:00';
-  const timeB = document.getElementById('timeB').value || '12:00';
-  const unkA = document.getElementById('unkA').checked;
-  const unkB = document.getElementById('unkB').checked;
-  const lonA = parseFloat(document.getElementById('lonA').value) || 120;
-  const lonB = parseFloat(document.getElementById('lonB').value) || 120;
-
+  const dateA = document.getElementById('dateA').value, dateB = document.getElementById('dateB').value;
+  const timeA = document.getElementById('timeA').value || '12:00', timeB = document.getElementById('timeB').value || '12:00';
+  const unkA = document.getElementById('unkA').checked, unkB = document.getElementById('unkB').checked;
+  const lonA = parseFloat(document.getElementById('lonA').value) || 120, lonB = parseFloat(document.getElementById('lonB').value) || 120;
   if (!dateA || !dateB) return alert('请完整填写双方出生日期');
-  const [yA, mA, dA] = dateA.split('-').map(Number);
-  const [hA, minA] = timeA.split(':').map(Number);
-  const [yB, mB, dB] = dateB.split('-').map(Number);
-  const [hB, minB] = timeB.split(':').map(Number);
 
-  const baseA = calcBazi(yA, mA, dA, hA, minA, lonA);
-  const baseB = calcBazi(yB, mB, dB, hB, minB, lonB);
+  const [yA, mA, dA] = dateA.split('-').map(Number), [hA, minA] = timeA.split(':').map(Number);
+  const [yB, mB, dB] = dateB.split('-').map(Number), [hB, minB] = timeB.split(':').map(Number);
+  const baseA = calcBazi(yA, mA, dA, hA, minA, lonA, genderA);
+  const baseB = calcBazi(yB, mB, dB, hB, minB, lonB, genderB);
 
   let evalRes, minScore, maxScore, maxDimArr = null;
   if (!unkA && !unkB) {
     evalRes = evaluatePair(baseA, baseB, currentMode);
     minScore = maxScore = evalRes.total;
   } else {
-    const hoursA = unkA ? [...Array(12).keys()] : [null];
-    const hoursB = unkB ? [...Array(12).keys()] : [null];
-    let sumTotal = 0, count = 0;
-    minScore = 100; maxScore = 0;
-    const dimSums = [0,0,0,0,0];
-    maxDimArr = [0,0,0,0,0];
-    const minDimArr = [100,100,100,100,100];
+    const hoursA = unkA ? [...Array(12).keys()] : [null], hoursB = unkB ? [...Array(12).keys()] : [null];
+    let sumTotal = 0, count = 0; minScore = 100; maxScore = 0;
+    const dimSums = [0,0,0,0,0], minDimArr = [100,100,100,100,100]; maxDimArr = [0,0,0,0,0];
     let sampleRes = null;
-
     hoursA.forEach(hbA => {
-      const bzA = hbA === null ? baseA : calcBazi(yA, mA, dA, 12, 0, lonA, hbA);
+      const bzA = hbA === null ? baseA : calcBazi(yA, mA, dA, 12, 0, lonA, genderA, hbA);
       hoursB.forEach(hbB => {
-        const bzB = hbB === null ? baseB : calcBazi(yB, mB, dB, 12, 0, lonB, hbB);
+        const bzB = hbB === null ? baseB : calcBazi(yB, mB, dB, 12, 0, lonB, genderB, hbB);
         const r = evaluatePair(bzA, bzB, currentMode);
         if (!sampleRes) sampleRes = r;
         sumTotal += r.total; count++;
         if (r.total < minScore) minScore = r.total;
         if (r.total > maxScore) maxScore = r.total;
-        r.dims.forEach((dm, idx) => {
-          dimSums[idx] += dm.score;
-          if (dm.score > maxDimArr[idx]) maxDimArr[idx] = dm.score;
-          if (dm.score < minDimArr[idx]) minDimArr[idx] = dm.score;
-        });
+        r.dims.forEach((dm, idx) => { dimSums[idx] += dm.score; if (dm.score > maxDimArr[idx]) maxDimArr[idx] = dm.score; if (dm.score < minDimArr[idx]) minDimArr[idx] = dm.score; });
       });
     });
-
     evalRes = {
       total: +(sumTotal / count).toFixed(3),
       dims: sampleRes.dims.map((dm, idx) => ({
         name: dm.name,
         score: +(dimSums[idx] / count).toFixed(1),
-        desc: dm.desc + (maxDimArr[idx] !== minDimArr[idx] ? `（时辰波动区间 ${minDimArr[idx].toFixed(1)}–${maxDimArr[idx].toFixed(1)} 分）` : '')
+        desc: dm.desc + (maxDimArr[idx] !== minDimArr[idx] ? `（时辰波动 ${minDimArr[idx].toFixed(1)}–${maxDimArr[idx].toFixed(1)} 分）` : '')
       }))
     };
   }
 
-  const verdict = evalRes.total >= 85 ? '深度共鸣 · 气场极度契合'
-    : evalRes.total >= 76 ? '良缘可期 · 互补大于摩擦'
-    : evalRes.total >= 67 ? '平实相守 · 重在沟通磨合'
-    : '张力较强 · 需留足边界感';
-
+  const verdict = evalRes.total >= 85 ? '深度共鸣 · 气场极度契合' : evalRes.total >= 76 ? '良缘可期 · 互补大于摩擦' : evalRes.total >= 67 ? '平实相守 · 重在沟通磨合' : '张力较强 · 需留足边界感';
   document.getElementById('synastryResult').innerHTML = `
     <div class="card">
       <div class="score-hero">
-        <div class="score-label">${nameA} × ${nameB} · ${currentMode === 'love' ? '婚恋模式' : '友情/人际模式'}</div>
+        <div class="score-label">${nameA}（${genderA === 'M' ? '乾造' : '坤造'}）× ${nameB}（${genderB === 'M' ? '乾造' : '坤造'}） · ${currentMode === 'love' ? '婚恋模式' : '友情模式'}</div>
         <div class="score-result-value serif" id="totalScoreResult">综合得分：${evalRes.total.toFixed(3)}</div>
         ${(unkA || unkB) ? `<div class="score-range">未知时辰穷举区间：${minScore.toFixed(3)} – ${maxScore.toFixed(3)} 分（虚线为上限）</div>` : ''}
         <div class="score-verdict">${verdict}</div>
       </div>
-
       <div class="grid-2" style="margin-bottom:14px;">
         ${renderPersonCard(nameA, baseA, unkA)}
         ${renderPersonCard(nameB, baseB, unkB)}
       </div>
-
       <div class="result-split">
         <div class="radar-wrap">${buildRadarSVG(evalRes.dims, maxDimArr)}</div>
-        <div>
-          ${evalRes.dims.map(d => `
-            <div class="dim-item">
-              <div class="dim-head">
-                <span>${d.name}</span>
-                <span class="dim-score">${d.score} 分</span>
-              </div>
-              <div class="dim-desc">${d.desc}</div>
-            </div>
-          `).join('')}
-        </div>
+        <div>${evalRes.dims.map(d => `<div class="dim-item"><div class="dim-head"><span>${d.name}</span><span class="dim-score">${d.score} 分</span></div><div class="dim-desc">${d.desc}</div></div>`).join('')}</div>
       </div>
-    </div>
-  `;
+    </div>`;
+
+  const gzA = baseA.pillars.map((p, idx) => idx === 3 && unkA ? '??' : (STEMS[p.s] + BRANCHES[p.b])).join(' ');
+  const gzB = baseB.pillars.map((p, idx) => idx === 3 && unkB ? '??' : (STEMS[p.s] + BRANCHES[p.b])).join(' ');
+  const payload = {
+    mode: currentMode, genderA, genderB,
+    nameA, dateA, timeA, unkA, lonA,
+    nameB, dateB, timeB, unkB, lonB,
+    gzA, gzB,
+    score: evalRes.total,
+    scoreText: evalRes.total.toFixed(3),
+    range: (unkA || unkB) ? `${minScore.toFixed(3)}–${maxScore.toFixed(3)}` : null
+  };
+
+  try {
+    if (window.parent && window.parent !== window) {
+      window.parent.postMessage({ type: 'BAZI_V53_RESULT', payload, isUserRun: !!save }, '*');
+    }
+  } catch (_) {}
 
   if (save) {
     saveHistory({
-      id: Date.now(),
-      mode: currentMode,
-      nameA, dateA, timeA, unkA, lonA,
-      nameB, dateB, timeB, unkB, lonB,
+      id: Date.now(), ...payload,
       score: evalRes.total.toFixed(3),
       range: (unkA || unkB) ? `${minScore.toFixed(1)}-${maxScore.toFixed(1)}` : null,
-      createdAt: new Date().toLocaleString('zh-CN', { hour12:false })
+      createdAt: new Date().toLocaleString('zh-CN', { hour12: false })
     });
   }
 }
 
-/* ================= 本地存储 History ================= */
-const STORE_KEY = 'suiwind_bazi_v52_history';
-function getHistory() {
-  try { return JSON.parse(localStorage.getItem(STORE_KEY) || '[]'); } catch (_) { return []; }
-}
-function saveHistory(item) {
-  const list = getHistory();
-  list.unshift(item);
-  localStorage.setItem(STORE_KEY, JSON.stringify(list.slice(0, 30)));
-  renderHistory();
-}
-function deleteHistory(id, e) {
-  e.stopPropagation();
-  localStorage.setItem(STORE_KEY, JSON.stringify(getHistory().filter(x => x.id !== id)));
-  renderHistory();
-}
-function clearHistory() {
-  localStorage.removeItem(STORE_KEY);
-  renderHistory();
-}
-function loadHistoryById(id) {
-  const item = getHistory().find(x => x.id === id);
-  if (!item) return;
-  if (item.mode) {
-    currentMode = item.mode;
-    document.getElementById('modeLove').classList.toggle('active', currentMode === 'love');
-    document.getElementById('modeFriend').classList.toggle('active', currentMode === 'friend');
-  }
-  document.getElementById('nameA').value = item.nameA;
-  document.getElementById('dateA').value = item.dateA;
-  document.getElementById('timeA').value = item.timeA;
-  document.getElementById('unkA').checked = item.unkA;
-  document.getElementById('lonA').value = item.lonA;
-  document.getElementById('nameB').value = item.nameB;
-  document.getElementById('dateB').value = item.dateB;
-  document.getElementById('timeB').value = item.timeB;
-  document.getElementById('unkB').checked = item.unkB;
-  document.getElementById('lonB').value = item.lonB;
+window.addEventListener('message', e => {
+  const msg = e.data;
+  if (!msg || msg.type !== 'BAZI_V53_LOAD_PAIR' || !msg.pair) return;
+  const p = msg.pair;
+  switchView(p.mode === 'friend' ? 'friend' : 'love');
+  if (p.genderA) setGender('A', p.genderA);
+  if (p.genderB) setGender('B', p.genderB);
+  document.getElementById('nameA').value = p.nameA || '甲方';
+  document.getElementById('dateA').value = p.dateA || '2006-11-11';
+  document.getElementById('timeA').value = p.timeA || '12:00';
+  document.getElementById('unkA').checked = !!p.unkA;
+  document.getElementById('lonA').value = p.lonA ?? 120;
+  document.getElementById('nameB').value = p.nameB || '乙方';
+  document.getElementById('dateB').value = p.dateB || '2005-03-26';
+  document.getElementById('timeB').value = p.timeB || '08:00';
+  document.getElementById('unkB').checked = !!p.unkB;
+  document.getElementById('lonB').value = p.lonB ?? 120;
   toggleTime('A'); toggleTime('B');
   runSynastry(false);
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+});
+
+const STORE_KEY = 'suiwind_bazi_v52_history';
+const getHistory = () => { try { return JSON.parse(localStorage.getItem(STORE_KEY) || '[]'); } catch { return []; } };
+function saveHistory(item) { const list = getHistory(); list.unshift(item); localStorage.setItem(STORE_KEY, JSON.stringify(list.slice(0, 30))); renderHistory(); }
+function deleteHistory(id, e) { e.stopPropagation(); localStorage.setItem(STORE_KEY, JSON.stringify(getHistory().filter(x => x.id !== id))); renderHistory(); }
+function clearHistory() { localStorage.removeItem(STORE_KEY); renderHistory(); }
+function loadHistoryById(id) {
+  const item = getHistory().find(x => x.id === id); if (!item) return;
+  switchView(item.mode === 'friend' ? 'friend' : 'love');
+  if (item.genderA) setGender('A', item.genderA);
+  if (item.genderB) setGender('B', item.genderB);
+  document.getElementById('nameA').value = item.nameA; document.getElementById('dateA').value = item.dateA;
+  document.getElementById('timeA').value = item.timeA; document.getElementById('unkA').checked = item.unkA;
+  document.getElementById('lonA').value = item.lonA;
+  document.getElementById('nameB').value = item.nameB; document.getElementById('dateB').value = item.dateB;
+  document.getElementById('timeB').value = item.timeB; document.getElementById('unkB').checked = item.unkB;
+  document.getElementById('lonB').value = item.lonB;
+  toggleTime('A'); toggleTime('B'); runSynastry(false);
 }
 function renderHistory() {
-  const list = getHistory();
-  const el = document.getElementById('historyList');
-  if (!list.length) {
-    el.innerHTML = '<p class="hint">暂无合盘记录，点击上方按钮测算后将自动保存于本地浏览器。</p>';
-    return;
-  }
+  const list = getHistory(), el = document.getElementById('historyList');
+  if (!list.length) { el.innerHTML = '<p class="hint">暂无合盘记录，点击上方按钮测算后自动保存在本地。</p>'; return; }
   el.innerHTML = list.map(item => `
     <div class="history-item" onclick="loadHistoryById(${item.id})">
       <div>
         <div style="font-size:13.5px;font-weight:700">
-          ${item.nameA} × ${item.nameB}
+          ${item.nameA}(${item.genderA === 'F' ? '女' : '男'}) × ${item.nameB}(${item.genderB === 'M' ? '男' : '女'})
           <span class="badge" style="margin-left:6px">${item.mode === 'friend' ? '友情' : '婚恋'} · ${item.score}分${item.range ? ` (${item.range})` : ''}</span>
         </div>
         <div class="history-meta">${item.dateA} / ${item.dateB} · ${item.createdAt}</div>
       </div>
       <button type="button" class="del-btn" onclick="deleteHistory(${item.id}, event)">删除</button>
-    </div>
-  `).join('');
+    </div>`).join('');
 }
 
+initLocationSelects('A', '江苏', '南京');
+initLocationSelects('B', '北京', '北京');
+initLocationSelects('C', '江苏', '南京');
 renderHistory();
 </script>
 </body>
