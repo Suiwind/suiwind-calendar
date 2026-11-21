@@ -1150,9 +1150,11 @@ function renderReviewModal() {
       <h4>我的${isW ? '本周' : '本月'}总结</h4>
       <textarea id="revManualInput" placeholder="写下这一阶段最重要的感受与下一阶段重点…">${esc(manual)}</textarea>
       <div class="sync-actions" style="justify-content:flex-end">
-        <button class="btn sm soft" id="copyReviewBtn" type="button">一键复制复盘文本（发给 AI 分析）</button>
-        <button class="btn sm primary" id="exportReviewBtn" type="button">导出 Markdown</button>
+        <button class="btn sm primary" id="aiAnalyzeReviewBtn" type="button">✦ 一键 AI 深度分析</button>
+        <button class="btn sm soft" id="copyReviewBtn" type="button">复制纯文本</button>
+        <button class="btn sm" id="exportReviewBtn" type="button">导出 Markdown</button>
       </div>
+      <div id="aiReviewOutput" class="ai-analysis-box" style="${S.g('aiSummaries', {})[mKey] ? '' : 'display:none'}">${esc(S.g('aiSummaries', {})[mKey]?.text || '')}</div>
     </div>`;
 
   $('#revManualInput').oninput = () => {
@@ -1162,6 +1164,7 @@ function renderReviewModal() {
   };
   $('#copyReviewBtn').onclick = () => copyText(buildReviewMd(activeReviewType).text);
   $('#exportReviewBtn').onclick = () => { const md = buildReviewMd(activeReviewType); downloadText(md.name, md.text); };
+  $('#aiAnalyzeReviewBtn').onclick = () => runAiReviewAnalysis(activeReviewType, mKey);
 }
 
 /* ===== 云同步与本地快照（100% 兼容 V2.0） ===== */
@@ -1338,7 +1341,7 @@ function bindEvents() {
   document.addEventListener('keydown', e => {
     if (e.key === 'Escape') {
       $('#moreMenuDropdown').classList.remove('open');
-      ['learningModal', 'reviewModal', 'cloudModal', 'scheduleModal', 'repeatActionModal', 'modal'].forEach(id => $('#' + id)?.classList.remove('show'));
+      ['learningModal', 'reviewModal', 'cloudModal', 'scheduleModal', 'repeatActionModal', 'modal', 'aiModal'].forEach(id => $('#' + id)?.classList.remove('show'));
     }
   });
 
@@ -1512,9 +1515,200 @@ function bindEvents() {
   };
 }
 
+
+/* ===== V3.4 AI 引擎（支持 Gemini & DeepSeek/OpenAI 兼容接口） ===== */
+const DEFAULT_AI_PERSONA = '温暖克制、清醒真诚、带一点文学感，像懂我的老朋友。不说教、不灌鸡汤，回答简洁有洞察。';
+const getAiCfg = () => rawGet('aiConfig', {
+  provider: 'gemini',
+  apiKey: '',
+  endpoint: 'https://api.deepseek.com/v1/chat/completions',
+  model: 'gemini-2.5-flash',
+  persona: DEFAULT_AI_PERSONA
+});
+const saveAiCfg = cfg => rawSet('aiConfig', cfg);
+
+async function callAI(systemPrompt, userPrompt) {
+  const cfg = getAiCfg();
+  if (!cfg.apiKey) throw new Error('尚未配置 API Key，请先点击「配置 AI」。');
+
+  if (cfg.provider === 'gemini') {
+    const model = (cfg.model || 'gemini-2.5-flash').trim();
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent?key=${encodeURIComponent(cfg.apiKey.trim())}`;
+    const res = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        system_instruction: { parts: [{ text: systemPrompt }] },
+        contents: [{ role: 'user', parts: [{ text: userPrompt }] }],
+        generationConfig: { temperature: 0.8 }
+      })
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(data?.error?.message || `Gemini 请求失败 (${res.status})`);
+    const text = data?.candidates?.[0]?.content?.parts?.map(p => p.text).join('') || '';
+    if (!text) throw new Error('Gemini 返回内容为空');
+    return text.trim();
+  } else {
+    const url = (cfg.endpoint || 'https://api.deepseek.com/v1/chat/completions').trim();
+    const model = (cfg.model || 'deepseek-chat').trim();
+    const res = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${cfg.apiKey.trim()}`
+      },
+      body: JSON.stringify({
+        model,
+        messages: [
+          { role: 'system', content: systemPrompt },
+          { role: 'user', content: userPrompt }
+        ],
+        temperature: 0.8
+      })
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(data?.error?.message || `接口请求失败 (${res.status})`);
+    const text = data?.choices?.[0]?.message?.content || '';
+    if (!text) throw new Error('模型返回内容为空');
+    return text.trim();
+  }
+}
+
+async function loadDailyQuote(force = false) {
+  const el = $('#aiQuoteText'), setupBtn = $('#aiQuoteSetupBtn');
+  if (!el) return;
+  const cfg = getAiCfg();
+  const k = todayKey();
+  const cache = rawGet('aiDailyQuotes', {});
+
+  if (setupBtn) setupBtn.textContent = cfg.apiKey ? 'AI 设置' : '配置 AI';
+
+  if (!cfg.apiKey) {
+    el.textContent = '配置你的 Gemini / DeepSeek API Key 后，每天打开日历都会为你写一句专属的话。';
+    return;
+  }
+  if (!force && cache[k]) {
+    el.textContent = cache[k];
+    return;
+  }
+
+  el.textContent = '正在为你写今天的话…';
+  try {
+    const li = lunar(todayDate());
+    const schedN = scheduleFor(todayDate()).length;
+    const taskN = allTasksFor(todayDate()).filter(x => !x.done).length;
+    const yestR = R[addDaysKey(k, -1)] || {};
+    const yestHint = [yestR.q2, yestR.q3].filter(Boolean).join('；').slice(0, 120);
+    const sys = `${cfg.persona || DEFAULT_AI_PERSONA} 请用中文写一句简短的每日问候或提醒（20到45字之间，不要加引号，不要分点）。`;
+    const usr = `今天是 ${k}，周${wd(todayDate())}，农历${li.fullText}${li.term ? '，节气' + li.term : ''}。今天有 ${schedN} 节课、${taskN} 项待办。${yestHint ? '我昨天复盘提到：' + yestHint : ''}`;
+    const text = (await callAI(sys, usr)).replace(/^["“]|["”]$/g, '');
+    cache[k] = text;
+    rawSet('aiDailyQuotes', cache);
+    el.textContent = text;
+  } catch (err) {
+    el.textContent = cache[k] || `暂未获取到今日寄语（${err.message}）`;
+  }
+}
+
+async function runAiReviewAnalysis(type, mKey) {
+  const cfg = getAiCfg();
+  if (!cfg.apiKey) {
+    openAiModal();
+    toast('请先填写 API Key');
+    return;
+  }
+  const btn = $('#aiAnalyzeReviewBtn'), out = $('#aiReviewOutput');
+  if (!btn || !out) return;
+  const oldTxt = btn.textContent;
+  btn.disabled = true;
+  btn.textContent = '正在分析…';
+  out.style.display = 'block';
+  out.classList.add('loading');
+  out.textContent = '正在阅读你的任务与每日三问，生成深度复盘建议…';
+  try {
+    const md = buildReviewMd(type).text;
+    const sys = `${cfg.persona || DEFAULT_AI_PERSONA} 请根据用户的${type === 'week' ? '周' : '月'}复盘数据，分三小段给出分析：1. 肯定真实做得好的地方；2. 温和指出一个最关键的卡点；3. 给出 2 条下阶段立刻能执行的具体微调建议。控制在 280 字以内。`;
+    const result = await callAI(sys, md);
+    out.classList.remove('loading');
+    out.textContent = result;
+    const all = S.g('aiSummaries', {});
+    all[mKey] = { text: result, updatedAt: isoNow() };
+    S.s('aiSummaries', all);
+    toast('✓ AI 复盘分析已生成', true);
+  } catch (err) {
+    out.classList.remove('loading');
+    out.textContent = `分析失败：${err.message}`;
+  } finally {
+    btn.disabled = false;
+    btn.textContent = oldTxt;
+  }
+}
+
+function syncAiProviderUI() {
+  const prov = $('#aiProvider').value;
+  $('#aiEndpointWrap').style.display = prov === 'openai' ? 'block' : 'none';
+  const m = $('#aiModel');
+  if (prov === 'gemini' && (!m.value || m.value === 'deepseek-chat')) m.value = 'gemini-2.5-flash';
+  if (prov === 'openai' && (!m.value || m.value.startsWith('gemini'))) m.value = 'deepseek-chat';
+}
+
+function openAiModal() {
+  const cfg = getAiCfg();
+  $('#aiProvider').value = cfg.provider || 'gemini';
+  $('#aiKey').value = cfg.apiKey || '';
+  $('#aiEndpoint').value = cfg.endpoint || 'https://api.deepseek.com/v1/chat/completions';
+  $('#aiModel').value = cfg.model || (cfg.provider === 'openai' ? 'deepseek-chat' : 'gemini-2.5-flash');
+  $('#aiPersona').value = cfg.persona || DEFAULT_AI_PERSONA;
+  $('#aiTestStatus').textContent = '';
+  syncAiProviderUI();
+  $('#aiModal').classList.add('show');
+}
+
+function bindAiEvents() {
+  $('#aiConfigBtn').onclick = () => { $('#moreMenuDropdown').classList.remove('open'); openAiModal(); };
+  $('#aiQuoteSetupBtn').onclick = openAiModal;
+  $('#closeAiModal').onclick = () => $('#aiModal').classList.remove('show');
+  $('#aiModal').onclick = e => { if (e.target === $('#aiModal')) $('#aiModal').classList.remove('show'); };
+  $('#aiProvider').onchange = syncAiProviderUI;
+  $('#aiQuoteRefresh').onclick = () => loadDailyQuote(true);
+
+  const readForm = () => ({
+    provider: $('#aiProvider').value,
+    apiKey: $('#aiKey').value.trim(),
+    endpoint: $('#aiEndpoint').value.trim() || 'https://api.deepseek.com/v1/chat/completions',
+    model: $('#aiModel').value.trim() || ($('#aiProvider').value === 'gemini' ? 'gemini-2.5-flash' : 'deepseek-chat'),
+    persona: $('#aiPersona').value.trim() || DEFAULT_AI_PERSONA
+  });
+
+  $('#aiSaveBtn').onclick = () => {
+    saveAiCfg(readForm());
+    $('#aiModal').classList.remove('show');
+    toast('✓ AI 配置已保存在本机', true);
+    loadDailyQuote(true);
+  };
+  $('#aiClearBtn').onclick = () => {
+    if (!confirm('清除本机保存的 AI API Key？')) return;
+    localStorage.removeItem('zx_aiConfig');
+    $('#aiKey').value = '';
+    $('#aiTestStatus').textContent = '已清除。';
+    loadDailyQuote(false);
+  };
+  $('#aiTestBtn').onclick = async () => {
+    saveAiCfg(readForm());
+    $('#aiTestStatus').textContent = '正在测试连接…';
+    try {
+      const reply = await callAI('你是一个测试助手。', '请用不超过10个字打个招呼。');
+      $('#aiTestStatus').textContent = `✓ 连接成功：${reply}`;
+    } catch (err) {
+      $('#aiTestStatus').textContent = `✕ 连接失败：${err.message}`;
+    }
+  };
+}
+
 /* ===== 启动 ===== */
 applyTheme(localStorage.getItem('zx_theme') === 'dark' ? 'dark' : 'light');
 bindEvents();
+bindAiEvents();
 syncTimerLoop();
 renderNextTerm();
 renderStreak();
@@ -1523,5 +1717,6 @@ renderSide();
 renderLearningSummary();
 updateNotifyUI();
 initSupabase();
+loadDailyQuote(false);
 setupSW();
 })();

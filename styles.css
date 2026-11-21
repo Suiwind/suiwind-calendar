@@ -993,3 +993,66 @@ textarea { min-height: 84px; resize: vertical; line-height: 1.6; }
   .modalbox { width: 100%; border-radius: 22px 22px 0 0; max-height: 92dvh; padding: 18px 16px calc(20px + env(safe-area-inset-bottom)); }
   input[type=text], input[type=email], input[type=password], input[type=number], input[type=date], input[type=time], textarea, select { font-size: 16px; }
 }
+
+
+/* ===== V3.4 AI 每日一句 & 深度复盘样式 ===== */
+.ai-quote-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 12px 18px;
+  margin-bottom: 18px;
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  border: 1px solid var(--hairline);
+  box-shadow: var(--shadow-xs);
+}
+.ai-quote-left {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  min-width: 0;
+  flex: 1;
+}
+.ai-quote-tag {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--accent);
+  background: var(--accent-soft);
+  padding: 2px 9px;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+.ai-quote-text {
+  font-family: var(--serif);
+  font-size: 14.5px;
+  color: var(--text);
+  line-height: 1.55;
+  letter-spacing: 0.3px;
+}
+.ai-quote-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+.ai-analysis-box {
+  margin-top: 12px;
+  padding: 14px 16px;
+  border-radius: 14px;
+  background: var(--card-soft);
+  border: 1px solid var(--hairline);
+  font-size: 13.5px;
+  line-height: 1.75;
+  color: var(--text);
+  white-space: pre-wrap;
+}
+.ai-analysis-box.loading {
+  color: var(--muted);
+  font-style: italic;
+}
+@media (max-width: 720px) {
+  .ai-quote-bar { flex-direction: column; align-items: flex-start; gap: 8px; padding: 12px 14px; }
+  .ai-quote-actions { align-self: flex-end; }
+}
