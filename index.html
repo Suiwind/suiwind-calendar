@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#eef2eb">
-<title>苏伊温德日历 V2.0</title>
+<meta name="theme-color" content="#f2efe8">
+<title>苏伊温德日历 V3.0</title>
 <link rel="icon" type="image/svg+xml" href="./favicon.svg">
 <link rel="apple-touch-icon" href="./icons/apple-touch-icon.png">
 <link rel="manifest" href="./manifest.json">
@@ -12,11 +12,10 @@
 <script>
 (function(){
   try{
-    var t = localStorage.getItem('zx_theme');
-    if(t === 'dark'){
+    if(localStorage.getItem('zx_theme') === 'dark'){
       document.documentElement.setAttribute('data-theme', 'dark');
       var m = document.querySelector('meta[name="theme-color"]');
-      if(m) m.setAttribute('content', '#141915');
+      if(m) m.setAttribute('content', '#131713');
     }
   }catch(e){}
 })();
@@ -24,12 +23,13 @@
 </head>
 <body>
 
-<section id="baziPage" class="bazi-page" aria-hidden="true" aria-label="八字合盘 V5.0">
+<!-- 八字合盘全屏容器（保持与 bazi-hepan.js 100% 兼容） -->
+<section id="baziPage" class="bazi-page" aria-hidden="true" aria-label="八字合盘">
   <div class="bazi-wrap">
     <header class="bazi-head">
       <div>
-        <h1 class="bazi-title">八字合盘 <span style="font-weight:400;font-size:13px;color:var(--muted)">V5.2 内置版</span></h1>
-        <p class="bazi-subtitle">苏伊温德日历 · 原版排盘与评分引擎</p>
+        <h1 class="bazi-title">八字合盘 <span class="version">V5.2 内置版</span></h1>
+        <p class="bazi-subtitle">苏伊温德日历 · 真太阳时排盘与五维合盘引擎</p>
       </div>
       <div class="bazi-actions">
         <input id="baziFile" type="file" accept=".html,.htm,text/html" class="bazi-hidden">
@@ -39,25 +39,24 @@
     </header>
     <div class="bazi-grid">
       <main class="bazi-card bazi-content" aria-label="八字合盘计算器">
-        <div id="baziStatus" class="bazi-small" role="status">原始 V5.0 HTML 将在此面板运行；所有排盘与得分均由原版 JavaScript 计算。</div>
+        <div id="baziStatus" class="bazi-small" role="status">正在载入内置八字合盘引擎…</div>
         <div id="baziEmpty" class="bazi-empty">
-          <h3>导入合盘 V5.0 完整工具</h3>
-          <p>点击上方「导入 V5 原版 HTML」，选择《合盘随身工具_V5.0_纪录更新版.html》。原文件的评分函数、节气数据与操作界面均不改写，保存在此浏览器的独立本地存储中，下次打开可以直接使用。</p>
-          <button type="button" class="btn primary" id="baziEmptyImport">选择原版 HTML 文件</button>
-          <p class="bazi-small">支持电脑及手机文件选择；无需外部评分 API。不同设备首次打开需分别导入，或将原 HTML 放到网站根目录并命名为 <code>bazi-hepan-v5.html</code>。</p>
+          <h3 class="serif">载入八字合盘引擎</h3>
+          <p class="bazi-small">若未自动载入内置引擎，可点击下方手动选择本地 HTML 文件。</p>
+          <button type="button" class="btn primary" id="baziEmptyImport">选择 HTML 文件</button>
         </div>
-        <iframe id="baziFrame" class="bazi-iframe bazi-hidden" title="婚恋与通用人际八字合盘 V5.0" sandbox="allow-scripts allow-same-origin allow-downloads allow-modals" referrerpolicy="no-referrer"></iframe>
+        <iframe id="baziFrame" class="bazi-iframe bazi-hidden" title="八字合盘 V5.2" sandbox="allow-scripts allow-same-origin allow-downloads allow-modals" referrerpolicy="no-referrer"></iframe>
       </main>
-      <aside class="bazi-card bazi-side" aria-label="V5.0纪录对照板">
+      <aside class="bazi-card bazi-side" aria-label="纪录对照板">
         <h2>纪录对照板</h2>
-        <p class="bazi-small">以下是 V5.0 已观察到的最高分，世界范围记录不代表数学意义的全球上界。</p>
-        <h3>我的个人纪录</h3>
+        <p class="bazi-small">V5 已观察到的最高分对照，测算完成后会自动读取综合得分计算差值。</p>
+        <h3>个人纪录</h3>
         <div id="baziPersonalRecords"></div>
-        <h3>世界范围已发现纪录</h3>
+        <h3>双人高分纪录</h3>
         <div id="baziWorldRecords"></div>
         <div class="bazi-compare">
           <b>本次与纪录的差距</b>
-          <p class="bazi-small" id="baziDetected">等候原版计算结果。无法自动识别时，可在下方输入原版显示的得分。</p>
+          <p class="bazi-small" id="baziDetected">等候测算结果，或手动输入得分对比。</p>
           <div class="bazi-scores">
             <select id="baziCompareCategory" aria-label="比较纪录类别">
               <option value="0">我的爱情</option>
@@ -69,559 +68,406 @@
           </div>
           <div class="bazi-score-input">
             <input id="baziInputScore" type="number" step="0.001" min="0" max="100" placeholder="本次分数">
-            <button id="baziComputeDifference" type="button" class="btn">比较</button>
+            <button id="baziComputeDifference" type="button" class="btn sm">比较</button>
           </div>
-          <div id="baziDiff" class="bazi-small" aria-live="polite"></div>
+          <div id="baziDiff" class="bazi-small" style="margin-top:6px" aria-live="polite"></div>
         </div>
-        <p class="bazi-small" style="margin-top:12px">按照原工具以北京时间（UTC+8）处理日期；真太阳时与子时换日差异以原版提示为准。传统八字合盘属于文化娱乐性分析，分数不代表真实的关系质量。</p>
       </aside>
     </div>
   </div>
 </section>
 
 <div class="app">
+  <!-- 顶部极简导航 -->
   <header class="top">
-    <div class="brand">
+    <div>
       <div class="brand-row">
         <h1>苏伊温德日历</h1>
-        <span class="version">V2.1</span>
+        <span class="version">V3.0</span>
       </div>
-      <p>生命如暗室，不妨我明写春诗</p>
+      <p class="poetic-sub">生命如暗室，不妨我明写春诗</p>
     </div>
     <nav class="actions" aria-label="主导航">
-      <button class="btn action-btn action-learning" id="learningBtn" type="button"><span class="action-icon">▣</span><span>学习管理</span></button>
-      <button class="btn action-btn action-quick" id="v170QuickBtn" type="button"><span class="action-icon">＋</span><span>快速记录</span></button>
-      <button class="btn action-btn" id="todayBtn" type="button"><span class="action-icon">⌂</span><span>今天</span></button>
-      <button class="btn action-btn" id="reviewBtn" type="button"><span class="action-icon">↺</span><span>复盘</span></button>
-      <button class="btn action-btn action-cloud" id="cloudBtn" type="button" title="账号与云同步">
+      <button class="btn primary" id="learningBtn" type="button">学习中心</button>
+      <button class="btn" id="reviewBtn" type="button">周月复盘</button>
+      <button class="btn" id="baziBtn" type="button">八字合盘</button>
+      <button class="btn" id="cloudBtn" type="button" title="云同步与数据备份">
         <i class="cloud-dot" id="cloudDot"></i>
-        <span>云同步</span>
-        <span class="cloud-label-sub" id="cloudText">仅本地</span>
+        <span id="cloudText">仅本地</span>
       </button>
-      <button class="btn action-btn" id="themeToggleBtn" type="button" title="切换深浅护眼主题" aria-label="切换深浅主题"><span id="themeToggleIcon">☾</span></button>
+      <button class="btn icon-only" id="themeToggleBtn" type="button" title="切换深浅主题" aria-label="切换深浅主题">
+        <span id="themeToggleIcon">☾</span>
+      </button>
       <div class="more-menu-wrap">
-        <button class="btn action-btn" id="moreMenuBtn" type="button" aria-expanded="false" aria-haspopup="menu" title="更多工具"><span>⋯ 更多</span></button>
+        <button class="btn icon-only" id="moreMenuBtn" type="button" aria-expanded="false" aria-haspopup="menu" title="更多">⋯</button>
         <div class="more-menu-dropdown" id="moreMenuDropdown" role="menu">
-          <button class="btn more-menu-item" id="baziBtn" type="button" role="menuitem"><span class="action-icon">♡</span><span>八字合盘</span></button>
-          <button class="btn more-menu-item" id="annivBtn" type="button" role="menuitem"><span class="action-icon">♥</span><span>纪念日管理</span></button>
-          <div class="more-menu-sep"></div>
-          <button class="btn more-menu-item" id="notifyBtn" type="button" role="menuitem"><span class="action-icon">🔔</span><span class="notify-label">开启提醒</span></button>
+          <button class="btn more-menu-item" id="annivBtn" type="button" role="menuitem">♥ 纪念日管理</button>
+          <button class="btn more-menu-item" id="notifyBtn" type="button" role="menuitem">🔔 <span class="notify-label">开启提醒</span></button>
         </div>
       </div>
     </nav>
   </header>
 
-  <div class="banner" id="notifyBanner">
-    <span>任务提醒会在网页打开时触发；开启浏览器通知后，到点将弹出提醒。</span>
-    <button class="btn sm" id="bannerNotify" type="button">开启通知</button>
-  </div>
-
-  <section class="panel stats-strip" aria-label="关键统计">
-    <div class="stat-cell">
-      <div class="stat-cell-left"><small>本月任务完成</small><b id="monthProgress">0 / 0</b></div>
-      <div class="hint" id="monthRate"></div>
-    </div>
-    <div class="stat-cell">
-      <div class="stat-cell-left"><small>下一个节气</small><b id="nextTerm">载入中…</b></div>
-    </div>
-    <div class="stat-cell">
-      <div class="stat-cell-left"><small>连续复盘</small><b id="streak">0 天</b></div>
-    </div>
-    <div class="stat-cell">
-      <div class="stat-cell-left"><small>今日待办</small><b id="todayTodo">0 项</b></div>
-      <div class="hint" id="todayHigh"></div>
-    </div>
-  </section>
-
-  <section class="goal-overviews-shell" id="goalOverviewsShell" aria-label="任务概览">
-    <div class="goal-overviews-compact-bar">
-      <span id="goalOverviewsBarText">本周任务 · 本月任务 · 期限事项（当前暂无待办）</span>
-      <div class="goal-overviews-bar-right">
-        <button class="btn sm" id="toggleGoalOverviewsBtn" type="button">展开概览</button>
-      </div>
-    </div>
-    <div class="goal-overviews">
-      <article class="panel goal-overview week-overview">
-        <div class="overview-head">
-          <div>
-            <div class="overview-kicker" id="weekOverviewLabel">本周</div>
-            <h2><span class="overview-symbol">□</span> 本周任务</h2>
-          </div>
-          <strong class="overview-progress" id="weekOverviewProgress">0 / 0</strong>
-        </div>
-        <div class="overview-list" id="weekOverviewList"></div>
-        <button class="overview-link" id="jumpWeekGoals" type="button">查看 / 编辑本周任务 →</button>
-      </article>
-      <article class="panel goal-overview month-overview">
-        <div class="overview-head">
-          <div>
-            <div class="overview-kicker" id="monthOverviewLabel">本月</div>
-            <h2><span class="overview-symbol">◇</span> 本月任务</h2>
-          </div>
-          <strong class="overview-progress" id="monthOverviewProgress">0 / 0</strong>
-        </div>
-        <div class="overview-list" id="monthOverviewList"></div>
-        <button class="overview-link" id="jumpMonthGoals" type="button">查看 / 编辑本月任务 →</button>
-      </article>
-      <article class="panel goal-overview deadline-overview">
-        <div class="overview-head">
-          <div>
-            <div class="overview-kicker" id="deadlineOverviewLabel">近期截止</div>
-            <h2><span class="overview-symbol">⌛</span> 期限事项</h2>
-          </div>
-          <strong class="overview-progress" id="deadlineOverviewProgress">0 / 0</strong>
-        </div>
-        <div class="overview-list" id="deadlineOverviewList"></div>
-        <div style="display:flex;justify-content:space-between;align-items:center">
-          <button class="overview-link" id="jumpDeadlineGoals" type="button">查看 / 编辑期限事项 →</button>
-          <button class="overview-link" id="collapseGoalOverviewsBtn" type="button">收起</button>
-        </div>
-      </article>
-    </div>
-  </section>
-
+  <!-- 主体两栏：月历 + 右侧今日工作台 -->
   <div class="layout">
     <main class="panel calendar">
       <div class="calhead">
-        <div class="nav">
-          <button class="btn sm" id="prevBtn" type="button" aria-label="上个月">‹</button>
-          <button class="btn sm" id="nextBtn" type="button" aria-label="下个月">›</button>
-        </div>
-        <div class="calendar-period">
+        <div class="cal-period">
+          <div class="cal-month-title" id="monthTitle"></div>
           <select id="yearSelect" class="year-select" aria-label="选择年份"></select>
-          <div class="title" id="monthTitle"></div>
         </div>
-        <div class="calhead-right">
-          <button class="btn sm ghost" id="calTodayBtn" type="button">回今日</button>
+        <div class="cal-meta-pills">
+          <span class="meta-pill" id="nextTermPill">节气载入中</span>
+          <span class="meta-pill" id="streakPill">复盘 0 天</span>
+        </div>
+        <div class="cal-nav">
+          <button class="btn sm ghost" id="todayBtn" type="button">今天</button>
+          <button class="btn sm icon-only" id="prevBtn" type="button" aria-label="上个月">‹</button>
+          <button class="btn sm icon-only" id="nextBtn" type="button" aria-label="下个月">›</button>
         </div>
       </div>
+
       <div class="week"><div>一</div><div>二</div><div>三</div><div>四</div><div>五</div><div>六</div><div>日</div></div>
       <div class="grid" id="calendar"></div>
-      <div class="legend">
-        <span class="legend-item"><i class="pd high"></i>高优先级</span>
-        <span class="legend-item"><i class="pd medium"></i>中优先级</span>
-        <span class="legend-item"><i class="pd low"></i>低优先级</span>
-        <span>休 = 法定/调休休息</span>
-        <span>班 = 调休上班</span>
+
+      <div class="cal-footer">
+        <div class="legend">
+          <span class="legend-item"><i class="dot high"></i>高优先</span>
+          <span class="legend-item"><i class="dot medium"></i>中优先</span>
+          <span class="legend-item"><i class="dot low"></i>低优先</span>
+          <span class="legend-item"><i class="dot learn"></i>已学习</span>
+        </div>
+        <span id="monthProgressText"></span>
       </div>
     </main>
 
+    <!-- 右侧今日工作台 -->
     <aside class="panel side">
       <div class="hero">
-        <div class="hero-title-row">
-          <b id="dateTitle"></b>
+        <div class="hero-top">
+          <div class="hero-date" id="dateTitle"></div>
           <span class="date-distance" id="dateDistance">今天</span>
         </div>
         <div class="hero-sub" id="dateSub"></div>
       </div>
 
-      <div class="side-tabs" role="tablist" aria-label="日期面板视图">
-        <button class="side-tab-btn active" type="button" role="tab" data-side-tab="action">今日行动</button>
-        <button class="side-tab-btn" type="button" role="tab" data-side-tab="tasks">任务目标 <span class="side-tab-badge" id="sideTaskBadge"></span></button>
-        <button class="side-tab-btn" type="button" role="tab" data-side-tab="reflect">每日复盘 <span class="side-tab-badge" id="sideReflectBadge"></span></button>
+      <div class="side-tabs" role="tablist">
+        <button class="side-tab-btn active" type="button" role="tab" data-side-tab="schedule">今日课表</button>
+        <button class="side-tab-btn" type="button" role="tab" data-side-tab="tasks">任务期限 <span class="tab-badge" id="sideTaskBadge"></span></button>
+        <button class="side-tab-btn" type="button" role="tab" data-side-tab="reflect">每日复盘 <span class="tab-badge" id="sideReflectBadge"></span></button>
       </div>
 
       <div class="side-scroll">
-        <div class="side-pane active" id="sidePaneAction">
-          <section class="section v160-command-section" id="v160TodayCommand">
-            <h3><span>现在做什么</span><span id="v160CommandStat"></span></h3>
-            <div id="v160TodayCommandBody"></div>
-          </section>
-
-          <section class="section" id="learningMiniSection">
-            <h3><span>学习快照</span><span id="learningMiniStat"></span></h3>
-            <div class="learning-mini-card" id="learningMini"></div>
-            <button class="btn learning-open-btn" id="openLearningFromSide" type="button">进入学习管理中心 →</button>
-          </section>
-
-          <section class="section schedule-section" id="scheduleSection">
-            <h3>
-              <span>每日课表</span>
-              <span class="schedule-head-actions">
-                <span id="scheduleStat"></span>
-                <button class="schedule-edit-btn" id="scheduleEditBtn" type="button">调整 / 导入</button>
-              </span>
-            </h3>
+        <!-- Tab 1: 今日学习焦点 + 课表 -->
+        <div class="side-pane active" id="sidePaneSchedule">
+          <div id="todayFocusBox"></div>
+          <div class="block">
+            <div class="block-head">
+              <h3>每日课表</h3>
+              <div style="display:flex;align-items:center;gap:8px">
+                <span class="block-stat" id="scheduleStat"></span>
+                <button class="btn sm soft" id="scheduleEditBtn" type="button">调整 / 导入</button>
+              </div>
+            </div>
             <div class="schedule-list" id="dailySchedule"></div>
-            <div class="schedule-rule-note" id="scheduleRuleNote"></div>
-          </section>
+            <div class="small" id="scheduleRuleNote" style="margin-top:8px"></div>
+          </div>
         </div>
 
+        <!-- Tab 2: 任务 + 期限事项 + 周月目标 -->
         <div class="side-pane" id="sidePaneTasks">
-          <section class="section">
-            <h3><span>今日任务</span><span id="taskStat"></span></h3>
-            <div id="tasks"></div>
-            <div class="taskcomposer">
-              <div class="wide">
-                <input id="taskInput" type="text" name="task_text_v200" autocomplete="off" autocapitalize="sentences" data-lpignore="true" data-1p-ignore="true" data-bwignore="true" placeholder="例如：完成高数错题整理">
-                <button class="btn primary" id="addTask" type="button">添加</button>
+          <div class="block">
+            <div class="block-head">
+              <h3>当日任务</h3>
+              <span class="block-stat" id="taskStat"></span>
+            </div>
+            <div class="task-list" id="tasks"></div>
+            <div class="composer">
+              <div class="composer-row">
+                <input id="taskInput" type="text" autocomplete="off" placeholder="写下今天要做的事…">
+                <button class="btn sm primary" id="addTask" type="button">添加</button>
               </div>
-              <select id="priority" aria-label="任务优先级"><option value="medium">中优先</option><option value="high">高优先</option><option value="low">低优先</option></select>
-              <input id="reminder" type="time" title="提醒时间" aria-label="提醒时间">
-              <select id="repeat" aria-label="重复周期"><option value="none">不重复</option><option value="daily">每天</option><option value="weekly">每周</option><option value="monthly">每月</option></select>
-              <button class="btn ghost" id="clearComposer" type="button" title="清空输入">清空</button>
+              <div class="composer-opts">
+                <select id="priority" aria-label="优先级">
+                  <option value="medium">中优先</option>
+                  <option value="high">高优先</option>
+                  <option value="low">低优先</option>
+                </select>
+                <input id="reminder" type="time" title="提醒时间" aria-label="提醒时间">
+                <select id="repeat" aria-label="重复">
+                  <option value="none">不重复</option>
+                  <option value="daily">每天</option>
+                  <option value="weekly">每周</option>
+                  <option value="monthly">每月</option>
+                </select>
+              </div>
               <div class="repeat-end-wrap" id="repeatEndWrap" hidden>
-                <label for="repeatEnd">重复截止（含当天）</label>
-                <input id="repeatEnd" type="date" aria-label="重复截止日期">
+                <label class="small" for="repeatEnd">重复截止（含当天）</label>
+                <input id="repeatEnd" type="date" style="margin-top:4px">
               </div>
             </div>
-          </section>
+          </div>
 
-          <section class="section" id="deadlineGoalsSection">
-            <h3><span>期限事项</span><span id="deadlineStat"></span></h3>
-            <div class="deadline-list" id="deadlineGoals"></div>
-            <div class="deadline-add-row">
-              <input class="deadline-text-input" id="deadlineInput" type="text" autocomplete="off" data-lpignore="true" placeholder="例如：学完高数一轮">
-              <input id="deadlineDate" type="date" aria-label="截止日期">
-              <select id="deadlinePriority" aria-label="期限事项优先级"><option value="medium">中优先</option><option value="high">高优先</option><option value="low">低优先</option></select>
-              <button class="btn" id="addDeadline" type="button" title="添加期限事项">＋</button>
+          <div class="block">
+            <div class="block-head">
+              <h3>期限事项</h3>
+              <span class="block-stat" id="deadlineStat"></span>
             </div>
-            <div class="deadline-help">截止日前自由安排进度；提前完成时勾选会自动记录提前天数。</div>
-          </section>
+            <div class="task-list" id="deadlineGoals"></div>
+            <div class="composer">
+              <div class="composer-row">
+                <input id="deadlineInput" type="text" autocomplete="off" placeholder="比赛、作品集或阶段截止任务…">
+                <button class="btn sm soft" id="addDeadline" type="button">＋</button>
+              </div>
+              <div class="grid-2">
+                <input id="deadlineDate" type="date" aria-label="截止日期">
+                <select id="deadlinePriority" aria-label="优先级">
+                  <option value="medium">中优先</option>
+                  <option value="high">高优先</option>
+                  <option value="low">低优先</option>
+                </select>
+              </div>
+            </div>
+          </div>
 
-          <section class="section" id="weekGoalsSection">
-            <h3><span>本周任务</span><span id="weekLabel"></span></h3>
-            <div id="weekGoals"></div>
-            <div class="goal-add-row">
-              <input id="weekInput" type="text" name="week_goal_text_v200" autocomplete="off" data-lpignore="true" placeholder="本周最重要的目标">
-              <select id="weekPriority" aria-label="本周任务优先级"><option value="medium">中优先</option><option value="high">高优先</option><option value="low">低优先</option></select>
-              <button class="btn" id="addWeek" type="button">＋</button>
+          <details class="goal-collapse">
+            <summary><span>本周 / 本月目标</span><span class="small" id="goalCollapseStat"></span></summary>
+            <div class="block" style="margin-top:8px">
+              <div class="block-head"><h3 id="weekLabel">本周</h3></div>
+              <div class="task-list" id="weekGoals"></div>
+              <div class="composer-row" style="margin-top:6px">
+                <input id="weekInput" type="text" autocomplete="off" placeholder="本周目标">
+                <button class="btn sm soft" id="addWeek" type="button">＋</button>
+              </div>
             </div>
-          </section>
-
-          <section class="section" id="monthGoalsSection">
-            <h3><span>本月任务</span><span id="monthLabel"></span></h3>
-            <div id="monthGoals"></div>
-            <div class="goal-add-row">
-              <input id="monthInput" type="text" name="month_goal_text_v200" autocomplete="off" data-lpignore="true" placeholder="这个月想完成什么？">
-              <select id="monthPriority" aria-label="本月任务优先级"><option value="medium">中优先</option><option value="high">高优先</option><option value="low">低优先</option></select>
-              <button class="btn" id="addMonth" type="button">＋</button>
+            <div class="block">
+              <div class="block-head"><h3 id="monthLabel">本月</h3></div>
+              <div class="task-list" id="monthGoals"></div>
+              <div class="composer-row" style="margin-top:6px">
+                <input id="monthInput" type="text" autocomplete="off" placeholder="本月目标">
+                <button class="btn sm soft" id="addMonth" type="button">＋</button>
+              </div>
             </div>
-          </section>
+          </details>
         </div>
 
+        <!-- Tab 3: 每日复盘 -->
         <div class="side-pane" id="sidePaneReflect">
-          <section class="section reflect" id="reflectSection">
-            <h3><span>今日复盘</span><span id="saved"></span></h3>
-            <label for="q1">我今天做错了什么？</label>
-            <textarea id="q1" placeholder="诚实一点，但不用苛责自己。"></textarea>
-            <label for="q2">我今天做对了什么？</label>
-            <textarea id="q2" placeholder="把做对的事情也认真记下来。"></textarea>
-            <label for="q3">明天该怎么做得更好？</label>
-            <textarea id="q3" placeholder="写一个明天真正能执行的小改变。"></textarea>
-            <div class="reflect-actions">
-              <button class="btn reflect-confirm" id="completeReflection" type="button">完成今日复盘</button>
-              <span class="reflect-feedback" id="reflectionFeedback">填写内容会自动保存草稿。</span>
+          <div class="reflect-card" id="reflectSection">
+            <div class="block-head" style="margin-bottom:4px">
+              <h3>每日三问</h3>
+              <span class="small" id="saved"></span>
             </div>
-          </section>
+            <label for="q1">今天哪里可以做得更好？</label>
+            <textarea id="q1" placeholder="诚实记录，不必苛责自己。"></textarea>
+            <label for="q2">今天做对了什么 / 值得记住的小事？</label>
+            <textarea id="q2" placeholder="学习进展、生活瞬间都可以记在这里。"></textarea>
+            <label for="q3">明天最具体的一个小改进？</label>
+            <textarea id="q3" placeholder="写一个明天真正能执行的小动作。"></textarea>
+            <div class="reflect-actions">
+              <span class="small" id="reflectionFeedback">输入时自动保存草稿</span>
+              <button class="btn sm primary" id="completeReflection" type="button">完成今日复盘</button>
+            </div>
+          </div>
         </div>
       </div>
     </aside>
   </div>
-
-  <section class="anniv-late-section" aria-label="纪念日">
-    <div class="anniv-late-head">
-      <div><b>纪念日</b><small>低频温馨信息放在页面后部，保持首页清爽。</small></div>
-      <button class="btn sm" id="annivManageBtn" type="button">管理纪念日</button>
-    </div>
-    <div class="annivs" id="annivCards"></div>
-  </section>
 </div>
 
+<!-- 学习中心弹窗（4 核心标签） -->
 <div class="modal" id="learningModal">
-  <div class="modalbox learning-modalbox">
-    <div class="learning-head">
+  <div class="modalbox wide">
+    <div class="modal-head">
       <div>
-        <h3>学习管理 · 动态计划引擎</h3>
-        <div class="learning-sub">提前学就整体前移，临时忙就整体顺延；不制造过期焦虑，只维护顺序、进度与真实能力变化。</div>
+        <h2>专转本学习中心</h2>
+        <div class="modal-sub">按序推进、不制造过期焦虑；提前学就前移，临时忙就顺延。</div>
       </div>
       <button class="x" id="closeLearning" type="button" aria-label="关闭">✕</button>
     </div>
-    <div class="learning-banner" id="learningBanner"></div>
-    <div class="learning-overviews">
-      <article class="learning-overview">
-        <div class="learning-overview-head"><h4>英语</h4><span class="metric" id="learnEnglishMetric">0/40</span></div>
-        <div class="learning-progress"><i id="learnEnglishBar" style="width:0%"></i></div>
-        <div class="note" id="learnEnglishNote">词汇 + 技巧并行</div>
-      </article>
-      <article class="learning-overview">
-        <div class="learning-overview-head"><h4>财经综合</h4><span class="metric" id="learnFinanceMetric">0 / 80</span></div>
-        <div class="learning-progress"><i id="learnFinanceBar" style="width:0%"></i></div>
-        <div class="note" id="learnFinanceNote">会计优先闭环</div>
-      </article>
-      <article class="learning-overview">
-        <div class="learning-overview-head"><h4>高数</h4><span class="metric" id="learnMathMetric">0 / 48</span></div>
-        <div class="learning-progress"><i id="learnMathBar" style="width:0%"></i></div>
-        <div class="note" id="learnMathNote">机构 48 天计划</div>
-      </article>
-      <article class="learning-overview">
-        <div class="learning-overview-head"><h4>最近考试 / 考证</h4><span class="metric" id="learnCountdownMetric">—</span></div>
-        <div class="learning-progress"><i id="learnCountdownBar" style="width:0%"></i></div>
-        <div class="note" id="learnCountdownNote">暂无倒数日</div>
-      </article>
-      <article class="learning-overview">
-        <div class="learning-overview-head"><h4>本周有效专注</h4><span class="metric" id="learnStudyMetric">0 分钟</span></div>
-        <div class="learning-progress"><i id="learnStudyBar" style="width:0%"></i></div>
-        <div class="note" id="learnStudyNote">开始学习后自动累计</div>
-      </article>
-    </div>
 
-    <div class="learning-nav-groups" role="tablist" aria-label="学习管理栏目分组">
-      <div class="lnav-group">
-        <span class="lnav-label">执行</span>
-        <button class="btn active lt-today" type="button" data-learning-tab="today"><span class="lt-icon">☀</span><span>今日学习</span></button>
-        <button class="btn lt-timer" type="button" data-learning-tab="timer"><span class="lt-icon">◷</span><span>计时</span></button>
-        <button class="btn lt-review" type="button" data-learning-tab="review"><span class="lt-icon">↻</span><span>复习</span></button>
-        <button class="btn lt-rhythm" type="button" data-learning-tab="rhythm"><span class="lt-icon">≈</span><span>节奏</span></button>
+    <div class="learn-summary">
+      <div class="learn-stat">
+        <div class="learn-stat-top"><h4>英语</h4><b id="learnEnglishMetric">0/40</b></div>
+        <div class="prog-bar"><i id="learnEnglishBar" style="width:0%"></i></div>
+        <div class="small" id="learnEnglishNote">词汇 + 技巧并行</div>
       </div>
-      <div class="lnav-group">
-        <span class="lnav-label">三科</span>
-        <button class="btn lt-english" type="button" data-learning-tab="english"><span class="lt-icon">Aa</span><span>英语</span></button>
-        <button class="btn lt-finance" type="button" data-learning-tab="finance"><span class="lt-icon">¥</span><span>财经</span></button>
-        <button class="btn lt-math" type="button" data-learning-tab="math"><span class="lt-icon">∑</span><span>高数</span></button>
+      <div class="learn-stat">
+        <div class="learn-stat-top"><h4>财经综合</h4><b id="learnFinanceMetric">0/80</b></div>
+        <div class="prog-bar"><i id="learnFinanceBar" style="width:0%"></i></div>
+        <div class="small" id="learnFinanceNote">会计优先闭环</div>
       </div>
-      <div class="lnav-group">
-        <span class="lnav-label">复盘</span>
-        <button class="btn lt-stats" type="button" data-learning-tab="stats"><span class="lt-icon">▥</span><span>统计</span></button>
-        <button class="btn lt-quality" type="button" data-learning-tab="quality"><span class="lt-icon">◎</span><span>质量</span></button>
-        <button class="btn lt-reports" type="button" data-learning-tab="reports"><span class="lt-icon">✦</span><span>报告</span></button>
-        <button class="btn lt-search" type="button" data-learning-tab="search"><span class="lt-icon">⌕</span><span>搜索</span></button>
-      </div>
-      <div class="lnav-group">
-        <span class="lnav-label">生活</span>
-        <button class="btn lt-sleep" type="button" data-learning-tab="sleep"><span class="lt-icon">☾</span><span>睡眠</span></button>
-        <button class="btn lt-policy" type="button" data-learning-tab="policy"><span class="lt-icon">⚖</span><span>制度</span></button>
-        <button class="btn lt-life" type="button" data-learning-tab="life"><span class="lt-icon">♡</span><span>生活</span></button>
-        <button class="btn lt-projects" type="button" data-learning-tab="projects"><span class="lt-icon">▤</span><span>项目</span></button>
-      </div>
-      <div class="lnav-group">
-        <span class="lnav-label">规划</span>
-        <button class="btn lt-countdowns" type="button" data-learning-tab="countdowns"><span class="lt-icon">⌛</span><span>倒数日</span></button>
-        <button class="btn lt-roadmap" type="button" data-learning-tab="roadmap"><span class="lt-icon">◇</span><span>路线图</span></button>
-        <button class="btn lt-schedule" type="button" data-learning-tab="schedule"><span class="lt-icon">⇄</span><span>调度</span></button>
+      <div class="learn-stat">
+        <div class="learn-stat-top"><h4>高数</h4><b id="learnMathMetric">0/48</b></div>
+        <div class="prog-bar"><i id="learnMathBar" style="width:0%"></i></div>
+        <div class="small" id="learnMathNote">48 天基础队列</div>
       </div>
     </div>
 
-    <div class="learning-panel" id="learningPanel"></div>
+    <div class="learn-tabs" role="tablist">
+      <button class="learn-tab-btn active" type="button" data-learning-tab="today">今日推进</button>
+      <button class="learn-tab-btn" type="button" data-learning-tab="timer">专注计时</button>
+      <button class="learn-tab-btn" type="button" data-learning-tab="subjects">三科清单与燃尽图</button>
+      <button class="learn-tab-btn" type="button" data-learning-tab="exams">考试倒数与路线图</button>
+    </div>
+
+    <div id="learningPanel"></div>
   </div>
 </div>
 
-<div class="modal" id="cloudModal">
-  <div class="modalbox" style="width:min(640px,100%)">
-    <div style="display:flex;justify-content:space-between;align-items:center;gap:10px">
-      <h3 style="margin:0">账号与云同步</h3>
-      <button class="x" id="closeCloud" type="button" aria-label="关闭">✕</button>
-    </div>
-    <div class="warning">云同步是可选功能。Supabase URL 与 anon / publishable key 可放在浏览器端，请勿填写 service_role key。开启 RLS 后，每个账号仅能读写自己的数据。</div>
-    <div class="settings-grid" style="margin-top:12px">
-      <div class="full"><label class="small">Supabase Project URL</label><input id="sbUrl" type="text" placeholder="https://xxxx.supabase.co"></div>
-      <div class="full"><label class="small">Supabase anon / publishable key</label><input id="sbKey" type="text" placeholder="eyJ..."></div>
-      <div><label class="small">邮箱</label><input id="sbEmail" type="email" name="email" autocomplete="username" placeholder="you@example.com"></div>
-      <div><label class="small">密码</label><input id="sbPassword" type="password" name="password" autocomplete="current-password" placeholder="至少 6 位"></div>
-    </div>
-    <div class="sync-actions">
-      <button class="btn" id="saveCloudConfig" type="button">保存配置</button>
-      <button class="btn" id="signUpBtn" type="button">注册</button>
-      <button class="btn primary" id="signInBtn" type="button">登录</button>
-      <button class="btn" id="signOutBtn" type="button">退出</button>
-    </div>
-    <div class="account-card">
-      <b id="accountTitle">未登录</b>
-      <div class="small" id="accountInfo">当前所有数据只保存在本浏览器。</div>
-      <div class="sync-meta-grid">
-        <div class="sync-meta-item"><small>本地最后修改</small><b id="localUpdatedLabel">—</b></div>
-        <div class="sync-meta-item"><small>云端最后修改</small><b id="cloudUpdatedLabel">—</b></div>
-        <div class="sync-meta-item"><small>最近成功同步</small><b id="lastSyncedLabel">—</b></div>
-        <div class="sync-meta-item"><small>同步状态</small><b id="syncStateLabel">未连接</b></div>
-      </div>
-      <div class="sync-conflict" id="syncConflictBox">检测到本地和云端都发生了修改。为避免覆盖，自动同步已暂停。请先比较时间，再选择上传本地数据或下载云端数据。</div>
-      <div class="sync-actions">
-        <button class="btn" id="uploadCloud" type="button">上传本地数据</button>
-        <button class="btn" id="downloadCloud" type="button">下载云端数据</button>
-      </div>
-    </div>
-
-    <details class="backup-box" open>
-      <summary>本地备份与恢复</summary>
-      <div class="backup-inner">
-        <p>V2.0 最多保留 7 份浏览器内安全快照，并在导入备份、下载云端前自动留档。</p>
-        <div class="sync-actions">
-          <button class="btn" id="exportBtn" type="button">导出当前 JSON</button>
-          <button class="btn" id="v160CreateBackup" type="button">创建内部快照</button>
-          <button class="btn" id="importBtn" type="button">从 JSON 恢复</button>
-          <input class="file" id="importFile" type="file" accept="application/json">
-        </div>
-        <div id="v160BackupHistory" class="v160-backup-history"></div>
-      </div>
-    </details>
-
-    <details class="backup-box">
-      <summary>系统与同步诊断</summary>
-      <div class="backup-inner">
-        <p>只读检查：本地/云端记录数量、同步时间、Service Worker 缓存与浏览器存储占用。</p>
-        <div class="sync-actions"><button class="btn primary" id="v160RunDiagnostics" type="button">运行诊断</button></div>
-        <div id="v160Diagnostics" class="v160-diagnostics"></div>
-      </div>
-    </details>
-
-    <details class="backup-box">
-      <summary>同步差异预览</summary>
-      <div class="backup-inner">
-        <p>学习计时、睡眠、学习质量、项目和生活记录支持按唯一 ID / 更新时间自动安全合并；普通任务与日历结构由你决定以哪端为准。</p>
-        <div class="sync-actions">
-          <button class="btn primary" id="v170CompareCloud" type="button">比较本地与云端</button>
-          <button class="btn" id="v170UndoBtn" type="button">恢复最近快照</button>
-        </div>
-        <div id="v170CloudCompare" class="v170-sync-preview"></div>
-      </div>
-    </details>
-  </div>
-</div>
-
-<div class="modal" id="v170QuickModal">
-  <div class="modalbox" style="width:min(720px,100%)">
-    <div style="display:flex;justify-content:space-between;align-items:center;gap:10px">
-      <div><h3 style="margin:0">快速记录</h3><div class="small" style="margin-top:3px">少点几下，马上开始。这里不会给休息和生活打分。</div></div>
-      <button class="x" id="v170CloseQuick" type="button" aria-label="关闭">✕</button>
-    </div>
-    <div id="v170QuickBody" style="margin-top:12px"></div>
-  </div>
-</div>
-
+<!-- 周 / 月复盘中心 -->
 <div class="modal" id="reviewModal">
-  <div class="modalbox" style="width:min(920px,100%)">
-    <div style="display:flex;justify-content:space-between;align-items:center;gap:10px">
-      <h3 style="margin:0">复盘中心</h3>
+  <div class="modalbox wide">
+    <div class="modal-head">
+      <div>
+        <h2>复盘中心</h2>
+        <div class="modal-sub">自动汇总任务与每日三问，支持一键复制发给 AI 深度分析或导出 Markdown。</div>
+      </div>
       <button class="x" id="closeReview" type="button" aria-label="关闭">✕</button>
     </div>
-    <div class="review-tabs" style="margin-top:12px">
-      <button class="btn active" id="weeklyTab" type="button">本周复盘</button>
-      <button class="btn" id="monthlyTab" type="button">本月复盘</button>
-    </div>
-    <section id="weeklyReview" class="review-section active">
-      <div class="review-summary">
-        <div class="review-metric"><small>任务完成</small><strong id="wDone">0 / 0</strong></div>
-        <div class="review-metric"><small>完成率</small><strong id="wRate">0%</strong></div>
-        <div class="review-metric"><small>复盘天数</small><strong id="wReflectDays">0 / 7</strong></div>
-        <div class="review-metric"><small>高优先级完成</small><strong id="wHigh">0 / 0</strong></div>
-      </div>
-      <div class="review-grid">
-        <div class="review-card"><h4>本周任务完成趋势</h4><div class="trend" id="weekTrend"></div></div>
-        <div class="review-card"><h4>自动汇总</h4><div class="autobox" id="weekAuto"></div></div>
-      </div>
-      <div class="review-grid" style="margin-top:12px">
-        <div class="review-card"><h4>这周做错了什么</h4><div class="review-list" id="weekWrong"></div></div>
-        <div class="review-card"><h4>这周做对了什么</h4><div class="review-list" id="weekRight"></div></div>
-      </div>
-      <div class="review-card" style="margin-top:12px"><h4>下周要怎么做得更好</h4><div class="review-list" id="weekBetter"></div></div>
-      <div class="review-card" style="margin-top:12px"><h4>我的本周总结</h4><textarea id="weekManual" placeholder="把这一周最重要的感受、问题、决定写下来。"></textarea></div>
-      <div class="review-card" style="margin-top:12px">
-        <h4>AI 本周总结</h4>
-        <div class="ai-result" id="weekAI">点击“生成 AI 总结”后，会基于本周任务与每日三问生成一份结构化总结。</div>
-        <div class="ai-actions"><button class="btn primary" id="aiWeekBtn" type="button">生成 AI 总结</button><button class="btn" id="copyWeekAI" type="button">复制</button></div>
-      </div>
-      <div class="export-row"><button class="btn" id="exportWeekMd" type="button">导出本周 Markdown</button></div>
-    </section>
 
-    <section id="monthlyReview" class="review-section">
-      <div class="review-summary">
-        <div class="review-metric"><small>任务完成</small><strong id="mDone">0 / 0</strong></div>
-        <div class="review-metric"><small>完成率</small><strong id="mRate">0%</strong></div>
-        <div class="review-metric"><small>复盘天数</small><strong id="mReflectDays">0</strong></div>
-        <div class="review-metric"><small>高优先级完成</small><strong id="mHigh">0 / 0</strong></div>
-      </div>
-      <div class="review-grid">
-        <div class="review-card"><h4>每周任务完成趋势</h4><div class="trend" id="monthTrend"></div></div>
-        <div class="review-card"><h4>自动汇总</h4><div class="autobox" id="monthAuto"></div></div>
-      </div>
-      <div class="review-grid" style="margin-top:12px">
-        <div class="review-card"><h4>本月做错了什么</h4><div class="review-list" id="monthWrong"></div></div>
-        <div class="review-card"><h4>本月做对了什么</h4><div class="review-list" id="monthRight"></div></div>
-      </div>
-      <div class="review-card" style="margin-top:12px"><h4>下个月要怎么做得更好</h4><div class="review-list" id="monthBetter"></div></div>
-      <div class="review-card" style="margin-top:12px"><h4>我的本月总结</h4><textarea id="monthManual" placeholder="写下这个月最值得记住的变化、问题和下个月的重点。"></textarea></div>
-      <div class="review-card" style="margin-top:12px">
-        <h4>AI 本月总结</h4>
-        <div class="ai-result" id="monthAI">点击“生成 AI 总结”后，会基于本月任务与每日三问生成一份结构化总结。</div>
-        <div class="ai-actions"><button class="btn primary" id="aiMonthBtn" type="button">生成 AI 总结</button><button class="btn" id="copyMonthAI" type="button">复制</button></div>
-      </div>
-      <div class="export-row"><button class="btn" id="exportMonthMd" type="button">导出本月 Markdown</button></div>
-    </section>
+    <div class="sub-tabs">
+      <button class="btn sm active" id="weeklyTab" type="button">本周复盘</button>
+      <button class="btn sm" id="monthlyTab" type="button">本月复盘</button>
+    </div>
+
+    <div id="reviewBody"></div>
   </div>
 </div>
 
-<div class="modal" id="scheduleModal">
-  <div class="modalbox schedule-modalbox">
-    <div class="modal-title-row">
+<!-- 云同步与备份弹窗 -->
+<div class="modal" id="cloudModal">
+  <div class="modalbox">
+    <div class="modal-head">
       <div>
-        <h3 style="margin:0">课表管理与隐私导入</h3>
-        <div class="note" id="scheduleModalDate" style="margin-top:4px"></div>
+        <h2>云同步与本地备份</h2>
+        <div class="modal-sub">100% 兼容旧版数据结构，支持 Supabase 跨设备同步与本地 JSON 留档。</div>
+      </div>
+      <button class="x" id="closeCloud" type="button" aria-label="关闭">✕</button>
+    </div>
+
+    <div class="grid-2">
+      <div class="full"><label class="small">Supabase Project URL</label><input id="sbUrl" type="text" placeholder="https://xxxx.supabase.co"></div>
+      <div class="full"><label class="small">Supabase anon / publishable key</label><input id="sbKey" type="text" placeholder="eyJ..."></div>
+      <div><label class="small">邮箱</label><input id="sbEmail" type="email" autocomplete="username" placeholder="you@example.com"></div>
+      <div><label class="small">密码</label><input id="sbPassword" type="password" autocomplete="current-password" placeholder="至少 6 位"></div>
+    </div>
+    <div class="sync-actions">
+      <button class="btn sm" id="saveCloudConfig" type="button">保存配置</button>
+      <button class="btn sm" id="signUpBtn" type="button">注册</button>
+      <button class="btn sm primary" id="signInBtn" type="button">登录</button>
+      <button class="btn sm ghost" id="signOutBtn" type="button">退出</button>
+    </div>
+
+    <div class="card-box" style="margin-top:14px">
+      <div class="row-spread">
+        <b id="accountTitle">未登录</b>
+        <span class="small" id="syncStateLabel">仅本地</span>
+      </div>
+      <div class="small" id="accountInfo" style="margin-top:4px">当前数据仅保存在本浏览器。</div>
+      <div class="small" style="margin-top:6px">
+        本地修改：<span id="localUpdatedLabel">—</span> · 云端修改：<span id="cloudUpdatedLabel">—</span>
+      </div>
+      <div class="sync-conflict" id="syncConflictBox">检测到本地和云端均有修改，自动同步已暂停。请选择手动上传或下载。</div>
+      <div class="sync-actions">
+        <button class="btn sm soft" id="uploadCloud" type="button">上传本地数据</button>
+        <button class="btn sm soft" id="downloadCloud" type="button">下载云端数据</button>
+      </div>
+    </div>
+
+    <div class="card-box">
+      <h4>本地 JSON 备份与安全快照</h4>
+      <div class="sync-actions">
+        <button class="btn sm" id="exportBtn" type="button">导出 JSON</button>
+        <button class="btn sm" id="importBtn" type="button">导入 JSON</button>
+        <button class="btn sm soft" id="createBackupBtn" type="button">创建内部快照</button>
+        <input class="file" id="importFile" type="file" accept="application/json">
+      </div>
+      <div id="backupHistoryList" style="margin-top:10px"></div>
+    </div>
+  </div>
+</div>
+
+<!-- 课表管理弹窗 -->
+<div class="modal" id="scheduleModal">
+  <div class="modalbox">
+    <div class="modal-head">
+      <div>
+        <h2>课表管理与私密导入</h2>
+        <div class="modal-sub" id="scheduleModalDate"></div>
       </div>
       <button class="x" id="closeScheduleModal" type="button" aria-label="关闭">✕</button>
     </div>
-    <div class="schedule-manager-section">
-      <h4>私密课表配置（仅存本地与个人私有云，不暴露在公网源码）</h4>
-      <div class="small" id="scheduleProfileStat">当前尚未导入固定课表。</div>
-      <div class="sync-actions" style="margin-top:8px">
-        <button class="btn primary sm" id="importScheduleBtn" type="button">导入私密课表 JSON</button>
+
+    <div class="card-box">
+      <h4>私密课表 JSON（不暴露在公网源码）</h4>
+      <div class="small" id="scheduleProfileStat"></div>
+      <div class="sync-actions">
+        <button class="btn sm primary" id="importScheduleBtn" type="button">导入私密课表 JSON</button>
         <input class="file" id="importScheduleFile" type="file" accept="application/json">
-        <button class="btn sm" id="exportScheduleBtn" type="button">导出当前课表 JSON</button>
+        <button class="btn sm" id="exportScheduleBtn" type="button">导出课表</button>
         <button class="btn sm ghost" id="clearBaseScheduleBtn" type="button">清空固定课表</button>
       </div>
     </div>
-    <div class="schedule-manager-section">
+
+    <div class="card-box">
       <h4>为当天添加临时 / 补课安排</h4>
-      <label class="schedule-label" for="schedulePreset">从已有固定课程快速填充</label>
-      <select id="schedulePreset"><option value="">自定义 / 临时课程</option></select>
-      <div class="schedule-form-grid">
-        <input id="scheduleName" type="text" placeholder="课程名称">
+      <select id="schedulePreset" style="margin-bottom:8px"><option value="">自定义 / 临时课程</option></select>
+      <div class="grid-2">
+        <input class="full" id="scheduleName" type="text" placeholder="课程名称">
         <input id="scheduleStart" type="time" aria-label="开始时间">
         <input id="scheduleEnd" type="time" aria-label="结束时间">
         <input id="scheduleTeacher" type="text" placeholder="老师（可选）">
         <input id="scheduleRoom" type="text" placeholder="教室（可选）">
-        <input id="scheduleNoteInput" type="text" placeholder="备注（可选）">
       </div>
-      <div class="schedule-form-actions">
-        <button class="btn" id="clearScheduleForm" type="button">清空</button>
-        <button class="btn primary" id="addScheduleCourse" type="button">添加到这一天</button>
+      <div class="sync-actions" style="justify-content:flex-end">
+        <button class="btn sm primary" id="addScheduleCourse" type="button">添加到这一天</button>
       </div>
     </div>
-    <div class="schedule-manager-section">
-      <h4>今天已取消的固定课程</h4>
-      <div id="cancelledScheduleList" class="schedule-manage-list"></div>
+
+    <div class="card-box">
+      <h4>当天已取消的固定课程</h4>
+      <div id="cancelledScheduleList"></div>
     </div>
-    <details class="schedule-fixed-details">
-      <summary>固定课表开关</summary>
-      <div class="note">停用后，这门固定课程将不再自动出现在对应周次；以后可随时重新启用。</div>
-      <div id="fixedScheduleList" class="schedule-manage-list" style="margin-top:8px"></div>
-    </details>
   </div>
 </div>
 
+<!-- 重复任务处理弹窗 -->
 <div class="modal" id="repeatActionModal">
-  <div class="modalbox" style="width:min(440px,100%)">
-    <div style="display:flex;justify-content:space-between;align-items:center;gap:10px">
-      <h3 style="margin:0">处理重复任务</h3>
-      <button class="x" id="closeRepeatAction" type="button" aria-label="关闭">✕</button>
+  <div class="modalbox" style="width:min(420px,100%)">
+    <div class="modal-head">
+      <div>
+        <h2>处理重复任务</h2>
+        <div class="modal-sub" id="repeatActionDesc"></div>
+      </div>
+      <button class="x" id="closeRepeatAction" type="button">✕</button>
     </div>
-    <div class="note" id="repeatActionDesc" style="margin-top:8px"></div>
-    <div class="repeat-action-buttons">
+    <div style="display:flex;flex-direction:column;gap:8px">
       <button class="btn" id="repeatSkipOne" type="button">仅跳过这一天</button>
       <button class="btn" id="repeatEndFromHere" type="button">从这一天起结束重复</button>
       <button class="btn danger" id="repeatDeleteAll" type="button">删除整个重复任务</button>
     </div>
-    <div class="repeat-action-note">“从这一天起结束重复”会保留此前所有日期和完成记录，只让当前日期及之后不再出现。</div>
   </div>
 </div>
 
+<!-- 纪念日管理弹窗 -->
 <div class="modal" id="modal">
-  <div class="modalbox">
-    <h3 style="margin-top:0">纪念日管理</h3>
-    <input id="aName" type="text" autocomplete="off" placeholder="名称，例如：生日 / 重要节点">
-    <div class="row"><input id="aDate" type="date"></div>
-    <label class="check"><input id="aRepeat" type="checkbox" checked> 每年重复（生日、周年等）</label>
-    <div class="row"><button class="btn" id="cancelA" type="button">关闭</button><button class="btn primary" id="saveA" type="button">添加</button></div>
-    <div class="manage-list" id="annivManage"></div>
+  <div class="modalbox" style="width:min(460px,100%)">
+    <div class="modal-head">
+      <h2>纪念日管理</h2>
+      <button class="x" id="cancelA" type="button">✕</button>
+    </div>
+    <div class="grid-2">
+      <input class="full" id="aName" type="text" autocomplete="off" placeholder="名称，例如：生日 / 重要节点">
+      <input class="full" id="aDate" type="date">
+    </div>
+    <div class="row-spread" style="margin-top:10px">
+      <label class="small" style="display:inline-flex;align-items:center;gap:6px;cursor:pointer">
+        <input id="aRepeat" type="checkbox" checked style="width:auto"> 每年重复
+      </label>
+      <button class="btn sm primary" id="saveA" type="button">添加纪念日</button>
+    </div>
+    <div id="annivManage" style="margin-top:14px"></div>
   </div>
 </div>
 

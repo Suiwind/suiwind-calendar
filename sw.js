@@ -1,4 +1,4 @@
-const CACHE = 'suiwind-calendar-v210';
+const CACHE = 'suiwind-calendar-v300';
 const CORE = [
   './',
   './index.html',

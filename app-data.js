@@ -4,8 +4,8 @@
 (function(global){
 'use strict';
 
-const APP_VERSION = 'V2.0.0';
-const APP_CACHE_TAG = 'v200';
+const APP_VERSION = 'V3.0.0';
+const APP_CACHE_TAG = 'v300';
 const LEARNING_TIME_ZONE = 'Asia/Shanghai';
 
 const LEARNING_CONFIG = {
