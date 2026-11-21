@@ -1,4 +1,4 @@
-const CACHE = 'suiwind-calendar-v200';
+const CACHE = 'suiwind-calendar-v210';
 const CORE = [
   './',
   './index.html',
@@ -7,6 +7,7 @@ const CORE = [
   './app.js',
   './supabase-local.js',
   './bazi-hepan.js',
+  './bazi-hepan-v5.html',
   './manifest.json',
   './favicon.svg'
 ];
