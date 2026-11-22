@@ -7,7 +7,7 @@
   --surface: #fbf9f4;
   --surface-elev: #ffffff;
   --card: #ffffff;
-  --card-past: #ece7db;
+  --card-past: #e8e2d5;
   --card-weekend: #fcfaf5;
   --card-soft: #f2eee4;
   --card-hover: #f7f4ec;
@@ -395,6 +395,7 @@ button { touch-action: manipulation; }
   color: var(--text);
   line-height: 1.62;
   letter-spacing: 0.04em;
+  overflow-wrap: anywhere;
 }
 .ai-quote-actions {
   display: flex;

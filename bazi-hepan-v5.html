@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>八字合盘 V6.0 · 三维净值可调权重引擎</title>
+<title>八字合盘 V6.1 · 三维净值精校引擎</title>
 <style>
   :root {
     --bg: #f1f4f7;
@@ -677,7 +677,7 @@
     </div>
     <div class="mode-right">
       <button type="button" class="btn btn-sm btn-soft" id="weightToggleBtn" onclick="toggleWeightPanel()">⚙ 权重：标准平衡</button>
-      <span class="engine-tag">V6.0 · 三维净值引擎</span>
+      <span class="engine-tag">V6.1 · 三维净值引擎</span>
     </div>
   </div>
 
@@ -795,7 +795,7 @@
         <div class="form-row">
           <label>出生时间（北京时间 UTC+8）</label>
           <div class="inline-row">
-            <input id="timeB" type="time" value="04:00">
+            <input id="timeB" type="time" value="16:00">
             <label class="checkbox-label"><input id="unkB" type="checkbox" onchange="toggleTime('B')">未知时辰</label>
           </div>
         </div>
@@ -818,7 +818,7 @@
 
     <div class="card">
       <div class="card-title">
-        <span>本地合盘历史记录（V6.0）</span>
+        <span>本地合盘历史记录（V6.1）</span>
         <button type="button" class="btn btn-sm" onclick="clearHistory()">清空</button>
       </div>
       <div id="historyList"></div>
@@ -829,7 +829,7 @@
   <div id="viewCeiling" class="view-panel">
     <div class="card">
       <div class="card-title">
-        <span>测算任意人的理论爱情 / 友情上限（V6.0 净值标准）</span>
+        <span>测算任意人的理论爱情 / 友情上限（V6.1 净值标准）</span>
         <div class="gender-toggle">
           <button type="button" class="gender-btn active" id="gC_M" onclick="setGender('C','M')">男 · 乾造</button>
           <button type="button" class="gender-btn" id="gC_F" onclick="setGender('C','F')">女 · 坤造</button>
@@ -872,7 +872,7 @@
         </div>
       </div>
       <div class="inline-row" style="margin-top:12px;flex-wrap:wrap;">
-        <button type="button" class="btn btn-primary" style="flex:1;min-width:220px;" onclick="runCeilingFinder()">★ 一键测算 V6.0 理论爱情 & 友情上限</button>
+        <button type="button" class="btn btn-primary" style="flex:1;min-width:220px;" onclick="runCeilingFinder()">★ 一键测算 V6.1 理论爱情 & 友情上限</button>
         <button type="button" class="btn btn-soft" onclick="copyFromAtoC()">从甲方同步信息</button>
       </div>
     </div>
@@ -989,7 +989,7 @@ function copyFromAtoC() {
   toggleTime('C');
 }
 
-/* ================= V6.0 透明可调权重配置中心 ================= */
+/* ================= V6.1 透明可调权重配置中心 ================= */
 const SCORE_CONFIG = {
   baseScore: 50.0,
   minTotal: 10.0,
@@ -1001,71 +1001,80 @@ const SCORE_CONFIG = {
     dim3Max: 16.0   // 维度三上限
   },
   rules: {
-    // 维度一：基础吸引力与交集
-    stem_combine:         { love: 9.0,  friend: 6.5 },
-    stem_gen_yin_yang:    { love: 6.5,  friend: 6.0 },
-    stem_gen_same_pol:    { love: 5.0,  friend: 5.5 },
-    stem_same_el:         { love: 4.0,  friend: 7.0 },
-    day_branch_six:       { love: 8.0,  friend: 5.5 },
-    day_branch_trine:     { love: 5.5,  friend: 5.0 },
-    day_branch_same:      { love: 2.5,  friend: 3.0 },
-    month_branch_combine: { love: 4.5,  friend: 5.0 },
-    cross_branch_combine: { love: 1.5,  friend: 1.5 }, // 最多 2 组；若遭冲穿减半
-    element_true_fill:    { love: 3.5,  friend: 3.5 }, // 最多 2 行；偏枯过旺给部分分 1.5
-    element_partial_fill: { love: 1.5,  friend: 1.5 },
-    element_flow_chain:   { love: 3.0,  friend: 3.0 },
-    spouse_star_direct:   { love: 3.5,  friend: 0.0 },
-    spouse_star_branch:   { love: 2.0,  friend: 0.0 },
-    friend_tengod_sync:   { love: 0.0,  friend: 3.0 },
-    friend_tengod_mild:   { love: 0.0,  friend: 2.0 },
+    // 维度一：基础吸引力与交集（适当收紧单项，保留高分段区分度）
+    stem_combine:           { love: 8.0,  friend: 5.8 },
+    stem_gen_yin_yang:      { love: 5.8,  friend: 5.4 },
+    stem_gen_same_pol:      { love: 4.5,  friend: 4.8 },
+    stem_same_el:           { love: 3.6,  friend: 6.2 },
+    day_branch_six:         { love: 7.2,  friend: 5.0 },
+    day_branch_trine:       { love: 5.0,  friend: 4.5 },
+    day_branch_same:        { love: 2.2,  friend: 2.6 },
+    month_branch_combine:   { love: 4.0,  friend: 4.5 },
+    cross_branch_combine:   { love: 1.2,  friend: 1.2 }, // 最多 2 组且去重；若遭冲穿减半
+    element_true_fill:      { love: 3.0,  friend: 3.0 }, // 最多 2 行；偏枯过旺给部分分 1.3
+    element_partial_fill:   { love: 1.3,  friend: 1.3 },
+    element_flow_chain:     { love: 2.6,  friend: 2.6 },
+    spouse_star_direct:     { love: 3.2,  friend: 0.0 },
+    spouse_star_branch:     { love: 1.8,  friend: 0.0 },
+    friend_tengod_sync:     { love: 0.0,  friend: 2.6 },
+    friend_tengod_mild:     { love: 0.0,  friend: 1.7 },
 
     // 维度二：冲克与内耗扣分（此处以正数表扣分幅度，计分时取负）
-    clash_day_day:        { love: 14.0, friend: 9.0 },
-    clash_month_month:    { love: 7.5,  friend: 6.5 },
-    clash_month_cw:       { love: 5.5,  friend: 5.0 }, // 冬夏月冲诚实扣分
-    clash_day_cross:      { love: 4.0,  friend: 3.0, capLove: 8.0, capFriend: 6.0 },
-    clash_minor:          { love: 2.0,  friend: 1.5, capLove: 4.0, capFriend: 3.0 },
-    clash_multi_amp:      { love: 3.0,  friend: 2.0 },
+    clash_day_day:          { love: 14.0, friend: 9.0 },
+    clash_month_month:      { love: 7.5,  friend: 6.5 },
+    clash_month_cw:         { love: 5.5,  friend: 5.0 }, // 冬夏月冲诚实扣分
+    clash_day_cross:        { love: 4.0,  friend: 3.0, capLove: 8.0, capFriend: 6.0 },
+    clash_minor:            { love: 2.0,  friend: 1.5, capLove: 4.0, capFriend: 3.0 },
+    clash_multi_amp:        { love: 3.0,  friend: 2.0 },
 
-    harm_day_day:         { love: 8.5,  friend: 5.5 },
-    harm_day_cross:       { love: 3.0,  friend: 2.0, capLove: 6.0, capFriend: 4.0 },
-    harm_minor:           { love: 1.5,  friend: 1.0, capLove: 3.0, capFriend: 2.0 },
-    harm_dup:             { love: 1.5,  friend: 1.0 },
+    harm_day_day:           { love: 8.5,  friend: 5.5 },
+    harm_day_cross:         { love: 3.0,  friend: 2.0, capLove: 6.0, capFriend: 4.0 },
+    harm_minor:             { love: 1.5,  friend: 1.0, capLove: 3.0, capFriend: 2.0 },
+    harm_dup:               { love: 1.5,  friend: 1.0 },
 
-    punish_day_day:       { love: 7.0,  friend: 5.0 },
-    punish_day_cross:     { love: 2.5,  friend: 1.8, capLove: 5.0, capFriend: 3.6 },
-    punish_minor:         { love: 1.5,  friend: 1.0, capLove: 3.0, capFriend: 2.0 },
-    punish_full_triad:    { love: 4.5,  friend: 3.5 },
+    punish_day_day:         { love: 7.0,  friend: 5.0 },
+    punish_day_cross:       { love: 2.5,  friend: 1.8, capLove: 5.0, capFriend: 3.6 },
+    punish_minor:           { love: 1.5,  friend: 1.0, capLove: 3.0, capFriend: 2.0 },
+    punish_full_triad:      { love: 4.5,  friend: 3.5 },
+    natal_self_punish_3:    { love: 3.0,  friend: 2.2, capLove: 5.5, capFriend: 4.0 },
+    natal_self_punish_2:    { love: 1.6,  friend: 1.2 },
 
-    earth_severe_no_wood: { love: 7.5,  friend: 6.0 },
-    earth_severe_wood:    { love: 4.0,  friend: 3.2 },
-    earth_mod_no_wood:    { love: 5.0,  friend: 4.0 },
-    earth_mod_wood:       { love: 3.5,  friend: 2.8 },
-    earth_clash_extra:    { love: 1.5,  friend: 1.2 },
-    extreme_dry_cold:     { love: 3.5,  friend: 2.5 },
-    metal_wood_clash:     { love: 3.0,  friend: 2.5 },
+    earth_severe_no_wood:   { love: 7.5,  friend: 6.0 },
+    earth_severe_wood:      { love: 4.0,  friend: 3.2 },
+    earth_mod_no_wood:      { love: 5.0,  friend: 4.0 },
+    earth_mod_wood:         { love: 3.5,  friend: 2.8 },
+    earth_clash_extra:      { love: 1.5,  friend: 1.2 },
+    earth_single_severe:    { love: 2.5,  friend: 2.0 },
+    earth_single_mod:       { love: 1.5,  friend: 1.2 },
+    single_el_depleted_comp:{ love: 1.2,  friend: 0.9, capLove: 4.2, capFriend: 3.0 },
+    single_el_depleted_raw: { love: 2.4,  friend: 1.8 },
+    combine_boost_dry:      { love: 3.0,  friend: 2.0 },
+    combine_boost_ctrl:     { love: 2.8,  friend: 1.8 },
+    extreme_dry_cold:       { love: 3.5,  friend: 2.5 },
+    metal_wood_clash:       { love: 3.0,  friend: 2.5 },
 
-    stem_clash_same_pol:  { love: 7.0,  friend: 6.0 },
-    stem_clash_diff_pol:  { love: 3.5,  friend: 3.5 },
-    stubborn_both_strong: { love: 4.5,  friend: 4.0 },
-    stubborn_hard_stars:  { love: 3.0,  friend: 2.5 },
-    tengod_hard_friction: { love: 3.5,  friend: 0.0 },
+    stem_clash_same_pol:    { love: 7.0,  friend: 6.0 },
+    stem_clash_diff_pol:    { love: 3.5,  friend: 3.5 },
+    stubborn_both_strong:   { love: 4.5,  friend: 4.0 },
+    stubborn_hard_stars:    { love: 3.0,  friend: 2.5 },
+    tengod_hard_friction:   { love: 3.5,  friend: 0.0 },
 
     // 维度三：现实承接度（正为稳节奏加分，负为分心内耗扣分）
-    anchor_core_calm:     { love: 3.5,  friend: 3.5 },
-    anchor_dayun_sync:    { love: 2.0,  friend: 1.5 },
-    anchor_strength_hold: { love: 4.0,  friend: 3.5 },
-    anchor_balanced_pair: { love: 2.5,  friend: 2.5 },
-    anchor_upright_full:  { love: 3.5,  friend: 3.5 },
-    anchor_upright_half:  { love: 1.8,  friend: 1.8 },
-    anchor_mediator_full: { love: 3.0,  friend: 2.5 },
-    anchor_mediator_earth:{ love: 2.5,  friend: 2.0 },
+    anchor_core_calm:          { love: 3.5,  friend: 3.5 },
+    anchor_dayun_sync:         { love: 2.0,  friend: 1.5 },
+    anchor_strength_hold:      { love: 4.0,  friend: 3.5 },
+    anchor_strength_hold_disc: { love: 2.5,  friend: 2.0 },
+    anchor_balanced_pair:      { love: 2.5,  friend: 2.5 },
+    anchor_upright_full:       { love: 3.5,  friend: 3.5 },
+    anchor_upright_half:       { love: 1.8,  friend: 1.8 },
+    anchor_mediator_full:      { love: 3.0,  friend: 2.5 },
+    anchor_mediator_earth:     { love: 2.5,  friend: 2.0 },
 
-    drain_stem_compete:   { love: 4.5,  friend: 2.0 },
-    drain_branch_mixed:   { love: 3.0,  friend: 1.5 },
-    drain_pressure_over:  { love: 4.0,  friend: 3.0 },
-    drain_floating_mood:  { love: 3.0,  friend: 2.0 },
-    drain_high_pull_tax:  { love: 2.5,  friend: 1.5 }
+    drain_stem_compete:        { love: 4.5,  friend: 2.0 },
+    drain_branch_mixed:        { love: 3.0,  friend: 1.5 },
+    drain_pressure_over:       { love: 4.0,  friend: 3.0 },
+    drain_floating_mood:       { love: 3.0,  friend: 2.0 },
+    drain_high_pull_tax:       { love: 2.5,  friend: 1.5 }
   }
 };
 
@@ -1201,6 +1210,7 @@ const HIDDEN_STEMS = [
 ];
 
 const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
+const round1 = v => Math.round(v * 10) / 10;
 const round2 = v => Math.round(v * 100) / 100;
 const round3 = v => Math.round(v * 1000) / 1000;
 const fmtSigned = (v, digits = 1) => `${v > 0 ? '+' : ''}${Number(v).toFixed(digits)}`;
@@ -1328,11 +1338,26 @@ function calcBazi(year, month, day, hour, minute, lon = 120, gender = 'M', fixed
     zhengRatio: +(tgW.zhengXing / tgDenom).toFixed(3)
   };
 
-  // V6.0 扩展体征 3：明面土字与主导五行
+  // V6.1 扩展体征 3：明面土字、主导五行、原局自刑与极度偏枯五行
   const earthStemCount = stems.filter(s => s === 4 || s === 5).length;
   const earthBranchCount = branches.filter(b => EARTH_BRANCHES.includes(b)).length;
   const earthCharCount = earthStemCount + earthBranchCount;
   const domEl = ELEMENTS.reduce((best, e) => pct[e] > pct[best] ? e : best, ELEMENTS[0]);
+
+  const selfPunCounts = {};
+  branches.forEach(b => {
+    if ([4, 6, 9, 11].includes(b)) selfPunCounts[b] = (selfPunCounts[b] || 0) + 1;
+  });
+  const natalSelfPunishes = [];
+  Object.entries(selfPunCounts).forEach(([bStr, cnt]) => {
+    const b = Number(bStr), ch = BRANCHES[b];
+    if (cnt >= 3) natalSelfPunishes.push({ branch: b, count: cnt, label: `三${ch}自刑` });
+    else if (cnt === 2) natalSelfPunishes.push({ branch: b, count: cnt, label: `${ch}${ch}自刑` });
+  });
+  const depletedEls = ELEMENTS
+    .filter(e => pct[e] <= 4.0)
+    .map(e => ({ el: e, pct: pct[e] }))
+    .sort((a, b) => a.pct - b.pct);
 
   const spouseEl = getSpouseElement(dStem, gender);
   const pillars = [
@@ -1347,6 +1372,7 @@ function calcBazi(year, month, day, hour, minute, lon = 120, gender = 'M', fixed
     yStem, yBranch, mStem, mBranch, dStem, dBranch, hStem, hBranch,
     pct, domEl, strength, strengthLevel, tenGodProfile,
     earthStemCount, earthBranchCount, earthCharCount,
+    natalSelfPunishes, depletedEls,
     tstStr: `${String(th).padStart(2,'0')}:${String(tmin).padStart(2,'0')}`,
     offsetMin: Math.round(offsetMin)
   };
@@ -1481,14 +1507,18 @@ function evaluatePair(bzA, bzB, mode = 'love', weights = activeWeights) {
 
   // 预扫描：全盘 16 组地支冲/穿/刑/合与天干争合（供三个维度统一共享，确保单源事实！）
   const branchClashes = [], branchHarms = [], branchPunishes = [], crossSixCombines = [];
-  let earthConflictExists = false;
+  let earthConflictExists = false, hasWuWei = false, hasFireTrine = false;
   const aBranchConflictSet = new Set(), bBranchConflictSet = new Set();
   const aHarmTargets = new Map(), bHarmTargets = new Map();
+  const dayHasSixCombine = hasPair(BRANCH_SIX_COMBINE, dBA, dBB);
+  const monthHasSixCombine = hasPair(BRANCH_SIX_COMBINE, mBA, mBB);
 
   for (let i = 0; i < 4; i++) {
     for (let j = 0; j < 4; j++) {
       const b1 = bzA.branches[i], b2 = bzB.branches[j];
       const pos = `甲${PILLAR_SHORT[i]}[${BRANCHES[b1]}] × 乙${PILLAR_SHORT[j]}[${BRANCHES[b2]}]`;
+      if (hasPair([[6, 7]], b1, b2)) hasWuWei = true;
+      if (hasPair([[2, 6], [6, 10]], b1, b2)) hasFireTrine = true;
       if (hasPair(BRANCH_CLASH, b1, b2)) {
         branchClashes.push({ i, j, b1, b2, pos });
         aBranchConflictSet.add(i); bBranchConflictSet.add(j);
@@ -1511,7 +1541,11 @@ function evaluatePair(bzA, bzB, mode = 'love', weights = activeWeights) {
         if (isEarthBranchConflict(b1, b2)) earthConflictExists = true;
       }
       if (!(i === 2 && j === 2) && !(i === 1 && j === 1) && hasPair(BRANCH_SIX_COMBINE, b1, b2)) {
-        crossSixCombines.push({ i, j, b1, b2, pos });
+        const sameAsDaySix = dayHasSixCombine && ((b1 === dBA && b2 === dBB) || (b1 === dBB && b2 === dBA));
+        const sameAsMonthSix = monthHasSixCombine && ((b1 === mBA && b2 === mBB) || (b1 === mBB && b2 === mBA));
+        if (!sameAsDaySix && !sameAsMonthSix) {
+          crossSixCombines.push({ i, j, b1, b2, pos });
+        }
       }
     }
   }
@@ -1564,12 +1598,21 @@ function evaluatePair(bzA, bzB, mode = 'love', weights = activeWeights) {
   }
 
   if (crossSixCombines.length) {
-    // 优先涉及日支或月支的跨柱六合，最多计 2 组
+    // 优先涉及日支或月支的跨柱六合，按无序地支对去重后最多计 2 组
     const sortedCross = [...crossSixCombines].sort((a, b) => {
       const scoreP = x => (x.i === 2 || x.j === 2 ? 2 : 0) + (x.i === 1 || x.j === 1 ? 1 : 0);
       return scoreP(b) - scoreP(a);
-    }).slice(0, 2);
+    });
+    const seenCrossPairs = new Set();
+    const uniqCross = [];
     sortedCross.forEach(c => {
+      const pk = `${Math.min(c.b1, c.b2)}-${Math.max(c.b1, c.b2)}`;
+      if (!seenCrossPairs.has(pk) && uniqCross.length < 2) {
+        seenCrossPairs.add(pk);
+        uniqCross.push(c);
+      }
+    });
+    uniqCross.forEach(c => {
       const conflicted = aBranchConflictSet.has(c.i) || bBranchConflictSet.has(c.j);
       const baseV = ruleVal('cross_branch_combine', mode);
       const v = conflicted ? round2(baseV * 0.5) : baseV;
@@ -1788,7 +1831,23 @@ function evaluatePair(bzA, bzB, mode = 'love', weights = activeWeights) {
     }
   });
 
-  // 2C. 土重紧绷与五行偏枯叠加
+  // 单方原局自刑底色（三午自刑、辰辰自刑等直接计入相处内耗）
+  let natalPunUsed = 0;
+  const natalPunCap = mode === 'friend' ? SCORE_CONFIG.rules.natal_self_punish_3.capFriend : SCORE_CONFIG.rules.natal_self_punish_3.capLove;
+  [['甲', bzA], ['乙', bzB]].forEach(([who, bz]) => {
+    (bz.natalSelfPunishes || []).forEach(sp => {
+      const key = sp.count >= 3 ? 'natal_self_punish_3' : 'natal_self_punish_2';
+      const step = ruleVal(key, mode);
+      const v = Math.min(step, Math.max(0, natalPunCap - natalPunUsed));
+      if (v > 0) {
+        natalPunUsed += v;
+        rawD2Sub += v * sub.harmPunish;
+        pushItem('friction', key, `${who}方原局${sp.label}（内耗底色）`, `${who}盘自带${sp.count}个${BRANCHES[sp.branch]}（${sp.label}）`, -v, sub.harmPunish * cfg.w2, sp.count >= 3 ? '原局连环自刑使个体较真纠结与自我施压感强，亲密相处时更易放大情绪拉扯' : '原局带自刑，遇事易反复琢磨内耗，需要双方留出情绪缓冲空间', 'harmPunish');
+      }
+    });
+  });
+
+  // 2C. 土重紧绷、单盘偏枯与合化助忌修正
   const avgEarth = avgPct['土'], avgWood = avgPct['木'], avgFire = avgPct['火'], avgWater = avgPct['水'], avgMetal = avgPct['金'];
   const totalEarthChars = bzA.earthCharCount + bzB.earthCharCount;
   const earthTriggered = avgEarth >= 28 || (bzA.pct['土'] >= 25 && bzB.pct['土'] >= 25 && totalEarthChars >= 5);
@@ -1814,14 +1873,68 @@ function evaluatePair(bzA, bzB, mode = 'love', weights = activeWeights) {
     }
     const v = ruleVal(key, mode);
     rawD2Sub += v * sub.earthHeavy;
-    pushItem('friction', key, '双盘土重紧绷', `甲土${bzA.pct['土']}% + 乙土${bzB.pct['土']}%（均值${avgEarth}% · 明面${totalEarthChars}土）`, -v, sub.earthHeavy * cfg.w2, reason, 'earthHeavy');
+    pushItem('friction', key, '双盘土重紧绷', `甲土${bzA.pct['土'].toFixed(1)}% + 乙土${bzB.pct['土'].toFixed(1)}%（均值${avgEarth.toFixed(1)}% · 明面${totalEarthChars}土）`, -v, sub.earthHeavy * cfg.w2, reason, 'earthHeavy');
 
     if (earthConflictExists) {
       const ex = ruleVal('earth_clash_extra', mode);
       rawD2Sub += ex * sub.earthHeavy;
       pushItem('friction', 'earth_clash_extra', '土重叠加四库冲刑', '土气过厚且触发辰戌/丑未/自刑震荡', -ex, sub.earthHeavy * cfg.w2, '厚土相激导致闷气顶撞与僵持感进一步放大', 'earthHeavy');
     }
+  } else {
+    // 单盘土重紧绷联动扣分（与卡片 >=28% 标签完全联动）
+    [['甲', bzA], ['乙', bzB]].forEach(([who, bz]) => {
+      if (bz.pct['土'] >= 28) {
+        const key = bz.pct['土'] >= 34 ? 'earth_single_severe' : 'earth_single_mod';
+        const v = ruleVal(key, mode);
+        rawD2Sub += v * sub.earthHeavy;
+        pushItem('friction', key, `${who}方单盘土重紧绷`, `${who}盘土占 ${bz.pct['土'].toFixed(1)}%`, -v, sub.earthHeavy * cfg.w2, '单方土气偏重带来固执、闷扛或不易松口的生活惯性，需要额外沟通成本', 'earthHeavy');
+      }
+    });
   }
+
+  // 单盘极度偏枯扣分（pct <= 4.0%）
+  let depUsed = 0;
+  const depCap = mode === 'friend' ? SCORE_CONFIG.rules.single_el_depleted_comp.capFriend : SCORE_CONFIG.rules.single_el_depleted_comp.capLove;
+  [['甲', bzA, bzB], ['乙', bzB, bzA]].forEach(([who, bz, other]) => {
+    const deps = bz.depletedEls || [];
+    if (deps.length) {
+      const worst = deps[0];
+      const compensated = other.pct[worst.el] >= 18;
+      const key = compensated ? 'single_el_depleted_comp' : 'single_el_depleted_raw';
+      const step = ruleVal(key, mode);
+      const v = Math.min(step, Math.max(0, depCap - depUsed));
+      if (v > 0) {
+        depUsed += v;
+        rawD2Sub += v * sub.earthHeavy;
+        pushItem('friction', key, `${who}方极度缺${worst.el}（偏枯底色）`, `${who}盘${worst.el}仅 ${worst.pct.toFixed(1)}%${compensated ? `（对方${worst.el}${other.pct[worst.el].toFixed(1)}%部分缓解）` : '（对方亦无力补足）'}`, -v, sub.earthHeavy * cfg.w2, compensated ? '自身单行极度偏枯使情绪弹性受限；虽有对方能量部分填补，磨合依赖度仍高' : '原局五行存在明显断层且双方未能充分补齐，长期相处易因执念或视角盲区产生摩擦', 'earthHeavy');
+      }
+    }
+  });
+
+  // 合化助忌 / 助燥修正
+  const checkBoostTaboo = (weakWho, weakBz, boostWho, boostBz) => {
+    if (weakBz.strength > 44) return false;
+    const ctrlEl = ELEMENTS[(Math.floor(weakBz.dStem / 2) + 3) % 5];
+    const fireHeavy = weakBz.pct['火'] >= 28 || (ctrlEl === '火' && weakBz.tenGodProfile.guanShaRatio >= 0.35);
+    const boostFireWood = (boostBz.pct['木'] + boostBz.pct['火'] >= 42) || (boostBz.pct['木'] >= 30 && boostBz.branches.some(b => b === 7 || b === 10));
+    if (fireHeavy && boostFireWood && (hasWuWei || hasFireTrine)) {
+      const v = ruleVal('combine_boost_dry', mode);
+      rawD2Sub += v * sub.earthHeavy;
+      const combTag = [hasWuWei ? '午未合' : '', hasFireTrine ? '寅/戌午合火' : ''].filter(Boolean).join('+');
+      pushItem('friction', 'combine_boost_dry', `合化助燥施压（${weakWho}身弱火重）`, `${combTag} · ${boostWho}木火燥土叠加${weakWho}火${weakBz.pct['火'].toFixed(1)}%`, -v, sub.earthHeavy * cfg.w2, '保留亲密合化加分的同时，合局放大火燥与官杀压迫感，容易出现情绪上头与隐性施压', 'earthHeavy');
+      return true;
+    }
+    const anyMainCombine = hasPair(STEM_COMBINE, dSA, dSB) || dayHasSixCombine || sameTrine(dBA, dBB);
+    if (anyMainCombine && weakBz.tenGodProfile.guanShaRatio >= 0.35 && boostBz.pct[ctrlEl] >= 30) {
+      const v = ruleVal('combine_boost_ctrl', mode);
+      rawD2Sub += v * sub.earthHeavy;
+      pushItem('friction', 'combine_boost_ctrl', `合局助旺官杀压力（${weakWho}身弱）`, `${boostWho}${ctrlEl}${boostBz.pct[ctrlEl].toFixed(1)}%叠加${weakWho}强官杀`, -v, sub.earthHeavy * cfg.w2, '合局看似亲近，实则放大了弱势方的官杀承压感，久处易感到被管束或隐性消耗', 'earthHeavy');
+      return true;
+    }
+    return false;
+  };
+  const boostTabooHitWeakA = checkBoostTaboo('甲', bzA, '乙', bzB);
+  const boostTabooHitWeakB = checkBoostTaboo('乙', bzB, '甲', bzA);
 
   if (avgFire >= 32 && avgWater < 12) {
     const v = ruleVal('extreme_dry_cold', mode);
@@ -1880,7 +1993,7 @@ function evaluatePair(bzA, bzB, mode = 'love', weights = activeWeights) {
   const d2Capped = rawD2Sub > SCORE_CONFIG.caps.dim2 || (-d2SumW) > d2CapW;
   const d2RawCapped = Math.min(rawD2Sub, SCORE_CONFIG.caps.dim2);
   const d2Score = d2Capped ? round2(-d2CapW) : d2SumW;
-  const d2Mag = round2(-d2Score);
+  const d2Mag = d2Score === 0 ? 0 : round2(-d2Score);
 
   /* ==================== 维度三：现实承接度加减分 (-16 ~ +16) ==================== */
   let rawD3Sub = 0;
@@ -1908,10 +2021,12 @@ function evaluatePair(bzA, bzB, mode = 'love', weights = activeWeights) {
   const bHoldsA = bzA.strength <= 45 && bzB.strength >= 52 && (elGenerates(elB, elA) || elB === elA || bzB.pct[aYinEl] >= 22);
   const aHoldsB = bzB.strength <= 45 && bzA.strength >= 52 && (elGenerates(elA, elB) || elA === elB || bzA.pct[bYinEl] >= 22);
   if (bHoldsA || aHoldsB) {
-    const v = ruleVal('anchor_strength_hold', mode);
+    const disc = (bHoldsA && boostTabooHitWeakA) || (aHoldsB && boostTabooHitWeakB);
+    const key = disc ? 'anchor_strength_hold_disc' : 'anchor_strength_hold';
+    const v = ruleVal(key, mode);
     rawD3Sub += v;
     const pos = bHoldsA ? `乙(${bzB.strengthLevel}${bzB.strength}) 托底 甲(${bzA.strengthLevel}${bzA.strength})` : `甲(${bzA.strengthLevel}${bzA.strength}) 托底 乙(${bzB.strengthLevel}${bzB.strength})`;
-    pushItem('grounding', 'anchor_strength_hold', '强弱互补 · 情绪托底能力强', pos, v, cfg.w3, '一方波动或承压时，另一方刚好有定力与生扶能量接住节奏');
+    pushItem('grounding', key, disc ? '强弱互补（受合化助燥折减）' : '强弱互补 · 情绪托底能力强', pos, v, cfg.w3, disc ? '虽有一强一弱照应，但合局同时助旺压力，托底净效有所打折' : '一方波动或承压时，另一方刚好有定力与生扶能量接住节奏');
   } else if (bzA.strength > 44 && bzA.strength < 58 && bzB.strength > 44 && bzB.strength < 58 && !dayInvolvedConflict && !stemClash) {
     const v = ruleVal('anchor_balanced_pair', mode);
     rawD3Sub += v;
@@ -2006,9 +2121,9 @@ function evaluatePair(bzA, bzB, mode = 'love', weights = activeWeights) {
   const d3Score = d3Capped ? round2(clamp(d3SumW, d3MinW, d3MaxW)) : d3SumW;
 
   /* ==================== 净值汇总与证据结语 ==================== */
-  const rawTotal = round3(SCORE_CONFIG.baseScore + d1Score + d2Score + d3Score);
+  const rawTotal = round2(SCORE_CONFIG.baseScore + d1Score + d2Score + d3Score);
   const totalClamped = rawTotal < SCORE_CONFIG.minTotal || rawTotal > SCORE_CONFIG.maxTotal;
-  const total = round3(clamp(rawTotal, SCORE_CONFIG.minTotal, SCORE_CONFIG.maxTotal));
+  const total = round1(clamp(rawTotal, SCORE_CONFIG.minTotal, SCORE_CONFIG.maxTotal));
 
   const d1Obj = { name: '基础吸引力与交集', score: d1Score, raw: round2(rawD1), weightedRaw: d1SumW, cap: d1CapW, capped: d1Capped };
   const d2Obj = { name: '冲克与内耗扣分',   score: d2Score, mag: d2Mag, raw: round2(-rawD2Sub), weightedRaw: d2SumW, cap: d2CapW, capped: d2Capped };
@@ -2130,7 +2245,7 @@ function runCeilingFinder() {
           <span class="badge">${gTxt}</span>
         </div>
         <div style="display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;">
-          <div class="ceil-score serif">${res.score.toFixed(3)} <span style="font-size:14px;font-weight:500;">分</span></div>
+          <div class="ceil-score serif">${res.score.toFixed(1)} <span style="font-size:14px;font-weight:500;">分</span></div>
           <span class="${ev.archetype.badgeClass}">${ev.archetype.label}</span>
         </div>
         <div class="ceil-meta">
@@ -2147,7 +2262,7 @@ function runCeilingFinder() {
   document.getElementById('ceilingResult').innerHTML = `
     <div class="card">
       <div class="card-title">
-        <span>${name} 的 V6.0 理论上限报告（±${span} 岁 · 权重：${activeWeights.name}）</span>
+        <span>${name} 的 V6.1 理论上限报告（±${span} 岁 · 权重：${activeWeights.name}）</span>
         <button type="button" class="btn btn-sm btn-soft" onclick="pinCeilingToSidebar()">★ 同步设为右侧个人理论上限</button>
       </div>
       <div style="margin-bottom:14px;">${renderPersonCard(name, meBz, unk)}</div>
@@ -2188,7 +2303,7 @@ function pinCeilingToSidebar() {
   if (!lastCeilingResult) return;
   const me = lastCeilingResult.me;
   const makeRec = (mode, res, label) => ({
-    engineVersion: 'V6.0',
+    engineVersion: 'V6.1',
     label, mode, score: res.score,
     nameA: me.name, genderA: me.gender, dateA: me.date, timeA: me.time, unkA: me.unk, lonA: me.lon, gzA: me.bz.gz,
     nameB: mode === 'love' ? '理论爱情满配' : '理论友情满配',
@@ -2199,7 +2314,7 @@ function pinCeilingToSidebar() {
     if (window.parent && window.parent !== window) {
       window.parent.postMessage({
         type: 'BAZI_V54_SAVE_CEILING',
-        engineVersion: 'V6.0',
+        engineVersion: 'V6.1',
         love: makeRec('love', lastCeilingResult.love, `${me.name} · 理论爱情上限`),
         friend: makeRec('friend', lastCeilingResult.friend, `${me.name} · 理论友情上限`)
       }, '*');
@@ -2211,14 +2326,25 @@ function pinCeilingToSidebar() {
 function renderPersonCard(name, bz, isUnk) {
   const roleTag = bz.gender === 'M' ? '乾造 · 男' : '坤造 · 女';
   const spLabel = bz.gender === 'M' ? `妻星(财)：${bz.spouseEl}` : `夫星(官杀)：${bz.spouseEl}`;
-  const earthWarn = bz.pct['土'] >= 26 ? `<span class="badge badge-amber">土重 ${bz.pct['土']}%</span>` : '';
   const strBadge = `<span class="badge badge-slate">身${bz.strengthLevel}(${bz.strength})</span>`;
-  const bars = ELEMENTS.map(e => `<div class="wx-bar-row"><span class="el-${e}" style="width:20px;font-weight:700">${e}</span><div class="wx-track"><div class="wx-fill bg-${e}" style="width:${bz.pct[e]}%"></div></div><span style="width:38px;text-align:right;color:var(--muted)">${bz.pct[e]}%</span></div>`).join('');
+  const earthWarn = bz.pct['土'] >= 28 ? `<span class="badge badge-amber">土重 ${bz.pct['土'].toFixed(1)}%</span>` : '';
+  const depBadges = (bz.depletedEls && bz.depletedEls.length)
+    ? `<span class="badge badge-warm">极度缺${bz.depletedEls[0].el} ${bz.depletedEls[0].pct.toFixed(1)}%</span>`
+    : '';
+  const selfPunBadges = (bz.natalSelfPunishes || [])
+    .map(sp => `<span class="badge badge-warm">${sp.label}</span>`).join(' ');
+  const tg = bz.tenGodProfile;
+  let tgBadge = '';
+  if (tg.guanShaRatio >= 0.35) tgBadge = `<span class="badge badge-amber">官杀偏重</span>`;
+  else if (tg.shangGuanRatio >= 0.25) tgBadge = `<span class="badge badge-amber">伤官偏重</span>`;
+  else if (tg.biJieRatio >= 0.35) tgBadge = `<span class="badge badge-amber">比劫偏重</span>`;
+
+  const bars = ELEMENTS.map(e => `<div class="wx-bar-row"><span class="el-${e}" style="width:20px;font-weight:700">${e}</span><div class="wx-track"><div class="wx-fill bg-${e}" style="width:${bz.pct[e].toFixed(1)}%"></div></div><span style="width:44px;text-align:right;color:var(--muted);font-variant-numeric:tabular-nums;">${bz.pct[e].toFixed(1)}%</span></div>`).join('');
   return `<div class="person-panel">
     <div style="font-size:13.5px;font-weight:700;margin-bottom:5px;display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
-      <span>${name}</span> <span class="badge">${roleTag}</span> ${strBadge} ${earthWarn}
+      <span>${name}</span> <span class="badge">${roleTag}</span> ${strBadge} ${earthWarn} ${depBadges} ${selfPunBadges} ${tgBadge}
     </div>
-    <div style="font-size:11.5px;color:var(--muted);margin-bottom:6px;">
+    <div style="font-size:11px;color:var(--muted);margin-bottom:6px;">
       ${bz.dayunDir} · ${spLabel} · ${isUnk ? '时辰未知（已按全部时辰稳态/浮动聚合）' : `真太阳时 ${bz.tstStr}（校正 ${bz.offsetMin >= 0 ? '+' : ''}${bz.offsetMin} 分）`}
     </div>
     <div class="pillars">${bz.pillars.map((p, idx) => `
@@ -2241,7 +2367,7 @@ function aggregateUnknownHourResults(results, mode, weights) {
   const d1Min = Math.min(...results.map(r => r.d1.score)), d1Max = Math.max(...results.map(r => r.d1.score));
   const d2Min = Math.min(...results.map(r => r.d2.score)), d2Max = Math.max(...results.map(r => r.d2.score));
   const d3Min = Math.min(...results.map(r => r.d3.score)), d3Max = Math.max(...results.map(r => r.d3.score));
-  const totalMean = round3(mean(results.map(r => r.total)));
+  const totalMean = round1(mean(results.map(r => r.total)));
   const minScore = Math.min(...results.map(r => r.total));
   const maxScore = Math.max(...results.map(r => r.total));
 
@@ -2436,10 +2562,10 @@ function runSynastry(save = true) {
           ${nameA}（${genderA === 'M' ? '乾造' : '坤造'}）× ${nameB}（${genderB === 'M' ? '乾造' : '坤造'}） · ${currentMode === 'love' ? '婚恋模式' : '友情模式'} · 权重：${evalRes.presetName}
         </div>
         <div class="score-main-row">
-          <div class="score-result-value serif" id="totalScoreResult">${evalRes.total.toFixed(3)}<span style="font-size:16px;font-weight:600;margin-left:4px;">分</span></div>
+          <div class="score-result-value serif" id="totalScoreResult">${evalRes.total.toFixed(1)}<span style="font-size:16px;font-weight:600;margin-left:4px;">分</span></div>
           <span class="archetype-pill ${evalRes.archetype.badgeClass}">${evalRes.archetype.label}</span>
         </div>
-        ${(unkA || unkB) ? `<div class="score-range">未知时辰全遍历区间：${minScore.toFixed(3)} – ${maxScore.toFixed(3)} 分（下方已拆分稳态项与时柱浮动项）</div>` : ''}
+        ${(unkA || unkB) ? `<div class="score-range">未知时辰全遍历区间：${minScore.toFixed(1)} – ${maxScore.toFixed(1)} 分（下方已拆分稳态项与时柱浮动项）</div>` : ''}
         <div class="formula-strip">
           <span class="f-chip f-base">基准 ${evalRes.base.toFixed(1)}</span>
           <span class="f-op">+</span>
@@ -2449,7 +2575,7 @@ function runSynastry(save = true) {
           <span class="f-op">${evalRes.d3.score >= 0 ? '+' : '−'}</span>
           <span class="f-chip ${d3ChipClass}">承接 ${Math.abs(evalRes.d3.score).toFixed(1)}</span>
           <span class="f-op">=</span>
-          <span class="f-chip f-base">${evalRes.total.toFixed(3)}${evalRes.totalClamped ? ' (边界截断)' : ''}</span>
+          <span class="f-chip f-base">${evalRes.total.toFixed(1)}${evalRes.totalClamped ? ' (边界截断)' : ''}</span>
         </div>
         <div class="verdict-box">${evalRes.verdictHtml}</div>
       </div>
@@ -2471,14 +2597,14 @@ function runSynastry(save = true) {
   const gzA = baseA.pillars.map((p, idx) => idx === 3 && unkA ? '??' : (STEMS[p.s] + BRANCHES[p.b])).join(' ');
   const gzB = baseB.pillars.map((p, idx) => idx === 3 && unkB ? '??' : (STEMS[p.s] + BRANCHES[p.b])).join(' ');
   const payload = {
-    engineVersion: 'V6.0',
+    engineVersion: 'V6.1',
     mode: currentMode, genderA, genderB,
     nameA, dateA, timeA, unkA, lonA,
     nameB, dateB, timeB, unkB, lonB,
     gzA, gzB,
     score: evalRes.total,
-    scoreText: evalRes.total.toFixed(3),
-    range: (unkA || unkB) ? `${minScore.toFixed(3)}–${maxScore.toFixed(3)}` : null,
+    scoreText: evalRes.total.toFixed(1),
+    range: (unkA || unkB) ? `${minScore.toFixed(1)}–${maxScore.toFixed(1)}` : null,
     note: `${evalRes.archetype.label} · 吸${fmtSigned(evalRes.d1.score)} / 耗${evalRes.d2.score.toFixed(1)} / 承${fmtSigned(evalRes.d3.score)}`,
     breakdown: {
       base: evalRes.base, d1: evalRes.d1.score, d2: evalRes.d2.score, d3: evalRes.d3.score,
@@ -2495,7 +2621,7 @@ function runSynastry(save = true) {
   if (save) {
     saveHistory({
       id: Date.now(), ...payload,
-      score: evalRes.total.toFixed(3),
+      score: evalRes.total.toFixed(1),
       range: (unkA || unkB) ? `${minScore.toFixed(1)}-${maxScore.toFixed(1)}` : null,
       createdAt: new Date().toLocaleString('zh-CN', { hour12: false })
     });
@@ -2516,7 +2642,7 @@ window.addEventListener('message', e => {
   document.getElementById('lonA').value = p.lonA ?? 120;
   document.getElementById('nameB').value = p.nameB || '乙方';
   document.getElementById('dateB').value = p.dateB || '2003-02-05';
-  document.getElementById('timeB').value = p.timeB || '04:00';
+  document.getElementById('timeB').value = p.timeB || '16:00';
   document.getElementById('unkB').checked = !!p.unkB;
   document.getElementById('lonB').value = p.lonB ?? 120;
   toggleTime('A'); toggleTime('B');
@@ -2524,8 +2650,8 @@ window.addEventListener('message', e => {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 });
 
-/* ================= 本地合盘历史记录（V6.0 独立键名） ================= */
-const STORE_KEY = 'suiwind_bazi_v60_history';
+/* ================= 本地合盘历史记录（V6.1 独立键名） ================= */
+const STORE_KEY = 'suiwind_bazi_v61_history';
 const getHistory = () => { try { return JSON.parse(localStorage.getItem(STORE_KEY) || '[]'); } catch { return []; } };
 function saveHistory(item) { const list = getHistory(); list.unshift(item); localStorage.setItem(STORE_KEY, JSON.stringify(list.slice(0, 30))); renderHistory(); }
 function deleteHistory(id, e) { e.stopPropagation(); localStorage.setItem(STORE_KEY, JSON.stringify(getHistory().filter(x => x.id !== id))); renderHistory(); }
@@ -2545,7 +2671,7 @@ function loadHistoryById(id) {
 }
 function renderHistory() {
   const list = getHistory(), el = document.getElementById('historyList');
-  if (!list.length) { el.innerHTML = '<p class="hint">暂无 V6.0 合盘记录，点击上方按钮测算后自动保存在本地。</p>'; return; }
+  if (!list.length) { el.innerHTML = '<p class="hint">暂无 V6.1 合盘记录，点击上方按钮测算后自动保存在本地。</p>'; return; }
   el.innerHTML = list.map(item => `
     <div class="history-item" onclick="loadHistoryById(${item.id})">
       <div>

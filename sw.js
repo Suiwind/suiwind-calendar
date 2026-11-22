@@ -1,19 +1,23 @@
-const CACHE = 'suiwind-calendar-v360';
+const CACHE = 'suiwind-calendar-v362';
 const CORE = [
   './',
   './index.html',
-  './styles.css',
-  './app-data.js',
-  './app.js',
-  './supabase-local.js',
-  './bazi-hepan.js',
-  './bazi-hepan-v5.html',
+  './styles.css?v=362',
+  './app-data.js?v=362',
+  './app.js?v=362',
+  './supabase-local.js?v=362',
+  './bazi-hepan.js?v=362',
+  './bazi-hepan-v5.html?v=362',
   './manifest.json',
   './favicon.svg'
 ];
 
 self.addEventListener('install', event => {
-  event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(CORE)));
+  event.waitUntil(
+    caches.open(CACHE)
+      .then(cache => cache.addAll(CORE))
+      .then(() => self.skipWaiting())
+  );
 });
 
 self.addEventListener('activate', event => {
@@ -36,7 +40,7 @@ self.addEventListener('fetch', event => {
   const isCoreAsset = event.request.mode === 'navigate' || /\.(html|css|js|json)$/i.test(url.pathname);
   if (isCoreAsset) {
     event.respondWith(
-      fetch(event.request)
+      fetch(event.request, { cache: 'no-cache' })
         .then(response => {
           if (response && response.ok) {
             const copy = response.clone();

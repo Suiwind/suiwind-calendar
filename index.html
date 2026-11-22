@@ -8,7 +8,7 @@
 <link rel="icon" type="image/svg+xml" href="./favicon.svg">
 <link rel="apple-touch-icon" href="./icons/apple-touch-icon.png">
 <link rel="manifest" href="./manifest.json">
-<link rel="stylesheet" href="./styles.css">
+<link rel="stylesheet" href="./styles.css?v=362">
 <script>
 (function(){
   try{
@@ -28,7 +28,7 @@
   <div class="bazi-wrap">
     <header class="bazi-head">
       <div>
-        <h1 class="bazi-title">八字合盘 <span class="version">V6.0 三维净值版</span></h1>
+        <h1 class="bazi-title">八字合盘 <span class="version">V6.1 三维净值版</span></h1>
         <p class="bazi-subtitle">苏伊温德日历 · 真太阳时排盘与三维净值可调权重引擎（吸引 / 内耗 / 承接）</p>
       </div>
       <div class="bazi-actions">
@@ -45,14 +45,14 @@
           <p class="bazi-small">若未自动载入内置引擎，可点击下方手动选择本地 HTML 文件。</p>
           <button type="button" class="btn primary" id="baziEmptyImport">选择 HTML 文件</button>
         </div>
-        <iframe id="baziFrame" class="bazi-iframe bazi-hidden" title="八字合盘 V6.0" sandbox="allow-scripts allow-same-origin allow-downloads allow-modals" referrerpolicy="no-referrer"></iframe>
+        <iframe id="baziFrame" class="bazi-iframe bazi-hidden" title="八字合盘 V6.1" sandbox="allow-scripts allow-same-origin allow-downloads allow-modals" referrerpolicy="no-referrer"></iframe>
       </main>
       <aside class="bazi-card bazi-side" aria-label="纪录对照板">
         <div class="bazi-side-head">
           <h2>纪录对照板</h2>
-          <span class="bazi-ver-chip">V6.0 BENCHMARK</span>
+          <span class="bazi-ver-chip">V6.1 BENCHMARK</span>
         </div>
-        <p class="bazi-small">按 V6.0 三维净值标准（默认平衡权重）透明展示双方时间与四柱，支持一键填入复现；可在左侧「测算个人理论上限」随时重算更新。</p>
+        <p class="bazi-small">按 V6.1 三维净值精校标准（默认平衡权重）透明展示双方时间与四柱，支持一键填入复现；可在左侧「测算个人理论上限」随时重算更新。</p>
         <div class="bazi-sec-title"><h3>我的理论上限 · 丙戌 己亥 甲辰</h3></div>
         <div id="baziMyCeilingRecords" class="bazi-record-list"></div>
         <div class="bazi-sec-title">
@@ -60,7 +60,7 @@
           <button type="button" class="btn sm ghost bazi-reset-btn" id="baziResetPersonal">清空</button>
         </div>
         <div id="baziPersonalRecords" class="bazi-record-list"></div>
-        <div class="bazi-sec-title"><h3>V6.0 全局理论上限标杆</h3></div>
+        <div class="bazi-sec-title"><h3>V6.1 全局理论上限标杆</h3></div>
         <div id="baziWorldRecords" class="bazi-record-list"></div>
         <div class="bazi-compare">
           <div class="bazi-compare-head">本次与纪录差距</div>
@@ -71,12 +71,12 @@
               <option value="my-ceil-friend">我的理论友情上限</option>
               <option value="personal-love">我的实测婚恋最高</option>
               <option value="personal-friend">我的实测友情最高</option>
-              <option value="bench-love">全局婚恋满配标杆 (95.000)</option>
-              <option value="bench-friend">全局友情满配标杆 (94.300)</option>
+              <option value="bench-love">全局婚恋满配标杆 (90.9)</option>
+              <option value="bench-friend">全局友情满配标杆 (92.6)</option>
             </select>
           </div>
           <div class="bazi-score-input">
-            <input id="baziInputScore" type="number" step="0.001" min="0" max="100" placeholder="本次分数">
+            <input id="baziInputScore" type="number" step="0.1" min="0" max="100" placeholder="本次分数">
             <button id="baziComputeDifference" type="button" class="btn sm primary">比较</button>
           </div>
           <div id="baziDiff" class="bazi-diff-out" aria-live="polite"></div>
@@ -551,9 +551,9 @@
   <button class="btn ghost sm" id="swUpdateDismissBtn" type="button">稍后</button>
 </div>
 
-<script src="./supabase-local.js"></script>
-<script src="./app-data.js"></script>
-<script defer src="./app.js"></script>
-<script defer src="./bazi-hepan.js"></script>
+<script src="./supabase-local.js?v=362"></script>
+<script src="./app-data.js?v=362"></script>
+<script defer src="./app.js?v=362"></script>
+<script defer src="./bazi-hepan.js?v=362"></script>
 </body>
 </html>
