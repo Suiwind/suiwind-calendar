@@ -3,62 +3,91 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>八字合盘 V5.4 · 苏伊温德日历内置引擎</title>
+<title>八字合盘 V6.0 · 三维净值可调权重引擎</title>
 <style>
   :root {
-    --bg: #f2efe8;
+    --bg: #f1f4f7;
     --card: #ffffff;
-    --card-soft: #f4f2eb;
-    --line: rgba(48, 60, 46, 0.10);
-    --line-soft: rgba(48, 60, 46, 0.06);
-    --text: #232b22;
-    --text-2: #4c574a;
-    --muted: #7b8477;
-    --accent: #526e51;
-    --accent-strong: #3f593e;
-    --accent-soft: #e6eee4;
-    --warm: #b5574b;
-    --warm-soft: #f8ebe9;
-    --wood: #3e7a56;
-    --fire: #b8534a;
-    --earth: #9f7a3d;
-    --metal: #6e7780;
-    --water: #486e8a;
-    --radius: 14px;
-    --shadow: 0 4px 16px rgba(36, 48, 34, 0.045);
+    --card-soft: #f6f8fa;
+    --card-hover: #eef2f6;
+    --line: rgba(16, 28, 40, 0.10);
+    --line-strong: rgba(16, 28, 40, 0.18);
+    --line-soft: rgba(16, 28, 40, 0.06);
+    --text: #121a22;
+    --text-2: #394856;
+    --muted: #5c6c7b;
+    --accent: #214a59;
+    --accent-strong: #153542;
+    --accent-soft: #e5eff3;
+    --accent-ring: rgba(33, 74, 89, 0.18);
+    --pos: #1d6b53;
+    --pos-soft: #e5f3ee;
+    --warm: #c0433a;
+    --warm-soft: #fceceb;
+    --amber: #9e6514;
+    --amber-soft: #fbf1df;
+    --slate: #2c5b7c;
+    --slate-soft: #e7f0f7;
+    --wood: #216e4d;
+    --fire: #c44139;
+    --earth: #986a1b;
+    --metal: #52606d;
+    --water: #2a5f8a;
+    --radius: 10px;
+    --radius-lg: 12px;
+    --shadow: 0 1px 2px rgba(14, 24, 34, 0.04), 0 6px 18px -6px rgba(14, 24, 34, 0.055);
+    --ease: cubic-bezier(0.22, 1, 0.36, 1);
+    --sans: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Noto Sans SC", "Microsoft YaHei", system-ui, sans-serif;
+    --serif: "Songti SC", "Noto Serif SC", "STSong", Georgia, serif;
+    --mono: ui-monospace, "SF Mono", "Cascadia Mono", Menlo, Consolas, monospace;
+    color-scheme: light;
   }
   [data-theme="dark"] {
-    --bg: #131713;
-    --card: #212822;
-    --card-soft: #1b221c;
-    --line: rgba(220, 232, 218, 0.10);
-    --line-soft: rgba(220, 232, 218, 0.06);
-    --text: #e6eae2;
-    --text-2: #bac4b7;
-    --muted: #849182;
-    --accent: #82a47f;
-    --accent-strong: #96b893;
-    --accent-soft: rgba(130, 164, 127, 0.16);
-    --warm: #df887d;
-    --warm-soft: rgba(196, 98, 90, 0.18);
-    --wood: #77b88d;
-    --fire: #e08279;
-    --earth: #d7b26d;
-    --metal: #a5b0ba;
-    --water: #7fb0d4;
-    --shadow: 0 4px 18px rgba(0, 0, 0, 0.25);
+    --bg: #0c1014;
+    --card: #131920;
+    --card-soft: #19212a;
+    --card-hover: #202a35;
+    --line: rgba(212, 226, 240, 0.10);
+    --line-strong: rgba(212, 226, 240, 0.19);
+    --line-soft: rgba(212, 226, 240, 0.06);
+    --text: #eaf0f6;
+    --text-2: #b4c0cc;
+    --muted: #8090a0;
+    --accent: #6eb6bf;
+    --accent-strong: #8ad0d8;
+    --accent-soft: rgba(110, 182, 191, 0.15);
+    --accent-ring: rgba(110, 182, 191, 0.25);
+    --pos: #5ec09e;
+    --pos-soft: rgba(94, 192, 158, 0.15);
+    --warm: #eb7e76;
+    --warm-soft: rgba(235, 126, 118, 0.16);
+    --amber: #e2b45d;
+    --amber-soft: rgba(226, 180, 93, 0.15);
+    --slate: #7db4dc;
+    --slate-soft: rgba(125, 180, 220, 0.15);
+    --wood: #63c496;
+    --fire: #eb7c74;
+    --earth: #e2b663;
+    --metal: #aebbc7;
+    --water: #6fb1e0;
+    --shadow: 0 2px 14px rgba(0, 0, 0, 0.30);
+    color-scheme: dark;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
-    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Noto Sans SC", "Microsoft YaHei", sans-serif;
+    font-family: var(--sans);
     background: var(--bg);
     color: var(--text);
-    line-height: 1.6;
-    padding: 14px 14px 36px;
+    line-height: 1.58;
+    padding: 12px 14px 36px;
+    -webkit-font-smoothing: antialiased;
+    transition: background-color 0.22s var(--ease), color 0.22s var(--ease);
   }
-  .serif { font-family: "Songti SC", "Noto Serif SC", "STSong", Georgia, serif; }
-  .wrap { max-width: 980px; margin: 0 auto; }
+  .serif { font-family: var(--mono); letter-spacing: -0.02em; }
+  .pillar-gz.serif { font-family: var(--serif); letter-spacing: 0.12em; }
+  .wrap { max-width: 1000px; margin: 0 auto; }
 
+  /* 顶部模式控制条 */
   .mode-bar {
     display: flex;
     justify-content: space-between;
@@ -66,106 +95,139 @@
     flex-wrap: wrap;
     gap: 10px;
     margin-bottom: 14px;
-    padding: 10px 14px;
+    padding: 8px 12px;
     background: var(--card);
     border: 1px solid var(--line);
-    border-radius: var(--radius);
+    border-radius: var(--radius-lg);
     box-shadow: var(--shadow);
   }
   .mode-tabs {
     display: inline-flex;
     background: var(--card-soft);
-    border-radius: 10px;
+    border: 1px solid var(--line-soft);
+    border-radius: 8px;
     padding: 3px;
-    gap: 4px;
+    gap: 3px;
     flex-wrap: wrap;
   }
   .mode-btn {
-    border: none;
+    border: 1px solid transparent;
     background: transparent;
     color: var(--muted);
-    padding: 6px 14px;
-    border-radius: 8px;
-    font-size: 13px;
+    padding: 6px 13px;
+    border-radius: 6px;
+    font-size: 12.5px;
     font-weight: 600;
     cursor: pointer;
-    transition: all .18s;
+    transition: all 0.18s var(--ease);
   }
-  .mode-btn.active { background: var(--accent); color: #fff; }
-  .engine-tag { font-size: 12px; color: var(--muted); }
+  .mode-btn:hover { color: var(--text); }
+  .mode-btn.active {
+    background: var(--accent);
+    color: #fff;
+    box-shadow: 0 1px 4px rgba(16, 36, 46, 0.18);
+  }
+  [data-theme="dark"] .mode-btn.active { color: #091318; font-weight: 700; }
+  .mode-right { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .engine-tag {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.03em;
+  }
 
   .view-panel { display: none; }
-  .view-panel.active { display: block; }
+  .view-panel.active { display: block; animation: fadeRise 0.2s var(--ease); }
 
   .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-  @media (max-width: 720px) { .grid-2 { grid-template-columns: 1fr; } }
+  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  @media (max-width: 720px) { .grid-2, .grid-3 { grid-template-columns: 1fr; } }
 
+  /* 卡片与表头 */
   .card {
     background: var(--card);
     border: 1px solid var(--line);
-    border-radius: var(--radius);
-    padding: 16px;
+    border-radius: var(--radius-lg);
+    padding: 16px 18px;
     margin-bottom: 14px;
     box-shadow: var(--shadow);
   }
   .card-title {
-    font-size: 15px;
+    font-size: 14px;
     font-weight: 700;
-    margin-bottom: 12px;
+    margin-bottom: 13px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--line);
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 8px;
     flex-wrap: wrap;
-    border-left: 3px solid var(--accent);
-    padding-left: 9px;
+    letter-spacing: -0.005em;
   }
   .badge {
+    display: inline-flex;
+    align-items: center;
     font-size: 11px;
     padding: 2px 8px;
-    border-radius: 99px;
-    background: var(--accent-soft);
-    color: var(--accent-strong);
-    font-weight: 600;
+    border-radius: 5px;
+    background: var(--pos-soft);
+    color: var(--pos);
+    font-weight: 650;
+    white-space: nowrap;
+    letter-spacing: 0.01em;
   }
+  .badge-warm { background: var(--warm-soft); color: var(--warm); }
+  .badge-amber { background: var(--amber-soft); color: var(--amber); }
+  .badge-slate { background: var(--slate-soft); color: var(--slate); }
 
-  .form-row { display: flex; flex-direction: column; gap: 4px; margin-bottom: 10px; }
-  .form-row label { font-size: 12px; color: var(--muted); font-weight: 600; }
+  /* 表单控件 */
+  .form-row { display: flex; flex-direction: column; gap: 5px; margin-bottom: 11px; }
+  .form-row:last-child { margin-bottom: 0; }
+  .form-row label { font-size: 11.5px; color: var(--muted); font-weight: 600; letter-spacing: 0.02em; }
   input, select {
     width: 100%;
     padding: 8px 10px;
-    border: 1px solid var(--line);
-    border-radius: 9px;
+    border: 1px solid var(--line-strong);
+    border-radius: 8px;
     background: var(--card-soft);
     color: var(--text);
-    font-size: 13.5px;
+    font-size: 13px;
     outline: none;
+    transition: border-color 0.16s ease, box-shadow 0.16s ease, background-color 0.16s ease;
   }
-  input:focus, select:focus { border-color: var(--accent); }
+  input[type="range"] { padding: 0; border: none; background: transparent; accent-color: var(--accent); cursor: pointer; }
+  input:focus, select:focus {
+    border-color: var(--accent);
+    background: var(--card);
+    box-shadow: 0 0 0 3px var(--accent-ring);
+  }
   .inline-row { display: flex; gap: 8px; align-items: center; }
-  .loc-grid { display: grid; grid-template-columns: 1fr 1fr 84px; gap: 6px; }
+  .loc-grid { display: grid; grid-template-columns: 1fr 1fr 86px; gap: 6px; }
   @media (max-width: 480px) { .loc-grid { grid-template-columns: 1fr 1fr; } .loc-grid input { grid-column: 1 / -1; } }
 
   .gender-toggle {
     display: inline-flex;
     background: var(--card-soft);
-    border-radius: 9px;
-    padding: 3px;
-    gap: 3px;
+    border-radius: 7px;
+    padding: 2px;
+    gap: 2px;
     border: 1px solid var(--line);
   }
   .gender-btn {
     border: none;
     background: transparent;
     color: var(--muted);
-    padding: 5px 12px;
-    border-radius: 7px;
-    font-size: 12.5px;
+    padding: 4px 10px;
+    border-radius: 5px;
+    font-size: 12px;
     font-weight: 600;
     cursor: pointer;
     white-space: nowrap;
+    transition: all 0.16s var(--ease);
   }
   .gender-btn.active { background: var(--accent); color: #fff; }
+  [data-theme="dark"] .gender-btn.active { color: #091318; }
 
   .checkbox-label {
     display: inline-flex;
@@ -177,36 +239,42 @@
     user-select: none;
     white-space: nowrap;
   }
-  .checkbox-label input { width: auto; }
+  .checkbox-label input { width: auto; accent-color: var(--accent); }
 
+  /* 按钮 */
   .btn {
-    padding: 9px 15px;
-    border: 1px solid var(--line);
-    border-radius: 10px;
-    background: var(--card-soft);
-    color: var(--text);
-    font-size: 13.5px;
+    padding: 8px 14px;
+    border: 1px solid var(--line-strong);
+    border-radius: 8px;
+    background: var(--card);
+    color: var(--text-2);
+    font-size: 13px;
     font-weight: 600;
     cursor: pointer;
-    transition: all .18s;
+    transition: all 0.16s var(--ease);
   }
-  .btn:hover { border-color: var(--accent); }
+  .btn:hover { border-color: var(--accent); color: var(--text); }
+  .btn:active { transform: scale(0.985); }
   .btn-primary {
     width: 100%;
     background: var(--accent);
     border-color: var(--accent);
     color: #fff;
-    padding: 12px;
-    font-size: 15px;
-    letter-spacing: 1px;
+    padding: 11px 16px;
+    font-size: 14px;
+    font-weight: 650;
+    letter-spacing: 0.04em;
+    box-shadow: 0 2px 10px -2px rgba(33, 74, 89, 0.34);
   }
-  .btn-primary:hover { background: var(--accent-strong); }
-  .btn-soft {
-    background: var(--accent-soft);
-    border-color: transparent;
-    color: var(--accent-strong);
-  }
-  .btn-sm { padding: 5px 11px; font-size: 12px; }
+  [data-theme="dark"] .btn-primary { color: #091318; font-weight: 700; }
+  .btn-primary:hover { background: var(--accent-strong); border-color: var(--accent-strong); color: #fff; }
+  [data-theme="dark"] .btn-primary:hover { color: #060e12; }
+  .btn-soft { background: var(--accent-soft); border-color: transparent; color: var(--accent-strong); }
+  .btn-soft:hover { border-color: rgba(33, 74, 89, 0.25); }
+  .btn-sm { padding: 5px 10px; font-size: 12px; }
+  .btn-pill { border-radius: 6px; padding: 5px 11px; font-size: 12px; }
+  .btn-pill.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+  [data-theme="dark"] .btn-pill.active { color: #091318; }
 
   .el-木 { color: var(--wood); } .bg-木 { background: var(--wood); }
   .el-火 { color: var(--fire); } .bg-火 { background: var(--fire); }
@@ -214,98 +282,389 @@
   .el-金 { color: var(--metal); } .bg-金 { background: var(--metal); }
   .el-水 { color: var(--water); } .bg-水 { background: var(--water); }
 
-  .score-hero {
-    text-align: center;
-    padding: 18px 12px;
+  /* 权重配置抽屉 */
+  .weight-panel { display: none; }
+  .weight-panel.open { display: block; animation: fadeRise 0.2s var(--ease); }
+  .preset-row { display: flex; gap: 7px; flex-wrap: wrap; align-items: center; margin-bottom: 12px; }
+  .slider-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 10px; }
+  .sub-slider-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; }
+  @media (max-width: 780px) { .slider-grid { grid-template-columns: 1fr; } .sub-slider-grid { grid-template-columns: 1fr 1fr; } }
+  .slider-box {
     background: var(--card-soft);
     border: 1px solid var(--line);
-    border-radius: 12px;
-    margin-bottom: 14px;
+    border-radius: 8px;
+    padding: 9px 11px;
   }
-  .score-label { font-size: 13px; color: var(--muted); }
-  .score-result-value {
-    font-size: 40px;
-    font-weight: 800;
-    color: var(--accent-strong);
-    line-height: 1.15;
-    margin: 4px 0;
-  }
-  .score-range { font-size: 12.5px; color: var(--warm); font-weight: 600; margin-top: 2px; }
-  .score-verdict { font-size: 14px; color: var(--text); margin-top: 6px; font-weight: 600; }
+  .slider-head { display: flex; justify-content: space-between; font-size: 12px; font-weight: 600; margin-bottom: 5px; }
+  .slider-val { font-family: var(--mono); color: var(--accent-strong); font-variant-numeric: tabular-nums; }
+  .slider-sub { font-size: 11px; color: var(--muted); margin-top: 3px; line-height: 1.4; }
 
+  /* ===== 合盘结果主卡：瑞士精密量化仪表 ===== */
+  #synastryResult > .card,
+  #ceilingResult > .card {
+    animation: fadeRise 0.24s var(--ease);
+  }
+  .score-hero {
+    text-align: left;
+    padding: 20px 22px;
+    background: var(--card-soft);
+    border: 1px solid var(--line);
+    border-top: 3px solid var(--accent);
+    border-radius: 10px;
+    margin-bottom: 16px;
+  }
+  .score-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--muted);
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--line);
+    letter-spacing: 0.01em;
+  }
+  .score-main-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+    margin: 14px 0 10px;
+  }
+  .score-result-value {
+    font-family: var(--mono);
+    font-size: 46px;
+    font-weight: 800;
+    color: var(--text);
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.03em;
+  }
+  .archetype-pill {
+    font-size: 13px;
+    font-weight: 700;
+    padding: 6px 13px;
+    border-radius: 7px;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    border: 1px solid transparent;
+  }
+  .score-range {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--warm);
+    font-weight: 600;
+    margin: 0 0 10px;
+    padding: 6px 10px;
+    background: var(--warm-soft);
+    border-radius: 6px;
+    display: inline-block;
+  }
+
+  /* 净值公式条 */
+  .formula-strip {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin: 12px 0;
+    padding: 9px 12px;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    font-family: var(--mono);
+    font-size: 12px;
+    font-variant-numeric: tabular-nums;
+  }
+  .f-chip { padding: 3px 8px; border-radius: 5px; font-weight: 700; }
+  .f-base { background: var(--card-soft); color: var(--text); border: 1px solid var(--line); }
+  .f-pos { background: var(--pos-soft); color: var(--pos); }
+  .f-neg { background: var(--warm-soft); color: var(--warm); }
+  .f-neu { background: var(--amber-soft); color: var(--amber); }
+  .f-op { color: var(--muted); font-weight: 700; }
+
+  .verdict-box {
+    text-align: left;
+    margin-top: 12px;
+    padding: 13px 15px;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-left: 3px solid var(--accent);
+    border-radius: 8px;
+    font-size: 13px;
+    color: var(--text-2);
+    line-height: 1.78;
+  }
+  .verdict-box b { color: var(--text); font-weight: 700; }
+
+  /* 双人四柱矩阵与五行条 */
+  .person-panel {
+    background: var(--card-soft);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 13px 14px;
+  }
   .pillars {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 8px;
-    margin: 8px 0 10px;
+    gap: 6px;
+    margin: 10px 0 12px;
   }
   .pillar-box {
-    background: var(--card-soft);
-    border: 1px solid var(--line-soft);
-    border-radius: 10px;
-    padding: 9px 4px;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 9px 4px 8px;
     text-align: center;
   }
-  .pillar-label { font-size: 11px; color: var(--muted); }
-  .pillar-gz { font-size: 20px; font-weight: 700; margin: 3px 0; letter-spacing: 2px; }
-  .pillar-sub { font-size: 11px; color: var(--muted); }
-
-  .wx-bars { display: flex; flex-direction: column; gap: 5px; margin-top: 6px; }
-  .wx-bar-row { display: flex; align-items: center; gap: 8px; font-size: 12px; }
-  .wx-track { flex: 1; height: 7px; background: var(--line-soft); border-radius: 99px; overflow: hidden; }
-  .wx-fill { height: 100%; border-radius: 99px; }
-
-  .result-split {
-    display: grid;
-    grid-template-columns: 280px minmax(0, 1fr);
-    gap: 16px;
-    align-items: center;
-    margin-top: 12px;
+  .pillar-label {
+    font-size: 10.5px;
+    font-weight: 600;
+    color: var(--muted);
+    letter-spacing: 0.02em;
   }
-  @media (max-width: 720px) { .result-split { grid-template-columns: 1fr; } }
-  .radar-wrap { display: flex; justify-content: center; }
+  .pillar-gz {
+    font-size: 21px;
+    font-weight: 700;
+    margin: 4px 0 3px;
+    line-height: 1.15;
+  }
+  .pillar-sub {
+    font-size: 10.5px;
+    color: var(--muted);
+    font-weight: 500;
+  }
 
-  .dim-item { border-top: 1px dashed var(--line); padding: 9px 0; }
-  .dim-item:first-child { border-top: none; padding-top: 0; }
-  .dim-head { display: flex; justify-content: space-between; font-size: 13.5px; font-weight: 700; }
-  .dim-score { color: var(--accent-strong); }
-  .dim-desc { font-size: 12.5px; color: var(--text-2); margin-top: 3px; }
+  .wx-bars { display: flex; flex-direction: column; gap: 6px; margin-top: 8px; }
+  .wx-bar-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    font-variant-numeric: tabular-nums;
+  }
+  .wx-bar-row > span:last-child { font-family: var(--mono); font-size: 11.5px; }
+  .wx-track { flex: 1; height: 6px; background: var(--line); border-radius: 99px; overflow: hidden; }
+  .wx-fill { height: 100%; border-radius: 99px; transition: width 0.35s var(--ease); }
 
+  /* 三维仪表卡 */
+  .dim-summary-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 16px 0; }
+  @media (max-width: 720px) { .dim-summary-grid { grid-template-columns: 1fr; } }
+  .dim-meter-card {
+    background: var(--card-soft);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 13px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .dim-meter-head { display: flex; justify-content: space-between; align-items: baseline; gap: 6px; }
+  .dim-meter-title { font-size: 12.5px; font-weight: 700; color: var(--text); }
+  .dim-meter-val {
+    font-family: var(--mono);
+    font-size: 20px;
+    font-weight: 800;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.02em;
+  }
+  .dim-meter-val.pos { color: var(--pos); }
+  .dim-meter-val.neg { color: var(--warm); }
+  .dim-meter-val.neu { color: var(--amber); }
+
+  .meter-track {
+    position: relative;
+    height: 7px;
+    background: var(--line);
+    border-radius: 99px;
+    overflow: hidden;
+    margin: 3px 0;
+  }
+  .meter-fill { height: 100%; border-radius: 99px; transition: width 0.35s var(--ease); }
+  .meter-fill.pos { background: var(--pos); }
+  .meter-fill.neg { background: var(--warm); }
+  .meter-bipolar {
+    position: relative;
+    height: 7px;
+    background: var(--line);
+    border-radius: 99px;
+    overflow: hidden;
+    margin: 3px 0;
+  }
+  .meter-zero {
+    position: absolute;
+    left: 50%;
+    top: -1px;
+    bottom: -1px;
+    width: 2px;
+    transform: translateX(-50%);
+    background: var(--text);
+    opacity: 0.45;
+    z-index: 2;
+  }
+  .meter-bi-fill { position: absolute; top: 0; bottom: 0; border-radius: 99px; transition: all 0.35s var(--ease); }
+  .dim-meter-note { font-size: 11.5px; color: var(--muted); line-height: 1.52; }
+
+  /* 透明逐项账单：金融对账单质感 */
+  .ledger-section {
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    margin-top: 10px;
+    overflow: hidden;
+    background: var(--card);
+  }
+  .ledger-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 11px 14px;
+    background: var(--card-soft);
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    user-select: none;
+    list-style: none;
+    transition: background-color 0.15s ease;
+  }
+  .ledger-head::-webkit-details-marker { display: none; }
+  .ledger-head:hover { background: var(--card-hover); }
+  .ledger-head > span:first-child {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .ledger-head > span:first-child::before {
+    content: "▸";
+    font-size: 11px;
+    color: var(--muted);
+    display: inline-block;
+    transition: transform 0.18s var(--ease);
+  }
+  .ledger-section[open] > .ledger-head > span:first-child::before {
+    transform: rotate(90deg);
+  }
+  .ledger-body { padding: 4px 14px 12px; background: var(--card); }
+  .ledger-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 12px;
+    padding: 9px 6px;
+    border-top: 1px solid var(--line-soft);
+    align-items: start;
+    border-radius: 6px;
+    transition: background-color 0.14s ease;
+  }
+  .ledger-row:first-child { border-top: none; }
+  .ledger-row:hover { background: var(--card-soft); }
+  .ledger-title {
+    font-size: 13px;
+    font-weight: 650;
+    color: var(--text);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+  }
+  .ledger-pos {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-2);
+    background: var(--card-soft);
+    border: 1px solid var(--line);
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-weight: 500;
+  }
+  .ledger-reason { font-size: 12px; color: var(--muted); margin-top: 3px; line-height: 1.55; }
+  .ledger-delta {
+    font-family: var(--mono);
+    font-size: 13.5px;
+    font-weight: 800;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+    padding-top: 1px;
+  }
+  .ledger-delta.pos { color: var(--pos); }
+  .ledger-delta.neg { color: var(--warm); }
+  .ledger-delta.muted { color: var(--muted); font-weight: 600; }
+  .ledger-empty { font-size: 12px; color: var(--muted); padding: 10px 6px; }
+  .ledger-cap-note {
+    margin-top: 8px;
+    padding: 8px 11px;
+    border-radius: 7px;
+    background: var(--amber-soft);
+    border: 1px solid rgba(158, 101, 20, 0.22);
+    color: var(--amber);
+    font-size: 11.5px;
+    font-weight: 600;
+    line-height: 1.5;
+  }
+
+  /* 个人理论上限卡片 */
   .ceil-card {
     background: var(--card-soft);
     border: 1px solid var(--line);
-    border-radius: 12px;
-    padding: 15px;
+    border-top: 3px solid var(--accent);
+    border-radius: 10px;
+    padding: 16px;
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 9px;
   }
   .ceil-score {
-    font-size: 32px;
+    font-family: var(--mono);
+    font-size: 34px;
     font-weight: 800;
-    color: var(--accent-strong);
-    line-height: 1.1;
+    color: var(--text);
+    line-height: 1.05;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.03em;
   }
-  .ceil-meta { font-size: 12.5px; color: var(--text-2); line-height: 1.6; }
+  .ceil-meta { font-size: 12.5px; color: var(--text-2); line-height: 1.68; }
   .ceil-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 4px; }
 
+  /* 历史记录列表 */
   .history-item {
     display: flex;
     justify-content: space-between;
     align-items: center;
     gap: 10px;
-    padding: 10px 12px;
-    border: 1px solid var(--line-soft);
-    border-radius: 10px;
+    padding: 11px 13px;
+    border: 1px solid var(--line);
+    border-radius: 9px;
     margin-bottom: 8px;
     background: var(--card-soft);
     cursor: pointer;
+    transition: border-color 0.16s ease, background-color 0.16s ease;
   }
-  .history-item:hover { border-color: var(--accent); }
-  .history-meta { font-size: 11.5px; color: var(--muted); margin-top: 2px; }
-  .del-btn { border: none; background: transparent; color: var(--muted); font-size: 12px; cursor: pointer; padding: 4px 8px; }
-  .del-btn:hover { color: var(--warm); }
-  .hint { font-size: 12px; color: var(--muted); }
+  .history-item:last-child { margin-bottom: 0; }
+  .history-item:hover { border-color: var(--accent); background: var(--card); }
+  .history-meta { font-size: 11.5px; color: var(--muted); margin-top: 3px; font-variant-numeric: tabular-nums; }
+  .del-btn {
+    border: none; background: transparent; color: var(--muted);
+    font-size: 12px; cursor: pointer; padding: 5px 8px; border-radius: 6px;
+    transition: color 0.15s ease, background-color 0.15s ease;
+  }
+  .del-btn:hover { color: var(--warm); background: var(--warm-soft); }
+  .hint { font-size: 12px; color: var(--muted); line-height: 1.6; }
+
+  @keyframes fadeRise {
+    from { opacity: 0; transform: translateY(5px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @media (max-width: 600px) {
+    body { padding: 8px 8px 28px; }
+    .card { padding: 13px 13px; }
+    .score-hero { padding: 15px 14px; }
+    .score-result-value { font-size: 38px; }
+    .pillar-gz { font-size: 18px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
 </style>
 </head>
 <body>
@@ -316,7 +675,67 @@
       <button type="button" class="mode-btn" id="modeFriend" onclick="switchView('friend')">✦ 友情 / 人际</button>
       <button type="button" class="mode-btn" id="modeCeiling" onclick="switchView('ceiling')">★ 测算个人理论上限</button>
     </div>
-    <span class="engine-tag">V5.4 · 乾坤造区分 · 理论上限穷举引擎</span>
+    <div class="mode-right">
+      <button type="button" class="btn btn-sm btn-soft" id="weightToggleBtn" onclick="toggleWeightPanel()">⚙ 权重：标准平衡</button>
+      <span class="engine-tag">V6.0 · 三维净值引擎</span>
+    </div>
+  </div>
+
+  <!-- ==================== 可折叠：透明权重调参抽屉 ==================== -->
+  <div class="card weight-panel" id="weightPanel">
+    <div class="card-title">
+      <span>评分权重配置（透明可调 · 实时重算）</span>
+      <button type="button" class="btn btn-sm" onclick="resetWeights()">恢复默认</button>
+    </div>
+    <p class="hint" style="margin-bottom:10px;">
+      公式：<b>综合净值 = 基准 50 + W1×基础吸引(≤32) − W2×冲克内耗(≤42) + W3×现实承接(−16~+16)</b>。单靠合/通/同气无法直接封顶 90+，所有冲穿刑、土重紧绷与分心争合均按权重实扣。
+    </p>
+    <div class="preset-row">
+      <span class="hint" style="font-weight:700;">一键预设：</span>
+      <button type="button" class="btn btn-pill active" id="preset_balanced" onclick="applyPreset('balanced')">标准平衡</button>
+      <button type="button" class="btn btn-pill" id="preset_grounded" onclick="applyPreset('grounded')">现实防内耗优先</button>
+      <button type="button" class="btn btn-pill" id="preset_chemistry" onclick="applyPreset('chemistry')">吸引力缘分侧重</button>
+      <span class="hint" id="presetDesc" style="margin-left:4px;">吸引力、冲克阻力与现实承接按 1:1:1 均衡计分</span>
+    </div>
+    <div class="slider-grid">
+      <div class="slider-box">
+        <div class="slider-head"><span>维度一：吸引与交集倍率 (W1)</span><span class="slider-val" id="val_w1">1.00×</span></div>
+        <input type="range" id="rng_w1" min="0.50" max="1.60" step="0.05" value="1.00" oninput="onWeightSlider()">
+        <div class="slider-sub">合、通、同气与补缺（原始上限 +32）</div>
+      </div>
+      <div class="slider-box">
+        <div class="slider-head"><span>维度二：冲克内耗倍率 (W2)</span><span class="slider-val" id="val_w2">1.00×</span></div>
+        <input type="range" id="rng_w2" min="0.50" max="1.80" step="0.05" value="1.00" oninput="onWeightSlider()">
+        <div class="slider-sub">冲、穿、刑、土重紧绷、性格较劲直接扣分</div>
+      </div>
+      <div class="slider-box">
+        <div class="slider-head"><span>维度三：现实承接倍率 (W3)</span><span class="slider-val" id="val_w3">1.00×</span></div>
+        <input type="range" id="rng_w3" min="0.50" max="1.80" step="0.05" value="1.00" oninput="onWeightSlider()">
+        <div class="slider-sub">稳节奏托底加分 / 争合拉扯分心扣分</div>
+      </div>
+    </div>
+    <div class="sub-slider-grid">
+      <div class="slider-box">
+        <div class="slider-head"><span>地支六冲</span><span class="slider-val" id="val_clash">1.00×</span></div>
+        <input type="range" id="rng_clash" min="0.50" max="1.80" step="0.05" value="1.00" oninput="onWeightSlider()">
+      </div>
+      <div class="slider-box">
+        <div class="slider-head"><span>相穿与相刑</span><span class="slider-val" id="val_harmPunish">1.00×</span></div>
+        <input type="range" id="rng_harmPunish" min="0.50" max="1.80" step="0.05" value="1.00" oninput="onWeightSlider()">
+      </div>
+      <div class="slider-box">
+        <div class="slider-head"><span>土重与偏枯</span><span class="slider-val" id="val_earthHeavy">1.00×</span></div>
+        <input type="range" id="rng_earthHeavy" min="0.50" max="1.80" step="0.05" value="1.00" oninput="onWeightSlider()">
+      </div>
+      <div class="slider-box">
+        <div class="slider-head"><span>性格较劲硬克</span><span class="slider-val" id="val_stubborn">1.00×</span></div>
+        <input type="range" id="rng_stubborn" min="0.50" max="1.80" step="0.05" value="1.00" oninput="onWeightSlider()">
+      </div>
+      <div class="slider-box">
+        <div class="slider-head"><span>争合分心拉扯</span><span class="slider-val" id="val_distract">1.00×</span></div>
+        <input type="range" id="rng_distract" min="0.50" max="1.80" step="0.05" value="1.00" oninput="onWeightSlider()">
+      </div>
+    </div>
   </div>
 
   <!-- ==================== 视图 1：双人合盘 ==================== -->
@@ -371,12 +790,12 @@
         </div>
         <div class="form-row">
           <label>公历出生日期</label>
-          <input id="dateB" type="date" value="2005-03-26">
+          <input id="dateB" type="date" value="2003-02-05">
         </div>
         <div class="form-row">
           <label>出生时间（北京时间 UTC+8）</label>
           <div class="inline-row">
-            <input id="timeB" type="time" value="08:00">
+            <input id="timeB" type="time" value="04:00">
             <label class="checkbox-label"><input id="unkB" type="checkbox" onchange="toggleTime('B')">未知时辰</label>
           </div>
         </div>
@@ -392,14 +811,14 @@
     </div>
 
     <div class="card" style="padding: 12px;">
-      <button type="button" class="btn btn-primary" onclick="runSynastry()">开始真太阳时排盘与五维合盘</button>
+      <button type="button" class="btn btn-primary" onclick="runSynastry()">开始真太阳时排盘与三维净值合盘</button>
     </div>
 
     <div id="synastryResult"></div>
 
     <div class="card">
       <div class="card-title">
-        <span>本地合盘历史记录</span>
+        <span>本地合盘历史记录（V6.0）</span>
         <button type="button" class="btn btn-sm" onclick="clearHistory()">清空</button>
       </div>
       <div id="historyList"></div>
@@ -410,14 +829,14 @@
   <div id="viewCeiling" class="view-panel">
     <div class="card">
       <div class="card-title">
-        <span>测算任意人的理论爱情 / 友情上限</span>
+        <span>测算任意人的理论爱情 / 友情上限（V6.0 净值标准）</span>
         <div class="gender-toggle">
           <button type="button" class="gender-btn active" id="gC_M" onclick="setGender('C','M')">男 · 乾造</button>
           <button type="button" class="gender-btn" id="gC_F" onclick="setGender('C','F')">女 · 坤造</button>
         </div>
       </div>
       <p class="hint" style="margin-bottom:12px;">
-        输入任意人的出生信息，系统将在指定年龄段内实时穷举所有高契合度真实公历日期与时辰，算出此人在 V5.4 算法下的<b>理论爱情上限</b>与<b>理论友情上限</b>，并给出具体可复现的最佳匹配八字与出生时间。
+        基于当前选定的权重配置，在指定年龄段内实时两阶段穷举（覆盖全部 12 地支时辰），过滤掉表面相合但暗藏多穿/土重/争合的“虚高盘”，找到此人真正<b>高吸引、低内耗、高现实承接</b>的理论上限。
       </p>
       <div class="grid-2">
         <div class="form-row">
@@ -453,7 +872,7 @@
         </div>
       </div>
       <div class="inline-row" style="margin-top:12px;flex-wrap:wrap;">
-        <button type="button" class="btn btn-primary" style="flex:1;min-width:220px;" onclick="runCeilingFinder()">★ 一键测算理论爱情 & 友情上限</button>
+        <button type="button" class="btn btn-primary" style="flex:1;min-width:220px;" onclick="runCeilingFinder()">★ 一键测算 V6.0 理论爱情 & 友情上限</button>
         <button type="button" class="btn btn-soft" onclick="copyFromAtoC()">从甲方同步信息</button>
       </div>
     </div>
@@ -570,17 +989,221 @@ function copyFromAtoC() {
   toggleTime('C');
 }
 
+/* ================= V6.0 透明可调权重配置中心 ================= */
+const SCORE_CONFIG = {
+  baseScore: 50.0,
+  minTotal: 10.0,
+  maxTotal: 98.0,
+  caps: {
+    dim1: 32.0,     // 维度一封顶：单靠吸引力最高推至 82.0 分
+    dim2: 42.0,     // 维度二最大扣分
+    dim3Min: -16.0, // 维度三下限
+    dim3Max: 16.0   // 维度三上限
+  },
+  rules: {
+    // 维度一：基础吸引力与交集
+    stem_combine:         { love: 9.0,  friend: 6.5 },
+    stem_gen_yin_yang:    { love: 6.5,  friend: 6.0 },
+    stem_gen_same_pol:    { love: 5.0,  friend: 5.5 },
+    stem_same_el:         { love: 4.0,  friend: 7.0 },
+    day_branch_six:       { love: 8.0,  friend: 5.5 },
+    day_branch_trine:     { love: 5.5,  friend: 5.0 },
+    day_branch_same:      { love: 2.5,  friend: 3.0 },
+    month_branch_combine: { love: 4.5,  friend: 5.0 },
+    cross_branch_combine: { love: 1.5,  friend: 1.5 }, // 最多 2 组；若遭冲穿减半
+    element_true_fill:    { love: 3.5,  friend: 3.5 }, // 最多 2 行；偏枯过旺给部分分 1.5
+    element_partial_fill: { love: 1.5,  friend: 1.5 },
+    element_flow_chain:   { love: 3.0,  friend: 3.0 },
+    spouse_star_direct:   { love: 3.5,  friend: 0.0 },
+    spouse_star_branch:   { love: 2.0,  friend: 0.0 },
+    friend_tengod_sync:   { love: 0.0,  friend: 3.0 },
+    friend_tengod_mild:   { love: 0.0,  friend: 2.0 },
+
+    // 维度二：冲克与内耗扣分（此处以正数表扣分幅度，计分时取负）
+    clash_day_day:        { love: 14.0, friend: 9.0 },
+    clash_month_month:    { love: 7.5,  friend: 6.5 },
+    clash_month_cw:       { love: 5.5,  friend: 5.0 }, // 冬夏月冲诚实扣分
+    clash_day_cross:      { love: 4.0,  friend: 3.0, capLove: 8.0, capFriend: 6.0 },
+    clash_minor:          { love: 2.0,  friend: 1.5, capLove: 4.0, capFriend: 3.0 },
+    clash_multi_amp:      { love: 3.0,  friend: 2.0 },
+
+    harm_day_day:         { love: 8.5,  friend: 5.5 },
+    harm_day_cross:       { love: 3.0,  friend: 2.0, capLove: 6.0, capFriend: 4.0 },
+    harm_minor:           { love: 1.5,  friend: 1.0, capLove: 3.0, capFriend: 2.0 },
+    harm_dup:             { love: 1.5,  friend: 1.0 },
+
+    punish_day_day:       { love: 7.0,  friend: 5.0 },
+    punish_day_cross:     { love: 2.5,  friend: 1.8, capLove: 5.0, capFriend: 3.6 },
+    punish_minor:         { love: 1.5,  friend: 1.0, capLove: 3.0, capFriend: 2.0 },
+    punish_full_triad:    { love: 4.5,  friend: 3.5 },
+
+    earth_severe_no_wood: { love: 7.5,  friend: 6.0 },
+    earth_severe_wood:    { love: 4.0,  friend: 3.2 },
+    earth_mod_no_wood:    { love: 5.0,  friend: 4.0 },
+    earth_mod_wood:       { love: 3.5,  friend: 2.8 },
+    earth_clash_extra:    { love: 1.5,  friend: 1.2 },
+    extreme_dry_cold:     { love: 3.5,  friend: 2.5 },
+    metal_wood_clash:     { love: 3.0,  friend: 2.5 },
+
+    stem_clash_same_pol:  { love: 7.0,  friend: 6.0 },
+    stem_clash_diff_pol:  { love: 3.5,  friend: 3.5 },
+    stubborn_both_strong: { love: 4.5,  friend: 4.0 },
+    stubborn_hard_stars:  { love: 3.0,  friend: 2.5 },
+    tengod_hard_friction: { love: 3.5,  friend: 0.0 },
+
+    // 维度三：现实承接度（正为稳节奏加分，负为分心内耗扣分）
+    anchor_core_calm:     { love: 3.5,  friend: 3.5 },
+    anchor_dayun_sync:    { love: 2.0,  friend: 1.5 },
+    anchor_strength_hold: { love: 4.0,  friend: 3.5 },
+    anchor_balanced_pair: { love: 2.5,  friend: 2.5 },
+    anchor_upright_full:  { love: 3.5,  friend: 3.5 },
+    anchor_upright_half:  { love: 1.8,  friend: 1.8 },
+    anchor_mediator_full: { love: 3.0,  friend: 2.5 },
+    anchor_mediator_earth:{ love: 2.5,  friend: 2.0 },
+
+    drain_stem_compete:   { love: 4.5,  friend: 2.0 },
+    drain_branch_mixed:   { love: 3.0,  friend: 1.5 },
+    drain_pressure_over:  { love: 4.0,  friend: 3.0 },
+    drain_floating_mood:  { love: 3.0,  friend: 2.0 },
+    drain_high_pull_tax:  { love: 2.5,  friend: 1.5 }
+  }
+};
+
+const WEIGHT_PRESETS = {
+  balanced: {
+    id: 'balanced',
+    name: '标准平衡',
+    desc: '吸引力、冲克阻力与现实承接按 1:1:1 均衡计分',
+    w1: 1.00, w2: 1.00, w3: 1.00,
+    sub: { clash: 1.00, harmPunish: 1.00, earthHeavy: 1.00, stubborn: 1.00, distract: 1.00 }
+  },
+  grounded: {
+    id: 'grounded',
+    name: '现实防内耗优先',
+    desc: '放大冲穿刑、土重紧绷与争合分心权重，适合备考/长线稳态筛选',
+    w1: 0.85, w2: 1.20, w3: 1.25,
+    sub: { clash: 1.10, harmPunish: 1.15, earthHeavy: 1.25, stubborn: 1.15, distract: 1.30 }
+  },
+  chemistry: {
+    id: 'chemistry',
+    name: '吸引力缘分侧重',
+    desc: '适度放大磁场交集，但仍按真实冲克与承接度直接扣分',
+    w1: 1.15, w2: 0.90, w3: 0.95,
+    sub: { clash: 0.95, harmPunish: 0.90, earthHeavy: 0.90, stubborn: 0.90, distract: 0.90 }
+  }
+};
+
+const WEIGHT_STORE_KEY = 'suiwind_bazi_v60_weights';
+let activeWeights = loadSavedWeights();
+
+function clonePreset(id) {
+  const p = WEIGHT_PRESETS[id] || WEIGHT_PRESETS.balanced;
+  return { presetId: p.id, name: p.name, w1: p.w1, w2: p.w2, w3: p.w3, sub: { ...p.sub } };
+}
+function loadSavedWeights() {
+  try {
+    const raw = JSON.parse(localStorage.getItem(WEIGHT_STORE_KEY) || 'null');
+    if (raw && Number.isFinite(raw.w1) && Number.isFinite(raw.w2) && Number.isFinite(raw.w3) && raw.sub) {
+      return {
+        presetId: raw.presetId || 'custom',
+        name: raw.name || '自定义权重',
+        w1: raw.w1, w2: raw.w2, w3: raw.w3,
+        sub: {
+          clash: raw.sub.clash ?? 1,
+          harmPunish: raw.sub.harmPunish ?? 1,
+          earthHeavy: raw.sub.earthHeavy ?? 1,
+          stubborn: raw.sub.stubborn ?? 1,
+          distract: raw.sub.distract ?? 1
+        }
+      };
+    }
+  } catch (_) {}
+  return clonePreset('balanced');
+}
+function saveWeights() {
+  try { localStorage.setItem(WEIGHT_STORE_KEY, JSON.stringify(activeWeights)); } catch (_) {}
+}
+function syncWeightUI() {
+  const setVal = (id, v) => {
+    const r = document.getElementById('rng_' + id);
+    const l = document.getElementById('val_' + id);
+    if (r) r.value = Number(v).toFixed(2);
+    if (l) l.textContent = Number(v).toFixed(2) + '×';
+  };
+  setVal('w1', activeWeights.w1);
+  setVal('w2', activeWeights.w2);
+  setVal('w3', activeWeights.w3);
+  Object.entries(activeWeights.sub).forEach(([k, v]) => setVal(k, v));
+
+  ['balanced', 'grounded', 'chemistry'].forEach(id => {
+    const btn = document.getElementById('preset_' + id);
+    if (btn) btn.classList.toggle('active', activeWeights.presetId === id);
+  });
+  const desc = document.getElementById('presetDesc');
+  if (desc) {
+    desc.textContent = WEIGHT_PRESETS[activeWeights.presetId]?.desc || '已启用手动微调的自定义权重配置';
+  }
+  const toggleBtn = document.getElementById('weightToggleBtn');
+  if (toggleBtn) toggleBtn.textContent = `⚙ 权重：${activeWeights.name}`;
+}
+function toggleWeightPanel() {
+  document.getElementById('weightPanel').classList.toggle('open');
+}
+function applyPreset(id) {
+  activeWeights = clonePreset(id);
+  saveWeights();
+  syncWeightUI();
+  if (document.getElementById('synastryResult').innerHTML.trim()) runSynastry(false);
+}
+function resetWeights() {
+  applyPreset('balanced');
+}
+function onWeightSlider() {
+  activeWeights = {
+    presetId: 'custom',
+    name: '自定义权重',
+    w1: parseFloat(document.getElementById('rng_w1').value),
+    w2: parseFloat(document.getElementById('rng_w2').value),
+    w3: parseFloat(document.getElementById('rng_w3').value),
+    sub: {
+      clash: parseFloat(document.getElementById('rng_clash').value),
+      harmPunish: parseFloat(document.getElementById('rng_harmPunish').value),
+      earthHeavy: parseFloat(document.getElementById('rng_earthHeavy').value),
+      stubborn: parseFloat(document.getElementById('rng_stubborn').value),
+      distract: parseFloat(document.getElementById('rng_distract').value)
+    }
+  };
+  // 检查是否恰好吻合某个预设
+  for (const p of Object.values(WEIGHT_PRESETS)) {
+    const match = Math.abs(activeWeights.w1 - p.w1) < 1e-4 &&
+      Math.abs(activeWeights.w2 - p.w2) < 1e-4 &&
+      Math.abs(activeWeights.w3 - p.w3) < 1e-4 &&
+      Object.keys(p.sub).every(k => Math.abs(activeWeights.sub[k] - p.sub[k]) < 1e-4);
+    if (match) { activeWeights.presetId = p.id; activeWeights.name = p.name; break; }
+  }
+  saveWeights();
+  syncWeightUI();
+  if (document.getElementById('synastryResult').innerHTML.trim()) runSynastry(false);
+}
+
 /* ================= 历法与五行核心 ================= */
 const STEMS = ['甲','乙','丙','丁','戊','己','庚','辛','壬','癸'];
 const BRANCHES = ['子','丑','寅','卯','辰','巳','午','未','申','酉','戌','亥'];
 const STEM_EL = ['木','木','火','火','土','土','金','金','水','水'];
 const BRANCH_EL = ['水','土','木','木','土','火','火','土','金','金','土','水'];
 const ELEMENTS = ['木','火','土','金','水'];
+const PILLAR_SHORT = ['年','月','日','时'];
+const EARTH_BRANCHES = [1, 4, 7, 10]; // 丑 辰 未 戌
 const HIDDEN_STEMS = [
   [[9,1.0]], [[5,0.6],[9,0.25],[7,0.15]], [[0,0.6],[2,0.25],[4,0.15]], [[1,1.0]],
   [[4,0.6],[1,0.25],[9,0.15]], [[2,0.6],[6,0.25],[4,0.15]], [[3,0.7],[5,0.3]], [[5,0.6],[3,0.25],[1,0.15]],
   [[6,0.6],[8,0.25],[4,0.15]], [[7,1.0]], [[4,0.6],[7,0.25],[3,0.15]], [[8,0.7],[0,0.3]]
 ];
+
+const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
+const round2 = v => Math.round(v * 100) / 100;
+const round3 = v => Math.round(v * 1000) / 1000;
+const fmtSigned = (v, digits = 1) => `${v > 0 ? '+' : ''}${Number(v).toFixed(digits)}`;
 
 function toJulianDay(y, m, d, hUTC) {
   if (m <= 2) { y -= 1; m += 12; }
@@ -612,6 +1235,12 @@ function getTenGod(meStem, targetStem) {
 function getSpouseElement(dStem, gender) {
   return ELEMENTS[(Math.floor(dStem / 2) + (gender === 'M' ? 2 : 3)) % 5];
 }
+function elGenerates(e1, e2) {
+  return (ELEMENTS.indexOf(e1) + 1) % 5 === ELEMENTS.indexOf(e2);
+}
+function elControls(e1, e2) {
+  return (ELEMENTS.indexOf(e1) + 2) % 5 === ELEMENTS.indexOf(e2);
+}
 
 function calcBazi(year, month, day, hour, minute, lon = 120, gender = 'M', fixedHourBranch = null) {
   const offsetMin = getTrueSolarOffsetMin(year, month, day, lon);
@@ -641,15 +1270,69 @@ function calcBazi(year, month, day, hour, minute, lon = 120, gender = 'M', fixed
   const isYangYear = (yStem % 2) === 0;
   const dayunDir = ((isYangYear && gender === 'M') || (!isYangYear && gender === 'F')) ? '顺行大运' : '逆行大运';
 
+  const stems = [yStem, mStem, dStem, hStem];
+  const branches = [yBranch, mBranch, dBranch, hBranch];
+
   const scores = { '木':0, '火':0, '土':0, '金':0, '水':0 };
-  [yStem, mStem, dStem, hStem].forEach(s => { scores[STEM_EL[s]] += 1.0; });
-  [yBranch, mBranch, dBranch, hBranch].forEach((b, idx) => {
+  stems.forEach(s => { scores[STEM_EL[s]] += 1.0; });
+  branches.forEach((b, idx) => {
     const wMul = [1.0, 1.8, 1.2, 1.0][idx];
     HIDDEN_STEMS[b].forEach(([hs, w]) => { scores[STEM_EL[hs]] += w * wMul; });
   });
   const total = Object.values(scores).reduce((a, b) => a + b, 0);
   const pct = {};
   ELEMENTS.forEach(e => pct[e] = +(scores[e] / total * 100).toFixed(1));
+
+  // V6.0 扩展体征 1：日主旺衰估分 (0-100)
+  const myElIdx = Math.floor(dStem / 2);
+  const yinElIdx = (myElIdx + 4) % 5;
+  const supportPct = pct[ELEMENTS[myElIdx]] + pct[ELEMENTS[yinElIdx]];
+  const mMainEl = Math.floor(HIDDEN_STEMS[mBranch][0][0] / 2);
+  const mHasSupport = HIDDEN_STEMS[mBranch].some(([hs]) => {
+    const e = Math.floor(hs / 2); return e === myElIdx || e === yinElIdx;
+  });
+  const delingBonus = (mMainEl === myElIdx || mMainEl === yinElIdx) ? 8 : (mHasSupport ? 3 : 0);
+  const dMainEl = Math.floor(HIDDEN_STEMS[dBranch][0][0] / 2);
+  const dHasSupport = HIDDEN_STEMS[dBranch].some(([hs]) => {
+    const e = Math.floor(hs / 2); return e === myElIdx || e === yinElIdx;
+  });
+  const dediBonus = (dMainEl === myElIdx || dMainEl === yinElIdx) ? 5 : (dHasSupport ? 2 : 0);
+  const strength = clamp(Math.round(supportPct * 1.15 + delingBonus + dediBonus), 10, 95);
+  const strengthLevel = strength >= 58 ? '偏强' : strength <= 42 ? '偏弱' : '中和';
+
+  // V6.0 扩展体征 2：原局十神情绪结构
+  const tgW = { biJie:0, jieCai:0, shiShang:0, shangGuan:0, qiSha:0, guanSha:0, caiXing:0, yinXing:0, zhengXing:0 };
+  const addTg = (targetStem, w) => {
+    const tg = getTenGod(dStem, targetStem);
+    if (tg === '比肩' || tg === '劫财') tgW.biJie += w;
+    if (tg === '劫财') tgW.jieCai += w;
+    if (tg === '食神' || tg === '伤官') tgW.shiShang += w;
+    if (tg === '伤官') tgW.shangGuan += w;
+    if (tg === '七杀') tgW.qiSha += w;
+    if (tg === '正官' || tg === '七杀') tgW.guanSha += w;
+    if (tg === '正财' || tg === '偏财') tgW.caiXing += w;
+    if (tg === '正印' || tg === '偏印') tgW.yinXing += w;
+    if (['正印','正官','正财','食神'].includes(tg)) tgW.zhengXing += w;
+  };
+  [yStem, mStem, hStem].forEach(s => addTg(s, 1.0));
+  branches.forEach((b, idx) => addTg(HIDDEN_STEMS[b][0][0], [1.0, 1.6, 1.2, 1.0][idx]));
+  const tgDenom = 7.8;
+  const tenGodProfile = {
+    hardRatio: +((tgW.biJie + tgW.qiSha + tgW.shangGuan) / tgDenom).toFixed(3),
+    biJieRatio: +(tgW.biJie / tgDenom).toFixed(3),
+    shiShangRatio: +(tgW.shiShang / tgDenom).toFixed(3),
+    shangGuanRatio: +(tgW.shangGuan / tgDenom).toFixed(3),
+    qiShaRatio: +(tgW.qiSha / tgDenom).toFixed(3),
+    guanShaRatio: +(tgW.guanSha / tgDenom).toFixed(3),
+    yinRatio: +(tgW.yinXing / tgDenom).toFixed(3),
+    zhengRatio: +(tgW.zhengXing / tgDenom).toFixed(3)
+  };
+
+  // V6.0 扩展体征 3：明面土字与主导五行
+  const earthStemCount = stems.filter(s => s === 4 || s === 5).length;
+  const earthBranchCount = branches.filter(b => EARTH_BRANCHES.includes(b)).length;
+  const earthCharCount = earthStemCount + earthBranchCount;
+  const domEl = ELEMENTS.reduce((best, e) => pct[e] > pct[best] ? e : best, ELEMENTS[0]);
 
   const spouseEl = getSpouseElement(dStem, gender);
   const pillars = [
@@ -659,137 +1342,748 @@ function calcBazi(year, month, day, hour, minute, lon = 120, gender = 'M', fixed
     { label:'时柱', s:hStem, b:hBranch, tg:getTenGod(dStem, hStem) }
   ];
   return {
-    gender, dayunDir, spouseEl, pillars,
+    gender, dayunDir, spouseEl, pillars, stems, branches,
     gz: pillars.map(p => STEMS[p.s] + BRANCHES[p.b]).join(' '),
     yStem, yBranch, mStem, mBranch, dStem, dBranch, hStem, hBranch,
-    pct,
+    pct, domEl, strength, strengthLevel, tenGodProfile,
+    earthStemCount, earthBranchCount, earthCharCount,
     tstStr: `${String(th).padStart(2,'0')}:${String(tmin).padStart(2,'0')}`,
     offsetMin: Math.round(offsetMin)
   };
 }
 
-/* ================= 五维合盘评分引擎 ================= */
+/* ================= V6.0 三维净值合盘评分引擎 ================= */
 const STEM_COMBINE = [[0,5],[1,6],[2,7],[3,8],[4,9]];
 const BRANCH_SIX_COMBINE = [[0,1],[2,11],[3,10],[4,9],[5,8],[6,7]];
 const BRANCH_CLASH = [[0,6],[1,7],[2,8],[3,9],[4,10],[5,11]];
 const BRANCH_HARM = [[0,7],[1,6],[2,5],[3,4],[8,11],[9,10]];
 const BRANCH_TRINE = [[8,0,4],[11,3,7],[2,6,10],[5,9,1]];
+const BRANCH_SELF_PUNISH = [4, 6, 9, 11]; // 辰 午 酉 亥
+const BRANCH_PAIR_PUNISH = [[0,3], [1,10], [10,7], [2,5], [5,8]]; // 子卯 丑戌 戌未 寅巳 巳申
+const BRANCH_THREE_PUNISH = [[2,5,8], [1,10,7]]; // 寅巳申 丑戌未
 
 const hasPair = (list, a, b) => list.some(([x, y]) => (x === a && y === b) || (x === b && y === a));
 const sameTrine = (a, b) => a !== b && BRANCH_TRINE.some(g => g.includes(a) && g.includes(b));
-function elRel(e1, e2) {
-  const i1 = ELEMENTS.indexOf(e1), i2 = ELEMENTS.indexOf(e2);
-  if (i1 === i2) return '比和';
-  if ((i1 + 1) % 5 === i2 || (i2 + 1) % 5 === i1) return '相生';
-  return '相克';
+const isSelfPunish = (a, b) => a === b && BRANCH_SELF_PUNISH.includes(a);
+const isPairPunish = (a, b) => isSelfPunish(a, b) || hasPair(BRANCH_PAIR_PUNISH, a, b);
+const isWinterSummerClash = (a, b) => ([11,0,1].includes(a) && [5,6,7].includes(b)) || ([11,0,1].includes(b) && [5,6,7].includes(a));
+const isEarthBranchConflict = (a, b) => EARTH_BRANCHES.includes(a) && EARTH_BRANCHES.includes(b) && (hasPair(BRANCH_CLASH, a, b) || isPairPunish(a, b));
+
+function ruleVal(key, mode) {
+  const r = SCORE_CONFIG.rules[key];
+  return r ? (mode === 'friend' ? r.friend : r.love) : 0;
 }
 
-function evaluatePair(bzA, bzB, mode = 'love') {
-  let s1 = 72.0, d1 = '';
-  const elA = STEM_EL[bzA.dStem], elB = STEM_EL[bzB.dStem];
-  if (hasPair(STEM_COMBINE, bzA.dStem, bzB.dStem)) {
-    s1 = mode === 'love' ? 94.5 : 88.0;
-    d1 = `${STEMS[bzA.dStem]}${STEMS[bzB.dStem]}天干五合，核心磁场强烈相吸，天生具备高默契底色。`;
-  } else {
-    const rel = elRel(elA, elB);
-    if (rel === '相生') { s1 = 84.5; d1 = `日主${elA}与${elB}相生，相处自然顺畅，容易形成温和的滋养与托举。`; }
-    else if (rel === '比和') { s1 = mode === 'friend' ? 86.5 : 77.5; d1 = `日主同属${elA}，底层逻辑相近，像知己般自在，需注意固执碰撞。`; }
-    else { s1 = 62.5; d1 = `日主${elA}与${elB}相克，初期张力感强，长久相处需要留出边界与磨合空间。`; }
+function classifyArchetype(d1, d2Mag, d3, total, mode) {
+  const isFriend = mode === 'friend';
+  if (total >= 82 && d2Mag <= 7.5 && d3 >= 5.5) {
+    return {
+      code: 'prime',
+      label: isFriend ? '高共鸣 · 稳健挚友型' : '高共鸣 · 稳承接良缘型',
+      badgeClass: 'badge',
+      tone: '吸引强、阻力轻、现实底盘稳，属于既能产生深度共振又极少内耗的高质量长线局。'
+    };
   }
-
-  let s2 = 74.0, d2 = '';
-  const bA = bzA.dBranch, bB = bzB.dBranch;
-  if (hasPair(BRANCH_SIX_COMBINE, bA, bB)) { s2 = 95.0; d2 = `日支${BRANCHES[bA]}${BRANCHES[bB]}六合，生活习惯与亲密感高度贴合。`; }
-  else if (sameTrine(bA, bB)) { s2 = 88.5; d2 = `日支${BRANCHES[bA]}${BRANCHES[bB]}半三合，日常步调一致，遇事容易拧成一股绳。`; }
-  else if (hasPair(BRANCH_CLASH, bA, bB)) { s2 = mode === 'love' ? 48.0 : 58.0; d2 = `日支${BRANCHES[bA]}${BRANCHES[bB]}六冲，生活节奏或情绪表达差异明显，忌冷战硬碰。`; }
-  else if (hasPair(BRANCH_HARM, bA, bB)) { s2 = 57.5; d2 = `日支${BRANCHES[bA]}${BRANCHES[bB]}相害，易在细节琐事上产生误解，沟通宜直接摊开。`; }
-  else if (bA === bB) { s2 = 77.0; d2 = `日支同为${BRANCHES[bA]}，生活习惯高度一致，默契好但略缺新鲜互补。`; }
-  else { d2 = `日支${BRANCHES[bA]}与${BRANCHES[bB]}无明显合冲，相处平稳，重在后天经营。`; }
-
-  let s3 = 72.0, d3 = '', dim3Name = mode === 'love' ? '配偶星感应' : '十神同频';
-  if (mode === 'love') {
-    const aSpouse = bzA.spouseEl, bSpouse = bzB.spouseEl;
-    const aRole = bzA.gender === 'M' ? '妻星(财)' : '夫星(官杀)';
-    const bRole = bzB.gender === 'M' ? '妻星(财)' : '夫星(官杀)';
-    let hit = 0, notes = [];
-    if (elB === aSpouse) { hit += 13; notes.push(`乙方日主(${elB})正合甲方${aRole}`); }
-    else if (bzB.pct[aSpouse] >= 22) { hit += 8; notes.push(`乙方命局${aSpouse}旺(${bzB.pct[aSpouse]}%)，呼应甲方${aRole}`); }
-    if (elA === bSpouse) { hit += 13; notes.push(`甲方日主(${elA})正合乙方${bRole}`); }
-    else if (bzA.pct[bSpouse] >= 22) { hit += 8; notes.push(`甲方命局${bSpouse}旺(${bzA.pct[bSpouse]}%)，呼应乙方${bRole}`); }
-    if (bzA.dayunDir === bzB.dayunDir) { hit += 3; notes.push(`双方同为${bzA.dayunDir}，大运节律同步`); }
-    s3 = Math.min(96.0, +(66.0 + hit).toFixed(1));
-    d3 = notes.length ? notes.join('；') + '。' : `甲方${aRole}为${aSpouse}、乙方${bRole}为${bSpouse}，双方配偶星交集较平淡。`;
-  } else {
-    const tgAB = getTenGod(bzA.dStem, bzB.dStem), tgBA = getTenGod(bzB.dStem, bzA.dStem);
-    const friendly = ['比肩','食神','正印','偏印','正财'];
-    s3 = Math.min(95.0, 68 + (friendly.includes(tgAB) ? 9 : 4) + (friendly.includes(tgBA) ? 9 : 4));
-    d3 = `甲方视乙方为【${tgAB}】，乙方视甲方为【${tgBA}】，日常交流与价值共振较为顺畅。`;
+  if (d1 >= 20 && (d2Mag >= 14 || d3 <= -4)) {
+    return {
+      code: 'pull_drain',
+      label: '强吸引 · 高内耗拉扯型',
+      badgeClass: 'badge badge-warm',
+      tone: '初见磁场和交集很强，容易快速上头或产生羁绊，但盘面暗藏较多冲穿/较劲或争合分心阻力，切忌只凭吸引感盲目投入，务必守住个人节奏与边界。'
+    };
   }
-
-  let compScore = 62.0, compEls = [];
-  ELEMENTS.forEach(e => {
-    const a = bzA.pct[e], b = bzB.pct[e];
-    if ((a < 14 && b > 22) || (b < 14 && a > 22)) { compScore += 11.5; compEls.push(e); }
-    else { compScore += Math.min(4.5, Math.abs(a - b) * 0.18); }
-  });
-  let s4 = Math.min(96.5, +compScore.toFixed(1));
-  let d4 = compEls.length ? `双方在【${compEls.join('、')}】五行上形成明显互补，能平衡彼此的能量短板。` : '双方五行分布结构较为接近，共鸣度高，能量互补性相对平和。';
-
-  let s5 = 74.5, d5 = '';
-  const mA = bzA.mBranch, mB = bzB.mBranch;
-  if (hasPair(BRANCH_SIX_COMBINE, mA, mB) || sameTrine(mA, mB)) { s5 = 89.5; d5 = `月令${BRANCHES[mA]}${BRANCHES[mB]}相合，处事气场与现实节奏高度合拍。`; }
-  else if (hasPair(BRANCH_CLASH, mA, mB)) {
-    const cw = ([11,0,1].includes(mA) && [5,6,7].includes(mB)) || ([11,0,1].includes(mB) && [5,6,7].includes(mA));
-    s5 = cw ? 79.0 : 59.0;
-    d5 = cw ? `月令冬夏对冲，性格一冷一热，磨合好反而形成寒暖调候。` : `月令${BRANCHES[mA]}${BRANCHES[mB]}相冲，面对外部压力时的应激节奏不同。`;
-  } else { d5 = `月令气场平和（${BRANCHES[mA]}月与${BRANCHES[mB]}月），原生根基稳定。`; }
-
-  const w = mode === 'love' ? [0.22, 0.25, 0.23, 0.18, 0.12] : [0.24, 0.16, 0.22, 0.22, 0.16];
-  const total = +(s1*w[0] + s2*w[1] + s3*w[2] + s4*w[3] + s5*w[4]).toFixed(3);
-
+  if (d2Mag >= 18 && total < 55) {
+    return {
+      code: 'high_friction',
+      label: '高阻硬碰 · 消耗过重型',
+      badgeClass: 'badge badge-warm',
+      tone: '核心宫位冲克或性格硬顶占比偏高，相处摩擦成本明显大于正向托举，适合保留清晰边界、降低情绪卷入。'
+    };
+  }
+  if (d1 >= 18 && d2Mag < 14 && d3 >= 0) {
+    return {
+      code: 'warm_growth',
+      label: isFriend ? '投契互补 · 磨合可深交' : '热切互补 · 磨合可成型',
+      badgeClass: 'badge',
+      tone: '既有清晰吸引与话题交集，现实承接底盘也接得住；存在局部磨合课题，只要提前避开高敏感雷区，容易越处越稳。'
+    };
+  }
+  if (d1 < 18 && d2Mag <= 6.5 && d3 >= 4.5) {
+    return {
+      code: 'calm_long',
+      label: '温和稳健 · 低耗长流型',
+      badgeClass: 'badge badge-slate',
+      tone: '表面火花不算剧烈，但盘面干净、生活节律安静且几乎不分散心神，长期相处的舒适度与稳定性反而优于高张力关系。'
+    };
+  }
+  if (d3 <= -5) {
+    return {
+      code: 'distracting',
+      label: '节律易散 · 分心消耗型',
+      badgeClass: 'badge badge-amber',
+      tone: '现实承接度偏弱，容易因边界摇摆、外部拉扯或情绪起伏导致注意力被分散，需要刻意维持生活主线。'
+    };
+  }
   return {
-    total,
-    dims: [
-      { name:'日主契合', score:s1, desc:d1 },
-      { name:mode === 'love' ? '夫妻宫' : '日常相处', score:s2, desc:d2 },
-      { name:dim3Name, score:s3, desc:d3 },
-      { name:'五行互补', score:s4, desc:d4 },
-      { name:'月令根基', score:s5, desc:d5 }
-    ]
+    code: 'ordinary',
+    label: '平实过渡 · 视经营而定',
+    badgeClass: 'badge badge-amber',
+    tone: '吸引交集与阻力摩擦都处于中等区间，没有天然硬伤也缺乏强烈推力，关系走向主要取决于双方共同目标与日常沟通意愿。'
   };
 }
 
-/* ================= 个人理论上限穷举引擎 ================= */
-function searchPersonalCeiling(meBz, birthYear, spanYears, targetGender, mode) {
+function buildEvidenceVerdict(archetype, ledger, d1Obj, d2Obj, d3Obj) {
+  const topAttr = ledger.filter(x => x.dim === 'attraction' && x.weightedDelta > 0)
+    .sort((a, b) => b.weightedDelta - a.weightedDelta).slice(0, 2);
+  const topFric = ledger.filter(x => x.dim === 'friction' && x.weightedDelta < 0)
+    .sort((a, b) => a.weightedDelta - b.weightedDelta).slice(0, 2);
+  const topGroundNeg = ledger.filter(x => x.dim === 'grounding' && x.weightedDelta < 0)
+    .sort((a, b) => a.weightedDelta - b.weightedDelta)[0];
+  const topGroundPos = ledger.filter(x => x.dim === 'grounding' && x.weightedDelta > 0)
+    .sort((a, b) => b.weightedDelta - a.weightedDelta)[0];
+
+  const parts = [`<b>【${archetype.label}】</b>${archetype.tone}`];
+  if (topAttr.length) {
+    parts.push(`<b>核心交集：</b>${topAttr.map(x => `${x.label}(${fmtSigned(x.weightedDelta)})`).join('、')}${d1Obj.capped ? '（吸引已达单维上限，不再虚涨总分）' : ''}。`);
+  } else {
+    parts.push(`<b>核心交集：</b>盘面天然合化与通气信号较弱（吸引 ${fmtSigned(d1Obj.score)}）。`);
+  }
+  if (topFric.length) {
+    parts.push(`<b>主要阻力：</b>${topFric.map(x => `${x.label}[${x.positions}](${fmtSigned(x.weightedDelta)})`).join('、')}，共计实扣 ${d2Obj.mag.toFixed(1)} 分。`);
+  } else {
+    parts.push(`<b>主要阻力：</b>全盘未触发明显冲穿刑与偏枯紧绷，内耗极轻。`);
+  }
+  if (d3Obj.score < 0 && topGroundNeg) {
+    parts.push(`<b>现实承接提醒：</b>${topGroundNeg.label}（${fmtSigned(topGroundNeg.weightedDelta)}）拉低了稳态承接（净值 ${fmtSigned(d3Obj.score)}），注意防情绪分心与反复拉扯。`);
+  } else if (d3Obj.score > 0 && topGroundPos) {
+    parts.push(`<b>现实承接支撑：</b>${topGroundPos.label}（${fmtSigned(topGroundPos.weightedDelta)}）帮关系稳住了现实节奏（承接净值 ${fmtSigned(d3Obj.score)}）。`);
+  } else {
+    parts.push(`<b>现实承接：</b>正负承接基本抵消（净值 ${fmtSigned(d3Obj.score)}），日常以保持各自生活主线为宜。`);
+  }
+  return parts.join('<br>');
+}
+
+function evaluatePair(bzA, bzB, mode = 'love', weights = activeWeights) {
+  const cfg = weights || WEIGHT_PRESETS.balanced;
+  const sub = cfg.sub || WEIGHT_PRESETS.balanced.sub;
+  const ledger = [];
+  const pushItem = (dim, key, label, positions, rawDelta, mult, reason, subCat = null) => {
+    if (!rawDelta) return 0;
+    const wDelta = round2(rawDelta * mult);
+    ledger.push({ dim, key, label, positions, rawDelta: round2(rawDelta), weightedDelta: wDelta, reason, subCat });
+    return wDelta;
+  };
+
+  const elA = STEM_EL[bzA.dStem], elB = STEM_EL[bzB.dStem];
+  const dSA = bzA.dStem, dSB = bzB.dStem;
+  const dBA = bzA.dBranch, dBB = bzB.dBranch;
+  const mBA = bzA.mBranch, mBB = bzB.mBranch;
+
+  // 预扫描：全盘 16 组地支冲/穿/刑/合与天干争合（供三个维度统一共享，确保单源事实！）
+  const branchClashes = [], branchHarms = [], branchPunishes = [], crossSixCombines = [];
+  let earthConflictExists = false;
+  const aBranchConflictSet = new Set(), bBranchConflictSet = new Set();
+  const aHarmTargets = new Map(), bHarmTargets = new Map();
+
+  for (let i = 0; i < 4; i++) {
+    for (let j = 0; j < 4; j++) {
+      const b1 = bzA.branches[i], b2 = bzB.branches[j];
+      const pos = `甲${PILLAR_SHORT[i]}[${BRANCHES[b1]}] × 乙${PILLAR_SHORT[j]}[${BRANCHES[b2]}]`;
+      if (hasPair(BRANCH_CLASH, b1, b2)) {
+        branchClashes.push({ i, j, b1, b2, pos });
+        aBranchConflictSet.add(i); bBranchConflictSet.add(j);
+        if (isEarthBranchConflict(b1, b2)) earthConflictExists = true;
+      }
+      if (hasPair(BRANCH_HARM, b1, b2)) {
+        const alsoPunish = hasPair([[2,5]], b1, b2); // 寅巳穿兼刑
+        branchHarms.push({ i, j, b1, b2, pos, alsoPunish });
+        aBranchConflictSet.add(i); bBranchConflictSet.add(j);
+        if (!aHarmTargets.has(i)) aHarmTargets.set(i, new Set());
+        if (!bHarmTargets.has(j)) bHarmTargets.set(j, new Set());
+        aHarmTargets.get(i).add(j); bHarmTargets.get(j).add(i);
+      }
+      // 相刑（排除寅巳避免与相穿双扣）
+      if (isPairPunish(b1, b2) && !hasPair([[2,5]], b1, b2)) {
+        const isSelf = isSelfPunish(b1, b2);
+        const isSiShen = hasPair([[5,8]], b1, b2);
+        branchPunishes.push({ i, j, b1, b2, pos, isSelf, isSiShen });
+        if (!isSiShen) { aBranchConflictSet.add(i); bBranchConflictSet.add(j); }
+        if (isEarthBranchConflict(b1, b2)) earthConflictExists = true;
+      }
+      if (!(i === 2 && j === 2) && !(i === 1 && j === 1) && hasPair(BRANCH_SIX_COMBINE, b1, b2)) {
+        crossSixCombines.push({ i, j, b1, b2, pos });
+      }
+    }
+  }
+
+  // 天干争合检测（一方两个及以上天干同合另一方日干）
+  const bCombineADay = bzB.stems.map((s, j) => hasPair(STEM_COMBINE, dSA, s) ? j : -1).filter(x => x >= 0);
+  const aCombineBDay = bzA.stems.map((s, i) => hasPair(STEM_COMBINE, dSB, s) ? i : -1).filter(x => x >= 0);
+  const hasStemCompete = bCombineADay.length >= 2 || aCombineBDay.length >= 2;
+
+  /* ==================== 维度一：基础吸引力与交集分 (0 ~ +32) ==================== */
+  let rawD1 = 0;
+
+  // 1A. 日主磁场
+  if (hasPair(STEM_COMBINE, dSA, dSB)) {
+    const v = ruleVal('stem_combine', mode);
+    rawD1 += v;
+    pushItem('attraction', 'stem_combine', `日干${STEMS[dSA]}${STEMS[dSB]}天干五合`, `甲日[${STEMS[dSA]}] × 乙日[${STEMS[dSB]}]`, v, cfg.w1, '核心磁场天然相吸，容易一见倾心或快速建立羁绊');
+  } else if (elGenerates(elA, elB) || elGenerates(elB, elA)) {
+    const yinYang = (dSA % 2) !== (dSB % 2);
+    const key = yinYang ? 'stem_gen_yin_yang' : 'stem_gen_same_pol';
+    const v = ruleVal(key, mode);
+    rawD1 += v;
+    pushItem('attraction', key, `日主${elA}${elB}${yinYang ? '阴阳有情相生' : '同性相生'}`, `甲日[${STEMS[dSA]}] × 乙日[${STEMS[dSB]}]`, v, cfg.w1, yinYang ? '能量滋养顺滑自然，互动舒适感强' : '存在自然生助与照顾意愿，略带单向输出感');
+  } else if (elA === elB) {
+    const v = ruleVal('stem_same_el', mode);
+    rawD1 += v;
+    pushItem('attraction', 'stem_same_el', `日主同气比和（同属${elA}）`, `甲日[${STEMS[dSA]}] × 乙日[${STEMS[dSB]}]`, v, cfg.w1, mode === 'friend' ? '底层逻辑高度同频，像知己般自在' : '三观频道相近易聊得来，但亲密关系中需防互抢主导');
+  }
+
+  // 1B. 核心宫位合
+  if (hasPair(BRANCH_SIX_COMBINE, dBA, dBB)) {
+    const v = ruleVal('day_branch_six', mode);
+    rawD1 += v;
+    pushItem('attraction', 'day_branch_six', `日支${BRANCHES[dBA]}${BRANCHES[dBB]}六合`, `甲日[${BRANCHES[dBA]}] × 乙日[${BRANCHES[dBB]}]`, v, cfg.w1, '夫妻宫/核心相处位贴合度高，生活靠近感强');
+  } else if (sameTrine(dBA, dBB)) {
+    const v = ruleVal('day_branch_trine', mode);
+    rawD1 += v;
+    pushItem('attraction', 'day_branch_trine', `日支${BRANCHES[dBA]}${BRANCHES[dBB]}半三合`, `甲日[${BRANCHES[dBA]}] × 乙日[${BRANCHES[dBB]}]`, v, cfg.w1, '日常步调与行动目标容易拧成一股绳');
+  } else if (dBA === dBB && !BRANCH_SELF_PUNISH.includes(dBA)) {
+    const v = ruleVal('day_branch_same', mode);
+    rawD1 += v;
+    pushItem('attraction', 'day_branch_same', `日支同为${BRANCHES[dBA]}（同频无刑）`, `甲日[${BRANCHES[dBA]}] × 乙日[${BRANCHES[dBB]}]`, v, cfg.w1, '生活作息与习惯相近，默契平顺');
+  }
+
+  if (hasPair(BRANCH_SIX_COMBINE, mBA, mBB) || sameTrine(mBA, mBB)) {
+    const v = ruleVal('month_branch_combine', mode);
+    rawD1 += v;
+    const relTxt = hasPair(BRANCH_SIX_COMBINE, mBA, mBB) ? '六合' : '半三合';
+    pushItem('attraction', 'month_branch_combine', `月令${BRANCHES[mBA]}${BRANCHES[mBB]}${relTxt}`, `甲月[${BRANCHES[mBA]}] × 乙月[${BRANCHES[mBB]}]`, v, cfg.w1, '外在气场与社交处事频道合拍');
+  }
+
+  if (crossSixCombines.length) {
+    // 优先涉及日支或月支的跨柱六合，最多计 2 组
+    const sortedCross = [...crossSixCombines].sort((a, b) => {
+      const scoreP = x => (x.i === 2 || x.j === 2 ? 2 : 0) + (x.i === 1 || x.j === 1 ? 1 : 0);
+      return scoreP(b) - scoreP(a);
+    }).slice(0, 2);
+    sortedCross.forEach(c => {
+      const conflicted = aBranchConflictSet.has(c.i) || bBranchConflictSet.has(c.j);
+      const baseV = ruleVal('cross_branch_combine', mode);
+      const v = conflicted ? round2(baseV * 0.5) : baseV;
+      rawD1 += v;
+      pushItem('attraction', 'cross_branch_combine', `跨柱${BRANCHES[c.b1]}${BRANCHES[c.b2]}六合${conflicted ? '（受冲穿折半）' : ''}`, c.pos, v, cfg.w1, conflicted ? '虽有跨柱牵引，但该支同时逢冲穿，吸力打折' : '原生背景或潜意识层存在额外契合点');
+    });
+  }
+
+  // 1C. 精准五行补缺与气机流通
+  let fillCount = 0;
+  ELEMENTS.forEach(e => {
+    if (fillCount >= 2) return;
+    const a = bzA.pct[e], b = bzB.pct[e];
+    const aNeeds = a < 12, bNeeds = b < 12;
+    if ((aNeeds && b >= 18 && b <= 36) || (bNeeds && a >= 18 && a <= 36)) {
+      const v = ruleVal('element_true_fill', mode);
+      rawD1 += v; fillCount++;
+      const dir = aNeeds ? `乙${e}(${b}%)补甲短板(${a}%)` : `甲${e}(${a}%)补乙短板(${b}%)`;
+      pushItem('attraction', 'element_true_fill', `五行精准补缺（${e}）`, dir, v, cfg.w1, '一方确有能量短板，另一方适度供给且不过度偏枯');
+    } else if ((aNeeds && b > 36) || (bNeeds && a > 36)) {
+      const v = ruleVal('element_partial_fill', mode);
+      rawD1 += v; fillCount++;
+      const dir = aNeeds ? `乙${e}(${b}%偏旺)补甲(${a}%)` : `甲${e}(${a}%偏旺)补乙(${b}%)`;
+      pushItem('attraction', 'element_partial_fill', `五行偏旺补缺（${e}）`, dir, v, cfg.w1, '虽能补足短板，但供给方该行过旺，易带偏平衡，仅计部分分');
+    }
+  });
+
+  const avgPct = {};
+  ELEMENTS.forEach(e => avgPct[e] = round2((bzA.pct[e] + bzB.pct[e]) / 2));
+  const maxAvgEl = Math.max(...Object.values(avgPct));
+  const minAvgEl = Math.min(...Object.values(avgPct));
+  const chainFlow = (elGenerates(bzA.domEl, bzB.domEl) || elGenerates(bzB.domEl, bzA.domEl)) && maxAvgEl < 36;
+  const balancedFlow = minAvgEl >= 11 && maxAvgEl <= 30;
+  if (chainFlow || balancedFlow) {
+    const v = ruleVal('element_flow_chain', mode);
+    rawD1 += v;
+    const pos = chainFlow ? `甲主气[${bzA.domEl}] ↔ 乙主气[${bzB.domEl}] 顺生` : '合盘五行均落 11%–30% 流通区';
+    pushItem('attraction', 'element_flow_chain', '合盘气机顺畅流通', pos, v, cfg.w1, '能量流动有出口，交流与相处不易闷堵');
+  }
+
+  // 1D. 星宫交集（婚恋配偶星 / 友情十神同频）
+  const tgAB = getTenGod(dSA, dSB), tgBA = getTenGod(dSB, dSA);
+  if (mode === 'love') {
+    const aRole = bzA.gender === 'M' ? '妻星(财)' : '夫星(官杀)';
+    const bRole = bzB.gender === 'M' ? '妻星(财)' : '夫星(官杀)';
+    if (elB === bzA.spouseEl) {
+      const v = ruleVal('spouse_star_direct', mode);
+      rawD1 += v;
+      pushItem('attraction', 'spouse_star_direct', `乙方日主正合甲方${aRole}`, `乙日[${elB}] = 甲${aRole}`, v, cfg.w1, '角色投射清晰，容易触发异性/伴侣期待');
+    } else if (bzB.pct[bzA.spouseEl] >= 18 && bzB.pct[bzA.spouseEl] <= 35) {
+      const v = ruleVal('spouse_star_branch', mode);
+      rawD1 += v;
+      pushItem('attraction', 'spouse_star_branch', `乙方命局适度应甲方${aRole}`, `乙${bzA.spouseEl}占${bzB.pct[bzA.spouseEl]}%`, v, cfg.w1, '气场中带有对方期待的配偶星能量');
+    }
+    if (elA === bzB.spouseEl) {
+      const v = ruleVal('spouse_star_direct', mode);
+      rawD1 += v;
+      pushItem('attraction', 'spouse_star_direct', `甲方日主正合乙方${bRole}`, `甲日[${elA}] = 乙${bRole}`, v, cfg.w1, '角色投射清晰，双向情感识别度高');
+    } else if (bzA.pct[bzB.spouseEl] >= 18 && bzA.pct[bzB.spouseEl] <= 35) {
+      const v = ruleVal('spouse_star_branch', mode);
+      rawD1 += v;
+      pushItem('attraction', 'spouse_star_branch', `甲方命局适度应乙方${bRole}`, `甲${bzB.spouseEl}占${bzA.pct[bzB.spouseEl]}%`, v, cfg.w1, '原局气场呼应对方配偶星');
+    }
+  } else {
+    const goodFriend = ['比肩','食神','正印','正财'];
+    const addFriendSync = (tg, dir) => {
+      if (goodFriend.includes(tg)) {
+        const v = ruleVal('friend_tengod_sync', mode);
+        rawD1 += v;
+        pushItem('attraction', 'friend_tengod_sync', `${dir}见【${tg}】同频`, `${dir}：${tg}`, v, cfg.w1, '人际交流轻松顺畅，价值认同度高');
+      } else if (tg === '偏印') {
+        const v = ruleVal('friend_tengod_mild', mode);
+        rawD1 += v;
+        pushItem('attraction', 'friend_tengod_mild', `${dir}见【偏印】共鸣`, `${dir}：偏印`, v, cfg.w1, '思维有独特共鸣，但需要各自留白');
+      }
+    };
+    addFriendSync(tgAB, '甲视乙');
+    addFriendSync(tgBA, '乙视甲');
+  }
+
+  const d1SumW = round2(ledger.filter(x => x.dim === 'attraction').reduce((a, b) => a + b.weightedDelta, 0));
+  const d1CapW = round2(SCORE_CONFIG.caps.dim1 * cfg.w1);
+  const d1Capped = rawD1 > SCORE_CONFIG.caps.dim1 || d1SumW > d1CapW;
+  const d1RawCapped = Math.min(rawD1, SCORE_CONFIG.caps.dim1);
+  const d1Score = d1Capped ? d1CapW : d1SumW;
+
+  /* ==================== 维度二：冲克与内耗扣分 (0 ~ -42) ==================== */
+  let rawD2Sub = 0; // 已乘分项 sub 权重、未乘总倍率 w2 的正数扣分累计
+
+  // 2A. 地支六冲
+  let dayCrossClashUsed = 0, minorClashUsed = 0;
+  const dayCrossClashCap = mode === 'friend' ? SCORE_CONFIG.rules.clash_day_cross.capFriend : SCORE_CONFIG.rules.clash_day_cross.capLove;
+  const minorClashCap = mode === 'friend' ? SCORE_CONFIG.rules.clash_minor.capFriend : SCORE_CONFIG.rules.clash_minor.capLove;
+
+  branchClashes.forEach(c => {
+    if (c.i === 2 && c.j === 2) {
+      const v = ruleVal('clash_day_day', mode);
+      rawD2Sub += v * sub.clash;
+      pushItem('friction', 'clash_day_day', `日支${BRANCHES[c.b1]}${BRANCHES[c.b2]}正冲`, c.pos, -v, sub.clash * cfg.w2, '夫妻宫/核心日常位正面相冲，情绪表达与生活节奏冲突最重', 'clash');
+    } else if (c.i === 1 && c.j === 1) {
+      const cw = isWinterSummerClash(c.b1, c.b2);
+      const key = cw ? 'clash_month_cw' : 'clash_month_month';
+      const v = ruleVal(key, mode);
+      rawD2Sub += v * sub.clash;
+      pushItem('friction', key, `月令${BRANCHES[c.b1]}${BRANCHES[c.b2]}正冲${cw ? '（冬夏冷热对撞）' : ''}`, c.pos, -v, sub.clash * cfg.w2, cw ? '虽有一冷一热差异，但面对现实压力时应激节奏截然不同，先诚实扣分' : '原生环境与处事节律冲突，外部压力下易各执一词', 'clash');
+    } else if ((c.i === 2 && (c.j === 1 || c.j === 3)) || (c.j === 2 && (c.i === 1 || c.i === 3))) {
+      const step = ruleVal('clash_day_cross', mode);
+      const v = Math.min(step, Math.max(0, dayCrossClashCap - dayCrossClashUsed));
+      if (v > 0) {
+        dayCrossClashUsed += v;
+        rawD2Sub += v * sub.clash;
+        pushItem('friction', 'clash_day_cross', `跨柱冲动日支（${BRANCHES[c.b1]}${BRANCHES[c.b2]}冲）`, c.pos, -v, sub.clash * cfg.w2, '对方月/时支直接冲动核心宫位，相处中容易突然踩雷', 'clash');
+      }
+    } else {
+      const step = ruleVal('clash_minor', mode);
+      const v = Math.min(step, Math.max(0, minorClashCap - minorClashUsed));
+      if (v > 0) {
+        minorClashUsed += v;
+        rawD2Sub += v * sub.clash;
+        pushItem('friction', 'clash_minor', `外柱${BRANCHES[c.b1]}${BRANCHES[c.b2]}相冲`, c.pos, -v, sub.clash * cfg.w2, '成长背景或外部社交层面存在节奏摩擦', 'clash');
+      }
+    }
+  });
+  if (branchClashes.length >= 2) {
+    const v = ruleVal('clash_multi_amp', mode);
+    rawD2Sub += v * sub.clash;
+    pushItem('friction', 'clash_multi_amp', `全盘叠冲放大（共 ${branchClashes.length} 处六冲）`, branchClashes.map(x => `${BRANCHES[x.b1]}${BRANCHES[x.b2]}冲`).join(' / '), -v, sub.clash * cfg.w2, '多处对冲形成结构性震荡，关系稳定成本成倍上升', 'clash');
+  }
+
+  // 2B. 地支相穿（六害）与相刑
+  let dayCrossHarmUsed = 0, minorHarmUsed = 0;
+  const dayCrossHarmCap = mode === 'friend' ? SCORE_CONFIG.rules.harm_day_cross.capFriend : SCORE_CONFIG.rules.harm_day_cross.capLove;
+  const minorHarmCap = mode === 'friend' ? SCORE_CONFIG.rules.harm_minor.capFriend : SCORE_CONFIG.rules.harm_minor.capLove;
+
+  branchHarms.forEach(h => {
+    const tag = h.alsoPunish ? '相穿兼刑' : '相穿';
+    if (h.i === 2 && h.j === 2) {
+      const v = ruleVal('harm_day_day', mode);
+      rawD2Sub += v * sub.harmPunish;
+      pushItem('friction', 'harm_day_day', `日支${BRANCHES[h.b1]}${BRANCHES[h.b2]}${tag}`, h.pos, -v, sub.harmPunish * cfg.w2, '越亲近越易在细节琐事上互相扎心、积攒隐性委屈', 'harmPunish');
+    } else if (h.i === 2 || h.j === 2) {
+      const step = ruleVal('harm_day_cross', mode);
+      const v = Math.min(step, Math.max(0, dayCrossHarmCap - dayCrossHarmUsed));
+      if (v > 0) {
+        dayCrossHarmUsed += v;
+        rawD2Sub += v * sub.harmPunish;
+        pushItem('friction', 'harm_day_cross', `跨柱穿入日支（${BRANCHES[h.b1]}${BRANCHES[h.b2]}${tag}）`, h.pos, -v, sub.harmPunish * cfg.w2, '日常互动常有说不清的暗刺与别扭感，消耗情绪耐心', 'harmPunish');
+      }
+    } else {
+      const step = ruleVal('harm_minor', mode);
+      const v = Math.min(step, Math.max(0, minorHarmCap - minorHarmUsed));
+      if (v > 0) {
+        minorHarmUsed += v;
+        rawD2Sub += v * sub.harmPunish;
+        pushItem('friction', 'harm_minor', `外柱${BRANCHES[h.b1]}${BRANCHES[h.b2]}${tag}`, h.pos, -v, sub.harmPunish * cfg.w2, '背景或外围事务上存在暗中较劲或误解风险', 'harmPunish');
+      }
+    }
+  });
+
+  // 一穿二叠穿识别
+  const dupHarmA = [...aHarmTargets.entries()].filter(([, set]) => set.size >= 2);
+  const dupHarmB = [...bHarmTargets.entries()].filter(([, set]) => set.size >= 2);
+  if (dupHarmA.length || dupHarmB.length) {
+    const v = ruleVal('harm_dup', mode);
+    rawD2Sub += v * sub.harmPunish;
+    const descPos = [
+      ...dupHarmA.map(([i, s]) => `甲${PILLAR_SHORT[i]}[${BRANCHES[bzA.branches[i]]}]双穿乙${[...s].map(j => PILLAR_SHORT[j]+BRANCHES[bzB.branches[j]]).join('·')}`),
+      ...dupHarmB.map(([j, s]) => `乙${PILLAR_SHORT[j]}[${BRANCHES[bzB.branches[j]]}]双穿甲${[...s].map(i => PILLAR_SHORT[i]+BRANCHES[bzA.branches[i]]).join('·')}`)
+    ].join('；');
+    pushItem('friction', 'harm_dup', '双穿叠害放大', descPos, -v, sub.harmPunish * cfg.w2, '单一支位反复穿刺对方多柱，隐性内耗持续发酵', 'harmPunish');
+  }
+
+  // 相刑（含自刑、相刑、外柱相刑、跨盘完整三刑）
+  let dayCrossPunishUsed = 0, minorPunishUsed = 0;
+  const dayCrossPunishCap = mode === 'friend' ? SCORE_CONFIG.rules.punish_day_cross.capFriend : SCORE_CONFIG.rules.punish_day_cross.capLove;
+  const minorPunishCap = mode === 'friend' ? SCORE_CONFIG.rules.punish_minor.capFriend : SCORE_CONFIG.rules.punish_minor.capLove;
+
+  branchPunishes.forEach(p => {
+    const pType = p.isSelf ? '自刑' : (p.isSiShen ? '刑合' : '相刑');
+    const mulFactor = p.isSiShen ? 0.5 : 1.0;
+    if (p.i === 2 && p.j === 2) {
+      const v = round2(ruleVal('punish_day_day', mode) * mulFactor);
+      rawD2Sub += v * sub.harmPunish;
+      pushItem('friction', 'punish_day_day', `日支${BRANCHES[p.b1]}${BRANCHES[p.b2]}${pType}`, p.pos, -v, sub.harmPunish * cfg.w2, p.isSelf ? '同气纠结拧巴，遇事容易互相钻牛角尖' : '内在情绪拉扯感强，容易互相施压折磨', 'harmPunish');
+    } else if ((p.i === 2 && (p.j === 1 || p.j === 3)) || (p.j === 2 && (p.i === 1 || p.i === 3))) {
+      const step = round2(ruleVal('punish_day_cross', mode) * mulFactor);
+      const v = Math.min(step, Math.max(0, dayCrossPunishCap - dayCrossPunishUsed));
+      if (v > 0) {
+        dayCrossPunishUsed += v;
+        rawD2Sub += v * sub.harmPunish;
+        pushItem('friction', 'punish_day_cross', `跨柱刑入日支（${BRANCHES[p.b1]}${BRANCHES[p.b2]}${pType}）`, p.pos, -v, sub.harmPunish * cfg.w2, p.isSelf ? '细节处容易反复纠结、彼此加戏内耗' : '相处中易触发控制欲或委屈拉锯', 'harmPunish');
+      }
+    } else if (!p.isSiShen) {
+      const step = ruleVal('punish_minor', mode);
+      const v = Math.min(step, Math.max(0, minorPunishCap - minorPunishUsed));
+      if (v > 0) {
+        minorPunishUsed += v;
+        rawD2Sub += v * sub.harmPunish;
+        pushItem('friction', 'punish_minor', `外柱${BRANCHES[p.b1]}${BRANCHES[p.b2]}${pType}`, p.pos, -v, sub.harmPunish * cfg.w2, p.isSelf ? '原生节奏或外围处事上易反复纠结' : '外围背景或观念细节存在暗中摩擦', 'harmPunish');
+      }
+    }
+  });
+
+  // 跨盘凑齐完整三刑（寅巳申 / 丑戌未）
+  const setA = new Set(bzA.branches), setB = new Set(bzB.branches);
+  const unionBranches = new Set([...bzA.branches, ...bzB.branches]);
+  BRANCH_THREE_PUNISH.forEach(triad => {
+    const allPresent = triad.every(b => unionBranches.has(b));
+    const inA = triad.filter(b => setA.has(b)).length;
+    const inB = triad.filter(b => setB.has(b)).length;
+    if (allPresent && inA > 0 && inB > 0) {
+      const v = ruleVal('punish_full_triad', mode);
+      rawD2Sub += v * sub.harmPunish;
+      const tName = triad.map(b => BRANCHES[b]).join('');
+      pushItem('friction', 'punish_full_triad', `跨盘凑齐【${tName}】完整三刑`, `双方地支合力触发${tName}三刑`, -v, sub.harmPunish * cfg.w2, '三刑全聚导致慢性精神拉扯显著加重，情绪不易释怀', 'harmPunish');
+    }
+  });
+
+  // 2C. 土重紧绷与五行偏枯叠加
+  const avgEarth = avgPct['土'], avgWood = avgPct['木'], avgFire = avgPct['火'], avgWater = avgPct['水'], avgMetal = avgPct['金'];
+  const totalEarthChars = bzA.earthCharCount + bzB.earthCharCount;
+  const earthTriggered = avgEarth >= 28 || (bzA.pct['土'] >= 25 && bzB.pct['土'] >= 25 && totalEarthChars >= 5);
+  if (earthTriggered) {
+    const severe = avgEarth >= 34 || totalEarthChars >= 6;
+    let key, reason;
+    if (severe) {
+      if (avgWood < 18) {
+        key = 'earth_severe_no_wood';
+        reason = '双方土气极重且缺木疏通，盘面淤塞紧绷，相处易沉闷僵持、固执不松口';
+      } else {
+        key = 'earth_severe_wood';
+        reason = '双方土气叠加过重（虽有木气略作疏土），整体仍偏紧绷沉重，沟通成本高';
+      }
+    } else {
+      if (avgWood < 16) {
+        key = 'earth_mod_no_wood';
+        reason = '双盘偏土且疏通不足，遇分歧容易沉默憋屈、各守阵地';
+      } else {
+        key = 'earth_mod_wood';
+        reason = '合盘土气偏厚，情绪节奏偏慢偏重，易产生无形紧绷感';
+      }
+    }
+    const v = ruleVal(key, mode);
+    rawD2Sub += v * sub.earthHeavy;
+    pushItem('friction', key, '双盘土重紧绷', `甲土${bzA.pct['土']}% + 乙土${bzB.pct['土']}%（均值${avgEarth}% · 明面${totalEarthChars}土）`, -v, sub.earthHeavy * cfg.w2, reason, 'earthHeavy');
+
+    if (earthConflictExists) {
+      const ex = ruleVal('earth_clash_extra', mode);
+      rawD2Sub += ex * sub.earthHeavy;
+      pushItem('friction', 'earth_clash_extra', '土重叠加四库冲刑', '土气过厚且触发辰戌/丑未/自刑震荡', -ex, sub.earthHeavy * cfg.w2, '厚土相激导致闷气顶撞与僵持感进一步放大', 'earthHeavy');
+    }
+  }
+
+  if (avgFire >= 32 && avgWater < 12) {
+    const v = ruleVal('extreme_dry_cold', mode);
+    rawD2Sub += v * sub.earthHeavy;
+    pushItem('friction', 'extreme_dry_cold', '双盘火燥缺水', `合盘火均值${avgFire}% · 水仅${avgWater}%`, -v, sub.earthHeavy * cfg.w2, '情绪易急躁上头，争执时难以及时降温', 'earthHeavy');
+  } else if (avgWater >= 32 && avgFire < 12) {
+    const v = ruleVal('extreme_dry_cold', mode);
+    rawD2Sub += v * sub.earthHeavy;
+    pushItem('friction', 'extreme_dry_cold', '双盘寒湿缺火', `合盘水均值${avgWater}% · 火仅${avgFire}%`, -v, sub.earthHeavy * cfg.w2, '互动偏冷偏闷，矛盾时容易冷战回避', 'earthHeavy');
+  }
+
+  if (((bzA.pct['金'] >= 30 && bzB.pct['木'] >= 30) || (bzB.pct['金'] >= 30 && bzA.pct['木'] >= 30)) && avgWater < 12) {
+    const v = ruleVal('metal_wood_clash', mode);
+    rawD2Sub += v * sub.earthHeavy;
+    pushItem('friction', 'metal_wood_clash', '金木硬劈无水通关', `金${avgMetal}% / 木${avgWood}% · 水仅${avgWater}%`, -v, sub.earthHeavy * cfg.w2, '原则与表达都带锋芒，沟通容易言辞尖锐互刺', 'earthHeavy');
+  }
+
+  // 2D. 性格较劲与硬性对抗
+  const stemClash = !hasPair(STEM_COMBINE, dSA, dSB) && (elControls(elA, elB) || elControls(elB, elA));
+  if (stemClash) {
+    const samePol = (dSA % 2) === (dSB % 2);
+    const key = samePol ? 'stem_clash_same_pol' : 'stem_clash_diff_pol';
+    const v = ruleVal(key, mode);
+    rawD2Sub += v * sub.stubborn;
+    pushItem('friction', key, samePol ? `日主${STEMS[dSA]}${STEMS[dSB]}同性硬克（七杀顶撞）` : `日主${STEMS[dSA]}${STEMS[dSB]}异性相克`, `甲日[${STEMS[dSA]}] × 乙日[${STEMS[dSB]}]`, -v, sub.stubborn * cfg.w2, samePol ? '气场硬碰硬，谁都不愿先低头，极易互相较劲' : '存在一方压制另一方的张力，相处需要刻意留白', 'stubborn');
+  }
+
+  if (bzA.strength >= 58 && bzB.strength >= 58 && bzA.tenGodProfile.hardRatio >= 0.36 && bzB.tenGodProfile.hardRatio >= 0.36) {
+    const v = ruleVal('stubborn_both_strong', mode);
+    rawD2Sub += v * sub.stubborn;
+    pushItem('friction', 'stubborn_both_strong', '双强性格较劲（比劫/杀伤偏重）', `甲身强${bzA.strength} × 乙身强${bzB.strength}`, -v, sub.stubborn * cfg.w2, '双方主见与自我边界都很硬，遇分歧容易争输赢耗心力', 'stubborn');
+  } else if (bzA.tenGodProfile.hardRatio >= 0.45 && bzB.tenGodProfile.hardRatio >= 0.45) {
+    const v = ruleVal('stubborn_hard_stars', mode);
+    rawD2Sub += v * sub.stubborn;
+    pushItem('friction', 'stubborn_hard_stars', '双盘强硬星偏密', `强硬星占比 甲${Math.round(bzA.tenGodProfile.hardRatio*100)}% × 乙${Math.round(bzB.tenGodProfile.hardRatio*100)}%`, -v, sub.stubborn * cfg.w2, '双方都偏直接倔强，日常易起小摩擦', 'stubborn');
+  }
+
+  if (mode === 'love') {
+    const fem = bzA.gender === 'F' ? bzA : (bzB.gender === 'F' ? bzB : null);
+    const mal = bzA.gender === 'M' ? bzA : (bzB.gender === 'M' ? bzB : null);
+    if (fem && mal) {
+      if (fem.tenGodProfile.shangGuanRatio >= 0.25 && mal.tenGodProfile.hardRatio >= 0.40) {
+        const v = ruleVal('tengod_hard_friction', mode);
+        rawD2Sub += v * sub.stubborn;
+        pushItem('friction', 'tengod_hard_friction', '女方伤官敏锐 × 男方强硬对顶', `女伤官${Math.round(fem.tenGodProfile.shangGuanRatio*100)}% × 男硬星${Math.round(mal.tenGodProfile.hardRatio*100)}%`, -v, sub.stubborn * cfg.w2, '一方挑剔直言、另一方护尊严硬顶，易演变成话语权拉锯', 'stubborn');
+      } else if (mal.tenGodProfile.biJieRatio >= 0.35 && fem.strength >= 58) {
+        const v = ruleVal('tengod_hard_friction', mode);
+        rawD2Sub += v * sub.stubborn;
+        pushItem('friction', 'tengod_hard_friction', '男方比劫偏重 × 女方主体性强', `男比劫${Math.round(mal.tenGodProfile.biJieRatio*100)}% × 女身强${fem.strength}`, -v, sub.stubborn * cfg.w2, '男方易显大男子或分心外部兄弟圈，女方又不肯妥协', 'stubborn');
+      }
+    }
+  }
+
+  const d2SumW = round2(ledger.filter(x => x.dim === 'friction').reduce((a, b) => a + b.weightedDelta, 0));
+  const d2CapW = round2(SCORE_CONFIG.caps.dim2 * cfg.w2);
+  const d2Capped = rawD2Sub > SCORE_CONFIG.caps.dim2 || (-d2SumW) > d2CapW;
+  const d2RawCapped = Math.min(rawD2Sub, SCORE_CONFIG.caps.dim2);
+  const d2Score = d2Capped ? round2(-d2CapW) : d2SumW;
+  const d2Mag = round2(-d2Score);
+
+  /* ==================== 维度三：现实承接度加减分 (-16 ~ +16) ==================== */
+  let rawD3Sub = 0;
+
+  // 正承接项（稳住节奏 / 托底落地）
+  const dayInvolvedConflict = branchClashes.some(c => c.i === 2 || c.j === 2) ||
+    branchHarms.some(h => h.i === 2 || h.j === 2) ||
+    branchPunishes.some(p => (p.i === 2 || p.j === 2) && !p.isSiShen);
+  const monthClash = branchClashes.some(c => c.i === 1 && c.j === 1);
+
+  if (!dayInvolvedConflict && !monthClash) {
+    const v = ruleVal('anchor_core_calm', mode);
+    rawD3Sub += v;
+    pushItem('grounding', 'anchor_core_calm', '核心宫位安静无冲穿刑', '日支无冲穿刑 · 月令无正冲', v, cfg.w3, '生活底盘干净安稳，日常少无名内耗，最利于稳住现实节奏');
+  }
+
+  if (bzA.dayunDir === bzB.dayunDir) {
+    const v = ruleVal('anchor_dayun_sync', mode);
+    rawD3Sub += v;
+    pushItem('grounding', 'anchor_dayun_sync', `大运节律同步（同为${bzA.dayunDir}）`, `双方均${bzA.dayunDir}`, v, cfg.w3, '人生不同阶段的起伏节奏更容易步调一致');
+  }
+
+  const aYinEl = ELEMENTS[(Math.floor(dSA / 2) + 4) % 5];
+  const bYinEl = ELEMENTS[(Math.floor(dSB / 2) + 4) % 5];
+  const bHoldsA = bzA.strength <= 45 && bzB.strength >= 52 && (elGenerates(elB, elA) || elB === elA || bzB.pct[aYinEl] >= 22);
+  const aHoldsB = bzB.strength <= 45 && bzA.strength >= 52 && (elGenerates(elA, elB) || elA === elB || bzA.pct[bYinEl] >= 22);
+  if (bHoldsA || aHoldsB) {
+    const v = ruleVal('anchor_strength_hold', mode);
+    rawD3Sub += v;
+    const pos = bHoldsA ? `乙(${bzB.strengthLevel}${bzB.strength}) 托底 甲(${bzA.strengthLevel}${bzA.strength})` : `甲(${bzA.strengthLevel}${bzA.strength}) 托底 乙(${bzB.strengthLevel}${bzB.strength})`;
+    pushItem('grounding', 'anchor_strength_hold', '强弱互补 · 情绪托底能力强', pos, v, cfg.w3, '一方波动或承压时，另一方刚好有定力与生扶能量接住节奏');
+  } else if (bzA.strength > 44 && bzA.strength < 58 && bzB.strength > 44 && bzB.strength < 58 && !dayInvolvedConflict && !stemClash) {
+    const v = ruleVal('anchor_balanced_pair', mode);
+    rawD3Sub += v;
+    pushItem('grounding', 'anchor_balanced_pair', '双方中和稳态 · 势均力敌', `甲中和(${bzA.strength}) × 乙中和(${bzB.strength})`, v, cfg.w3, '都不走极端，日常协作和情绪稳定性良好');
+  }
+
+  const uprightList = mode === 'love' ? ['正财','正官','正印','食神'] : ['正印','食神','比肩','正财'];
+  const uAB = uprightList.includes(tgAB), uBA = uprightList.includes(tgBA);
+  if (uAB && uBA && !hasStemCompete && !stemClash) {
+    const v = ruleVal('anchor_upright_full', mode);
+    rawD3Sub += v;
+    pushItem('grounding', 'anchor_upright_full', `双向正星稳态（${tgAB} / ${tgBA}）`, `甲视乙[${tgAB}] · 乙视甲[${tgBA}]`, v, cfg.w3, '关系定位清晰坦荡，安全感可预期、少猜忌内耗');
+  } else if ((uAB || uBA) && !hasStemCompete && !stemClash) {
+    const v = ruleVal('anchor_upright_half', mode);
+    rawD3Sub += v;
+    pushItem('grounding', 'anchor_upright_half', `单向正星承接（${uAB ? tgAB : tgBA}）`, `甲视乙[${tgAB}] · 乙视甲[${tgBA}]`, v, cfg.w3, '至少一方能以稳定务实的方式维护关系秩序');
+  }
+
+  // 通关与调候落地
+  const coldWarmCalm = !monthClash && (
+    ((bzA.pct['水'] + bzA.pct['金'] >= 48) && (bzB.pct['火'] + bzB.pct['木'] >= 44)) ||
+    ((bzB.pct['水'] + bzB.pct['金'] >= 48) && (bzA.pct['火'] + bzA.pct['木'] >= 44))
+  );
+  const metalWoodMediated = ((bzA.pct['金'] >= 24 && bzB.pct['木'] >= 24) || (bzB.pct['金'] >= 24 && bzA.pct['木'] >= 24)) && avgWater >= 18;
+  const earthMediated = earthTriggered && (avgWood >= 20 || avgMetal >= 22);
+  if (coldWarmCalm) {
+    const v = ruleVal('anchor_mediator_full', mode);
+    rawD3Sub += v;
+    pushItem('grounding', 'anchor_mediator_full', '寒暖调候温和落地', '一偏冷静一偏温热，且无月令正冲', v, cfg.w3, '情绪一冷一热能互相兜底缓冲，形成良性互补');
+  } else if (metalWoodMediated) {
+    const v = ruleVal('anchor_mediator_full', mode);
+    rawD3Sub += v;
+    pushItem('grounding', 'anchor_mediator_full', '水气通关化解金木之争', `合盘水均值${avgWater}% 起到润滑作用`, v, cfg.w3, '观点有锋芒时能通过沟通与变通给彼此台阶下');
+  } else if (earthMediated) {
+    const v = ruleVal('anchor_mediator_earth', mode);
+    rawD3Sub += v;
+    pushItem('grounding', 'anchor_mediator_earth', '木疏/金泄缓释土重', `合盘木${avgWood}% / 金${avgMetal}%`, v, cfg.w3, '虽然盘面偏土紧绷，但存在一定疏通出口，有自我修复余地');
+  }
+
+  // 负承接项（容易分心 / 拉扯 / 现实难落地，受 sub.distract 调节）
+  if (hasStemCompete) {
+    const v = ruleVal('drain_stem_compete', mode);
+    rawD3Sub -= v * sub.distract;
+    const compDesc = [];
+    if (bCombineADay.length >= 2) compDesc.push(`乙${bCombineADay.map(j => PILLAR_SHORT[j]+STEMS[bzB.stems[j]]).join('+')} 争合 甲日[${STEMS[dSA]}]`);
+    if (aCombineBDay.length >= 2) compDesc.push(`甲${aCombineBDay.map(i => PILLAR_SHORT[i]+STEMS[bzA.stems[i]]).join('+')} 争合 乙日[${STEMS[dSB]}]`);
+    pushItem('grounding', 'drain_stem_compete', '天干争合（关系边界易晃动）', compDesc.join('；'), -v, sub.distract * cfg.w3, '多干争合一主，容易引发试探、摇摆与持续的注意力分散', 'distract');
+  }
+
+  // 日支合中带冲/穿/刑（贪合又逢冲穿）
+  const aDayHasCombine = hasPair(BRANCH_SIX_COMBINE, dBA, dBB) || sameTrine(dBA, dBB) || crossSixCombines.some(c => c.i === 2);
+  const bDayHasCombine = hasPair(BRANCH_SIX_COMBINE, dBA, dBB) || sameTrine(dBA, dBB) || crossSixCombines.some(c => c.j === 2);
+  const aDayMixed = aDayHasCombine && aBranchConflictSet.has(2);
+  const bDayMixed = bDayHasCombine && bBranchConflictSet.has(2);
+  if (aDayMixed || bDayMixed) {
+    const v = ruleVal('drain_branch_mixed', mode);
+    rawD3Sub -= v * sub.distract;
+    const pos = [aDayMixed ? `甲日[${BRANCHES[dBA]}]合冲/穿并见` : '', bDayMixed ? `乙日[${BRANCHES[dBB]}]合冲/穿并见` : ''].filter(Boolean).join('；');
+    pushItem('grounding', 'drain_branch_mixed', '日支贪合逢冲穿（推拉耗神）', pos, -v, sub.distract * cfg.w3, '核心宫位既相吸又带刺，最容易出现“想靠近又推开”的反复内耗', 'distract');
+  }
+
+  // 跨盘克泄交加（身弱承压缺印）
+  const aCtrlEl = ELEMENTS[(Math.floor(dSA / 2) + 3) % 5];
+  const bCtrlEl = ELEMENTS[(Math.floor(dSB / 2) + 3) % 5];
+  const aOverload = bzA.strength <= 44 && bzB.pct[aCtrlEl] >= 30 && avgPct[aYinEl] < 14;
+  const bOverload = bzB.strength <= 44 && bzA.pct[bCtrlEl] >= 30 && avgPct[bYinEl] < 14;
+  if (aOverload || bOverload) {
+    const v = ruleVal('drain_pressure_over', mode);
+    rawD3Sub -= v * sub.distract;
+    const pos = aOverload ? `甲偏弱(${bzA.strength})受乙强${aCtrlEl}(${bzB.pct[aCtrlEl]}%)克压且缺印` : `乙偏弱(${bzB.strength})受甲强${bCtrlEl}(${bzA.pct[bCtrlEl]}%)克压且缺印`;
+    pushItem('grounding', 'drain_pressure_over', '跨盘克压透支（现实承压重）', pos, -v, sub.distract * cfg.w3, '弱势一方在相处中长期处于紧绷迎合或精力透支状态', 'distract');
+  }
+
+  // 双盘食伤浮躁缺印沉淀
+  if (bzA.tenGodProfile.shiShangRatio >= 0.30 && bzB.tenGodProfile.shiShangRatio >= 0.30 && bzA.tenGodProfile.yinRatio < 0.15 && bzB.tenGodProfile.yinRatio < 0.15) {
+    const v = ruleVal('drain_floating_mood', mode);
+    rawD3Sub -= v * sub.distract;
+    pushItem('grounding', 'drain_floating_mood', '双盘食伤浮躁 · 缺印沉淀', '双方食伤均偏旺且印星稀薄', -v, sub.distract * cfg.w3, '情绪与念头容易互相放大带偏，计划执行与现实落地打折', 'distract');
+  }
+
+  // 强吸引 × 重内耗分心折减
+  if (d1RawCapped >= 20 && d2RawCapped >= 14) {
+    const v = ruleVal('drain_high_pull_tax', mode);
+    rawD3Sub -= v * sub.distract;
+    pushItem('grounding', 'drain_high_pull_tax', '强吸引×重内耗分心折减', `吸引+${d1RawCapped.toFixed(1)} 叠加 阻力-${d2RawCapped.toFixed(1)}`, -v, sub.distract * cfg.w3, '高磁场叠加高阻力是最容易让人分心牵挂的精力黑洞，现实承接直接折减', 'distract');
+  }
+
+  const d3SumW = round2(ledger.filter(x => x.dim === 'grounding').reduce((a, b) => a + b.weightedDelta, 0));
+  const d3MinW = round2(SCORE_CONFIG.caps.dim3Min * cfg.w3);
+  const d3MaxW = round2(SCORE_CONFIG.caps.dim3Max * cfg.w3);
+  const d3Capped = rawD3Sub < SCORE_CONFIG.caps.dim3Min || rawD3Sub > SCORE_CONFIG.caps.dim3Max || d3SumW < d3MinW || d3SumW > d3MaxW;
+  const d3Score = d3Capped ? round2(clamp(d3SumW, d3MinW, d3MaxW)) : d3SumW;
+
+  /* ==================== 净值汇总与证据结语 ==================== */
+  const rawTotal = round3(SCORE_CONFIG.baseScore + d1Score + d2Score + d3Score);
+  const totalClamped = rawTotal < SCORE_CONFIG.minTotal || rawTotal > SCORE_CONFIG.maxTotal;
+  const total = round3(clamp(rawTotal, SCORE_CONFIG.minTotal, SCORE_CONFIG.maxTotal));
+
+  const d1Obj = { name: '基础吸引力与交集', score: d1Score, raw: round2(rawD1), weightedRaw: d1SumW, cap: d1CapW, capped: d1Capped };
+  const d2Obj = { name: '冲克与内耗扣分',   score: d2Score, mag: d2Mag, raw: round2(-rawD2Sub), weightedRaw: d2SumW, cap: d2CapW, capped: d2Capped };
+  const d3Obj = { name: '现实承接度加减',   score: d3Score, raw: round2(rawD3Sub), weightedRaw: d3SumW, minCap: d3MinW, maxCap: d3MaxW, capped: d3Capped };
+
+  const archetype = classifyArchetype(d1Score, d2Mag, d3Score, total, mode);
+  const verdictHtml = buildEvidenceVerdict(archetype, ledger, d1Obj, d2Obj, d3Obj);
+
+  return {
+    total, rawTotal: round3(rawTotal), totalClamped,
+    base: SCORE_CONFIG.baseScore,
+    presetName: cfg.name,
+    d1: d1Obj, d2: d2Obj, d3: d3Obj,
+    archetype, verdictHtml, ledger
+  };
+}
+
+/* ================= 个人理论上限两阶段穷举引擎（V6.0） ================= */
+function searchPersonalCeiling(meBz, birthYear, spanYears, targetGender, mode, weights = activeWeights) {
   const yStart = Math.max(1950, birthYear - spanYears);
   const yEnd = Math.min(2030, birthYear + spanYears);
-  let best = null;
-
   const startMs = Date.UTC(yStart, 0, 1);
   const endMs = Date.UTC(yEnd, 11, 31);
   const dayMs = 86400000;
   const base2000 = Date.UTC(2000, 0, 1);
-  const hours = [0, 4, 8, 12, 16, 20];
 
+  const coarseHours = [2, 8, 14, 20];
+  const fullHours = [0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22];
+  const topDays = [];
+  const TOP_K = 140;
+  const meEl = STEM_EL[meBz.dStem];
+
+  // 第一阶段：宽口径预筛（不漏掉无合高承接盘，只排除日支明显冲穿刑或日干同性硬克的低分日）
   for (let ms = startMs; ms <= endMs; ms += dayMs) {
     const days2000 = Math.round((ms - base2000) / dayMs);
     const dIdx = ((54 + days2000) % 60 + 60) % 60;
     const dS = dIdx % 10, dB = dIdx % 12;
 
-    // 快速剪枝：只精算日支六合/半三合 且 日干五合/相生/比和的候选日
-    if (!(hasPair(BRANCH_SIX_COMBINE, meBz.dBranch, dB) || sameTrine(meBz.dBranch, dB))) continue;
-    if (!(hasPair(STEM_COMBINE, meBz.dStem, dS) || ['相生', '比和'].includes(elRel(STEM_EL[meBz.dStem], STEM_EL[dS])))) continue;
+    if (hasPair(BRANCH_CLASH, meBz.dBranch, dB) || hasPair(BRANCH_HARM, meBz.dBranch, dB) || isSelfPunish(meBz.dBranch, dB)) continue;
+    const candEl = STEM_EL[dS];
+    const samePolClash = !hasPair(STEM_COMBINE, meBz.dStem, dS) && (elControls(meEl, candEl) || elControls(candEl, meEl)) && ((meBz.dStem % 2) === (dS % 2));
+    if (samePolClash) continue;
+
+    // 至少具备日干吸引或日支合/同气之一，保证高效且聚焦高分带
+    const stemGood = hasPair(STEM_COMBINE, meBz.dStem, dS) || elGenerates(meEl, candEl) || elGenerates(candEl, meEl) || meEl === candEl;
+    const branchGood = hasPair(BRANCH_SIX_COMBINE, meBz.dBranch, dB) || sameTrine(meBz.dBranch, dB) || dB === meBz.dBranch;
+    if (!stemGood && !branchGood) continue;
 
     const dt = new Date(ms);
     const y = dt.getUTCFullYear(), m = dt.getUTCMonth() + 1, d = dt.getUTCDate();
-    for (let hi = 0; hi < hours.length; hi++) {
-      const hh = hours[hi];
+    let bestDayScore = -999;
+    for (let hi = 0; hi < coarseHours.length; hi++) {
+      const cand = calcBazi(y, m, d, coarseHours[hi], 0, 120.0, targetGender);
+      const ev = evaluatePair(meBz, cand, mode, weights);
+      if (ev.total > bestDayScore) bestDayScore = ev.total;
+    }
+    if (topDays.length < TOP_K || bestDayScore > topDays[topDays.length - 1].score) {
+      topDays.push({ y, m, d, score: bestDayScore });
+      topDays.sort((a, b) => b.score - a.score);
+      if (topDays.length > TOP_K) topDays.pop();
+    }
+  }
+
+  // 第二阶段：对 Top 候选日遍历全部 12 地支时辰精算
+  let best = null;
+  for (let i = 0; i < topDays.length; i++) {
+    const { y, m, d } = topDays[i];
+    for (let hi = 0; hi < fullHours.length; hi++) {
+      const hh = fullHours[hi];
       const cand = calcBazi(y, m, d, hh, 0, 120.0, targetGender);
-      const ev = evaluatePair(meBz, cand, mode);
+      const ev = evaluatePair(meBz, cand, mode, weights);
       if (!best || ev.total > best.score) {
         best = {
           score: ev.total,
-          dims: ev.dims,
+          ev,
           date: `${y}-${String(m).padStart(2,'0')}-${String(d).padStart(2,'0')}`,
           time: `${String(hh).padStart(2,'0')}:00`,
           gender: targetGender,
@@ -815,32 +2109,37 @@ function runCeilingFinder() {
   const meBz = calcBazi(y, m, d, hh, mm, lon, genderC);
 
   const oppGender = genderC === 'M' ? 'F' : 'M';
-  const bestLove = searchPersonalCeiling(meBz, y, span, oppGender, 'love');
-  const bestFriend = searchPersonalCeiling(meBz, y, span, genderC, 'friend');
+  const bestLove = searchPersonalCeiling(meBz, y, span, oppGender, 'love', activeWeights);
+  const bestFriend = searchPersonalCeiling(meBz, y, span, genderC, 'friend', activeWeights);
 
   lastCeilingResult = {
     me: { name, gender: genderC, date: dateStr, time: unk ? '12:00' : timeStr, unk, lon, bz: meBz },
     love: bestLove,
-    friend: bestFriend
+    friend: bestFriend,
+    presetName: activeWeights.name
   };
 
   const renderBox = (title, mode, res) => {
     if (!res) return '';
     const gTxt = res.gender === 'M' ? '乾造 · 男' : '坤造 · 女';
+    const ev = res.ev;
     return `
       <div class="ceil-card">
-        <div style="display:flex;justify-content:space-between;align-items:center;">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:6px;flex-wrap:wrap;">
           <b>${title}</b>
           <span class="badge">${gTxt}</span>
         </div>
-        <div class="ceil-score serif">${res.score.toFixed(3)} <span style="font-size:14px;font-weight:500;">分</span></div>
+        <div style="display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;">
+          <div class="ceil-score serif">${res.score.toFixed(3)} <span style="font-size:14px;font-weight:500;">分</span></div>
+          <span class="${ev.archetype.badgeClass}">${ev.archetype.label}</span>
+        </div>
         <div class="ceil-meta">
           <div><b>最佳匹配公历：</b>${res.date} ${res.time}</div>
           <div><b>最佳匹配八字：</b>${res.bz.gz}</div>
-          <div><b>五维拆解：</b>${res.dims.map(x => `${x.name} ${x.score}`).join(' · ')}</div>
+          <div><b>三维净值：</b>吸引 ${fmtSigned(ev.d1.score)} · 内耗 ${ev.d2.score.toFixed(1)} · 承接 ${fmtSigned(ev.d3.score)}</div>
         </div>
         <div class="ceil-actions">
-          <button type="button" class="btn btn-sm btn-soft" onclick="applyCeilingToSynastry('${mode}')">一键带入合盘看雷达图</button>
+          <button type="button" class="btn btn-sm btn-soft" onclick="applyCeilingToSynastry('${mode}')">一键带入合盘看透明账单</button>
         </div>
       </div>`;
   };
@@ -848,7 +2147,7 @@ function runCeilingFinder() {
   document.getElementById('ceilingResult').innerHTML = `
     <div class="card">
       <div class="card-title">
-        <span>${name} 的理论上限报告（前后 ±${span} 岁实测）</span>
+        <span>${name} 的 V6.0 理论上限报告（±${span} 岁 · 权重：${activeWeights.name}）</span>
         <button type="button" class="btn btn-sm btn-soft" onclick="pinCeilingToSidebar()">★ 同步设为右侧个人理论上限</button>
       </div>
       <div style="margin-bottom:14px;">${renderPersonCard(name, meBz, unk)}</div>
@@ -889,16 +2188,18 @@ function pinCeilingToSidebar() {
   if (!lastCeilingResult) return;
   const me = lastCeilingResult.me;
   const makeRec = (mode, res, label) => ({
+    engineVersion: 'V6.0',
     label, mode, score: res.score,
     nameA: me.name, genderA: me.gender, dateA: me.date, timeA: me.time, unkA: me.unk, lonA: me.lon, gzA: me.bz.gz,
     nameB: mode === 'love' ? '理论爱情满配' : '理论友情满配',
     genderB: res.gender, dateB: res.date, timeB: res.time, unkB: false, lonB: 120.00, gzB: res.bz.gz,
-    note: res.dims.slice(0, 3).map(d => `${d.name}${d.score}`).join(' · ')
+    note: `${res.ev.archetype.label} · 吸${fmtSigned(res.ev.d1.score)} / 耗${res.ev.d2.score.toFixed(1)} / 承${fmtSigned(res.ev.d3.score)}`
   });
   try {
     if (window.parent && window.parent !== window) {
       window.parent.postMessage({
         type: 'BAZI_V54_SAVE_CEILING',
+        engineVersion: 'V6.0',
         love: makeRec('love', lastCeilingResult.love, `${me.name} · 理论爱情上限`),
         friend: makeRec('friend', lastCeilingResult.friend, `${me.name} · 理论友情上限`)
       }, '*');
@@ -906,33 +2207,19 @@ function pinCeilingToSidebar() {
   } catch (_) {}
 }
 
-/* ================= 渲染与双人合盘 ================= */
-function buildRadarSVG(dims, maxDims = null) {
-  const cx = 138, cy = 132, r = 90;
-  const angles = dims.map((_, i) => -Math.PI / 2 + i * 2 * Math.PI / 5);
-  const pt = (val, i) => `${(cx + r * (val / 100) * Math.cos(angles[i])).toFixed(1)},${(cy + r * (val / 100) * Math.sin(angles[i])).toFixed(1)}`;
-  let gridSvg = '';
-  [25, 50, 75, 100].forEach(lv => { gridSvg += `<polygon points="${angles.map((_, i) => pt(lv, i)).join(' ')}" fill="none" stroke="var(--line)" stroke-width="1"/>`; });
-  angles.forEach((_, i) => {
-    const [x, y] = pt(100, i).split(','), [lx, ly] = pt(116, i).split(',');
-    gridSvg += `<line x1="${cx}" y1="${cy}" x2="${x}" y2="${y}" stroke="var(--line)" stroke-width="1"/>`;
-    gridSvg += `<text x="${lx}" y="${ly}" text-anchor="middle" dominant-baseline="middle" font-size="11" fill="var(--muted)" font-weight="600">${dims[i].name}</text>`;
-  });
-  const rangeSvg = maxDims ? `<polygon points="${maxDims.map((v, i) => pt(v, i)).join(' ')}" fill="rgba(181,87,75,0.10)" stroke="var(--warm)" stroke-dasharray="4 3" stroke-width="1.4"/>` : '';
-  return `<svg width="276" height="264" viewBox="0 0 276 264">${gridSvg}${rangeSvg}<polygon points="${dims.map((d, i) => pt(d.score, i)).join(' ')}" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="2"/>${dims.map((d, i) => { const [x, y] = pt(d.score, i).split(','); return `<circle cx="${x}" cy="${y}" r="3.5" fill="var(--accent-strong)"/>`; }).join('')}</svg>`;
-}
-
+/* ================= 渲染与未知时辰稳态/浮动聚合 ================= */
 function renderPersonCard(name, bz, isUnk) {
   const roleTag = bz.gender === 'M' ? '乾造 · 男' : '坤造 · 女';
   const spLabel = bz.gender === 'M' ? `妻星(财)：${bz.spouseEl}` : `夫星(官杀)：${bz.spouseEl}`;
+  const earthWarn = bz.pct['土'] >= 26 ? `<span class="badge badge-amber">土重 ${bz.pct['土']}%</span>` : '';
+  const strBadge = `<span class="badge badge-slate">身${bz.strengthLevel}(${bz.strength})</span>`;
   const bars = ELEMENTS.map(e => `<div class="wx-bar-row"><span class="el-${e}" style="width:20px;font-weight:700">${e}</span><div class="wx-track"><div class="wx-fill bg-${e}" style="width:${bz.pct[e]}%"></div></div><span style="width:38px;text-align:right;color:var(--muted)">${bz.pct[e]}%</span></div>`).join('');
-  return `<div>
-    <div style="font-size:13px;font-weight:700;margin-bottom:4px;">
-      ${name} <span class="badge">${roleTag}</span>
-      <span style="font-weight:400;font-size:11px;color:var(--muted);margin-left:4px">${bz.dayunDir} · ${spLabel}</span>
+  return `<div class="person-panel">
+    <div style="font-size:13.5px;font-weight:700;margin-bottom:5px;display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+      <span>${name}</span> <span class="badge">${roleTag}</span> ${strBadge} ${earthWarn}
     </div>
-    <div style="font-size:11px;color:var(--muted);margin-bottom:6px;">
-      ${isUnk ? '时辰未知 · 仅排三柱' : `真太阳时 ${bz.tstStr}（校正 ${bz.offsetMin >= 0 ? '+' : ''}${bz.offsetMin} 分）`}
+    <div style="font-size:11.5px;color:var(--muted);margin-bottom:6px;">
+      ${bz.dayunDir} · ${spLabel} · ${isUnk ? '时辰未知（已按全部时辰稳态/浮动聚合）' : `真太阳时 ${bz.tstStr}（校正 ${bz.offsetMin >= 0 ? '+' : ''}${bz.offsetMin} 分）`}
     </div>
     <div class="pillars">${bz.pillars.map((p, idx) => `
       <div class="pillar-box">
@@ -943,6 +2230,165 @@ function renderPersonCard(name, bz, isUnk) {
     </div>
     <div class="wx-bars">${bars}</div>
   </div>`;
+}
+
+function aggregateUnknownHourResults(results, mode, weights) {
+  const n = results.length;
+  const mean = arr => arr.reduce((a, b) => a + b, 0) / n;
+  const d1Mean = round2(mean(results.map(r => r.d1.score)));
+  const d2Mean = round2(mean(results.map(r => r.d2.score)));
+  const d3Mean = round2(mean(results.map(r => r.d3.score)));
+  const d1Min = Math.min(...results.map(r => r.d1.score)), d1Max = Math.max(...results.map(r => r.d1.score));
+  const d2Min = Math.min(...results.map(r => r.d2.score)), d2Max = Math.max(...results.map(r => r.d2.score));
+  const d3Min = Math.min(...results.map(r => r.d3.score)), d3Max = Math.max(...results.map(r => r.d3.score));
+  const totalMean = round3(mean(results.map(r => r.total)));
+  const minScore = Math.min(...results.map(r => r.total));
+  const maxScore = Math.max(...results.map(r => r.total));
+
+  // 聚合账单：区分 100% 稳态触发项 vs 时柱概率浮动项
+  const map = new Map();
+  results.forEach(r => {
+    r.ledger.forEach(item => {
+      const uid = `${item.dim}|${item.key}|${item.label}`;
+      if (!map.has(uid)) {
+        map.set(uid, { ...item, hits: 0, sumWeighted: 0, posSet: new Set() });
+      }
+      const agg = map.get(uid);
+      agg.hits += 1;
+      agg.sumWeighted += item.weightedDelta;
+      agg.posSet.add(item.positions);
+    });
+  });
+
+  const mergedLedger = [...map.values()].map(x => {
+    const isStable = x.hits === n;
+    const avgW = round2(x.sumWeighted / n);
+    const posList = [...x.posSet];
+    const posStr = isStable
+      ? `前三柱稳态 · ${posList[0]}`
+      : `时柱浮动(${x.hits}/${n}时辰) · ${posList.slice(0, 2).join(' / ')}${posList.length > 2 ? ' 等' : ''}`;
+    return {
+      dim: x.dim, key: x.key, label: x.label,
+      positions: posStr,
+      rawDelta: x.rawDelta,
+      weightedDelta: avgW,
+      reason: x.reason,
+      isStable, hits: x.hits, totalCases: n
+    };
+  }).sort((a, b) => (b.isStable - a.isStable) || (Math.abs(b.weightedDelta) - Math.abs(a.weightedDelta)));
+
+  const d1Obj = { name: '基础吸引力与交集', score: d1Mean, cap: results[0].d1.cap, capped: results.some(r => r.d1.capped), rangeTxt: `${fmtSigned(d1Min)} ~ ${fmtSigned(d1Max)}` };
+  const d2Obj = { name: '冲克与内耗扣分',   score: d2Mean, mag: Math.abs(d2Mean), cap: results[0].d2.cap, capped: results.some(r => r.d2.capped), rangeTxt: `${d2Min.toFixed(1)} ~ ${d2Max.toFixed(1)}` };
+  const d3Obj = { name: '现实承接度加减',   score: d3Mean, minCap: results[0].d3.minCap, maxCap: results[0].d3.maxCap, capped: results.some(r => r.d3.capped), rangeTxt: `${fmtSigned(d3Min)} ~ ${fmtSigned(d3Max)}` };
+
+  const archetype = classifyArchetype(d1Mean, Math.abs(d2Mean), d3Mean, totalMean, mode);
+  const verdictHtml = buildEvidenceVerdict(archetype, mergedLedger, d1Obj, d2Obj, d3Obj);
+
+  return {
+    total: totalMean, minScore, maxScore, isUnknownMode: true,
+    base: SCORE_CONFIG.baseScore,
+    presetName: (weights || activeWeights).name,
+    d1: d1Obj, d2: d2Obj, d3: d3Obj,
+    archetype, verdictHtml, ledger: mergedLedger
+  };
+}
+
+function renderDimMeters(ev) {
+  const d1Pct = clamp((ev.d1.score / Math.max(1, ev.d1.cap)) * 100, 0, 100);
+  const d2Pct = clamp((ev.d2.mag / Math.max(1, ev.d2.cap)) * 100, 0, 100);
+  const d3HalfSpan = Math.max(Math.abs(ev.d3.minCap), Math.abs(ev.d3.maxCap), 1);
+  const d3Width = clamp((Math.abs(ev.d3.score) / d3HalfSpan) * 50, 0, 50);
+  const d3Left = ev.d3.score >= 0 ? 50 : (50 - d3Width);
+  const d3Color = ev.d3.score > 0 ? 'var(--pos)' : ev.d3.score < 0 ? 'var(--warm)' : 'var(--amber)';
+  const d3Class = ev.d3.score > 0 ? 'pos' : ev.d3.score < 0 ? 'neg' : 'neu';
+
+  return `
+    <div class="dim-summary-grid">
+      <div class="dim-meter-card">
+        <div class="dim-meter-head">
+          <span class="dim-meter-title">① 基础吸引力与交集</span>
+          <span class="dim-meter-val pos">${fmtSigned(ev.d1.score)}</span>
+        </div>
+        <div class="meter-track"><div class="meter-fill pos" style="width:${d1Pct.toFixed(1)}%"></div></div>
+        <div class="dim-meter-note">
+          上限 +${ev.d1.cap.toFixed(1)}（单靠吸引最高至 ${(ev.base + ev.d1.cap).toFixed(1)} 分）
+          ${ev.d1.capped ? '<br>已达吸引封顶线，不再虚涨总分' : ''}
+          ${ev.d1.rangeTxt ? `<br>时辰波动：${ev.d1.rangeTxt}` : ''}
+        </div>
+      </div>
+
+      <div class="dim-meter-card">
+        <div class="dim-meter-head">
+          <span class="dim-meter-title">② 冲克与内耗扣分</span>
+          <span class="dim-meter-val ${ev.d2.score < 0 ? 'neg' : 'pos'}">${ev.d2.score.toFixed(1)}</span>
+        </div>
+        <div class="meter-track"><div class="meter-fill neg" style="width:${d2Pct.toFixed(1)}%"></div></div>
+        <div class="dim-meter-note">
+          全盘冲/穿/刑/土重/较劲实扣（上限 −${ev.d2.cap.toFixed(1)}）
+          ${ev.d2.mag === 0 ? '<br>盘面清爽，无显著内耗扣分' : ''}
+          ${ev.d2.rangeTxt ? `<br>时辰波动：${ev.d2.rangeTxt}` : ''}
+        </div>
+      </div>
+
+      <div class="dim-meter-card">
+        <div class="dim-meter-head">
+          <span class="dim-meter-title">③ 现实承接度加减</span>
+          <span class="dim-meter-val ${d3Class}">${fmtSigned(ev.d3.score)}</span>
+        </div>
+        <div class="meter-bipolar">
+          <div class="meter-zero"></div>
+          <div class="meter-bi-fill" style="left:${d3Left.toFixed(1)}%;width:${d3Width.toFixed(1)}%;background:${d3Color};"></div>
+        </div>
+        <div class="dim-meter-note">
+          左负（分心拉扯 ${ev.d3.minCap.toFixed(1)}）← 0 → 右正（稳节奏 +${ev.d3.maxCap.toFixed(1)}）
+          ${ev.d3.rangeTxt ? `<br>时辰波动：${ev.d3.rangeTxt}` : ''}
+        </div>
+      </div>
+    </div>`;
+}
+
+function renderLedgerGroup(title, dimKey, dimObj, items, isUnknown) {
+  const rows = items.length
+    ? items.map(it => {
+        const cls = it.weightedDelta > 0 ? 'pos' : it.weightedDelta < 0 ? 'neg' : 'muted';
+        const stabilityBadge = isUnknown
+          ? `<span class="badge ${it.isStable ? '' : 'badge-amber'}">${it.isStable ? '稳态必现' : `浮动 ${it.hits}/${it.totalCases}`}</span>`
+          : '';
+        return `
+          <div class="ledger-row">
+            <div>
+              <div class="ledger-title">
+                <span>${it.label}</span>
+                ${stabilityBadge}
+                <span class="ledger-pos">${it.positions}</span>
+              </div>
+              <div class="ledger-reason">${it.reason}</div>
+            </div>
+            <div class="ledger-delta ${cls}">${fmtSigned(it.weightedDelta)}</div>
+          </div>`;
+      }).join('')
+    : `<div class="ledger-empty">本维度未触发明显规则项。</div>`;
+
+  let capNote = '';
+  if (!isUnknown && dimObj.capped) {
+    if (dimKey === 'attraction') {
+      capNote = `<div class="ledger-cap-note">封顶折算：本维加权累计 ${fmtSigned(dimObj.weightedRaw)}，按单维封顶规则计入 ${fmtSigned(dimObj.score)}（超出部分不虚抬总分）。</div>`;
+    } else if (dimKey === 'friction') {
+      capNote = `<div class="ledger-cap-note">封顶保护：本维累计扣分 ${dimObj.weightedRaw.toFixed(1)}，按单维最大扣分上限计入 ${dimObj.score.toFixed(1)}。</div>`;
+    } else if (dimKey === 'grounding') {
+      capNote = `<div class="ledger-cap-note">区间约束：本维累计 ${fmtSigned(dimObj.weightedRaw)}，按承接上下限计入 ${fmtSigned(dimObj.score)}。</div>`;
+    }
+  }
+
+  const headScoreCls = dimObj.score > 0 ? 'pos' : dimObj.score < 0 ? 'neg' : 'neu';
+  return `
+    <details class="ledger-section" open>
+      <summary class="ledger-head">
+        <span>${title}（${items.length} 项）</span>
+        <span class="ledger-delta ${headScoreCls === 'neu' ? 'muted' : headScoreCls}">${fmtSigned(dimObj.score)} 分</span>
+      </summary>
+      <div class="ledger-body">${rows}${capNote}</div>
+    </details>`;
 }
 
 function runSynastry(save = true) {
@@ -959,66 +2405,85 @@ function runSynastry(save = true) {
   const baseA = calcBazi(yA, mA, dA, hA, minA, lonA, genderA);
   const baseB = calcBazi(yB, mB, dB, hB, minB, lonB, genderB);
 
-  let evalRes, minScore, maxScore, maxDimArr = null;
+  let evalRes, minScore, maxScore;
   if (!unkA && !unkB) {
-    evalRes = evaluatePair(baseA, baseB, currentMode);
+    evalRes = evaluatePair(baseA, baseB, currentMode, activeWeights);
     minScore = maxScore = evalRes.total;
   } else {
-    const hoursA = unkA ? [...Array(12).keys()] : [null], hoursB = unkB ? [...Array(12).keys()] : [null];
-    let sumTotal = 0, count = 0; minScore = 100; maxScore = 0;
-    const dimSums = [0,0,0,0,0], minDimArr = [100,100,100,100,100]; maxDimArr = [0,0,0,0,0];
-    let sampleRes = null;
+    const hoursA = unkA ? [...Array(12).keys()] : [null];
+    const hoursB = unkB ? [...Array(12).keys()] : [null];
+    const allResults = [];
     hoursA.forEach(hbA => {
       const bzA = hbA === null ? baseA : calcBazi(yA, mA, dA, 12, 0, lonA, genderA, hbA);
       hoursB.forEach(hbB => {
         const bzB = hbB === null ? baseB : calcBazi(yB, mB, dB, 12, 0, lonB, genderB, hbB);
-        const r = evaluatePair(bzA, bzB, currentMode);
-        if (!sampleRes) sampleRes = r;
-        sumTotal += r.total; count++;
-        if (r.total < minScore) minScore = r.total;
-        if (r.total > maxScore) maxScore = r.total;
-        r.dims.forEach((dm, idx) => { dimSums[idx] += dm.score; if (dm.score > maxDimArr[idx]) maxDimArr[idx] = dm.score; if (dm.score < minDimArr[idx]) minDimArr[idx] = dm.score; });
+        allResults.push(evaluatePair(bzA, bzB, currentMode, activeWeights));
       });
     });
-    evalRes = {
-      total: +(sumTotal / count).toFixed(3),
-      dims: sampleRes.dims.map((dm, idx) => ({
-        name: dm.name,
-        score: +(dimSums[idx] / count).toFixed(1),
-        desc: dm.desc + (maxDimArr[idx] !== minDimArr[idx] ? `（时辰波动 ${minDimArr[idx].toFixed(1)}–${maxDimArr[idx].toFixed(1)} 分）` : '')
-      }))
-    };
+    evalRes = aggregateUnknownHourResults(allResults, currentMode, activeWeights);
+    minScore = evalRes.minScore; maxScore = evalRes.maxScore;
   }
 
-  const verdict = evalRes.total >= 85 ? '深度共鸣 · 气场极度契合' : evalRes.total >= 76 ? '良缘可期 · 互补大于摩擦' : evalRes.total >= 67 ? '平实相守 · 重在沟通磨合' : '张力较强 · 需留足边界感';
+  const attrItems = evalRes.ledger.filter(x => x.dim === 'attraction');
+  const fricItems = evalRes.ledger.filter(x => x.dim === 'friction');
+  const grndItems = evalRes.ledger.filter(x => x.dim === 'grounding');
+  const d3ChipClass = evalRes.d3.score > 0 ? 'f-pos' : evalRes.d3.score < 0 ? 'f-neg' : 'f-neu';
+
   document.getElementById('synastryResult').innerHTML = `
     <div class="card">
       <div class="score-hero">
-        <div class="score-label">${nameA}（${genderA === 'M' ? '乾造' : '坤造'}）× ${nameB}（${genderB === 'M' ? '乾造' : '坤造'}） · ${currentMode === 'love' ? '婚恋模式' : '友情模式'}</div>
-        <div class="score-result-value serif" id="totalScoreResult">综合得分：${evalRes.total.toFixed(3)}</div>
-        ${(unkA || unkB) ? `<div class="score-range">未知时辰穷举区间：${minScore.toFixed(3)} – ${maxScore.toFixed(3)} 分（虚线为上限）</div>` : ''}
-        <div class="score-verdict">${verdict}</div>
+        <div class="score-label">
+          ${nameA}（${genderA === 'M' ? '乾造' : '坤造'}）× ${nameB}（${genderB === 'M' ? '乾造' : '坤造'}） · ${currentMode === 'love' ? '婚恋模式' : '友情模式'} · 权重：${evalRes.presetName}
+        </div>
+        <div class="score-main-row">
+          <div class="score-result-value serif" id="totalScoreResult">${evalRes.total.toFixed(3)}<span style="font-size:16px;font-weight:600;margin-left:4px;">分</span></div>
+          <span class="archetype-pill ${evalRes.archetype.badgeClass}">${evalRes.archetype.label}</span>
+        </div>
+        ${(unkA || unkB) ? `<div class="score-range">未知时辰全遍历区间：${minScore.toFixed(3)} – ${maxScore.toFixed(3)} 分（下方已拆分稳态项与时柱浮动项）</div>` : ''}
+        <div class="formula-strip">
+          <span class="f-chip f-base">基准 ${evalRes.base.toFixed(1)}</span>
+          <span class="f-op">+</span>
+          <span class="f-chip f-pos">吸引 ${evalRes.d1.score.toFixed(1)}</span>
+          <span class="f-op">−</span>
+          <span class="f-chip f-neg">内耗 ${evalRes.d2.mag.toFixed(1)}</span>
+          <span class="f-op">${evalRes.d3.score >= 0 ? '+' : '−'}</span>
+          <span class="f-chip ${d3ChipClass}">承接 ${Math.abs(evalRes.d3.score).toFixed(1)}</span>
+          <span class="f-op">=</span>
+          <span class="f-chip f-base">${evalRes.total.toFixed(3)}${evalRes.totalClamped ? ' (边界截断)' : ''}</span>
+        </div>
+        <div class="verdict-box">${evalRes.verdictHtml}</div>
       </div>
-      <div class="grid-2" style="margin-bottom:14px;">
+
+      <div class="grid-2" style="margin-bottom:10px;">
         ${renderPersonCard(nameA, baseA, unkA)}
         ${renderPersonCard(nameB, baseB, unkB)}
       </div>
-      <div class="result-split">
-        <div class="radar-wrap">${buildRadarSVG(evalRes.dims, maxDimArr)}</div>
-        <div>${evalRes.dims.map(d => `<div class="dim-item"><div class="dim-head"><span>${d.name}</span><span class="dim-score">${d.score} 分</span></div><div class="dim-desc">${d.desc}</div></div>`).join('')}</div>
+
+      ${renderDimMeters(evalRes)}
+
+      <div>
+        ${renderLedgerGroup('① 基础吸引力与交集明细', 'attraction', evalRes.d1, attrItems, !!(unkA || unkB))}
+        ${renderLedgerGroup('② 冲克与内耗扣分明细', 'friction', evalRes.d2, fricItems, !!(unkA || unkB))}
+        ${renderLedgerGroup('③ 现实承接度加减明细', 'grounding', evalRes.d3, grndItems, !!(unkA || unkB))}
       </div>
     </div>`;
 
   const gzA = baseA.pillars.map((p, idx) => idx === 3 && unkA ? '??' : (STEMS[p.s] + BRANCHES[p.b])).join(' ');
   const gzB = baseB.pillars.map((p, idx) => idx === 3 && unkB ? '??' : (STEMS[p.s] + BRANCHES[p.b])).join(' ');
   const payload = {
+    engineVersion: 'V6.0',
     mode: currentMode, genderA, genderB,
     nameA, dateA, timeA, unkA, lonA,
     nameB, dateB, timeB, unkB, lonB,
     gzA, gzB,
     score: evalRes.total,
     scoreText: evalRes.total.toFixed(3),
-    range: (unkA || unkB) ? `${minScore.toFixed(3)}–${maxScore.toFixed(3)}` : null
+    range: (unkA || unkB) ? `${minScore.toFixed(3)}–${maxScore.toFixed(3)}` : null,
+    note: `${evalRes.archetype.label} · 吸${fmtSigned(evalRes.d1.score)} / 耗${evalRes.d2.score.toFixed(1)} / 承${fmtSigned(evalRes.d3.score)}`,
+    breakdown: {
+      base: evalRes.base, d1: evalRes.d1.score, d2: evalRes.d2.score, d3: evalRes.d3.score,
+      archetype: evalRes.archetype.label, presetName: evalRes.presetName
+    }
   };
 
   try {
@@ -1039,7 +2504,7 @@ function runSynastry(save = true) {
 
 window.addEventListener('message', e => {
   const msg = e.data;
-  if (!msg || msg.type !== 'BAZI_V53_LOAD_PAIR' || !msg.pair) return;
+  if (!msg || (msg.type !== 'BAZI_V53_LOAD_PAIR' && msg.type !== 'BAZI_V60_LOAD_PAIR') || !msg.pair) return;
   const p = msg.pair;
   switchView(p.mode === 'friend' ? 'friend' : 'love');
   if (p.genderA) setGender('A', p.genderA);
@@ -1050,8 +2515,8 @@ window.addEventListener('message', e => {
   document.getElementById('unkA').checked = !!p.unkA;
   document.getElementById('lonA').value = p.lonA ?? 120;
   document.getElementById('nameB').value = p.nameB || '乙方';
-  document.getElementById('dateB').value = p.dateB || '2005-03-26';
-  document.getElementById('timeB').value = p.timeB || '08:00';
+  document.getElementById('dateB').value = p.dateB || '2003-02-05';
+  document.getElementById('timeB').value = p.timeB || '04:00';
   document.getElementById('unkB').checked = !!p.unkB;
   document.getElementById('lonB').value = p.lonB ?? 120;
   toggleTime('A'); toggleTime('B');
@@ -1059,7 +2524,8 @@ window.addEventListener('message', e => {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 });
 
-const STORE_KEY = 'suiwind_bazi_v52_history';
+/* ================= 本地合盘历史记录（V6.0 独立键名） ================= */
+const STORE_KEY = 'suiwind_bazi_v60_history';
 const getHistory = () => { try { return JSON.parse(localStorage.getItem(STORE_KEY) || '[]'); } catch { return []; } };
 function saveHistory(item) { const list = getHistory(); list.unshift(item); localStorage.setItem(STORE_KEY, JSON.stringify(list.slice(0, 30))); renderHistory(); }
 function deleteHistory(id, e) { e.stopPropagation(); localStorage.setItem(STORE_KEY, JSON.stringify(getHistory().filter(x => x.id !== id))); renderHistory(); }
@@ -1079,15 +2545,15 @@ function loadHistoryById(id) {
 }
 function renderHistory() {
   const list = getHistory(), el = document.getElementById('historyList');
-  if (!list.length) { el.innerHTML = '<p class="hint">暂无合盘记录，点击上方按钮测算后自动保存在本地。</p>'; return; }
+  if (!list.length) { el.innerHTML = '<p class="hint">暂无 V6.0 合盘记录，点击上方按钮测算后自动保存在本地。</p>'; return; }
   el.innerHTML = list.map(item => `
     <div class="history-item" onclick="loadHistoryById(${item.id})">
       <div>
-        <div style="font-size:13.5px;font-weight:700">
-          ${item.nameA}(${item.genderA === 'F' ? '女' : '男'}) × ${item.nameB}(${item.genderB === 'M' ? '男' : '女'})
-          <span class="badge" style="margin-left:6px">${item.mode === 'friend' ? '友情' : '婚恋'} · ${item.score}分${item.range ? ` (${item.range})` : ''}</span>
+        <div style="font-size:13.5px;font-weight:700;display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+          <span>${item.nameA}(${item.genderA === 'F' ? '女' : '男'}) × ${item.nameB}(${item.genderB === 'M' ? '男' : '女'})</span>
+          <span class="badge">${item.mode === 'friend' ? '友情' : '婚恋'} · ${item.score}分${item.range ? ` (${item.range})` : ''}</span>
         </div>
-        <div class="history-meta">${item.dateA} / ${item.dateB} · ${item.createdAt}</div>
+        <div class="history-meta">${item.note ? item.note + ' · ' : ''}${item.dateA} / ${item.dateB} · ${item.createdAt}</div>
       </div>
       <button type="button" class="del-btn" onclick="deleteHistory(${item.id}, event)">删除</button>
     </div>`).join('');
@@ -1096,6 +2562,7 @@ function renderHistory() {
 initLocationSelects('A', '江苏', '南京');
 initLocationSelects('B', '北京', '北京');
 initLocationSelects('C', '江苏', '南京');
+syncWeightUI();
 renderHistory();
 </script>
 </body>

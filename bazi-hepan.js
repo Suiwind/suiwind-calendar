@@ -1,62 +1,62 @@
-/* 苏伊温德日历 · V5.4 合盘模块适配与透明纪录对照板 */
+/* 苏伊温德日历 · V6.0 三维净值合盘模块适配与透明纪录对照板 */
 (() => {
 'use strict';
 const $ = id => document.getElementById(id);
 
-// 预置「你的专属理论上限」（基于 2006-11-11 丙戌 己亥 甲辰 测算；可在左侧「测算个人理论上限」页改真实时辰/性别后一键覆盖）
+// V6.0 预置「你的专属理论上限」（默认标准平衡权重，基于 2006-11-11 丙戌 己亥 甲辰 庚午 测算；可在左侧「测算个人理论上限」一键重算覆盖）
 const DEFAULT_USER_CEILING = {
   love: {
     id: 'my-ceil-love',
     label: '我的理论爱情上限（乾造 · 甲辰）',
     mode: 'love',
-    score: 92.286,
+    score: 80.000,
     nameA: '我(甲辰)', genderA: 'M', dateA: '2006-11-11', timeA: '12:00', unkA: false, lonA: 118.78,
     gzA: '丙戌 己亥 甲辰 庚午',
-    nameB: '理论爱情满配', genderB: 'F', dateB: '2005-03-26', timeB: '08:00', unkB: false, lonB: 120.00,
-    gzB: '乙酉 己卯 己酉 戊辰',
-    note: '甲己五合 · 辰酉六合 · 财官正应 · 亥卯半合'
+    nameB: '理论爱情满配', genderB: 'F', dateB: '2003-02-05', timeB: '04:00', unkB: false, lonB: 120.00,
+    gzB: '癸未 甲寅 己酉 丙寅',
+    note: '热切互补 · 磨合可成型 · 吸+32.0 / 耗-4.5 / 承+2.5'
   },
   friend: {
     id: 'my-ceil-friend',
     label: '我的理论友情上限（甲辰）',
     mode: 'friend',
-    score: 89.104,
+    score: 84.250,
     nameA: '我(甲辰)', genderA: 'M', dateA: '2006-11-11', timeA: '12:00', unkA: false, lonA: 118.78,
     gzA: '丙戌 己亥 甲辰 庚午',
-    nameB: '理论友情满配', genderB: 'M', dateB: '2011-03-30', timeB: '20:00', unkB: false, lonB: 120.00,
-    gzB: '辛卯 辛卯 甲申 甲戌',
-    note: '甲甲同频 · 申辰半合 · 亥卯半合 · 五行极度互补'
+    nameB: '理论友情满配', genderB: 'M', dateB: '2010-03-05', timeB: '18:00', unkB: false, lonB: 120.00,
+    gzB: '庚寅 戊寅 甲寅 癸酉',
+    note: '高共鸣 · 稳健挚友型 · 吸+26.8 / 耗-1.0 / 承+8.5'
   }
 };
 
-// V5.4 引擎全局理论上限标杆
+// V6.0 三维净值引擎全局标杆（标准平衡权重 · 零冲穿零土重零争合实测样本）
 const BENCHMARKS = [
   {
     id: 'bench-love',
-    label: '全局婚恋满配标杆（引擎上限）',
+    label: '全局婚恋满配标杆（V6.0 引擎）',
     mode: 'love',
-    score: 94.500,
-    nameA: '乾造标杆', genderA: 'M', dateA: '2003-10-08', timeA: '02:00', unkA: false, lonA: 120.00,
-    gzA: '癸未 辛酉 甲寅 乙丑',
-    nameB: '坤造标杆', genderB: 'F', dateB: '2003-01-26', timeB: '10:00', unkB: false, lonB: 120.00,
-    gzB: '壬午 癸丑 己亥 己巳',
-    note: '甲己五合 · 寅亥六合 · 财官互应 · 酉丑半合'
+    score: 95.000,
+    nameA: '乾造标杆', genderA: 'M', dateA: '2000-02-07', timeA: '06:00', unkA: false, lonA: 120.00,
+    gzA: '庚辰 戊寅 乙未 己卯',
+    nameB: '坤造标杆', genderB: 'F', dateB: '1995-06-08', timeB: '12:00', unkB: false, lonB: 120.00,
+    gzB: '乙亥 壬午 庚午 壬午',
+    note: '高共鸣 · 稳承接良缘型 · 吸+32.0 / 耗0.0 / 承+13.0'
   },
   {
     id: 'bench-friend',
-    label: '全局友情满配标杆（引擎上限）',
+    label: '全局友情满配标杆（V6.0 引擎）',
     mode: 'friend',
-    score: 89.690,
+    score: 94.300,
     nameA: '甲方标杆', genderA: 'M', dateA: '2000-02-07', timeA: '06:00', unkA: false, lonA: 120.00,
     gzA: '庚辰 戊寅 乙未 己卯',
-    nameB: '乙方标杆', genderB: 'M', dateB: '2007-12-02', timeB: '22:00', unkB: false, lonB: 120.00,
-    gzB: '丁亥 辛亥 庚午 丁亥',
-    note: '乙庚五合 · 午未六合 · 寅亥月合 · 五行互补'
+    nameB: '乙方标杆', genderB: 'M', dateB: '2002-11-15', timeB: '22:00', unkB: false, lonB: 120.00,
+    gzB: '壬午 辛亥 丁亥 辛亥',
+    note: '高共鸣 · 稳健挚友型 · 吸+31.5 / 耗0.0 / 承+12.8'
   }
 ];
 
-const PERSONAL_STORE_KEY = 'suiwind_bazi_v53_personal_records';
-const CEILING_STORE_KEY = 'suiwind_bazi_v54_my_ceiling';
+const PERSONAL_STORE_KEY = 'suiwind_bazi_v60_personal_records';
+const CEILING_STORE_KEY = 'suiwind_bazi_v60_my_ceiling';
 const dbName = 'suiwind-bazi-v5-source', dbStore = 'source';
 let loaded = false, currentHtml = '';
 
@@ -122,7 +122,7 @@ function showFrame(html, source) {
   const frame = $('baziFrame');
   frame.onload = () => {
     loaded = true;
-    notice('已载入 ' + source + ' · 支持双人合盘与任意人理论上限穷举。');
+    notice('已载入 ' + source + ' · 三维净值计分（吸引/内耗/承接）+ 透明可调权重。');
   };
   $('baziEmpty').classList.add('bazi-hidden');
   frame.classList.remove('bazi-hidden');
@@ -139,7 +139,7 @@ async function importFile(file) {
 async function load() {
   try {
     const r = await fetch('./bazi-hepan-v5.html', { cache: 'no-store' });
-    if (r.ok) { const s = await r.text(); validateHTML(s); showFrame(s, 'V5.4 内置引擎'); return; }
+    if (r.ok) { const s = await r.text(); validateHTML(s); showFrame(s, 'V6.0 内置引擎'); return; }
   } catch (_) {}
   try {
     const local = await dbGet();
@@ -168,24 +168,45 @@ function formatPairMeta(p) {
 
 function createRecordCard(title, rec, compareKey) {
   const wrap = document.createElement('div'); wrap.className = 'bazi-record';
+  const head = document.createElement('div'); head.className = 'bazi-record-head';
   const name = document.createElement('div'); name.className = 'bazi-recordname'; name.textContent = title;
-  wrap.appendChild(name);
+  head.appendChild(name);
   if (!rec) {
-    const empty = document.createElement('div'); empty.className = 'bazi-births';
-    empty.textContent = '暂无实测记录；在左侧测算后会自动刷新最高分。';
+    wrap.appendChild(head);
+    const empty = document.createElement('div'); empty.className = 'bazi-births bazi-births-empty';
+    empty.textContent = '暂无 V6.0 实测记录；在左侧测算后会自动刷新最高分。';
     wrap.appendChild(empty);
     return wrap;
   }
   const score = document.createElement('div'); score.className = 'bazi-score';
-  score.textContent = Number(rec.score).toFixed(3) + ' 分';
-  wrap.appendChild(score);
+  score.textContent = Number(rec.score).toFixed(3);
+  head.appendChild(score);
+  wrap.appendChild(head);
 
+  const gA = rec.genderA === 'F' ? '坤' : '乾', gB = rec.genderB === 'M' ? '乾' : '坤';
+  const tA = rec.unkA ? '时辰未知' : (rec.timeA || '12:00'), tB = rec.unkB ? '时辰未知' : (rec.timeB || '12:00');
   const info = document.createElement('div'); info.className = 'bazi-births';
-  formatPairMeta(rec).forEach(line => { const d = document.createElement('div'); d.textContent = line; info.appendChild(d); });
-  if (rec.note) { const n = document.createElement('div'); n.style.marginTop = '3px'; n.style.opacity = '0.85'; n.textContent = rec.note; info.appendChild(n); }
+
+  const mkRow = (who, g, date, time, gz) => {
+    const row = document.createElement('div'); row.className = 'bazi-pair-row';
+    const top = document.createElement('div'); top.className = 'bazi-pair-meta';
+    top.textContent = `${who}（${g}）· ${date} ${time}`;
+    const chip = document.createElement('div'); chip.className = 'bazi-gz-chip';
+    chip.textContent = gz || '—';
+    row.appendChild(top);
+    row.appendChild(chip);
+    return row;
+  };
+  info.appendChild(mkRow(rec.nameA || '甲方', gA, rec.dateA, tA, rec.gzA));
+  info.appendChild(mkRow(rec.nameB || '乙方', gB, rec.dateB, tB, rec.gzB));
+  if (rec.note) {
+    const n = document.createElement('div'); n.className = 'bazi-rec-note';
+    n.textContent = rec.note;
+    info.appendChild(n);
+  }
   wrap.appendChild(info);
 
-  const btn = document.createElement('button'); btn.className = 'btn'; btn.type = 'button'; btn.textContent = '一键填入复现';
+  const btn = document.createElement('button'); btn.className = 'btn sm bazi-fill-btn'; btn.type = 'button'; btn.textContent = '一键填入复现';
   btn.onclick = () => {
     loadPairIntoFrame(rec);
     if ($('baziCompareCategory')) $('baziCompareCategory').value = compareKey;
@@ -262,7 +283,13 @@ window.addEventListener('message', e => {
   if (!Number.isFinite(scoreVal)) return;
 
   if ($('baziInputScore')) $('baziInputScore').value = scoreVal.toFixed(3);
-  if ($('baziDetected')) $('baziDetected').textContent = `本次（${d.mode === 'friend' ? '友情' : '婚恋'}）：${d.nameA} × ${d.nameB} = ${scoreVal.toFixed(3)} 分`;
+  if ($('baziDetected')) {
+    const bd = d.breakdown;
+    const bdText = bd
+      ? `（${bd.archetype} · 吸${bd.d1 >= 0 ? '+' : ''}${Number(bd.d1).toFixed(1)} / 耗${Number(bd.d2).toFixed(1)} / 承${bd.d3 >= 0 ? '+' : ''}${Number(bd.d3).toFixed(1)} · ${bd.presetName}）`
+      : '';
+    $('baziDetected').textContent = `本次（${d.mode === 'friend' ? '友情' : '婚恋'}）：${d.nameA} × ${d.nameB} = ${scoreVal.toFixed(3)} 分${bdText}`;
+  }
 
   if (msg.isUserRun) {
     const p = getPersonalRecords(), key = d.mode === 'friend' ? 'friend' : 'love';
@@ -297,7 +324,7 @@ function init() {
   $('baziCompareCategory').addEventListener('change', diff);
   if ($('baziResetPersonal')) {
     $('baziResetPersonal').addEventListener('click', () => {
-      if (!confirm('清空本机保存的「我的实测最高纪录」？')) return;
+      if (!confirm('清空本机保存的「我的 V6.0 实测最高纪录」？')) return;
       localStorage.removeItem(PERSONAL_STORE_KEY); renderRecords(); diff();
     });
   }

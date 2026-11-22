@@ -329,11 +329,21 @@ function renderSchedule() {
     return;
   }
 
+  const isTodaySel = fmt(sel) === todayKey();
+  const curParts = isTodaySel ? bjParts() : null;
+  const curMin = curParts ? Number(curParts.hour) * 60 + Number(curParts.minute) : -1;
+
   events.forEach(e => {
     const row = document.createElement('div');
-    row.className = `schedule-item ${e.type}`;
+    let phaseCls = '';
+    if (isTodaySel && curMin >= 0) {
+      const sMin = timeMin(e.start), eMin = timeMin(e.end);
+      if (curMin >= eMin) phaseCls = ' is-past';
+      else if (curMin >= sMin && curMin < eMin) phaseCls = ' is-now';
+    }
+    row.className = `schedule-item ${e.type}${phaseCls}`;
     const meta = [e.teacher, e.room, e.note, e.source === 'added' ? '临时' : ''].filter(Boolean).join(' · ');
-    row.innerHTML = `<div class="schedule-time">${esc(e.start)}–${esc(e.end)}</div><div><div class="schedule-name">${esc(e.name)}</div>${meta ? `<div class="schedule-meta">${esc(meta)}</div>` : ''}</div>${e.type === 'course' ? '<button class="x" type="button" title="取消/删除">×</button>' : ''}`;
+    row.innerHTML = `<div class="schedule-time">${esc(e.start)}–${esc(e.end)}</div><div class="schedule-body"><div class="schedule-name">${esc(e.name)}${phaseCls === ' is-now' ? '<span class="now-pill">进行中</span>' : ''}</div>${meta ? `<div class="schedule-meta">${esc(meta)}</div>` : ''}</div>${e.type === 'course' ? '<button class="x" type="button" title="取消/删除">×</button>' : ''}`;
     const del = row.querySelector('.x');
     if (del) del.onclick = () => {
       const k = fmt(sel), ov = schedOv(sel);
@@ -532,11 +542,18 @@ function syncYearSelect() {
   }
 }
 
-function renderCal() {
+function renderCal(animate = false) {
   syncYearSelect();
   $('#monthTitle').textContent = `${view.getMonth() + 1}月`;
-  const g = $('#calendar'); g.innerHTML = '';
+  const g = $('#calendar');
+  g.innerHTML = '';
+  if (animate) {
+    g.classList.remove('grid-anim');
+    void g.offsetWidth;
+    g.classList.add('grid-anim');
+  }
   const y = view.getFullYear(), m = view.getMonth();
+  const td = todayDate();
   const f = new Date(y, m, 1, 12), off = (f.getDay() + 6) % 7, start = new Date(y, m, 1 - off, 12);
 
   let monthTotal = 0, monthDone = 0;
@@ -545,6 +562,7 @@ function renderCal() {
     const k = fmt(d), li = lunar(d), h = H[k], an = annivOn(d), ddl = deadlineOn(d), cds = countdownsOn(d);
     const arr = allTasksFor(d), done = arr.filter(x => x.done).length;
     const learned = completionsOn(k).length > 0;
+    const reflected = reflectHas(R[k]);
     if (d.getMonth() === m) { monthTotal += arr.length; monthDone += done; }
 
     // 极简规则：每格最多展示 1 个高优先级文字标签，保持手账呼吸感
@@ -559,11 +577,21 @@ function renderCal() {
       + (learned ? '<i class="dot learn"></i>' : '');
 
     const subText = li.term || li.fest[0] || li.text;
+    const rel = dayDiff(d, td);
+    const isOther = d.getMonth() !== m;
+    const isWeekend = d.getDay() === 0 || d.getDay() === 6;
+    const hasFootprint = rel < 0 && !isOther && (learned || reflected || done > 0);
     const b = document.createElement('button');
     b.type = 'button';
-    b.className = 'day' + (d.getMonth() !== m ? ' other' : '') + (same(d, now) ? ' today' : '') + (same(d, sel) ? ' selected' : '');
+    b.dataset.date = k;
+    b.className = 'day'
+      + (isOther ? ' other' : '')
+      + (rel === 0 ? ' today' : rel < 0 ? ' past' : ' future')
+      + (isWeekend ? ' weekend' : '')
+      + (hasFootprint ? ' has-footprint' : '')
+      + (same(d, sel) ? ' selected' : '');
     b.innerHTML = `
-      <div>
+      <div class="day-top-wrap">
         <div class="dtop">
           <span class="num">${d.getDate()}</span>
           <span class="lunar ${li.term ? 'is-term' : ''}">${esc(subText)}</span>
@@ -735,11 +763,11 @@ function renderNextTerm() {
 }
 
 function renderSide() {
-  const k = fmt(sel), li = lunar(sel), h = H[k], r = R[k] || {}, wk = schoolWeekNum(sel), diff = dayDiff(sel, now);
+  const k = fmt(sel), li = lunar(sel), h = H[k], r = R[k] || {}, wk = schoolWeekNum(sel), diff = dayDiff(sel, todayDate());
   $('#dateTitle').textContent = `${sel.getMonth() + 1}月${sel.getDate()}日 · 周${wd(sel)}`;
   const dist = $('#dateDistance');
   dist.textContent = diff === 0 ? '今天' : diff > 0 ? `${diff} 天后` : `${Math.abs(diff)} 天前`;
-  dist.className = `date-distance ${diff === 0 ? 'today' : diff > 0 ? 'future' : ''}`;
+  dist.className = `date-distance ${diff === 0 ? 'today' : diff > 0 ? 'future' : 'past'}`;
   $('#dateSub').textContent = [`农历${li.fullText}`, wk ? `校历第${wk}周` : '', li.term, ...li.fest, h?.name].filter(Boolean).join(' · ');
   if (!$('#deadlineInput').value.trim()) $('#deadlineDate').value = k;
 
@@ -1297,7 +1325,7 @@ function applyTheme(t) {
   const dark = t === 'dark';
   document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
   try { localStorage.setItem('zx_theme', dark ? 'dark' : 'light'); } catch {}
-  const m = document.querySelector('meta[name="theme-color"]'); if (m) m.setAttribute('content', dark ? '#131713' : '#f2efe8');
+  const m = document.querySelector('meta[name="theme-color"]'); if (m) m.setAttribute('content', dark ? '#101411' : '#f4f0e8');
   $('#themeToggleIcon').textContent = dark ? '☀' : '☾';
 }
 
@@ -1348,10 +1376,10 @@ function bindEvents() {
   $('#themeToggleBtn').onclick = () => applyTheme(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
   $('#moreMenuBtn').onclick = e => { e.stopPropagation(); $('#moreMenuDropdown').classList.toggle('open'); };
 
-  $('#prevBtn').onclick = () => { view.setMonth(view.getMonth() - 1); renderCal(); };
-  $('#nextBtn').onclick = () => { view.setMonth(view.getMonth() + 1); renderCal(); };
-  $('#todayBtn').onclick = () => { sel = new Date(now); view = new Date(now.getFullYear(), now.getMonth(), 1); renderCal(); renderSide(); };
-  $('#yearSelect').onchange = e => { const y = Number(e.target.value); view = new Date(y, view.getMonth(), 1, 12); sel = new Date(y, view.getMonth(), 1, 12); renderCal(); renderSide(); };
+  $('#prevBtn').onclick = () => { view.setMonth(view.getMonth() - 1); renderCal(true); };
+  $('#nextBtn').onclick = () => { view.setMonth(view.getMonth() + 1); renderCal(true); };
+  $('#todayBtn').onclick = () => { sel = todayDate(); view = new Date(sel.getFullYear(), sel.getMonth(), 1); renderCal(true); renderSide(); };
+  $('#yearSelect').onchange = e => { const y = Number(e.target.value); view = new Date(y, view.getMonth(), 1, 12); sel = new Date(y, view.getMonth(), 1, 12); renderCal(true); renderSide(); };
 
   document.querySelectorAll('[data-side-tab]').forEach(b => { b.onclick = () => setSideTab(b.dataset.sideTab); });
 

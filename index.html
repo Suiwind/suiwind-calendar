@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#f2efe8">
-<title>苏伊温德日历 V3.4</title>
+<meta name="theme-color" content="#f4f0e8">
+<title>苏伊温德日历 V3.5</title>
 <link rel="icon" type="image/svg+xml" href="./favicon.svg">
 <link rel="apple-touch-icon" href="./icons/apple-touch-icon.png">
 <link rel="manifest" href="./manifest.json">
@@ -15,7 +15,7 @@
     if(localStorage.getItem('zx_theme') === 'dark'){
       document.documentElement.setAttribute('data-theme', 'dark');
       var m = document.querySelector('meta[name="theme-color"]');
-      if(m) m.setAttribute('content', '#131713');
+      if(m) m.setAttribute('content', '#101411');
     }
   }catch(e){}
 })();
@@ -28,8 +28,8 @@
   <div class="bazi-wrap">
     <header class="bazi-head">
       <div>
-        <h1 class="bazi-title">八字合盘 <span class="version">V5.4 内置版</span></h1>
-        <p class="bazi-subtitle">苏伊温德日历 · 真太阳时排盘与五维合盘引擎</p>
+        <h1 class="bazi-title">八字合盘 <span class="version">V6.0 三维净值版</span></h1>
+        <p class="bazi-subtitle">苏伊温德日历 · 真太阳时排盘与三维净值可调权重引擎（吸引 / 内耗 / 承接）</p>
       </div>
       <div class="bazi-actions">
         <input id="baziFile" type="file" accept=".html,.htm,text/html" class="bazi-hidden">
@@ -45,22 +45,25 @@
           <p class="bazi-small">若未自动载入内置引擎，可点击下方手动选择本地 HTML 文件。</p>
           <button type="button" class="btn primary" id="baziEmptyImport">选择 HTML 文件</button>
         </div>
-        <iframe id="baziFrame" class="bazi-iframe bazi-hidden" title="八字合盘 V5.2" sandbox="allow-scripts allow-same-origin allow-downloads allow-modals" referrerpolicy="no-referrer"></iframe>
+        <iframe id="baziFrame" class="bazi-iframe bazi-hidden" title="八字合盘 V6.0" sandbox="allow-scripts allow-same-origin allow-downloads allow-modals" referrerpolicy="no-referrer"></iframe>
       </main>
       <aside class="bazi-card bazi-side" aria-label="纪录对照板">
-        <h2>纪录对照板</h2>
-        <p class="bazi-small">透明展示双方公历出生时间与八字四柱，支持一键填入复现；可在左侧「测算个人理论上限」随时更新你的精确上限。</p>
-        <h3>我的理论上限（丙戌 己亥 甲辰）</h3>
-        <div id="baziMyCeilingRecords"></div>
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:14px">
-          <h3 style="margin:0">我的实测最高纪录</h3>
-          <button type="button" class="btn sm ghost" id="baziResetPersonal" style="padding:2px 8px;font-size:11px">清空</button>
+        <div class="bazi-side-head">
+          <h2>纪录对照板</h2>
+          <span class="bazi-ver-chip">V6.0 BENCHMARK</span>
         </div>
-        <div id="baziPersonalRecords"></div>
-        <h3>V5.4 全局理论上限标杆</h3>
-        <div id="baziWorldRecords"></div>
+        <p class="bazi-small">按 V6.0 三维净值标准（默认平衡权重）透明展示双方时间与四柱，支持一键填入复现；可在左侧「测算个人理论上限」随时重算更新。</p>
+        <div class="bazi-sec-title"><h3>我的理论上限 · 丙戌 己亥 甲辰</h3></div>
+        <div id="baziMyCeilingRecords" class="bazi-record-list"></div>
+        <div class="bazi-sec-title">
+          <h3>我的实测最高纪录</h3>
+          <button type="button" class="btn sm ghost bazi-reset-btn" id="baziResetPersonal">清空</button>
+        </div>
+        <div id="baziPersonalRecords" class="bazi-record-list"></div>
+        <div class="bazi-sec-title"><h3>V6.0 全局理论上限标杆</h3></div>
+        <div id="baziWorldRecords" class="bazi-record-list"></div>
         <div class="bazi-compare">
-          <b>本次与纪录的差距</b>
+          <div class="bazi-compare-head">本次与纪录差距</div>
           <p class="bazi-small" id="baziDetected">在左侧完成测算后将自动读取得分。</p>
           <div class="bazi-scores">
             <select id="baziCompareCategory" aria-label="比较纪录类别">
@@ -68,15 +71,15 @@
               <option value="my-ceil-friend">我的理论友情上限</option>
               <option value="personal-love">我的实测婚恋最高</option>
               <option value="personal-friend">我的实测友情最高</option>
-              <option value="bench-love">全局婚恋满配标杆 (94.500)</option>
-              <option value="bench-friend">全局友情满配标杆 (89.690)</option>
+              <option value="bench-love">全局婚恋满配标杆 (95.000)</option>
+              <option value="bench-friend">全局友情满配标杆 (94.300)</option>
             </select>
           </div>
           <div class="bazi-score-input">
             <input id="baziInputScore" type="number" step="0.001" min="0" max="100" placeholder="本次分数">
-            <button id="baziComputeDifference" type="button" class="btn sm">比较</button>
+            <button id="baziComputeDifference" type="button" class="btn sm primary">比较</button>
           </div>
-          <div id="baziDiff" class="bazi-small" style="margin-top:6px" aria-live="polite"></div>
+          <div id="baziDiff" class="bazi-diff-out" aria-live="polite"></div>
         </div>
       </aside>
     </div>
@@ -89,7 +92,7 @@
     <div>
       <div class="brand-row">
         <h1>苏伊温德日历</h1>
-        <span class="version">V3.4</span>
+        <span class="version">V3.5</span>
       </div>
       <p class="poetic-sub">生命如暗室，不妨我明写春诗</p>
     </div>
@@ -146,15 +149,19 @@
         </div>
       </div>
 
-      <div class="week"><div>一</div><div>二</div><div>三</div><div>四</div><div>五</div><div>六</div><div>日</div></div>
+      <div class="week"><div>一</div><div>二</div><div>三</div><div>四</div><div>五</div><div class="wk-end">六</div><div class="wk-end">日</div></div>
       <div class="grid" id="calendar"></div>
 
       <div class="cal-footer">
         <div class="legend">
-          <span class="legend-item"><i class="dot high"></i>高优先</span>
-          <span class="legend-item"><i class="dot medium"></i>中优先</span>
-          <span class="legend-item"><i class="dot low"></i>低优先</span>
-          <span class="legend-item"><i class="dot learn"></i>已学习</span>
+          <span class="legend-item"><i class="swatch past"></i>已过</span>
+          <span class="legend-item"><i class="swatch today"></i>今日</span>
+          <span class="legend-item"><i class="swatch future"></i>未到</span>
+          <span class="legend-sep" aria-hidden="true"></span>
+          <span class="legend-item"><i class="dot high"></i>高优</span>
+          <span class="legend-item"><i class="dot medium"></i>中优</span>
+          <span class="legend-item"><i class="dot low"></i>低优</span>
+          <span class="legend-item"><i class="dot learn"></i>已学</span>
         </div>
         <span id="monthProgressText"></span>
       </div>
