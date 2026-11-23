@@ -67,6 +67,7 @@ function notice(msg, error = false) {
   const el = $('baziStatus'); if (!el) return;
   el.textContent = msg;
   el.classList.toggle('bazi-error', error);
+  el.parentElement?.classList.toggle('bazi-error', error);
 }
 function getPersonalRecords() {
   try { return JSON.parse(localStorage.getItem(PERSONAL_STORE_KEY) || '{}'); } catch { return {}; }
@@ -138,7 +139,7 @@ async function importFile(file) {
 }
 async function load() {
   try {
-    const r = await fetch('./bazi-hepan-v5.html?v=362', { cache: 'no-store' });
+    const r = await fetch('./bazi-hepan-v5.html?v=400', { cache: 'no-store' });
     if (r.ok) { const s = await r.text(); validateHTML(s); showFrame(s, 'V6.1 内置引擎'); return; }
   } catch (_) {}
   try {
@@ -178,8 +179,10 @@ function createRecordCard(title, rec, compareKey) {
     wrap.appendChild(empty);
     return wrap;
   }
-  const score = document.createElement('div'); score.className = 'bazi-score';
-  score.textContent = Number(rec.score).toFixed(1);
+  const scoreNum = Number(rec.score);
+  const tierCls = scoreNum >= 80 ? ' tier-a' : scoreNum < 60 ? ' tier-c' : '';
+  const score = document.createElement('div'); score.className = 'bazi-score' + tierCls;
+  score.textContent = scoreNum.toFixed(1);
   head.appendChild(score);
   wrap.appendChild(head);
 
@@ -206,7 +209,7 @@ function createRecordCard(title, rec, compareKey) {
   }
   wrap.appendChild(info);
 
-  const btn = document.createElement('button'); btn.className = 'btn sm bazi-fill-btn'; btn.type = 'button'; btn.textContent = '一键填入复现';
+  const btn = document.createElement('button'); btn.className = 'btn sm bazi-fill-btn'; btn.type = 'button'; btn.innerHTML = '一键填入复现 <svg class="ico ico-sm" aria-hidden="true"><use href="#i-chevron-right"/></svg>';
   btn.onclick = () => {
     loadPairIntoFrame(rec);
     if ($('baziCompareCategory')) $('baziCompareCategory').value = compareKey;
@@ -274,7 +277,7 @@ window.addEventListener('message', e => {
     saveMyCeiling({ love: msg.love, friend: msg.friend });
     renderRecords();
     diff();
-    notice('★ 已将新的「个人理论上限」同步保存至右侧对照板！');
+    notice('已将新的「个人理论上限」同步保存至右侧对照板！');
     return;
   }
 
@@ -297,7 +300,7 @@ window.addEventListener('message', e => {
       p[key] = { ...d, label: key === 'love' ? '我的实测婚恋最高' : '我的实测友情最高' };
       savePersonalRecords(p);
       renderRecords();
-      notice(`🎉 刷新了「${p[key].label}」：${scoreVal.toFixed(1)} 分！`);
+      notice(`刷新了「${p[key].label}」：${scoreVal.toFixed(1)} 分！`);
     }
   }
   if ($('baziCompareCategory')) $('baziCompareCategory').value = d.mode === 'friend' ? 'my-ceil-friend' : 'my-ceil-love';

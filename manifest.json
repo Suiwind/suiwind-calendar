@@ -4,8 +4,8 @@
   "description": "个人日历、动态学习计划、专注计时、睡眠与复盘系统",
   "start_url": "./index.html",
   "display": "standalone",
-  "background_color": "#f4f0e8",
-  "theme_color": "#f4f0e8",
+  "background_color": "#F3F0E8",
+  "theme_color": "#F3F0E8",
   "icons": [
     {
       "src": "./icons/icon-192.png",

@@ -48,6 +48,7 @@ const pad = n => String(n).padStart(2, '0');
 const fmt = d => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
 const parse = s => { const [a, b, c] = String(s).split('-').map(Number); return new Date(a, b - 1, c, 12); };
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[c]));
+const ico = (id, cls = '') => `<svg class="ico${cls ? ' ' + cls : ''}" aria-hidden="true"><use href="#i-${id}"/></svg>`;
 const uuid = () => crypto.randomUUID?.() || (Date.now().toString(36) + Math.random().toString(36).slice(2));
 const same = (a, b) => fmt(a) === fmt(b);
 const wd = d => ['日', '一', '二', '三', '四', '五', '六'][d.getDay()];
@@ -116,7 +117,7 @@ function toast(msg, success = false) {
 
 function copyText(text) {
   if (navigator.clipboard?.writeText) {
-    navigator.clipboard.writeText(text).then(() => toast('✓ 已复制到剪贴板', true)).catch(() => alert('复制失败，请手动复制。'));
+    navigator.clipboard.writeText(text).then(() => toast('已复制到剪贴板', true)).catch(() => alert('复制失败，请手动复制。'));
   } else {
     const ta = document.createElement('textarea');
     ta.value = text;
@@ -124,7 +125,7 @@ function copyText(text) {
     ta.select();
     document.execCommand('copy');
     ta.remove();
-    toast('✓ 已复制到剪贴板', true);
+    toast('已复制到剪贴板', true);
   }
 }
 
@@ -321,7 +322,7 @@ function renderSchedule() {
 
   if (!events.length) {
     if (!hasBase) {
-      box.innerHTML = `<div class="empty-box">公网源码不含个人课表。<br>点击下方导入「我的私密课表_站内导入用.json」即可恢复。<div style="margin-top:10px"><button class="btn sm primary" id="quickImportSched" type="button">导入私密课表</button></div></div>`;
+      box.innerHTML = `<div class="empty-box">公网源码不含个人课表。<br>点击下方导入「我的私密课表_站内导入用.json」即可恢复。<div class="mt-10"><button class="btn sm primary" id="quickImportSched" type="button">导入私密课表</button></div></div>`;
       $('#quickImportSched').onclick = () => $('#importScheduleFile').click();
       return;
     }
@@ -343,7 +344,7 @@ function renderSchedule() {
     }
     row.className = `schedule-item ${e.type}${phaseCls}`;
     const meta = [e.teacher, e.room, e.note, e.source === 'added' ? '临时' : ''].filter(Boolean).join(' · ');
-    row.innerHTML = `<div class="schedule-time">${esc(e.start)}–${esc(e.end)}</div><div class="schedule-body"><div class="schedule-name">${esc(e.name)}${phaseCls === ' is-now' ? '<span class="now-pill">进行中</span>' : ''}</div>${meta ? `<div class="schedule-meta">${esc(meta)}</div>` : ''}</div>${e.type === 'course' ? '<button class="x" type="button" title="取消/删除">×</button>' : ''}`;
+    row.innerHTML = `<div class="schedule-time">${esc(e.start)}–${esc(e.end)}</div><div class="sched-node" aria-hidden="true"></div><div class="schedule-body"><div class="schedule-name">${esc(e.name)}${phaseCls === ' is-now' ? '<span class="now-pill">进行中</span>' : ''}</div>${meta ? `<div class="schedule-meta">${esc(meta)}</div>` : ''}</div>${e.type === 'course' ? `<button class="x" type="button" title="取消/删除" aria-label="取消/删除">${ico('x', 'ico-sm')}</button>` : ''}`;
     const del = row.querySelector('.x');
     if (del) del.onclick = () => {
       const k = fmt(sel), ov = schedOv(sel);
@@ -473,7 +474,7 @@ function finishStudy() {
       startAt: a.sessionStartedAt || isoNow(), endAt: isoNow(),
       focusSeconds: focus, breakSeconds: 0, blocks: a.blocksCompleted || 0, recordedAt: isoNow()
     });
-    toast(`✓ 已保存 ${a.subject} · ${secHuman(focus)}`, true);
+    toast(`已保存 ${a.subject} · ${secHuman(focus)}`, true);
   } else {
     toast('不足 30 秒，未计入账本');
   }
@@ -544,7 +545,7 @@ function syncYearSelect() {
 
 function renderCal(animate = false) {
   syncYearSelect();
-  $('#monthTitle').textContent = `${view.getMonth() + 1}月`;
+  $('#monthTitle').innerHTML = `${view.getMonth() + 1}<small>月</small>`;
   const g = $('#calendar');
   g.innerHTML = '';
   if (animate) {
@@ -565,12 +566,12 @@ function renderCal(animate = false) {
     const reflected = reflectHas(R[k]);
     if (d.getMonth() === m) { monthTotal += arr.length; monthDone += done; }
 
-    // 极简规则：每格最多展示 1 个高优先级文字标签，保持手账呼吸感
+    // 极简规则：每格最多展示 1 个高优先级文字标签，保持呼吸感
     let badgeHtml = '';
-    if (cds.length) badgeHtml = `<div class="day-badge exam">${esc(cds[0].title)}</div>`;
-    else if (h) badgeHtml = `<div class="day-badge ${h.type}">${h.type === 'holiday' ? '休 · ' : '班 · '}${esc(h.name.replace('假期', ''))}</div>`;
-    else if (an.length) badgeHtml = `<div class="day-badge holiday">♥ ${esc(an[0].name)}</div>`;
-    else if (ddl.length) badgeHtml = `<div class="day-badge deadline">截止 · ${esc(ddl[0].text)}</div>`;
+    if (cds.length) badgeHtml = `<div class="day-badge exam" title="${esc(cds[0].title)}"><span>${esc(cds[0].title)}</span></div>`;
+    else if (h) badgeHtml = `<div class="day-badge ${h.type}" title="${esc(h.name)}"><span>${h.type === 'holiday' ? '休 · ' : '班 · '}${esc(h.name.replace('假期', ''))}</span></div>`;
+    else if (an.length) badgeHtml = `<div class="day-badge holiday" title="${esc(an[0].name)}">${ico('heart', 'ico-sm')}<span>${esc(an[0].name)}</span></div>`;
+    else if (ddl.length) badgeHtml = `<div class="day-badge deadline" title="截止 · ${esc(ddl[0].text)}">${ico('bell', 'ico-sm')}<span>截止 · ${esc(ddl[0].text)}</span></div>`;
     else if (d.getDay() === 1 && schoolWeekNum(d)) badgeHtml = `<div class="day-badge weeknum">第${schoolWeekNum(d)}周</div>`;
 
     const dots = arr.filter(x => !x.done).slice(0, 3).map(x => `<i class="dot ${x.priority || 'medium'}"></i>`).join('')
@@ -591,17 +592,11 @@ function renderCal(animate = false) {
       + (hasFootprint ? ' has-footprint' : '')
       + (same(d, sel) ? ' selected' : '');
     b.innerHTML = `
-      <div class="day-top-wrap">
-        <div class="dtop">
-          <span class="num">${d.getDate()}</span>
-          <span class="lunar ${li.term ? 'is-term' : ''}">${esc(subText)}</span>
-        </div>
-        ${badgeHtml}
-      </div>
-      <div class="day-foot">
-        <span class="dots">${dots}</span>
-        <span class="done-mark">${arr.length ? `${done}/${arr.length}` : ''}</span>
-      </div>`;
+      <span class="num">${d.getDate()}</span>
+      <span class="lunar ${li.term ? 'is-term' : ''}">${esc(subText)}</span>
+      ${badgeHtml}
+      <span class="dots">${dots}</span>
+      <span class="done-mark">${arr.length ? `${done}/${arr.length}` : ''}</span>`;
     b.onclick = () => { sel = new Date(d); renderCal(); renderSide(); };
     g.appendChild(b);
   }
@@ -660,7 +655,7 @@ function renderTasks() {
     const row = document.createElement('div');
     row.className = 'task' + (t.done ? ' done' : '');
     const pTxt = t.priority === 'high' ? '高' : t.priority === 'low' ? '低' : '中';
-    row.innerHTML = `<input type="checkbox" ${t.done ? 'checked' : ''}><div class="txt"><div>${esc(t.text)}</div><div class="meta"><span class="pill ${t.priority || 'medium'}">${pTxt}优先</span>${t.reminder ? `<span class="pill info">⏰ ${esc(t.reminder)}</span>` : ''}${t.recurring ? `<span class="pill info">↻ 重复</span>` : ''}</div></div><button class="x" type="button">×</button>`;
+    row.innerHTML = `<input type="checkbox" ${t.done ? 'checked' : ''}><div class="txt"><div>${esc(t.text)}</div><div class="meta"><span class="meta-tag ${t.priority || 'medium'}">${pTxt}优先</span>${t.reminder ? `<span class="meta-tag info">${ico('clock', 'ico-sm')}${esc(t.reminder)}</span>` : ''}${t.recurring ? `<span class="meta-tag info">${ico('rotate-cw', 'ico-sm')}重复</span>` : ''}</div></div><button class="x" type="button" aria-label="删除">${ico('x', 'ico-sm')}</button>`;
     row.querySelector('input').onchange = ev => { setTaskDone(t, sel, ev.target.checked); renderCal(); renderTasks(); };
     row.querySelector('.x').onclick = () => {
       if (t.recurring) {
@@ -690,7 +685,7 @@ function renderDeadlines() {
     const stCls = g.done ? 'low' : n <= 0 ? 'high' : n <= 7 ? 'medium' : 'info';
     const row = document.createElement('div');
     row.className = 'task' + (g.done ? ' done' : '');
-    row.innerHTML = `<input type="checkbox" ${g.done ? 'checked' : ''}><div class="txt"><div>${esc(g.text)}</div><div class="meta"><span class="pill">${esc(g.dueDate)}</span><span class="pill ${stCls}">${stText}</span></div></div><button class="x" type="button">×</button>`;
+    row.innerHTML = `<input type="checkbox" ${g.done ? 'checked' : ''}><div class="txt"><div>${esc(g.text)}</div><div class="meta"><span class="meta-tag">${esc(g.dueDate)}</span><span class="meta-tag ${stCls}">${stText}</span></div></div><button class="x" type="button" aria-label="删除">${ico('x', 'ico-sm')}</button>`;
     row.querySelector('input').onchange = ev => { g.done = ev.target.checked; g.completedAt = g.done ? isoNow() : ''; S.s('deadlineGoals', DG); renderDeadlines(); renderCal(); };
     row.querySelector('.x').onclick = () => { if (confirm(`删除「${g.text}」？`)) { DG = DG.filter(x => x.id !== g.id); S.s('deadlineGoals', DG); renderDeadlines(); renderCal(); } };
     e.appendChild(row);
@@ -705,10 +700,10 @@ function renderGoals() {
   $('#goalCollapseStat').textContent = `${wArr.length + mArr.length} 项`;
   const draw = (el, obj, key, sk) => {
     const box = $(el), list = obj[key] || [];
-    box.innerHTML = list.length ? '' : '<div class="small" style="padding:4px 0">暂无目标</div>';
+    box.innerHTML = list.length ? '' : '<div class="small py-4">暂无目标</div>';
     list.forEach((g, i) => {
       const r = document.createElement('div'); r.className = 'task' + (g.done ? ' done' : '');
-      r.innerHTML = `<input type="checkbox" ${g.done ? 'checked' : ''}><div class="txt">${esc(g.text)}</div><button class="x" type="button">×</button>`;
+      r.innerHTML = `<input type="checkbox" ${g.done ? 'checked' : ''}><div class="txt">${esc(g.text)}</div><button class="x" type="button" aria-label="删除">${ico('x', 'ico-sm')}</button>`;
       r.querySelector('input').onchange = ev => { g.done = ev.target.checked; S.s(sk, obj); renderGoals(); };
       r.querySelector('.x').onclick = () => { list.splice(i, 1); obj[key] = list; S.s(sk, obj); renderGoals(); };
       box.appendChild(r);
@@ -722,10 +717,10 @@ const reflectHas = r => [r?.q1, r?.q2, r?.q3].some(x => (x || '').trim());
 const reflectDone = r => reflectHas(r) && !r.confirmRequired;
 function renderReflectState(r = R[fmt(sel)] || {}) {
   const has = reflectHas(r), done = reflectDone(r);
-  $('#saved').textContent = done ? '✓ 已完成' : has ? '草稿' : '';
-  $('#completeReflection').textContent = done ? '✓ 今日复盘已完成' : '完成今日复盘';
+  $('#saved').innerHTML = done ? `${ico('check', 'ico-sm')} 已完成` : has ? '草稿' : '';
+  $('#completeReflection').innerHTML = done ? `${ico('check', 'ico-sm')} 今日复盘已完成` : '完成今日复盘';
   $('#reflectionFeedback').textContent = done ? '已保存，计入连续复盘' : '输入时自动保存草稿';
-  $('#sideReflectBadge').textContent = done ? '✓' : (has ? '•' : '');
+  $('#sideReflectBadge').innerHTML = done ? ico('check', 'ico-sm') : (has ? '•' : '');
 }
 let reflectTimer = null;
 function saveDraftR() {
@@ -743,7 +738,7 @@ function finishR() {
   if (![q1, q2, q3].some(x => x.trim())) { toast('先写一点再完成吧'); return; }
   const st = isoNow();
   R[k] = { ...(R[k] || {}), q1, q2, q3, updatedAt: st, completedAt: st, confirmRequired: false };
-  S.s('reflections', R); renderReflectState(R[k]); renderStreak(); toast('✓ 今日复盘已完成', true);
+  S.s('reflections', R); renderReflectState(R[k]); renderStreak(); toast('今日复盘已完成', true);
 }
 
 function renderStreak() {
@@ -764,11 +759,20 @@ function renderNextTerm() {
 
 function renderSide() {
   const k = fmt(sel), li = lunar(sel), h = H[k], r = R[k] || {}, wk = schoolWeekNum(sel), diff = dayDiff(sel, todayDate());
-  $('#dateTitle').textContent = `${sel.getMonth() + 1}月${sel.getDate()}日 · 周${wd(sel)}`;
+  $('#dateTitle').innerHTML = `<span class="hero-day">${sel.getDate()}</span><span class="hero-meta">${sel.getMonth() + 1}月 · 周${wd(sel)}</span>`;
   const dist = $('#dateDistance');
   dist.textContent = diff === 0 ? '今天' : diff > 0 ? `${diff} 天后` : `${Math.abs(diff)} 天前`;
   dist.className = `date-distance ${diff === 0 ? 'today' : diff > 0 ? 'future' : 'past'}`;
   $('#dateSub').textContent = [`农历${li.fullText}`, wk ? `校历第${wk}周` : '', li.term, ...li.fest, h?.name].filter(Boolean).join(' · ');
+
+  const evEl = $('#dateEventsLine');
+  if (evEl) {
+    const tags = [];
+    annivOn(sel).forEach(a => tags.push(`<span class="hero-event-tag seal">${ico('heart', 'ico-sm')}${esc(a.name)}</span>`));
+    deadlineOn(sel).forEach(g => tags.push(`<span class="hero-event-tag ochre">${ico('bell', 'ico-sm')}截止 · ${esc(g.text)}</span>`));
+    countdownsOn(sel).forEach(c => tags.push(`<span class="hero-event-tag accent">${ico('calendar', 'ico-sm')}${esc(c.title)}</span>`));
+    evEl.innerHTML = tags.join('');
+  }
   if (!$('#deadlineInput').value.trim()) $('#deadlineDate').value = k;
 
   renderTodayFocus();
@@ -791,16 +795,16 @@ function setSideTab(tab) {
 /* ===== 学习中心 4 标签渲染 ===== */
 function renderLearningSummary() {
   const r1 = enDone(LS.english.round1), sk = doneCount(LS.english.skills);
-  $('#learnEnglishMetric').textContent = `${r1}/40 · 技巧 ${sk}/38`;
+  $('#learnEnglishMetric').innerHTML = `${r1}<small>/40</small>`;
   $('#learnEnglishBar').style.width = `${pct(r1 + sk, 78)}%`;
-  $('#learnEnglishNote').textContent = nextEn1() ? `下一节：${enLabel(nextEn1())}` : `二轮 ${enDone(LS.english.round2)}/40`;
+  $('#learnEnglishNote').textContent = `技巧 ${sk}/38 · ` + (nextEn1() ? `下一节：${enLabel(nextEn1())}` : `二轮 ${enDone(LS.english.round2)}/40`);
 
   const f = doneCount(LS.finance.completions), m = doneCount(LS.math.completions);
-  $('#learnFinanceMetric').textContent = `${f}/80`;
+  $('#learnFinanceMetric').innerHTML = `${f}<small>/80</small>`;
   $('#learnFinanceBar').style.width = `${pct(f, 80)}%`;
   $('#learnFinanceNote').textContent = nextFinDay() ? `下一项：原 Day ${nextFinDay()}` : '已全部完成';
 
-  $('#learnMathMetric').textContent = `${m}/48`;
+  $('#learnMathMetric').innerHTML = `${m}<small>/48</small>`;
   $('#learnMathBar').style.width = `${pct(m, 48)}%`;
   $('#learnMathNote').textContent = nextMathDay() ? `下一项：Day ${nextMathDay()}` : '已全部完成';
 }
@@ -845,14 +849,14 @@ function renderLearnToday() {
         <div class="queue-item">
           <div><b>${esc(it.title)}</b><small>${esc(it.meta)}</small></div>
           <button class="btn sm primary" type="button" data-qact="${it.act}">${it.act === 'skill' ? '去勾选' : '完成'}</button>
-        </div>`).join('') : '<div class="empty-box" style="margin-top:10px">今天的核心队列已全部推进完成。</div>'}
+        </div>`).join('') : '<div class="empty-box mt-10">今天的核心队列已全部推进完成。</div>'}
     </div>
     <div class="card-box">
       <div class="row-spread">
         <h4>今日已完成记录</h4>
         <span class="small">今日专注 ${secHuman(todayStudySec())}</span>
       </div>
-      ${doneList.length ? doneList.map(x => `<div class="small" style="padding:5px 0">✓ ${esc(x)}</div>`).join('') : '<div class="small" style="margin-top:6px">今天尚未打勾正式学习项。</div>'}
+      ${doneList.length ? doneList.map(x => `<div class="small py-5">${ico('check', 'ico-sm')} ${esc(x)}</div>`).join('') : '<div class="small mt-6">今天尚未打勾正式学习项。</div>'}
     </div>`;
 
   $('#toggleBusyBtn').onclick = () => {
@@ -868,7 +872,7 @@ function renderLearnToday() {
       else if (a === 'skill') { activeLearningTab = 'subjects'; activeSubjectSub = 'english'; renderLearningPanel(); return; }
       else if (a === 'fin' && fd) markLearning(LS.finance.completions, fd, true);
       else if (a === 'math' && md) markLearning(LS.math.completions, md, true);
-      toast('✓ 已标记完成', true);
+      toast('已标记完成', true);
     };
   });
 }
@@ -906,7 +910,7 @@ function renderLearnTimer() {
           <b>${esc(x.subject)}</b>
           <span>${secHuman(x.focusSeconds)}</span>
           <span class="small">${x.manual ? esc(sessionDate(x)) + ' 补记' : bjDateTime(x.startAt)}${x.note ? ' · ' + esc(x.note) : ''}</span>
-          <button class="x" type="button" data-del-sess="${x.id}">×</button>
+          <button class="x" type="button" data-del-sess="${x.id}" aria-label="删除">${ico('x', 'ico-sm')}</button>
         </div>`).join('') : '<div class="small">暂无专注记录。</div>'}
     </div>`;
 
@@ -922,7 +926,7 @@ function renderLearnTimer() {
       timeClass: ['英语', '财经', '高数'].includes(sub) ? 'CORE-DEEP' : 'OTHER-ACADEMIC',
       startAt: isoNow(), endAt: isoNow(), focusSeconds: min * 60, breakSeconds: 0, recordedAt: isoNow()
     });
-    S.s('learningState', LS); toast(`✓ 已补记 ${sub} ${min} 分钟`, true); renderLearnTimer(); renderTodayFocus();
+    S.s('learningState', LS); toast(`已补记 ${sub} ${min} 分钟`, true); renderLearnTimer(); renderTodayFocus();
   };
   document.querySelectorAll('[data-del-sess]').forEach(b => {
     b.onclick = () => {
@@ -949,21 +953,45 @@ function renderBurndownSvg(total, map, startStr, targetStr) {
   Object.keys(counts).sort().forEach(k => { rem = Math.max(0, rem - counts[k]); pts.push({ d: k, r: rem }); });
   if (pts[pts.length - 1].d !== today) pts.push({ d: today, r: Math.max(0, total - dates.length) });
 
-  const W = 680, Hh = 190, L = 38, Rr = 16, Tt = 14, B = 28, pw = W - L - Rr, ph = Hh - Tt - B;
+  const W = 680, Hh = 200, L = 40, Rr = 22, Tt = 18, B = 28, pw = W - L - Rr, ph = Hh - Tt - B;
   const x = k => L + Math.max(0, Math.min(span, dayDiff(parse(k), parse(start)))) / span * pw;
   const y = v => Tt + (1 - Math.max(0, Math.min(total, v)) / Math.max(1, total)) * ph;
-  const poly = pts.map(p => `${x(p.d).toFixed(1)},${y(p.r).toFixed(1)}`).join(' ');
-  const base = (targetStr && targetStr > start) ? `<line x1="${x(start)}" y1="${y(total)}" x2="${x(targetStr)}" y2="${y(0)}" stroke="var(--muted)" stroke-dasharray="5 5" stroke-opacity="0.45" stroke-width="1.5"/>` : '';
-  return `<svg class="burndown-svg" viewBox="0 0 ${W} ${Hh}">
-    <line x1="${L}" y1="${Tt}" x2="${L}" y2="${Hh - B}" stroke="var(--hairline-strong)"/>
-    <line x1="${L}" y1="${Hh - B}" x2="${W - Rr}" y2="${Hh - B}" stroke="var(--hairline-strong)"/>
-    ${base}
-    <polyline points="${poly}" fill="none" stroke="var(--accent)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-    <text x="${L - 6}" y="${Tt + 8}" text-anchor="end" font-size="10" fill="var(--muted)">${total}</text>
-    <text x="${L - 6}" y="${Hh - B}" text-anchor="end" font-size="10" fill="var(--muted)">0</text>
-    <text x="${L}" y="${Hh - 8}" font-size="10" fill="var(--muted)">${start.slice(5)}</text>
-    <text x="${x(today)}" y="${Hh - 8}" text-anchor="middle" font-size="10" fill="var(--accent)">今日</text>
-    <text x="${W - Rr}" y="${Hh - 8}" text-anchor="end" font-size="10" fill="var(--muted)">${end.slice(5)}</text>
+  const coords = pts.map(p => ({ px: x(p.d), py: y(p.r), r: p.r }));
+  const poly = coords.map(c => `${c.px.toFixed(1)},${c.py.toFixed(1)}`).join(' ');
+  const firstC = coords[0], lastC = coords[coords.length - 1];
+  const baseY = (Hh - B).toFixed(1);
+  const areaD = `M ${firstC.px.toFixed(1)},${firstC.py.toFixed(1)} ` + coords.slice(1).map(c => `L ${c.px.toFixed(1)},${c.py.toFixed(1)}`).join(' ') + ` L ${lastC.px.toFixed(1)},${baseY} L ${firstC.px.toFixed(1)},${baseY} Z`;
+
+  const gridYs = [0.25, 0.5, 0.75, 1].map(ratio => {
+    const val = Math.round(total * ratio);
+    const yy = y(val).toFixed(1);
+    return `<line x1="${L}" y1="${yy}" x2="${W - Rr}" y2="${yy}"/><text x="${L - 7}" y="${Number(yy) + 3.5}" text-anchor="end">${val}</text>`;
+  }).join('');
+
+  const idealLine = (targetStr && targetStr > start) ? `<line class="ideal" x1="${x(start).toFixed(1)}" y1="${y(total).toFixed(1)}" x2="${x(targetStr).toFixed(1)}" y2="${baseY}"/>` : '';
+  const tx = x(today).toFixed(1);
+  const labelAnchor = lastC.px > W - 96 ? 'end' : 'start';
+  const labelX = lastC.px > W - 96 ? (lastC.px - 8).toFixed(1) : (lastC.px + 8).toFixed(1);
+
+  return `<svg class="burndown-svg burn" viewBox="0 0 ${W} ${Hh}">
+    <defs>
+      <linearGradient id="burnFill" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="var(--accent)" stop-opacity="0.16"/>
+        <stop offset="100%" stop-color="var(--accent)" stop-opacity="0"/>
+      </linearGradient>
+    </defs>
+    <g class="grid">${gridYs}</g>
+    <line class="axis" x1="${L}" y1="${baseY}" x2="${W - Rr}" y2="${baseY}"/>
+    <line class="today-line" x1="${tx}" y1="${Tt}" x2="${tx}" y2="${baseY}"/>
+    ${idealLine}
+    <path class="area" d="${areaD}"/>
+    <polyline class="actual" pathLength="1" points="${poly}"/>
+    <circle class="end-dot" cx="${lastC.px.toFixed(1)}" cy="${lastC.py.toFixed(1)}" r="3.5"/>
+    <text class="end-label" x="${labelX}" y="${(lastC.py - 8).toFixed(1)}" text-anchor="${labelAnchor}">剩余 ${lastC.r}</text>
+    <text x="${L - 7}" y="${Number(baseY) + 3}" text-anchor="end">0</text>
+    <text x="${L}" y="${Hh - 8}">${start.slice(5)}</text>
+    <text class="today-label" x="${tx}" y="${Hh - 8}" text-anchor="middle">今日</text>
+    <text x="${W - Rr}" y="${Hh - 8}" text-anchor="end">${end.slice(5)}</text>
   </svg>`;
 }
 
@@ -1038,10 +1066,10 @@ function renderLearnExams() {
     return `
       <div class="roadmap-row">
         <div class="roadmap-yr">${yr}</div>
-        <div class="card-box" style="margin-bottom:0">
+        <div class="card-box mb-0">
           <h4>${esc(theme[0])}</h4>
           <div class="small">${esc(theme[1])}</div>
-          ${evs.map(x => `<div class="queue-item"><div><b>${esc(x.title)}</b><small>${esc(x.date)}${x.endDate ? ' — ' + esc(x.endDate) : ''}${x.note ? ' · ' + esc(x.note) : ''}</small></div><div style="display:flex;gap:6px;align-items:center"><span class="pill info">${countdownText(x.date, x.endDate)}</span><button class="btn sm ghost" data-cedit="${x.id}" type="button">改</button><button class="x" data-cdel="${x.id}" type="button">×</button></div></div>`).join('')}
+          ${evs.map(x => `<div class="queue-item"><div><b>${esc(x.title)}</b><small>${esc(x.date)}${x.endDate ? ' — ' + esc(x.endDate) : ''}${x.note ? ' · ' + esc(x.note) : ''}</small></div><div class="flex-center-xs"><span class="pill info">${countdownText(x.date, x.endDate)}</span><button class="btn sm ghost" data-cedit="${x.id}" type="button">改</button><button class="x" data-cdel="${x.id}" type="button" aria-label="删除">${ico('x', 'ico-sm')}</button></div></div>`).join('')}
         </div>
       </div>`;
   }).join('');
@@ -1074,7 +1102,7 @@ function renderLearnExams() {
     } else {
       LS.countdowns.push({ id: uuid(), title, date, endDate: endDate >= date ? endDate : '', kind, note, createdAt: isoNow() });
     }
-    S.s('learningState', LS); renderCal(); renderLearnExams(); toast('✓ 考试节点已保存', true);
+    S.s('learningState', LS); renderCal(); renderLearnExams(); toast('考试节点已保存', true);
   };
   document.querySelectorAll('[data-cedit]').forEach(b => { b.onclick = () => { editingCountdownId = b.dataset.cedit; renderLearnExams(); }; });
   document.querySelectorAll('[data-cdel]').forEach(b => {
@@ -1152,9 +1180,12 @@ function renderReviewModal() {
         return { label: `W${w}`, done: arr.filter(x => x.done).length, total: arr.length };
       });
   const maxBar = Math.max(1, ...groups.map(g => g.total));
+  const maxDone = Math.max(0, ...groups.map(g => g.done));
   const trendHtml = groups.map(g => {
-    const h = g.total ? Math.max(8, Math.round((g.done / maxBar) * 86)) : 4;
-    return `<div class="barwrap"><div class="bar" style="height:${h}px" title="${g.done}/${g.total}"></div><div class="barlabel">${g.label}</div></div>`;
+    const isEmpty = g.done === 0;
+    const h = isEmpty ? 2 : Math.max(10, Math.round((g.done / maxBar) * 84));
+    const barCls = isEmpty ? 'bar is-empty' : (g.done === maxDone && maxDone > 0 ? 'bar is-max' : 'bar');
+    return `<div class="barwrap"><div class="${barCls}" data-v="${isEmpty ? '' : g.done}" style="height:${h}px" title="${g.done}/${g.total}"></div><div class="barlabel">${g.label}</div></div>`;
   }).join('');
 
   const listHtml = arr => arr.length
@@ -1163,22 +1194,22 @@ function renderReviewModal() {
 
   $('#reviewBody').innerHTML = `
     <div class="review-metrics">
-      <div class="review-metric"><small>任务完成</small><strong>${data.done}/${data.total}</strong></div>
-      <div class="review-metric"><small>完成率</small><strong>${rate}%</strong></div>
-      <div class="review-metric"><small>复盘天数</small><strong>${data.refDays} 天</strong></div>
+      <div class="review-metric"><small>任务完成</small><strong>${data.done}<small>/${data.total}</small></strong></div>
+      <div class="review-metric"><small>完成率</small><strong>${rate}<small>%</small></strong></div>
+      <div class="review-metric"><small>复盘天数</small><strong>${data.refDays}<small> 天</small></strong></div>
       <div class="review-metric"><small>专注累计</small><strong>${secHuman(studySecBetween(fmt(a), fmt(b)))}</strong></div>
     </div>
     <div class="card-box"><h4>完成趋势</h4><div class="trend">${trendHtml}</div></div>
     <div class="review-grid">
-      <div class="card-box"><h4>可以做得更好</h4>${listHtml(data.wrong)}</div>
-      <div class="card-box"><h4>做对了 / 值得记住</h4>${listHtml(data.right)}</div>
+      <div class="card-box reflect-col"><h4>可以做得更好</h4>${listHtml(data.wrong)}</div>
+      <div class="card-box reflect-col good"><h4>做对了 / 值得记住</h4>${listHtml(data.right)}</div>
     </div>
-    <div class="card-box"><h4>具体改进计划</h4>${listHtml(data.better)}</div>
+    <div class="card-box reflect-col"><h4>具体改进计划</h4>${listHtml(data.better)}</div>
     <div class="card-box">
       <h4>我的${isW ? '本周' : '本月'}总结</h4>
       <textarea id="revManualInput" placeholder="写下这一阶段最重要的感受与下一阶段重点…">${esc(manual)}</textarea>
-      <div class="sync-actions" style="justify-content:flex-end">
-        <button class="btn sm primary" id="aiAnalyzeReviewBtn" type="button">✦ 一键 AI 深度分析</button>
+      <div class="sync-actions sync-actions-end">
+        <button class="btn sm primary" id="aiAnalyzeReviewBtn" type="button">${ico('sparkles', 'ico-sm')} 一键 AI 深度分析</button>
         <button class="btn sm soft" id="copyReviewBtn" type="button">复制纯文本</button>
         <button class="btn sm" id="exportReviewBtn" type="button">导出 Markdown</button>
       </div>
@@ -1231,17 +1262,17 @@ function createBackup(reason = '手动快照', quiet = false) {
   arr.unshift({ id: uuid(), reason, dateKey: todayKey(), createdAt: isoNow(), data: snapshotData() });
   try { localStorage.setItem(BACKUP_KEY, JSON.stringify(arr.slice(0, 7))); } catch {}
   renderBackups();
-  if (!quiet) toast('✓ 已创建内部快照', true);
+  if (!quiet) toast('已创建内部快照', true);
 }
 function renderBackups() {
   const el = $('#backupHistoryList'); if (!el) return;
   const arr = getBackups();
   if (!arr.length) { el.innerHTML = '<div class="small">暂无内部快照。</div>'; return; }
   el.innerHTML = arr.map(x => `
-    <div class="log-row" style="grid-template-columns:1fr auto auto">
+    <div class="log-row log-row-3col">
       <span class="small"><b>${esc(x.reason)}</b> · ${bjDateTime(x.createdAt)}</span>
       <button class="btn sm ghost" data-brestore="${x.id}" type="button">恢复</button>
-      <button class="x" data-bdel="${x.id}" type="button">×</button>
+      <button class="x" data-bdel="${x.id}" type="button" aria-label="删除">${ico('x', 'ico-sm')}</button>
     </div>`).join('');
   document.querySelectorAll('[data-brestore]').forEach(b => {
     b.onclick = () => {
@@ -1249,7 +1280,7 @@ function renderBackups() {
       if (!item || !confirm(`恢复「${item.reason}」快照？`)) return;
       createBackup('恢复前自动留档', true);
       applySnapshot(item.data);
-      toast('✓ 快照已恢复', true);
+      toast('快照已恢复', true);
     };
   });
   document.querySelectorAll('[data-bdel]').forEach(b => {
@@ -1301,7 +1332,7 @@ async function uploadCloud(silent = false) {
   if (error) { setCloudStatus('off', '同步失败'); if (!silent) alert(error.message); return; }
   saveSyncMeta({ lastSyncedCloudAt: stamp, cloudUpdatedAt: stamp, lastSyncedAt: stamp, localUpdatedAt: stamp, conflict: false });
   cloudDirty = false; setCloudStatus('on', '已同步');
-  if (!silent) toast('✓ 已上传到云端', true);
+  if (!silent) toast('已上传到云端', true);
 }
 async function downloadCloud() {
   if (!sb || !sbUser) { alert('请先登录云端账号。'); return; }
@@ -1312,7 +1343,7 @@ async function downloadCloud() {
   if (!confirm('将使用云端数据覆盖当前本机数据（本机已自动备份快照），继续吗？')) { setCloudStatus('on', '已同步'); return; }
   applySnapshot(data.payload);
   saveSyncMeta({ lastSyncedCloudAt: data.updated_at, cloudUpdatedAt: data.updated_at, lastSyncedAt: isoNow(), localUpdatedAt: isoNow(), conflict: false });
-  setCloudStatus('on', '已同步'); toast('✓ 云端数据已恢复', true);
+  setCloudStatus('on', '已同步'); toast('云端数据已恢复', true);
 }
 function markCloudDirty() { cloudDirty = true; }
 function scheduleCloudSync() {
@@ -1325,17 +1356,17 @@ function applyTheme(t) {
   const dark = t === 'dark';
   document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
   try { localStorage.setItem('zx_theme', dark ? 'dark' : 'light'); } catch {}
-  const m = document.querySelector('meta[name="theme-color"]'); if (m) m.setAttribute('content', dark ? '#101411' : '#f4f0e8');
-  $('#themeToggleIcon').textContent = dark ? '☀' : '☾';
+  const m = document.querySelector('meta[name="theme-color"]'); if (m) m.setAttribute('content', dark ? '#121412' : '#F3F0E8');
+  $('#themeToggleIcon').innerHTML = ico(dark ? 'sun' : 'moon');
 }
 
 function renderAnnivManage() {
   const el = $('#annivManage');
   el.innerHTML = A.length ? A.map(a => `
-    <div class="log-row" style="grid-template-columns:1fr auto auto">
-      <div><b>♥ ${esc(a.name)}</b><div class="small">${a.date}${a.repeat ? ' · 每年重复' : ''}</div></div>
+    <div class="log-row log-row-3col">
+      <div><b>${ico('heart', 'ico-sm ico-seal')} ${esc(a.name)}</b><div class="small">${a.date}${a.repeat ? ' · 每年重复' : ''}</div></div>
       <span class="pill info">${countdownText(a.date)}</span>
-      <button class="x" data-adel="${a.id}" type="button">×</button>
+      <button class="x" data-adel="${a.id}" type="button" aria-label="删除">${ico('x', 'ico-sm')}</button>
     </div>`).join('') : '<div class="small">暂无纪念日。</div>';
   document.querySelectorAll('[data-adel]').forEach(b => {
     b.onclick = () => { A = A.filter(x => x.id !== b.dataset.adel); S.s('anniversaries', A); renderAnnivManage(); renderCal(); };
@@ -1458,7 +1489,7 @@ function bindEvents() {
     $('#scheduleProfileStat').textContent = list.length ? `已导入 ${list.length} 门固定课程（本地私密保存）。` : '尚未导入固定课表。';
     $('#schedulePreset').innerHTML = '<option value="">自定义 / 临时课程</option>' + list.map(c => `<option value="${esc(c.id)}">${esc(c.name)} (${esc(c.start)}–${esc(c.end)})</option>`).join('');
     const ov = schedOv(sel), canc = list.filter(c => ov.cancelled.includes(c.id));
-    $('#cancelledScheduleList').innerHTML = canc.length ? canc.map(c => `<div class="log-row" style="grid-template-columns:1fr auto"><span>${esc(c.name)} (${esc(c.start)}–${esc(c.end)})</span><button class="btn sm soft" data-res-c="${esc(c.id)}" type="button">恢复</button></div>`).join('') : '<div class="small">今天没有已取消的课程。</div>';
+    $('#cancelledScheduleList').innerHTML = canc.length ? canc.map(c => `<div class="log-row log-row-2col"><span>${esc(c.name)} (${esc(c.start)}–${esc(c.end)})</span><button class="btn sm soft" data-res-c="${esc(c.id)}" type="button">恢复</button></div>`).join('') : '<div class="small">今天没有已取消的课程。</div>';
     document.querySelectorAll('[data-res-c]').forEach(b => {
       b.onclick = () => { const k = fmt(sel), cur = schedOv(sel); SO[k] = { ...cur, cancelled: cur.cancelled.filter(id => id !== b.dataset.resC) }; S.s('scheduleOverrides', SO); renderSchedule(); openSched(); };
     });
@@ -1477,7 +1508,7 @@ function bindEvents() {
     if (!name || !start || !end) { toast('请填写课程名与起止时间'); return; }
     const k = fmt(sel), ov = schedOv(sel);
     SO[k] = { ...ov, added: [...ov.added, { id: uuid(), name, start, end, teacher: $('#scheduleTeacher').value.trim(), room: $('#scheduleRoom').value.trim() }] };
-    S.s('scheduleOverrides', SO); renderSchedule(); $('#scheduleModal').classList.remove('show'); toast('✓ 已添加到当天课表', true);
+    S.s('scheduleOverrides', SO); renderSchedule(); $('#scheduleModal').classList.remove('show'); toast('已添加到当天课表', true);
   };
   $('#importScheduleBtn').onclick = () => $('#importScheduleFile').click();
   $('#importScheduleFile').onchange = async e => {
@@ -1487,7 +1518,7 @@ function bindEvents() {
       if (!Array.isArray(raw.courses)) throw new Error();
       SC = { ...SC, profile: raw }; S.s('scheduleConfig', SC);
       renderSchedule(); renderCal(); if ($('#scheduleModal').classList.contains('show')) openSched();
-      toast(`✓ 已导入 ${raw.courses.length} 门私密课表`, true);
+      toast(`已导入 ${raw.courses.length} 门私密课表`, true);
     } catch { alert('课表 JSON 格式不正确。'); }
   };
   $('#exportScheduleBtn').onclick = () => downloadText(`苏伊温德课表_${fmt(now)}.json`, JSON.stringify({ format: 'suiwind-schedule-v2', ...scheduleProfile() }, null, 2), 'application/json');
@@ -1500,7 +1531,7 @@ function bindEvents() {
   };
   $('#closeCloud').onclick = () => $('#cloudModal').classList.remove('show');
   $('#cloudModal').onclick = e => { if (e.target === $('#cloudModal')) $('#cloudModal').classList.remove('show'); };
-  $('#saveCloudConfig').onclick = () => { S.s('cloudConfig', { url: $('#sbUrl').value.trim(), key: $('#sbKey').value.trim() }); initSupabase(); toast('✓ 配置已保存', true); };
+  $('#saveCloudConfig').onclick = () => { S.s('cloudConfig', { url: $('#sbUrl').value.trim(), key: $('#sbKey').value.trim() }); initSupabase(); toast('配置已保存', true); };
   $('#signUpBtn').onclick = async () => {
     if (!sb) { alert('请先保存 Supabase 配置。'); return; }
     const { data, error } = await sb.auth.signUp({ email: $('#sbEmail').value.trim(), password: $('#sbPassword').value });
@@ -1509,7 +1540,7 @@ function bindEvents() {
   $('#signInBtn').onclick = async () => {
     if (!sb) { alert('请先保存 Supabase 配置。'); return; }
     const { data, error } = await sb.auth.signInWithPassword({ email: $('#sbEmail').value.trim(), password: $('#sbPassword').value });
-    if (error) alert(error.message); else { sbUser = data.user; setCloudStatus('on', '已同步'); updateCloudUI(); toast('✓ 登录成功', true); }
+    if (error) alert(error.message); else { sbUser = data.user; setCloudStatus('on', '已同步'); updateCloudUI(); toast('登录成功', true); }
   };
   $('#signOutBtn').onclick = async () => { if (sb) await sb.auth.signOut(); sbUser = null; setCloudStatus('off', '未登录'); updateCloudUI(); };
   $('#uploadCloud').onclick = () => uploadCloud(false);
@@ -1522,7 +1553,7 @@ function bindEvents() {
     try {
       const data = JSON.parse(await file.text());
       if (!confirm('导入将覆盖当前数据（系统会自动留存快照），继续吗？')) return;
-      createBackup('导入 JSON 前', true); applySnapshot(data); toast('✓ 备份已恢复', true);
+      createBackup('导入 JSON 前', true); applySnapshot(data); toast('备份已恢复', true);
     } catch { alert('无法读取该 JSON 备份文件。'); }
   };
 
@@ -1533,13 +1564,13 @@ function bindEvents() {
   $('#saveA').onclick = () => {
     const name = $('#aName').value.trim(), date = $('#aDate').value; if (!name || !date) return;
     A.push({ id: uuid(), name, date, repeat: $('#aRepeat').checked });
-    S.s('anniversaries', A); $('#aName').value = ''; renderAnnivManage(); renderCal(); toast('✓ 纪念日已添加', true);
+    S.s('anniversaries', A); $('#aName').value = ''; renderAnnivManage(); renderCal(); toast('纪念日已添加', true);
   };
   $('#notifyBtn').onclick = async () => {
     $('#moreMenuDropdown').classList.remove('open');
     if (!('Notification' in window)) { alert('当前浏览器不支持通知。'); return; }
     const p = await Notification.requestPermission(); updateNotifyUI();
-    if (p === 'granted') toast('✓ 任务提醒已开启', true);
+    if (p === 'granted') toast('任务提醒已开启', true);
   };
 }
 
@@ -1662,7 +1693,7 @@ async function runAiReviewAnalysis(type, mKey) {
     const all = S.g('aiSummaries', {});
     all[mKey] = { text: result, updatedAt: isoNow() };
     S.s('aiSummaries', all);
-    toast('✓ AI 复盘分析已生成', true);
+    toast('AI 复盘分析已生成', true);
   } catch (err) {
     out.classList.remove('loading');
     out.textContent = `分析失败：${err.message}`;
@@ -1711,7 +1742,7 @@ function bindAiEvents() {
   $('#aiSaveBtn').onclick = () => {
     saveAiCfg(readForm());
     $('#aiModal').classList.remove('show');
-    toast('✓ AI 配置已保存在本机', true);
+    toast('AI 配置已保存在本机', true);
     loadDailyQuote(true);
   };
   $('#aiClearBtn').onclick = () => {
@@ -1726,9 +1757,9 @@ function bindAiEvents() {
     $('#aiTestStatus').textContent = '正在测试连接…';
     try {
       const reply = await callAI('你是一个测试助手。', '请用不超过10个字打个招呼。');
-      $('#aiTestStatus').textContent = `✓ 连接成功：${reply}`;
+      $('#aiTestStatus').textContent = `连接成功：${reply}`;
     } catch (err) {
-      $('#aiTestStatus').textContent = `✕ 连接失败：${err.message}`;
+      $('#aiTestStatus').textContent = `连接失败：${err.message}`;
     }
   };
 }

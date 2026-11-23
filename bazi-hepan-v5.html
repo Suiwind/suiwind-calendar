@@ -1,161 +1,194 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh-CN" data-density="compact">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>八字合盘 V6.1 · 三维净值精校引擎</title>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/source-serif-4@5/500.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/source-serif-4@5/600.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/noto-serif-sc@5/600.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/noto-serif-sc@5/700.css">
 <style>
   :root {
-    --bg: #f1f4f7;
-    --card: #ffffff;
-    --card-soft: #f6f8fa;
-    --card-hover: #eef2f6;
-    --line: rgba(16, 28, 40, 0.10);
-    --line-strong: rgba(16, 28, 40, 0.18);
-    --line-soft: rgba(16, 28, 40, 0.06);
-    --text: #121a22;
-    --text-2: #394856;
-    --muted: #5c6c7b;
-    --accent: #214a59;
-    --accent-strong: #153542;
-    --accent-soft: #e5eff3;
-    --accent-ring: rgba(33, 74, 89, 0.18);
-    --pos: #1d6b53;
-    --pos-soft: #e5f3ee;
-    --warm: #c0433a;
-    --warm-soft: #fceceb;
-    --amber: #9e6514;
-    --amber-soft: #fbf1df;
-    --slate: #2c5b7c;
-    --slate-soft: #e7f0f7;
-    --wood: #216e4d;
-    --fire: #c44139;
-    --earth: #986a1b;
-    --metal: #52606d;
-    --water: #2a5f8a;
-    --radius: 10px;
-    --radius-lg: 12px;
-    --shadow: 0 1px 2px rgba(14, 24, 34, 0.04), 0 6px 18px -6px rgba(14, 24, 34, 0.055);
-    --ease: cubic-bezier(0.22, 1, 0.36, 1);
-    --sans: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Noto Sans SC", "Microsoft YaHei", system-ui, sans-serif;
-    --serif: "Songti SC", "Noto Serif SC", "STSong", Georgia, serif;
-    --mono: ui-monospace, "SF Mono", "Cascadia Mono", Menlo, Consolas, monospace;
+    --bg: #F3F0E8;
+    --surface: #FAF8F3;
+    --card: #FFFEFA;
+    --card-soft: #EFEBE1;
+    --card-hover: rgba(47, 74, 62, 0.045);
+    --field: #FFFEFA;
+    --line: #E4DFD3;
+    --line-strong: #CEC7B7;
+    --line-soft: #E4DFD3;
+    --rule: #1F2421;
+    --text: #1F2421;
+    --text-2: #4F544E;
+    --muted: #6F7268;
+    --text-4: #A3A49B;
+    --accent: #2F4A3E;
+    --accent-strong: #263D33;
+    --accent-soft: #E8EDE8;
+    --accent-line: #B9C8BE;
+    --accent-ring: rgba(47, 74, 62, 0.20);
+    --on-accent: #F6F3EA;
+    --on-accent-strong: #F6F3EA;
+    --seal: #B4432E;
+    --seal-wash: #F6E7E1;
+    --pos: #3E7552;
+    --pos-soft: #E8EDE8;
+    --warm: #B4432E;
+    --warm-soft: #F6E7E1;
+    --amber: #9A6A1C;
+    --amber-soft: #F3EAD6;
+    --slate: #3B5E84;
+    --slate-soft: #EBF1F6;
+    --wood: #4E7A55;
+    --fire: #B4432E;
+    --earth: #9A6A1C;
+    --metal: #857F72;
+    --water: #3B5E84;
+    --radius: 8px;
+    --radius-lg: 14px;
+    --shadow-1: 0 1px 0 rgba(31, 36, 33, 0.04);
+    --shadow: 0 1px 2px rgba(31, 36, 33, 0.05), 0 14px 32px -18px rgba(60, 45, 20, 0.22);
+    --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+    --dur-1: 120ms;
+    --dur-2: 180ms;
+    --sans: system-ui, -apple-system, "Segoe UI", "PingFang SC", "HarmonyOS Sans SC", "MiSans", "Microsoft YaHei UI", "Microsoft YaHei", sans-serif;
+    --serif: "Noto Serif SC", "Source Han Serif SC", "Songti SC", "STSong", "Microsoft YaHei UI", "Microsoft YaHei", sans-serif;
+    --num: "Source Serif 4", "Cambria", "Noto Serif SC", Georgia, serif;
+    --mono: ui-monospace, "Cascadia Mono", "SF Mono", Consolas, monospace;
     color-scheme: light;
   }
   [data-theme="dark"] {
-    --bg: #0c1014;
-    --card: #131920;
-    --card-soft: #19212a;
-    --card-hover: #202a35;
-    --line: rgba(212, 226, 240, 0.10);
-    --line-strong: rgba(212, 226, 240, 0.19);
-    --line-soft: rgba(212, 226, 240, 0.06);
-    --text: #eaf0f6;
-    --text-2: #b4c0cc;
-    --muted: #8090a0;
-    --accent: #6eb6bf;
-    --accent-strong: #8ad0d8;
-    --accent-soft: rgba(110, 182, 191, 0.15);
-    --accent-ring: rgba(110, 182, 191, 0.25);
-    --pos: #5ec09e;
-    --pos-soft: rgba(94, 192, 158, 0.15);
-    --warm: #eb7e76;
-    --warm-soft: rgba(235, 126, 118, 0.16);
-    --amber: #e2b45d;
-    --amber-soft: rgba(226, 180, 93, 0.15);
-    --slate: #7db4dc;
-    --slate-soft: rgba(125, 180, 220, 0.15);
-    --wood: #63c496;
-    --fire: #eb7c74;
-    --earth: #e2b663;
-    --metal: #aebbc7;
-    --water: #6fb1e0;
-    --shadow: 0 2px 14px rgba(0, 0, 0, 0.30);
+    --bg: #121412;
+    --surface: #1A1C1A;
+    --card: #202320;
+    --card-soft: #252825;
+    --card-hover: rgba(236, 232, 222, 0.04);
+    --field: #161816;
+    --line: #2C302C;
+    --line-strong: #3B403B;
+    --line-soft: #2C302C;
+    --rule: #ECE8DE;
+    --text: #ECE8DE;
+    --text-2: #C2BEB3;
+    --muted: #8D8A80;
+    --text-4: #5A5A54;
+    --accent: #A3C4AE;
+    --accent-strong: #B6D3BF;
+    --accent-soft: #1E2A23;
+    --accent-line: #3E5A49;
+    --accent-ring: rgba(163, 196, 174, 0.26);
+    --on-accent: #10201A;
+    --on-accent-strong: #10201A;
+    --seal: #E3826A;
+    --seal-wash: #2E1E19;
+    --pos: #8CC29C;
+    --pos-soft: #1E2A23;
+    --warm: #E3826A;
+    --warm-soft: #2E1E19;
+    --amber: #D4A65A;
+    --amber-soft: #2B2416;
+    --slate: #8FB0D6;
+    --slate-soft: #1E2732;
+    --wood: #8CC29C;
+    --fire: #E3826A;
+    --earth: #D4A65A;
+    --metal: #BDB6A6;
+    --water: #8FB0D6;
+    --shadow-1: inset 0 1px 0 rgba(255, 255, 255, 0.03);
+    --shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04), 0 18px 40px -22px rgba(0, 0, 0, 0.70);
     color-scheme: dark;
   }
+
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
     font-family: var(--sans);
-    background: var(--bg);
+    background: transparent;
     color: var(--text);
-    line-height: 1.58;
-    padding: 12px 14px 36px;
+    line-height: 1.65;
+    padding: 4px 6px 28px;
     -webkit-font-smoothing: antialiased;
-    transition: background-color 0.22s var(--ease), color 0.22s var(--ease);
+    transition: color var(--dur-2) var(--ease);
   }
-  .serif { font-family: var(--mono); letter-spacing: -0.02em; }
-  .pillar-gz.serif { font-family: var(--serif); letter-spacing: 0.12em; }
+  .serif { font-family: var(--num); font-variant-numeric: lining-nums tabular-nums; }
+  .pillar-gz.serif { font-family: var(--serif); letter-spacing: 0.08em; }
   .wrap { max-width: 1000px; margin: 0 auto; }
 
-  /* 顶部模式控制条 */
+  .svg-sprite { position: absolute; width: 0; height: 0; overflow: hidden; pointer-events: none; }
+  .ico { width: 15px; height: 15px; display: inline-block; flex: 0 0 auto; vertical-align: -2.5px; }
+  .ico-sm { width: 14px; height: 14px; vertical-align: -2.5px; }
+
+  /* 顶部模式控制条：分段控件 + 等宽引擎标 */
   .mode-bar {
     display: flex;
     justify-content: space-between;
     align-items: center;
     flex-wrap: wrap;
     gap: 10px;
-    margin-bottom: 14px;
-    padding: 8px 12px;
-    background: var(--card);
-    border: 1px solid var(--line);
-    border-radius: var(--radius-lg);
-    box-shadow: var(--shadow);
+    margin-bottom: 16px;
   }
   .mode-tabs {
     display: inline-flex;
     background: var(--card-soft);
-    border: 1px solid var(--line-soft);
-    border-radius: 8px;
+    border: 1px solid var(--line);
+    border-radius: 10px;
     padding: 3px;
     gap: 3px;
     flex-wrap: wrap;
   }
   .mode-btn {
-    border: 1px solid transparent;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    border: 0;
     background: transparent;
-    color: var(--muted);
-    padding: 6px 13px;
-    border-radius: 6px;
-    font-size: 12.5px;
-    font-weight: 600;
+    color: var(--text-2);
+    height: 30px;
+    padding: 0 14px;
+    border-radius: 7px;
+    font-size: 13px;
+    font-weight: 500;
     cursor: pointer;
-    transition: all 0.18s var(--ease);
+    transition: background-color var(--dur-1) var(--ease), color var(--dur-1) var(--ease);
   }
   .mode-btn:hover { color: var(--text); }
   .mode-btn.active {
-    background: var(--accent);
-    color: #fff;
-    box-shadow: 0 1px 4px rgba(16, 36, 46, 0.18);
+    background: var(--card);
+    color: var(--text);
+    font-weight: 600;
+    box-shadow: var(--shadow-1), 0 1px 3px rgba(0, 0, 0, 0.08);
   }
-  [data-theme="dark"] .mode-btn.active { color: #091318; font-weight: 700; }
   .mode-right { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
   .engine-tag {
     font-family: var(--mono);
     font-size: 11px;
     color: var(--muted);
-    letter-spacing: 0.03em;
+    letter-spacing: 0.04em;
   }
 
   .view-panel { display: none; }
-  .view-panel.active { display: block; animation: fadeRise 0.2s var(--ease); }
+  .view-panel.active { display: block; animation: fadeRise var(--dur-2) var(--ease); }
 
-  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
   @media (max-width: 720px) { .grid-2, .grid-3 { grid-template-columns: 1fr; } }
 
-  /* 卡片与表头 */
+  /* 卡片与方印表头 */
   .card {
     background: var(--card);
     border: 1px solid var(--line);
     border-radius: var(--radius-lg);
-    padding: 16px 18px;
-    margin-bottom: 14px;
+    padding: 20px;
+    margin-bottom: 16px;
     box-shadow: var(--shadow);
   }
   .card-title {
-    font-size: 14px;
-    font-weight: 700;
-    margin-bottom: 13px;
+    font-family: var(--serif);
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 14px;
     padding-bottom: 10px;
     border-bottom: 1px solid var(--line);
     display: flex;
@@ -163,43 +196,48 @@
     justify-content: space-between;
     gap: 8px;
     flex-wrap: wrap;
-    letter-spacing: -0.005em;
+    letter-spacing: 0.02em;
   }
-  .badge {
+  .seal-head {
     display: inline-flex;
     align-items: center;
-    font-size: 11px;
-    padding: 2px 8px;
-    border-radius: 5px;
-    background: var(--pos-soft);
-    color: var(--pos);
-    font-weight: 650;
-    white-space: nowrap;
-    letter-spacing: 0.01em;
+    gap: 10px;
   }
-  .badge-warm { background: var(--warm-soft); color: var(--warm); }
-  .badge-amber { background: var(--amber-soft); color: var(--amber); }
-  .badge-slate { background: var(--slate-soft); color: var(--slate); }
+  .seal-head::before {
+    content: attr(data-seal);
+    width: 24px;
+    height: 24px;
+    display: inline-grid;
+    place-items: center;
+    border-radius: 5px;
+    border: 1.5px solid var(--seal);
+    color: var(--seal);
+    font-family: var(--serif);
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 1;
+  }
 
   /* 表单控件 */
-  .form-row { display: flex; flex-direction: column; gap: 5px; margin-bottom: 11px; }
+  .form-row { display: flex; flex-direction: column; gap: 6px; margin-bottom: 12px; }
   .form-row:last-child { margin-bottom: 0; }
-  .form-row label { font-size: 11.5px; color: var(--muted); font-weight: 600; letter-spacing: 0.02em; }
+  .form-row label { font-size: 12px; color: var(--text-2); font-weight: 500; letter-spacing: 0.02em; }
   input, select {
     width: 100%;
-    padding: 8px 10px;
+    height: 40px;
+    padding: 0 12px;
     border: 1px solid var(--line-strong);
-    border-radius: 8px;
-    background: var(--card-soft);
+    border-radius: var(--radius);
+    background: var(--field);
     color: var(--text);
-    font-size: 13px;
+    font-size: 14px;
+    font-variant-numeric: tabular-nums;
     outline: none;
-    transition: border-color 0.16s ease, box-shadow 0.16s ease, background-color 0.16s ease;
+    transition: border-color var(--dur-1) var(--ease), box-shadow var(--dur-1) var(--ease);
   }
-  input[type="range"] { padding: 0; border: none; background: transparent; accent-color: var(--accent); cursor: pointer; }
+  input[type="range"] { height: auto; padding: 0; border: none; background: transparent; accent-color: var(--accent); cursor: pointer; }
   input:focus, select:focus {
     border-color: var(--accent);
-    background: var(--card);
     box-shadow: 0 0 0 3px var(--accent-ring);
   }
   .inline-row { display: flex; gap: 8px; align-items: center; }
@@ -217,17 +255,16 @@
   .gender-btn {
     border: none;
     background: transparent;
-    color: var(--muted);
+    color: var(--text-2);
     padding: 4px 10px;
     border-radius: 5px;
     font-size: 12px;
-    font-weight: 600;
+    font-weight: 500;
     cursor: pointer;
     white-space: nowrap;
-    transition: all 0.16s var(--ease);
+    transition: background-color var(--dur-1) var(--ease), color var(--dur-1) var(--ease);
   }
-  .gender-btn.active { background: var(--accent); color: #fff; }
-  [data-theme="dark"] .gender-btn.active { color: #091318; }
+  .gender-btn.active { background: var(--accent); color: var(--on-accent); font-weight: 600; }
 
   .checkbox-label {
     display: inline-flex;
@@ -239,42 +276,45 @@
     user-select: none;
     white-space: nowrap;
   }
-  .checkbox-label input { width: auto; accent-color: var(--accent); }
+  .checkbox-label input { width: auto; height: auto; accent-color: var(--accent); }
 
   /* 按钮 */
   .btn {
-    padding: 8px 14px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 0 14px;
+    height: 36px;
     border: 1px solid var(--line-strong);
-    border-radius: 8px;
-    background: var(--card);
+    border-radius: var(--radius);
+    background: transparent;
     color: var(--text-2);
     font-size: 13px;
     font-weight: 600;
     cursor: pointer;
-    transition: all 0.16s var(--ease);
+    transition: background-color var(--dur-1) var(--ease), border-color var(--dur-1) var(--ease), color var(--dur-1) var(--ease), transform var(--dur-1) var(--ease);
   }
-  .btn:hover { border-color: var(--accent); color: var(--text); }
+  .btn:hover { background: var(--card-hover); color: var(--text); }
   .btn:active { transform: scale(0.985); }
   .btn-primary {
     width: 100%;
+    height: 52px;
     background: var(--accent);
     border-color: var(--accent);
-    color: #fff;
-    padding: 11px 16px;
-    font-size: 14px;
-    font-weight: 650;
-    letter-spacing: 0.04em;
-    box-shadow: 0 2px 10px -2px rgba(33, 74, 89, 0.34);
+    color: var(--on-accent);
+    font-family: var(--serif);
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: 0.24em;
+    border-radius: 10px;
   }
-  [data-theme="dark"] .btn-primary { color: #091318; font-weight: 700; }
-  .btn-primary:hover { background: var(--accent-strong); border-color: var(--accent-strong); color: #fff; }
-  [data-theme="dark"] .btn-primary:hover { color: #060e12; }
-  .btn-soft { background: var(--accent-soft); border-color: transparent; color: var(--accent-strong); }
-  .btn-soft:hover { border-color: rgba(33, 74, 89, 0.25); }
-  .btn-sm { padding: 5px 10px; font-size: 12px; }
-  .btn-pill { border-radius: 6px; padding: 5px 11px; font-size: 12px; }
-  .btn-pill.active { background: var(--accent); border-color: var(--accent); color: #fff; }
-  [data-theme="dark"] .btn-pill.active { color: #091318; }
+  .btn-primary:hover { background: var(--accent-strong); border-color: var(--accent-strong); color: var(--on-accent-strong); }
+  .btn-soft { background: var(--accent-soft); border-color: var(--accent-line); color: var(--accent); }
+  .btn-soft:hover { border-color: var(--accent); background: var(--accent-soft); }
+  .btn-sm { height: 28px; padding: 0 10px; font-size: 12px; }
+  .btn-pill { height: 26px; border-radius: 999px; padding: 0 11px; font-size: 12px; font-weight: 500; }
+  .btn-pill.active { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
 
   .el-木 { color: var(--wood); } .bg-木 { background: var(--wood); }
   .el-火 { color: var(--fire); } .bg-火 { background: var(--fire); }
@@ -284,281 +324,297 @@
 
   /* 权重配置抽屉 */
   .weight-panel { display: none; }
-  .weight-panel.open { display: block; animation: fadeRise 0.2s var(--ease); }
+  .weight-panel.open { display: block; animation: fadeRise var(--dur-2) var(--ease); }
   .preset-row { display: flex; gap: 7px; flex-wrap: wrap; align-items: center; margin-bottom: 12px; }
   .slider-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 10px; }
   .sub-slider-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; }
   @media (max-width: 780px) { .slider-grid { grid-template-columns: 1fr; } .sub-slider-grid { grid-template-columns: 1fr 1fr; } }
   .slider-box {
-    background: var(--card-soft);
+    background: var(--surface);
     border: 1px solid var(--line);
     border-radius: 8px;
     padding: 9px 11px;
   }
   .slider-head { display: flex; justify-content: space-between; font-size: 12px; font-weight: 600; margin-bottom: 5px; }
-  .slider-val { font-family: var(--mono); color: var(--accent-strong); font-variant-numeric: tabular-nums; }
+  .slider-val { font-family: var(--mono); color: var(--accent); font-variant-numeric: tabular-nums; }
   .slider-sub { font-size: 11px; color: var(--muted); margin-top: 3px; line-height: 1.4; }
 
-  /* ===== 合盘结果主卡：瑞士精密量化仪表 ===== */
+  /* ===== 合盘结果主卡：批注命书 ===== */
   #synastryResult > .card,
   #ceilingResult > .card {
-    animation: fadeRise 0.24s var(--ease);
+    animation: fadeRise var(--dur-2) var(--ease);
   }
   .score-hero {
     text-align: left;
-    padding: 20px 22px;
-    background: var(--card-soft);
+    padding: 20px 24px;
+    background: var(--surface);
     border: 1px solid var(--line);
-    border-top: 3px solid var(--accent);
-    border-radius: 10px;
-    margin-bottom: 16px;
+    border-radius: 12px;
+    margin-bottom: 18px;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 8px 20px;
+    align-items: end;
   }
   .score-label {
-    font-size: 12px;
+    grid-column: 1 / -1;
+    font-size: 11.5px;
     font-weight: 600;
     color: var(--muted);
     padding-bottom: 10px;
     border-bottom: 1px solid var(--line);
-    letter-spacing: 0.01em;
+    letter-spacing: 0.06em;
   }
   .score-main-row {
+    grid-column: 1 / -1;
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: flex-end;
     gap: 14px;
     flex-wrap: wrap;
-    margin: 14px 0 10px;
+    margin: 8px 0 4px;
   }
   .score-result-value {
-    font-family: var(--mono);
-    font-size: 46px;
-    font-weight: 800;
+    font-family: var(--num);
+    font-size: 72px;
+    font-weight: 600;
     color: var(--text);
-    line-height: 1;
-    font-variant-numeric: tabular-nums;
-    letter-spacing: -0.03em;
+    line-height: 0.9;
+    font-variant-numeric: lining-nums tabular-nums;
+    letter-spacing: -0.02em;
   }
+  .score-unit { font-family: var(--serif); font-size: 16px; font-weight: 500; color: var(--muted); margin-left: 4px; }
   .archetype-pill {
+    align-self: flex-start;
+    padding: 4px 10px;
+    border: 1.5px solid var(--seal);
+    border-radius: 4px;
+    color: var(--seal);
+    background: transparent;
+    font-family: var(--serif);
     font-size: 13px;
-    font-weight: 700;
-    padding: 6px 13px;
-    border-radius: 7px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
     display: inline-flex;
     align-items: center;
-    gap: 5px;
-    border: 1px solid transparent;
   }
   .score-range {
+    grid-column: 1 / -1;
     font-family: var(--mono);
     font-size: 12px;
     color: var(--warm);
     font-weight: 600;
-    margin: 0 0 10px;
     padding: 6px 10px;
     background: var(--warm-soft);
     border-radius: 6px;
     display: inline-block;
   }
 
-  /* 净值公式条 */
+  /* 净值公式条（移动允许内部横向滚动） */
   .formula-strip {
+    grid-column: 1 / -1;
     display: flex;
     align-items: center;
-    justify-content: flex-start;
-    flex-wrap: wrap;
     gap: 6px;
-    margin: 12px 0;
-    padding: 9px 12px;
-    background: var(--card);
-    border: 1px solid var(--line);
+    margin: 8px 0 4px;
+    padding: 10px 14px;
+    background: var(--card-soft);
     border-radius: 8px;
     font-family: var(--mono);
-    font-size: 12px;
+    font-size: 12.5px;
+    line-height: 1.6;
     font-variant-numeric: tabular-nums;
+    color: var(--text-2);
+    white-space: nowrap;
+    overflow-x: auto;
   }
-  .f-chip { padding: 3px 8px; border-radius: 5px; font-weight: 700; }
-  .f-base { background: var(--card-soft); color: var(--text); border: 1px solid var(--line); }
-  .f-pos { background: var(--pos-soft); color: var(--pos); }
-  .f-neg { background: var(--warm-soft); color: var(--warm); }
-  .f-neu { background: var(--amber-soft); color: var(--amber); }
-  .f-op { color: var(--muted); font-weight: 700; }
+  .f-chip { font-weight: 600; }
+  .f-base { color: var(--text); font-weight: 700; }
+  .f-pos { color: var(--pos); font-weight: 700; }
+  .f-neg { color: var(--warm); font-weight: 700; }
+  .f-neu { color: var(--amber); font-weight: 700; }
+  .f-op { color: var(--muted); font-weight: 600; }
 
   .verdict-box {
+    grid-column: 1 / -1;
     text-align: left;
-    margin-top: 12px;
-    padding: 13px 15px;
-    background: var(--card);
-    border: 1px solid var(--line);
-    border-left: 3px solid var(--accent);
-    border-radius: 8px;
-    font-size: 13px;
+    margin-top: 8px;
+    padding-top: 12px;
+    border-top: 1px dashed var(--line);
+    font-size: 14px;
     color: var(--text-2);
-    line-height: 1.78;
+    line-height: 1.85;
+    max-width: 68ch;
   }
-  .verdict-box b { color: var(--text); font-weight: 700; }
+  .verdict-box b { color: var(--text); font-family: var(--serif); font-weight: 600; }
 
-  /* 双人四柱矩阵与五行条 */
+  /* 双人四柱矩阵与五行条（无饱和色小药丸，改为点号分隔文字） */
   .person-panel {
-    background: var(--card-soft);
+    background: var(--surface);
     border: 1px solid var(--line);
-    border-radius: 10px;
-    padding: 13px 14px;
+    border-radius: 12px;
+    padding: 16px;
   }
+  .person-title-row {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 4px 8px;
+    font-family: var(--serif);
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+  .person-meta-tags {
+    display: inline-flex;
+    flex-wrap: wrap;
+    align-items: center;
+    font-family: var(--sans);
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--muted);
+  }
+  .tag { display: inline-flex; align-items: center; color: var(--muted); }
+  .tag + .tag::before { content: "·"; margin: 0 6px; color: var(--text-4); }
+  .tag.warn { color: var(--warm); }
+  .person-meta { font-size: 11.5px; color: var(--muted); margin-bottom: 10px; font-variant-numeric: tabular-nums; }
+
   .pillars {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 6px;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    overflow: hidden;
     margin: 10px 0 12px;
+    background: var(--card);
   }
   .pillar-box {
-    background: var(--card);
-    border: 1px solid var(--line);
-    border-radius: 8px;
-    padding: 9px 4px 8px;
+    border-right: 1px solid var(--line);
+    padding: 12px 4px;
     text-align: center;
   }
+  .pillar-box:last-child { border-right: 0; }
+  .pillar-box.is-day { background: var(--accent-soft); }
   .pillar-label {
     font-size: 10.5px;
     font-weight: 600;
     color: var(--muted);
-    letter-spacing: 0.02em;
+    letter-spacing: 0.12em;
   }
   .pillar-gz {
-    font-size: 21px;
-    font-weight: 700;
-    margin: 4px 0 3px;
-    line-height: 1.15;
-  }
-  .pillar-sub {
-    font-size: 10.5px;
-    color: var(--muted);
-    font-weight: 500;
-  }
-
-  .wx-bars { display: flex; flex-direction: column; gap: 6px; margin-top: 8px; }
-  .wx-bar-row {
     display: flex;
+    flex-direction: column;
     align-items: center;
-    gap: 8px;
+    margin: 6px 0 4px;
+    gap: 2px;
+  }
+  .pillar-gan, .pillar-zhi {
+    font-family: var(--serif);
+    font-size: 26px;
+    font-weight: 600;
+    line-height: 1.2;
+  }
+  .pillar-sub { font-size: 11px; color: var(--muted); font-weight: 400; }
+
+  .wx-bars { display: flex; flex-direction: column; gap: 4px; margin-top: 8px; }
+  .wx-bar-row {
+    display: grid;
+    grid-template-columns: 20px 1fr 48px;
+    align-items: center;
+    gap: 10px;
+    padding: 3px 0;
     font-size: 12px;
     font-variant-numeric: tabular-nums;
   }
-  .wx-bar-row > span:last-child { font-family: var(--mono); font-size: 11.5px; }
-  .wx-track { flex: 1; height: 6px; background: var(--line); border-radius: 99px; overflow: hidden; }
-  .wx-fill { height: 100%; border-radius: 99px; transition: width 0.35s var(--ease); }
+  .wx-el-label { font-family: var(--serif); font-size: 14px; font-weight: 600; }
+  .wx-track { height: 6px; background: var(--line); border-radius: 3px; overflow: hidden; }
+  .wx-fill { height: 100%; border-radius: 3px; transition: width var(--dur-2) var(--ease); }
+  .wx-el-pct { font-size: 12px; font-weight: 500; text-align: right; color: var(--text-2); }
 
-  /* 三维仪表卡 */
-  .dim-summary-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 16px 0; }
+  /* 三维仪表卡：以中线为零点双向展开 */
+  .dim-summary-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: 16px 0; }
   @media (max-width: 720px) { .dim-summary-grid { grid-template-columns: 1fr; } }
   .dim-meter-card {
-    background: var(--card-soft);
+    background: var(--card);
     border: 1px solid var(--line);
-    border-radius: 10px;
-    padding: 13px 14px;
+    border-radius: 12px;
+    padding: 16px 18px;
     display: flex;
     flex-direction: column;
     gap: 6px;
   }
   .dim-meter-head { display: flex; justify-content: space-between; align-items: baseline; gap: 6px; }
-  .dim-meter-title { font-size: 12.5px; font-weight: 700; color: var(--text); }
+  .dim-meter-title { font-size: 12.5px; font-weight: 600; color: var(--text-2); }
   .dim-meter-val {
-    font-family: var(--mono);
-    font-size: 20px;
-    font-weight: 800;
+    font-family: var(--num);
+    font-size: 22px;
+    font-weight: 600;
     font-variant-numeric: tabular-nums;
-    letter-spacing: -0.02em;
   }
   .dim-meter-val.pos { color: var(--pos); }
   .dim-meter-val.neg { color: var(--warm); }
   .dim-meter-val.neu { color: var(--amber); }
 
-  .meter-track {
-    position: relative;
-    height: 7px;
-    background: var(--line);
-    border-radius: 99px;
-    overflow: hidden;
-    margin: 3px 0;
-  }
-  .meter-fill { height: 100%; border-radius: 99px; transition: width 0.35s var(--ease); }
-  .meter-fill.pos { background: var(--pos); }
-  .meter-fill.neg { background: var(--warm); }
   .meter-bipolar {
     position: relative;
-    height: 7px;
+    height: 6px;
     background: var(--line);
-    border-radius: 99px;
-    overflow: hidden;
-    margin: 3px 0;
+    border-radius: 3px;
+    margin: 6px 0 4px;
   }
-  .meter-zero {
+  .meter-bipolar::before {
+    content: "";
     position: absolute;
     left: 50%;
-    top: -1px;
-    bottom: -1px;
-    width: 2px;
-    transform: translateX(-50%);
-    background: var(--text);
-    opacity: 0.45;
+    top: -3px;
+    bottom: -3px;
+    width: 1px;
+    background: var(--line-strong);
     z-index: 2;
   }
-  .meter-bi-fill { position: absolute; top: 0; bottom: 0; border-radius: 99px; transition: all 0.35s var(--ease); }
+  .meter-bi-fill { position: absolute; top: 0; bottom: 0; border-radius: 3px; transition: all var(--dur-2) var(--ease); }
+  .meter-bi-fill.pos { background: var(--pos); border-radius: 0 3px 3px 0; }
+  .meter-bi-fill.neg { background: var(--warm); border-radius: 3px 0 0 3px; }
   .dim-meter-note { font-size: 11.5px; color: var(--muted); line-height: 1.52; }
 
-  /* 透明逐项账单：金融对账单质感 */
+  /* 透明逐项账单：扁平细线折叠区 */
   .ledger-section {
-    border: 1px solid var(--line);
-    border-radius: 10px;
-    margin-top: 10px;
-    overflow: hidden;
-    background: var(--card);
+    border-top: 1px solid var(--line);
+    background: transparent;
   }
+  .ledger-section:last-child { border-bottom: 1px solid var(--line); }
   .ledger-head {
-    display: flex;
-    justify-content: space-between;
+    display: grid;
+    grid-template-columns: 24px 1fr auto 16px;
     align-items: center;
-    padding: 11px 14px;
-    background: var(--card-soft);
-    font-size: 13px;
-    font-weight: 700;
+    gap: 10px;
+    padding: 14px 4px;
+    font-size: 13.5px;
+    font-weight: 600;
     cursor: pointer;
     user-select: none;
     list-style: none;
-    transition: background-color 0.15s ease;
+    color: var(--text);
   }
   .ledger-head::-webkit-details-marker { display: none; }
   .ledger-head:hover { background: var(--card-hover); }
-  .ledger-head > span:first-child {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-  }
-  .ledger-head > span:first-child::before {
-    content: "▸";
-    font-size: 11px;
-    color: var(--muted);
-    display: inline-block;
-    transition: transform 0.18s var(--ease);
-  }
-  .ledger-section[open] > .ledger-head > span:first-child::before {
-    transform: rotate(90deg);
-  }
-  .ledger-body { padding: 4px 14px 12px; background: var(--card); }
+  .ledger-idx { font-family: var(--mono); font-size: 12px; font-weight: 600; color: var(--muted); }
+  .ledger-head .chev { color: var(--muted); transition: transform var(--dur-2) var(--ease); }
+  .ledger-section[open] > .ledger-head .chev { transform: rotate(90deg); }
+  .ledger-body { padding: 0 4px 12px 34px; }
   .ledger-row {
     display: grid;
     grid-template-columns: minmax(0, 1fr) auto;
     gap: 12px;
-    padding: 9px 6px;
-    border-top: 1px solid var(--line-soft);
+    padding: 8px 4px;
+    border-bottom: 1px dashed var(--line);
     align-items: start;
-    border-radius: 6px;
-    transition: background-color 0.14s ease;
   }
-  .ledger-row:first-child { border-top: none; }
-  .ledger-row:hover { background: var(--card-soft); }
+  .ledger-row:last-child { border-bottom: 0; }
   .ledger-title {
     font-size: 13px;
-    font-weight: 650;
+    font-weight: 500;
     color: var(--text);
     display: flex;
     flex-wrap: wrap;
@@ -568,32 +624,25 @@
   .ledger-pos {
     font-family: var(--mono);
     font-size: 11px;
-    color: var(--text-2);
-    background: var(--card-soft);
-    border: 1px solid var(--line);
-    padding: 1px 6px;
-    border-radius: 4px;
-    font-weight: 500;
+    color: var(--muted);
   }
   .ledger-reason { font-size: 12px; color: var(--muted); margin-top: 3px; line-height: 1.55; }
   .ledger-delta {
-    font-family: var(--mono);
-    font-size: 13.5px;
-    font-weight: 800;
+    font-family: var(--num);
+    font-size: 15px;
+    font-weight: 600;
     font-variant-numeric: tabular-nums;
     white-space: nowrap;
-    padding-top: 1px;
   }
   .ledger-delta.pos { color: var(--pos); }
   .ledger-delta.neg { color: var(--warm); }
-  .ledger-delta.muted { color: var(--muted); font-weight: 600; }
-  .ledger-empty { font-size: 12px; color: var(--muted); padding: 10px 6px; }
+  .ledger-delta.muted { color: var(--muted); }
+  .ledger-empty { font-size: 12px; color: var(--muted); padding: 8px 0; }
   .ledger-cap-note {
     margin-top: 8px;
     padding: 8px 11px;
-    border-radius: 7px;
+    border-radius: 6px;
     background: var(--amber-soft);
-    border: 1px solid rgba(158, 101, 20, 0.22);
     color: var(--amber);
     font-size: 11.5px;
     font-weight: 600;
@@ -602,23 +651,21 @@
 
   /* 个人理论上限卡片 */
   .ceil-card {
-    background: var(--card-soft);
+    background: var(--surface);
     border: 1px solid var(--line);
-    border-top: 3px solid var(--accent);
-    border-radius: 10px;
-    padding: 16px;
+    border-radius: 12px;
+    padding: 16px 18px;
     display: flex;
     flex-direction: column;
-    gap: 9px;
+    gap: 8px;
   }
   .ceil-score {
-    font-family: var(--mono);
-    font-size: 34px;
-    font-weight: 800;
+    font-family: var(--num);
+    font-size: 36px;
+    font-weight: 600;
     color: var(--text);
     line-height: 1.05;
     font-variant-numeric: tabular-nums;
-    letter-spacing: -0.03em;
   }
   .ceil-meta { font-size: 12.5px; color: var(--text-2); line-height: 1.68; }
   .ceil-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 4px; }
@@ -629,35 +676,46 @@
     justify-content: space-between;
     align-items: center;
     gap: 10px;
-    padding: 11px 13px;
-    border: 1px solid var(--line);
-    border-radius: 9px;
-    margin-bottom: 8px;
-    background: var(--card-soft);
+    padding: 11px 0;
+    border-bottom: 1px dashed var(--line);
     cursor: pointer;
-    transition: border-color 0.16s ease, background-color 0.16s ease;
+    transition: background-color var(--dur-1) var(--ease);
   }
-  .history-item:last-child { margin-bottom: 0; }
-  .history-item:hover { border-color: var(--accent); background: var(--card); }
+  .history-item:last-child { border-bottom: 0; }
+  .history-item:hover { background: var(--card-hover); }
   .history-meta { font-size: 11.5px; color: var(--muted); margin-top: 3px; font-variant-numeric: tabular-nums; }
   .del-btn {
     border: none; background: transparent; color: var(--muted);
     font-size: 12px; cursor: pointer; padding: 5px 8px; border-radius: 6px;
-    transition: color 0.15s ease, background-color 0.15s ease;
   }
   .del-btn:hover { color: var(--warm); background: var(--warm-soft); }
   .hint { font-size: 12px; color: var(--muted); line-height: 1.6; }
+  .hint-mb { margin-bottom: 10px; }
+  .hint-mb-lg { margin-bottom: 12px; }
+  .hint-strong { font-weight: 700; }
+  .hint-ml { margin-left: 4px; }
+  .card-compact { padding: 14px; }
+  .inline-row-mt { margin-top: 12px; flex-wrap: wrap; }
+  .btn-grow { flex: 1; min-width: 220px; }
+  .res-head-row { display: flex; justify-content: space-between; align-items: center; gap: 6px; flex-wrap: wrap; }
+  .res-score-row { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+  .ceil-score-unit { font-size: 14px; font-weight: 500; color: var(--muted); }
+  .res-card-gap { margin-bottom: 14px; }
+  .grid-2-mb { margin-bottom: 14px; }
+  .muted-text { color: var(--muted); }
+  .hist-title-row { font-size: 13.5px; font-weight: 600; display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+  .hist-score-tag { font-family: var(--num); font-size: 12.5px; color: var(--accent); font-weight: 600; }
 
   @keyframes fadeRise {
-    from { opacity: 0; transform: translateY(5px); }
+    from { opacity: 0; transform: translateY(4px); }
     to { opacity: 1; transform: translateY(0); }
   }
   @media (max-width: 600px) {
-    body { padding: 8px 8px 28px; }
-    .card { padding: 13px 13px; }
-    .score-hero { padding: 15px 14px; }
-    .score-result-value { font-size: 38px; }
-    .pillar-gz { font-size: 18px; }
+    .card { padding: 16px; }
+    .score-hero { padding: 16px; }
+    .score-result-value { font-size: 56px; }
+    .pillar-gan, .pillar-zhi { font-size: 22px; }
+    .ledger-body { padding-left: 4px; }
   }
   @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after {
@@ -668,15 +726,36 @@
 </style>
 </head>
 <body>
+<svg class="svg-sprite" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+  <symbol id="i-heart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>
+  </symbol>
+  <symbol id="i-sparkles" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/>
+    <path d="M20 3v4"/><path d="M22 5h-4"/>
+  </symbol>
+  <symbol id="i-star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+  </symbol>
+  <symbol id="i-sliders" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <line x1="4" x2="4" y1="21" y2="14"/><line x1="4" x2="4" y1="10" y2="3"/>
+    <line x1="12" x2="12" y1="21" y2="12"/><line x1="12" x2="12" y1="8" y2="3"/>
+    <line x1="20" x2="20" y1="21" y2="16"/><line x1="20" x2="20" y1="12" y2="3"/>
+    <line x1="2" x2="6" y1="14" y2="14"/><line x1="10" x2="14" y1="8" y2="8"/><line x1="18" x2="22" y1="16" y2="16"/>
+  </symbol>
+  <symbol id="i-chevron-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="m9 18 6-6-6-6"/>
+  </symbol>
+</svg>
 <div class="wrap">
   <div class="mode-bar">
     <div class="mode-tabs" role="tablist">
-      <button type="button" class="mode-btn active" id="modeLove" onclick="switchView('love')">♡ 婚恋合盘</button>
-      <button type="button" class="mode-btn" id="modeFriend" onclick="switchView('friend')">✦ 友情 / 人际</button>
-      <button type="button" class="mode-btn" id="modeCeiling" onclick="switchView('ceiling')">★ 测算个人理论上限</button>
+      <button type="button" class="mode-btn active" id="modeLove" onclick="switchView('love')"><svg class="ico ico-sm" aria-hidden="true"><use href="#i-heart"/></svg><span>婚恋合盘</span></button>
+      <button type="button" class="mode-btn" id="modeFriend" onclick="switchView('friend')"><svg class="ico ico-sm" aria-hidden="true"><use href="#i-sparkles"/></svg><span>友情 / 人际</span></button>
+      <button type="button" class="mode-btn" id="modeCeiling" onclick="switchView('ceiling')"><svg class="ico ico-sm" aria-hidden="true"><use href="#i-star"/></svg><span>测算个人理论上限</span></button>
     </div>
     <div class="mode-right">
-      <button type="button" class="btn btn-sm btn-soft" id="weightToggleBtn" onclick="toggleWeightPanel()">⚙ 权重：标准平衡</button>
+      <button type="button" class="btn btn-sm btn-soft" id="weightToggleBtn" onclick="toggleWeightPanel()"><svg class="ico ico-sm" aria-hidden="true"><use href="#i-sliders"/></svg><span id="weightToggleText">权重：标准平衡</span></button>
       <span class="engine-tag">V6.1 · 三维净值引擎</span>
     </div>
   </div>
@@ -687,15 +766,15 @@
       <span>评分权重配置（透明可调 · 实时重算）</span>
       <button type="button" class="btn btn-sm" onclick="resetWeights()">恢复默认</button>
     </div>
-    <p class="hint" style="margin-bottom:10px;">
+    <p class="hint hint-mb">
       公式：<b>综合净值 = 基准 50 + W1×基础吸引(≤32) − W2×冲克内耗(≤42) + W3×现实承接(−16~+16)</b>。单靠合/通/同气无法直接封顶 90+，所有冲穿刑、土重紧绷与分心争合均按权重实扣。
     </p>
     <div class="preset-row">
-      <span class="hint" style="font-weight:700;">一键预设：</span>
+      <span class="hint hint-strong">一键预设：</span>
       <button type="button" class="btn btn-pill active" id="preset_balanced" onclick="applyPreset('balanced')">标准平衡</button>
       <button type="button" class="btn btn-pill" id="preset_grounded" onclick="applyPreset('grounded')">现实防内耗优先</button>
       <button type="button" class="btn btn-pill" id="preset_chemistry" onclick="applyPreset('chemistry')">吸引力缘分侧重</button>
-      <span class="hint" id="presetDesc" style="margin-left:4px;">吸引力、冲克阻力与现实承接按 1:1:1 均衡计分</span>
+      <span class="hint hint-ml" id="presetDesc">吸引力、冲克阻力与现实承接按 1:1:1 均衡计分</span>
     </div>
     <div class="slider-grid">
       <div class="slider-box">
@@ -744,7 +823,7 @@
       <!-- 甲方 -->
       <div class="card">
         <div class="card-title">
-          <span>甲方出生信息</span>
+          <span class="seal-head" data-seal="甲">甲方出生信息</span>
           <div class="gender-toggle">
             <button type="button" class="gender-btn active" id="gA_M" onclick="setGender('A','M')">男 · 乾造</button>
             <button type="button" class="gender-btn" id="gA_F" onclick="setGender('A','F')">女 · 坤造</button>
@@ -778,7 +857,7 @@
       <!-- 乙方 -->
       <div class="card">
         <div class="card-title">
-          <span>乙方出生信息</span>
+          <span class="seal-head" data-seal="乙">乙方出生信息</span>
           <div class="gender-toggle">
             <button type="button" class="gender-btn" id="gB_M" onclick="setGender('B','M')">男 · 乾造</button>
             <button type="button" class="gender-btn active" id="gB_F" onclick="setGender('B','F')">女 · 坤造</button>
@@ -810,7 +889,7 @@
       </div>
     </div>
 
-    <div class="card" style="padding: 12px;">
+    <div class="card card-compact">
       <button type="button" class="btn btn-primary" onclick="runSynastry()">开始真太阳时排盘与三维净值合盘</button>
     </div>
 
@@ -835,7 +914,7 @@
           <button type="button" class="gender-btn" id="gC_F" onclick="setGender('C','F')">女 · 坤造</button>
         </div>
       </div>
-      <p class="hint" style="margin-bottom:12px;">
+      <p class="hint hint-mb-lg">
         基于当前选定的权重配置，在指定年龄段内实时两阶段穷举（覆盖全部 12 地支时辰），过滤掉表面相合但暗藏多穿/土重/争合的“虚高盘”，找到此人真正<b>高吸引、低内耗、高现实承接</b>的理论上限。
       </p>
       <div class="grid-2">
@@ -871,8 +950,8 @@
           <input id="lonC" type="number" step="0.01" value="118.78" title="东经度数">
         </div>
       </div>
-      <div class="inline-row" style="margin-top:12px;flex-wrap:wrap;">
-        <button type="button" class="btn btn-primary" style="flex:1;min-width:220px;" onclick="runCeilingFinder()">★ 一键测算 V6.1 理论爱情 & 友情上限</button>
+      <div class="inline-row inline-row-mt">
+        <button type="button" class="btn btn-primary btn-grow" onclick="runCeilingFinder()"><svg class="ico ico-sm" aria-hidden="true"><use href="#i-star"/></svg><span>一键测算 V6.1 理论爱情 & 友情上限</span></button>
         <button type="button" class="btn btn-soft" onclick="copyFromAtoC()">从甲方同步信息</button>
       </div>
     </div>
@@ -1152,8 +1231,8 @@ function syncWeightUI() {
   if (desc) {
     desc.textContent = WEIGHT_PRESETS[activeWeights.presetId]?.desc || '已启用手动微调的自定义权重配置';
   }
-  const toggleBtn = document.getElementById('weightToggleBtn');
-  if (toggleBtn) toggleBtn.textContent = `⚙ 权重：${activeWeights.name}`;
+  const toggleText = document.getElementById('weightToggleText');
+  if (toggleText) toggleText.textContent = `权重：${activeWeights.name}`;
 }
 function toggleWeightPanel() {
   document.getElementById('weightPanel').classList.toggle('open');
@@ -2234,19 +2313,19 @@ function runCeilingFinder() {
     presetName: activeWeights.name
   };
 
-  const renderBox = (title, mode, res) => {
+  const renderBox = (title, iconId, mode, res) => {
     if (!res) return '';
     const gTxt = res.gender === 'M' ? '乾造 · 男' : '坤造 · 女';
     const ev = res.ev;
     return `
       <div class="ceil-card">
-        <div style="display:flex;justify-content:space-between;align-items:center;gap:6px;flex-wrap:wrap;">
-          <b>${title}</b>
-          <span class="badge">${gTxt}</span>
+        <div class="res-head-row">
+          <b><svg class="ico ico-sm" aria-hidden="true"><use href="#i-${iconId}"/></svg> ${title}</b>
+          <span class="tag">${gTxt}</span>
         </div>
-        <div style="display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;">
-          <div class="ceil-score serif">${res.score.toFixed(1)} <span style="font-size:14px;font-weight:500;">分</span></div>
-          <span class="${ev.archetype.badgeClass}">${ev.archetype.label}</span>
+        <div class="res-score-row">
+          <div class="ceil-score serif">${res.score.toFixed(1)} <span class="ceil-score-unit">分</span></div>
+          <span class="archetype-pill">${ev.archetype.label}</span>
         </div>
         <div class="ceil-meta">
           <div><b>最佳匹配公历：</b>${res.date} ${res.time}</div>
@@ -2263,12 +2342,12 @@ function runCeilingFinder() {
     <div class="card">
       <div class="card-title">
         <span>${name} 的 V6.1 理论上限报告（±${span} 岁 · 权重：${activeWeights.name}）</span>
-        <button type="button" class="btn btn-sm btn-soft" onclick="pinCeilingToSidebar()">★ 同步设为右侧个人理论上限</button>
+        <button type="button" class="btn btn-sm btn-soft" onclick="pinCeilingToSidebar()"><svg class="ico ico-sm" aria-hidden="true"><use href="#i-star"/></svg><span>同步设为右侧个人理论上限</span></button>
       </div>
-      <div style="margin-bottom:14px;">${renderPersonCard(name, meBz, unk)}</div>
+      <div class="res-card-gap">${renderPersonCard(name, meBz, unk)}</div>
       <div class="grid-2">
-        ${renderBox('♡ 理论爱情上限（异性最佳）', 'love', bestLove)}
-        ${renderBox('✦ 理论友情上限（同频最佳）', 'friend', bestFriend)}
+        ${renderBox('理论爱情上限（异性最佳）', 'heart', 'love', bestLove)}
+        ${renderBox('理论友情上限（同频最佳）', 'sparkles', 'friend', bestFriend)}
       </div>
     </div>`;
 }
@@ -2326,31 +2405,31 @@ function pinCeilingToSidebar() {
 function renderPersonCard(name, bz, isUnk) {
   const roleTag = bz.gender === 'M' ? '乾造 · 男' : '坤造 · 女';
   const spLabel = bz.gender === 'M' ? `妻星(财)：${bz.spouseEl}` : `夫星(官杀)：${bz.spouseEl}`;
-  const strBadge = `<span class="badge badge-slate">身${bz.strengthLevel}(${bz.strength})</span>`;
-  const earthWarn = bz.pct['土'] >= 28 ? `<span class="badge badge-amber">土重 ${bz.pct['土'].toFixed(1)}%</span>` : '';
-  const depBadges = (bz.depletedEls && bz.depletedEls.length)
-    ? `<span class="badge badge-warm">极度缺${bz.depletedEls[0].el} ${bz.depletedEls[0].pct.toFixed(1)}%</span>`
-    : '';
-  const selfPunBadges = (bz.natalSelfPunishes || [])
-    .map(sp => `<span class="badge badge-warm">${sp.label}</span>`).join(' ');
+  const tags = [
+    `<span class="tag">${roleTag}</span>`,
+    `<span class="tag">身${bz.strengthLevel}(${bz.strength})</span>`
+  ];
+  if (bz.pct['土'] >= 28) tags.push(`<span class="tag warn">土重 ${bz.pct['土'].toFixed(1)}%</span>`);
+  if (bz.depletedEls && bz.depletedEls.length) tags.push(`<span class="tag warn">极度缺${bz.depletedEls[0].el} ${bz.depletedEls[0].pct.toFixed(1)}%</span>`);
+  (bz.natalSelfPunishes || []).forEach(sp => tags.push(`<span class="tag warn">${sp.label}</span>`));
   const tg = bz.tenGodProfile;
-  let tgBadge = '';
-  if (tg.guanShaRatio >= 0.35) tgBadge = `<span class="badge badge-amber">官杀偏重</span>`;
-  else if (tg.shangGuanRatio >= 0.25) tgBadge = `<span class="badge badge-amber">伤官偏重</span>`;
-  else if (tg.biJieRatio >= 0.35) tgBadge = `<span class="badge badge-amber">比劫偏重</span>`;
+  if (tg.guanShaRatio >= 0.35) tags.push(`<span class="tag warn">官杀偏重</span>`);
+  else if (tg.shangGuanRatio >= 0.25) tags.push(`<span class="tag warn">伤官偏重</span>`);
+  else if (tg.biJieRatio >= 0.35) tags.push(`<span class="tag warn">比劫偏重</span>`);
 
-  const bars = ELEMENTS.map(e => `<div class="wx-bar-row"><span class="el-${e}" style="width:20px;font-weight:700">${e}</span><div class="wx-track"><div class="wx-fill bg-${e}" style="width:${bz.pct[e].toFixed(1)}%"></div></div><span style="width:44px;text-align:right;color:var(--muted);font-variant-numeric:tabular-nums;">${bz.pct[e].toFixed(1)}%</span></div>`).join('');
+  const bars = ELEMENTS.map(e => `<div class="wx-bar-row"><span class="el-${e} wx-el-label">${e}</span><div class="wx-track"><div class="wx-fill bg-${e}" style="width:${bz.pct[e].toFixed(1)}%"></div></div><span class="wx-el-pct">${bz.pct[e].toFixed(1)}%</span></div>`).join('');
   return `<div class="person-panel">
-    <div style="font-size:13.5px;font-weight:700;margin-bottom:5px;display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
-      <span>${name}</span> <span class="badge">${roleTag}</span> ${strBadge} ${earthWarn} ${depBadges} ${selfPunBadges} ${tgBadge}
+    <div class="person-title-row">
+      <span>${name}</span>
+      <span class="person-meta-tags">${tags.join('')}</span>
     </div>
-    <div style="font-size:11px;color:var(--muted);margin-bottom:6px;">
+    <div class="person-meta">
       ${bz.dayunDir} · ${spLabel} · ${isUnk ? '时辰未知（已按全部时辰稳态/浮动聚合）' : `真太阳时 ${bz.tstStr}（校正 ${bz.offsetMin >= 0 ? '+' : ''}${bz.offsetMin} 分）`}
     </div>
     <div class="pillars">${bz.pillars.map((p, idx) => `
-      <div class="pillar-box">
+      <div class="pillar-box${idx === 2 ? ' is-day' : ''}">
         <div class="pillar-label">${p.label} · ${idx === 3 && isUnk ? '?' : p.tg}</div>
-        <div class="pillar-gz serif">${idx === 3 && isUnk ? '<span style="color:var(--muted)">??</span>' : `<span class="el-${STEM_EL[p.s]}">${STEMS[p.s]}</span><span class="el-${BRANCH_EL[p.b]}">${BRANCHES[p.b]}</span>`}</div>
+        <div class="pillar-gz serif">${idx === 3 && isUnk ? '<span class="pillar-gan muted-text">?</span><span class="pillar-zhi muted-text">?</span>' : `<span class="pillar-gan el-${STEM_EL[p.s]}">${STEMS[p.s]}</span><span class="pillar-zhi el-${BRANCH_EL[p.b]}">${BRANCHES[p.b]}</span>`}</div>
         <div class="pillar-sub">${idx === 3 && isUnk ? '遍历12时' : STEM_EL[p.s] + BRANCH_EL[p.b]}</div>
       </div>`).join('')}
     </div>
@@ -2420,8 +2499,8 @@ function aggregateUnknownHourResults(results, mode, weights) {
 }
 
 function renderDimMeters(ev) {
-  const d1Pct = clamp((ev.d1.score / Math.max(1, ev.d1.cap)) * 100, 0, 100);
-  const d2Pct = clamp((ev.d2.mag / Math.max(1, ev.d2.cap)) * 100, 0, 100);
+  const d1Half = clamp((ev.d1.score / Math.max(1, ev.d1.cap)) * 50, 0, 50);
+  const d2Half = clamp((ev.d2.mag / Math.max(1, ev.d2.cap)) * 50, 0, 50);
   const d3HalfSpan = Math.max(Math.abs(ev.d3.minCap), Math.abs(ev.d3.maxCap), 1);
   const d3Width = clamp((Math.abs(ev.d3.score) / d3HalfSpan) * 50, 0, 50);
   const d3Left = ev.d3.score >= 0 ? 50 : (50 - d3Width);
@@ -2432,10 +2511,10 @@ function renderDimMeters(ev) {
     <div class="dim-summary-grid">
       <div class="dim-meter-card">
         <div class="dim-meter-head">
-          <span class="dim-meter-title">① 基础吸引力与交集</span>
+          <span class="dim-meter-title">01 基础吸引力与交集</span>
           <span class="dim-meter-val pos">${fmtSigned(ev.d1.score)}</span>
         </div>
-        <div class="meter-track"><div class="meter-fill pos" style="width:${d1Pct.toFixed(1)}%"></div></div>
+        <div class="meter-bipolar"><div class="meter-bi-fill pos" style="left:50%;width:${d1Half.toFixed(1)}%"></div></div>
         <div class="dim-meter-note">
           上限 +${ev.d1.cap.toFixed(1)}（单靠吸引最高至 ${(ev.base + ev.d1.cap).toFixed(1)} 分）
           ${ev.d1.capped ? '<br>已达吸引封顶线，不再虚涨总分' : ''}
@@ -2445,10 +2524,10 @@ function renderDimMeters(ev) {
 
       <div class="dim-meter-card">
         <div class="dim-meter-head">
-          <span class="dim-meter-title">② 冲克与内耗扣分</span>
+          <span class="dim-meter-title">02 冲克与内耗扣分</span>
           <span class="dim-meter-val ${ev.d2.score < 0 ? 'neg' : 'pos'}">${ev.d2.score.toFixed(1)}</span>
         </div>
-        <div class="meter-track"><div class="meter-fill neg" style="width:${d2Pct.toFixed(1)}%"></div></div>
+        <div class="meter-bipolar"><div class="meter-bi-fill neg" style="right:50%;width:${d2Half.toFixed(1)}%"></div></div>
         <div class="dim-meter-note">
           全盘冲/穿/刑/土重/较劲实扣（上限 −${ev.d2.cap.toFixed(1)}）
           ${ev.d2.mag === 0 ? '<br>盘面清爽，无显著内耗扣分' : ''}
@@ -2458,11 +2537,10 @@ function renderDimMeters(ev) {
 
       <div class="dim-meter-card">
         <div class="dim-meter-head">
-          <span class="dim-meter-title">③ 现实承接度加减</span>
+          <span class="dim-meter-title">03 现实承接度加减</span>
           <span class="dim-meter-val ${d3Class}">${fmtSigned(ev.d3.score)}</span>
         </div>
         <div class="meter-bipolar">
-          <div class="meter-zero"></div>
           <div class="meter-bi-fill" style="left:${d3Left.toFixed(1)}%;width:${d3Width.toFixed(1)}%;background:${d3Color};"></div>
         </div>
         <div class="dim-meter-note">
@@ -2474,18 +2552,20 @@ function renderDimMeters(ev) {
 }
 
 function renderLedgerGroup(title, dimKey, dimObj, items, isUnknown) {
+  const idxMap = { attraction: '01', friction: '02', grounding: '03' };
+  const cleanTitle = title.replace(/^[①②③]\s*/, '');
   const rows = items.length
     ? items.map(it => {
         const cls = it.weightedDelta > 0 ? 'pos' : it.weightedDelta < 0 ? 'neg' : 'muted';
-        const stabilityBadge = isUnknown
-          ? `<span class="badge ${it.isStable ? '' : 'badge-amber'}">${it.isStable ? '稳态必现' : `浮动 ${it.hits}/${it.totalCases}`}</span>`
+        const stabilityTag = isUnknown
+          ? `<span class="tag${it.isStable ? '' : ' warn'}">${it.isStable ? '稳态必现' : `浮动 ${it.hits}/${it.totalCases}`}</span>`
           : '';
         return `
           <div class="ledger-row">
             <div>
               <div class="ledger-title">
                 <span>${it.label}</span>
-                ${stabilityBadge}
+                ${stabilityTag}
                 <span class="ledger-pos">${it.positions}</span>
               </div>
               <div class="ledger-reason">${it.reason}</div>
@@ -2510,8 +2590,10 @@ function renderLedgerGroup(title, dimKey, dimObj, items, isUnknown) {
   return `
     <details class="ledger-section" open>
       <summary class="ledger-head">
-        <span>${title}（${items.length} 项）</span>
+        <span class="ledger-idx">${idxMap[dimKey] || '·'}</span>
+        <span>${cleanTitle}（${items.length} 项）</span>
         <span class="ledger-delta ${headScoreCls === 'neu' ? 'muted' : headScoreCls}">${fmtSigned(dimObj.score)} 分</span>
+        <svg class="ico ico-sm chev" aria-hidden="true"><use href="#i-chevron-right"/></svg>
       </summary>
       <div class="ledger-body">${rows}${capNote}</div>
     </details>`;
@@ -2562,7 +2644,7 @@ function runSynastry(save = true) {
           ${nameA}（${genderA === 'M' ? '乾造' : '坤造'}）× ${nameB}（${genderB === 'M' ? '乾造' : '坤造'}） · ${currentMode === 'love' ? '婚恋模式' : '友情模式'} · 权重：${evalRes.presetName}
         </div>
         <div class="score-main-row">
-          <div class="score-result-value serif" id="totalScoreResult">${evalRes.total.toFixed(1)}<span style="font-size:16px;font-weight:600;margin-left:4px;">分</span></div>
+          <div class="score-result-value serif" id="totalScoreResult">${evalRes.total.toFixed(1)}<span class="score-unit">分</span></div>
           <span class="archetype-pill ${evalRes.archetype.badgeClass}">${evalRes.archetype.label}</span>
         </div>
         ${(unkA || unkB) ? `<div class="score-range">未知时辰全遍历区间：${minScore.toFixed(1)} – ${maxScore.toFixed(1)} 分（下方已拆分稳态项与时柱浮动项）</div>` : ''}
@@ -2580,7 +2662,7 @@ function runSynastry(save = true) {
         <div class="verdict-box">${evalRes.verdictHtml}</div>
       </div>
 
-      <div class="grid-2" style="margin-bottom:10px;">
+      <div class="grid-2 grid-2-mb">
         ${renderPersonCard(nameA, baseA, unkA)}
         ${renderPersonCard(nameB, baseB, unkB)}
       </div>
@@ -2675,9 +2757,9 @@ function renderHistory() {
   el.innerHTML = list.map(item => `
     <div class="history-item" onclick="loadHistoryById(${item.id})">
       <div>
-        <div style="font-size:13.5px;font-weight:700;display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+        <div class="hist-title-row">
           <span>${item.nameA}(${item.genderA === 'F' ? '女' : '男'}) × ${item.nameB}(${item.genderB === 'M' ? '男' : '女'})</span>
-          <span class="badge">${item.mode === 'friend' ? '友情' : '婚恋'} · ${item.score}分${item.range ? ` (${item.range})` : ''}</span>
+          <span class="hist-score-tag">${item.mode === 'friend' ? '友情' : '婚恋'} · ${item.score}分${item.range ? ` (${item.range})` : ''}</span>
         </div>
         <div class="history-meta">${item.note ? item.note + ' · ' : ''}${item.dateA} / ${item.dateB} · ${item.createdAt}</div>
       </div>
