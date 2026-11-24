@@ -25,7 +25,6 @@
   }catch(e){}
 })();
 </script>
-<link rel="stylesheet" href="./liuren.css?v=351">
 </head>
 <body>
 
@@ -110,7 +109,6 @@
       <div class="bazi-actions">
         <input id="baziFile" type="file" accept=".html,.htm,text/html" class="bazi-hidden">
         <button type="button" class="btn" id="baziImport">替换自定义 HTML</button>
-        <button type="button" class="btn" id="liurenBtn">小六壬</button>
         <button type="button" class="btn primary" id="baziClose">返回日历</button>
       </div>
     </div>
@@ -165,30 +163,6 @@
         </div>
       </aside>
     </div>
-  </div>
-</section>
-
-<section id="liurenWorkspace" hidden role="dialog" aria-modal="true" aria-labelledby="liurenTitle">
-  <div class="lr-header"><h2 id="liurenTitle">小六壬</h2><div class="lr-actions"><button id="liurenClose" class="btn" type="button">返回八字合盘</button><button id="liurenCalendar" class="btn primary" type="button">返回日历</button></div></div>
-  <div class="lr-content">
-  <p>传统民俗参考，不作为医疗、财务或其他重大决策依据。采用月上起日、日上起时，起点计一；北京时间、闰月按同名月、午夜换日。</p>
-  <form id="liurenForm">
-    <label for="liurenMode">起卦方式</label>
-    <select id="liurenMode"><option value="time">当前时间起卦</option><option value="numbers">报三数 / 自定义数字</option><option value="strokes">汉字笔画起卦</option></select>
-    <div id="liurenStrokeFields" hidden><label for="liurenChars">三个汉字</label><input id="liurenChars" type="text" placeholder="例如：山水月"><p>按实际简体或繁体写法逐字填写下方笔画数（山3、水4、月4）；不自动猜测笔画。</p></div>
-    <div id="liurenNumberFields" class="lr-number-grid" hidden>
-      <label>第一数<input id="liurenN1" type="text" inputmode="numeric" pattern="[0-9]+" maxlength="15"></label>
-      <label>第二数<input id="liurenN2" type="text" inputmode="numeric" pattern="[0-9]+" maxlength="15"></label>
-      <label>第三数<input id="liurenN3" type="text" inputmode="numeric" pattern="[0-9]+" maxlength="15"></label>
-    </div>
-    <button class="btn primary" id="liurenCast" type="submit">起卦</button>
-  </form>
-  <p id="liurenStatus" role="status"></p>
-  <div id="liurenResult" aria-live="polite"></div>
-  <label for="liurenQuestion">所问事项</label><textarea id="liurenQuestion" maxlength="3000" placeholder="仅在点击 AI 深度解卦时发送给已配置的模型"></textarea>
-  <div class="lr-actions"><button class="btn primary" id="liurenAnalyze" type="button" disabled>AI 深度解卦</button><button class="btn" id="liurenSave" type="button" disabled>保存卦例</button><button class="btn" id="liurenAiConfig" type="button">AI 助手设置</button></div>
-  <div id="liurenAnalysis" class="lr-analysis" aria-live="polite"></div>
-  <h3>历史卦例</h3><div id="liurenHistory"></div>
   </div>
 </section>
 
@@ -657,11 +631,9 @@
   <button class="btn ghost sm" id="swUpdateDismissBtn" type="button">稍后</button>
 </div>
 
-<script src="./supabase-local.js?v=351"></script>
+<script src="./supabase-local.js?v=400"></script>
 <script src="./app-data.js?v=400"></script>
-<script defer src="./app.js?v=351"></script>
+<script defer src="./app.js?v=400"></script>
 <script defer src="./bazi-hepan.js?v=400"></script>
-<script defer src="./liuren-core.js?v=351"></script>
-<script defer src="./liuren.js?v=351"></script>
 </body>
 </html>

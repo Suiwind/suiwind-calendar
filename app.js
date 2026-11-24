@@ -25,8 +25,6 @@ const rawSet = (k, v) => localStorage.setItem('zx_' + k, JSON.stringify(v));
 
 let syncSuppressed = false;
 let cloudDirty = false;
-let cloudRevision = 0;
-let cloudUploading = false;
 let syncTimer = null;
 
 const S = {
@@ -1233,70 +1231,38 @@ function snapshotData() {
   return {
     version: 30, savedAt: isoNow(), tasks: T, recurringTasks: RT, weekGoals: WG, monthGoals: MG,
     deadlineGoals: DG, scheduleOverrides: SO, scheduleConfig: SC, reflections: R, anniversaries: A,
-    reviewNotes: S.g('reviewNotes', {}), aiSummaries: S.g('aiSummaries', {}), learningState: LS, liurenHistory: rawGet('liurenHistory', [])
+    reviewNotes: S.g('reviewNotes', {}), aiSummaries: S.g('aiSummaries', {}), learningState: LS
   };
 }
 function applySnapshot(data) {
-  if (!data || typeof data !== 'object' || Array.isArray(data) || !['tasks','reflections','learningState','recurringTasks','weekGoals','monthGoals','scheduleConfig','anniversaries'].some(k => Object.hasOwn(data,k))) throw new Error('invalid snapshot');
-  for (const k of ['tasks','weekGoals','monthGoals','scheduleOverrides','scheduleConfig','reflections','reviewNotes','aiSummaries','learningState']) if (Object.hasOwn(data,k) && (data[k] === null || typeof data[k] !== 'object' || Array.isArray(data[k]))) throw new Error('invalid '+k);
-  for (const k of ['recurringTasks','deadlineGoals','anniversaries','liurenHistory']) if (Object.hasOwn(data,k) && (!Array.isArray(data[k]) || data[k].some(x=>!x || typeof x !== 'object' || Array.isArray(x)))) throw new Error('invalid '+k);
-  // Prepare and serialize every value before changing memory or storage. A legacy
-  // snapshot that lacks a field leaves that field untouched, including Liuren.
-  const next = {
-    tasks: data.tasks ?? T,
-    recurringTasks: (data.recurringTasks ?? RT).map(r => ({ ...r, endDate: r.endDate || '', doneDates: r.doneDates || [], skipDates: r.skipDates || [] })),
-    weekGoals: data.weekGoals ?? WG, monthGoals: data.monthGoals ?? MG,
-    deadlineGoals: (data.deadlineGoals ?? DG).map(g => ({ ...g, id: g.id || uuid(), priority: g.priority || 'medium', done: !!g.done, completedAt: g.completedAt || '' })),
-    scheduleOverrides: data.scheduleOverrides ?? SO,
-    scheduleConfig: { ...(data.scheduleConfig ?? SC) }, reflections: data.reflections ?? R,
-    anniversaries: (data.anniversaries ?? A).map(a => ({ ...a, id: a.id || uuid() })),
-    learningState: normalizeLS(JSON.parse(JSON.stringify(data.learningState ?? LS)))
-  };
-  if (!Array.isArray(next.scheduleConfig.disabledCourseIds)) next.scheduleConfig.disabledCourseIds = [];
-  for (const k of ['reviewNotes','aiSummaries','liurenHistory']) if (Object.hasOwn(data,k)) next[k] = data[k];
-  const writes = Object.entries(next).map(([k,v]) => ['zx_'+k, JSON.stringify(v)]);
-  const previous = writes.map(([k])=>[k,localStorage.getItem(k)]);
-  const changed = [];
+  if (!data || typeof data !== 'object') throw new Error('invalid');
   syncSuppressed = true;
   try {
-    for (const [k,v] of writes) { localStorage.setItem(k,v); changed.push(k); }
-  } catch (err) {
-    // Storage quota/privacy errors must not leave a partially restored state.
-    // Restore original raw strings, releasing newly written space first.
-    try {
-      for (const k of changed) localStorage.removeItem(k);
-      for (const [k,v] of previous) if (changed.includes(k) && v !== null) localStorage.setItem(k,v);
-    } catch (rollbackError) { throw new Error('恢复中断且自动回滚失败，请使用操作前的内部快照或导出的 JSON：'+rollbackError.message); }
-    throw err;
+    T = data.tasks || {};
+    RT = (data.recurringTasks || []).map(r => ({ ...r, endDate: r.endDate || '', doneDates: r.doneDates || [], skipDates: r.skipDates || [] }));
+    WG = data.weekGoals || {}; MG = data.monthGoals || {};
+    DG = (data.deadlineGoals || []).map(g => ({ ...g, id: g.id || uuid(), priority: g.priority || 'medium', done: !!g.done, completedAt: g.completedAt || '' }));
+    SO = data.scheduleOverrides || {};
+    SC = data.scheduleConfig || { disabledCourseIds: [] };
+    if (!Array.isArray(SC.disabledCourseIds)) SC.disabledCourseIds = [];
+    R = data.reflections || {};
+    A = (data.anniversaries || []).map(a => ({ ...a, id: a.id || uuid() }));
+    LS = normalizeLS(data.learningState || {});
+    rawSet('tasks', T); rawSet('recurringTasks', RT); rawSet('weekGoals', WG); rawSet('monthGoals', MG);
+    rawSet('deadlineGoals', DG); rawSet('scheduleOverrides', SO); rawSet('scheduleConfig', SC);
+    rawSet('reflections', R); rawSet('anniversaries', A); rawSet('reviewNotes', data.reviewNotes || {});
+    rawSet('learningState', LS);
   } finally { syncSuppressed = false; }
-  ({tasks:T,recurringTasks:RT,weekGoals:WG,monthGoals:MG,deadlineGoals:DG,scheduleOverrides:SO,scheduleConfig:SC,reflections:R,anniversaries:A,learningState:LS}=next);
   syncTimerLoop(); renderCal(); renderSide(); renderStreak(); renderLearningSummary();
-  window.dispatchEvent(new Event('suiwind:history-change'));
 }
 
-// Older clients may have synced a row without loading newly introduced fields.
-// On upload preserve remote extension data when its local key never existed.
-function adoptMissingExtensions(remote) {
-  if (!remote || typeof remote !== 'object' || Array.isArray(remote)) return;
-  const pending = [];
-  for (const field of ['liurenHistory']) {
-    if (!Object.hasOwn(remote,field) || localStorage.getItem('zx_'+field) !== null) continue;
-    const value = remote[field];
-    if (!Array.isArray(value) || value.some(x=>!x || typeof x !== 'object' || Array.isArray(x))) throw new Error('invalid remote '+field);
-    pending.push([field,value]);
-  }
-  for (const [field,value] of pending) rawSet(field,value);
-  if (pending.some(([k])=>k==='liurenHistory')) window.dispatchEvent(new Event('suiwind:history-change'));
-}
 function getBackups() { try { const a = JSON.parse(localStorage.getItem(BACKUP_KEY) || '[]'); return Array.isArray(a) ? a : []; } catch { return []; } }
-function createBackup(reason = '手动快照', quiet = false, data) {
-  try { if (data === undefined) data = snapshotData(); } catch (err) { alert('无法安全创建快照：'+err.message); return false; }
+function createBackup(reason = '手动快照', quiet = false) {
   const arr = getBackups();
-  arr.unshift({ id: uuid(), reason, dateKey: todayKey(), createdAt: isoNow(), data });
-  try { localStorage.setItem(BACKUP_KEY, JSON.stringify(arr.slice(0, 7))); } catch { alert('内部快照写入失败。为防止数据丢失，已取消操作；请先导出 JSON 或释放存储空间。'); return false; }
+  arr.unshift({ id: uuid(), reason, dateKey: todayKey(), createdAt: isoNow(), data: snapshotData() });
+  try { localStorage.setItem(BACKUP_KEY, JSON.stringify(arr.slice(0, 7))); } catch {}
   renderBackups();
   if (!quiet) toast('已创建内部快照', true);
-  return true;
 }
 function renderBackups() {
   const el = $('#backupHistoryList'); if (!el) return;
@@ -1312,8 +1278,8 @@ function renderBackups() {
     b.onclick = () => {
       const item = getBackups().find(x => x.id === b.dataset.brestore);
       if (!item || !confirm(`恢复「${item.reason}」快照？`)) return;
-      if (!createBackup('恢复前自动留档', true)) return;
-      try { applySnapshot(item.data); markCloudDirty(); } catch (err) { alert('快照恢复失败：'+err.message); return; }
+      createBackup('恢复前自动留档', true);
+      applySnapshot(item.data);
       toast('快照已恢复', true);
     };
   });
@@ -1353,65 +1319,36 @@ function initSupabase() {
     sb = window.supabase.createClient(c.url, c.key, { auth: { persistSession: true, autoRefreshToken: true } });
     sb.auth.getSession().then(({ data }) => {
       sbUser = data?.session?.user || null;
-      setCloudStatus(sbUser ? 'on' : 'off', sbUser ? '已连接' : '未登录');
+      setCloudStatus(sbUser ? 'on' : 'off', sbUser ? '已同步' : '未登录');
       updateCloudUI();
-      if (sbUser && cloudDirty) scheduleCloudSync();
     });
   } catch { sb = null; setCloudStatus('off', '配置错误'); }
 }
 async function uploadCloud(silent = false) {
   if (!sb || !sbUser) { if (!silent) alert('请先登录云端账号。'); return; }
-  if (cloudUploading) { if (!silent) toast('已有同步任务正在进行'); return; }
-  cloudUploading = true;
-  const client = sb, userId = sbUser.id, revision = cloudRevision;
-  const stillActive = () => sb === client && sbUser?.id === userId;
-  const fail = msg => { if (stillActive()) setCloudStatus('off', '同步失败'); if (!silent) alert(msg); };
-  try {
-    setCloudStatus('busy', '同步中');
-    const check = await client.from('calendar_state').select('payload,updated_at').eq('user_id', userId).maybeSingle();
-    if (!stillActive()) return;
-    if (check.error) { fail(check.error.message); return; }
-    const remote = check.data, meta = syncMeta();
-    const matched = remote && meta.lastSyncedCloudAt && Date.parse(remote.updated_at) === Date.parse(meta.lastSyncedCloudAt);
-    if (remote && (!matched || meta.conflict || (meta.userId && meta.userId !== userId))) {
-      saveSyncMeta({ cloudUpdatedAt: remote.updated_at, conflict: true });
-      if (silent) { setCloudStatus('off','发现冲突'); return; }
-      if (!confirm('云端有未确认的数据。是否先把云端保存为本机快照，再明确使用本机数据覆盖云端？取消后可选择下载。')) { setCloudStatus('off','发现冲突'); return; }
-      if (!createBackup('覆盖前云端留档', true, remote.payload)) { setCloudStatus('off','发现冲突'); return; }
-    }
-    adoptMissingExtensions(remote?.payload);
-    const stamp = isoNow(), payload = {...(remote?.payload || {}), ...snapshotData()};
-    const row = { user_id: userId, payload, updated_at: stamp };
-    const result = await client.from('calendar_state').writeIfUnchanged(row, remote?.updated_at ?? null);
-    if (!stillActive()) return;
-    if (result.error) { saveSyncMeta({conflict:true}); fail(result.error.message); return; }
-    const saved = result.data?.updated_at || stamp;
-    saveSyncMeta({ userId, lastSyncedCloudAt: saved, cloudUpdatedAt: saved, lastSyncedAt: stamp, ...(cloudRevision === revision ? {localUpdatedAt:stamp} : {}), conflict: false });
-    cloudDirty = cloudRevision !== revision; setCloudStatus('on','已同步');
-    if (!silent) toast('已上传到云端', true);
-  } catch (err) { fail(err.message || String(err)); }
-  finally { cloudUploading = false; if (cloudRevision !== revision && stillActive() && !syncMeta().conflict) scheduleCloudSync(); }
+  setCloudStatus('busy', '同步中');
+  const stamp = isoNow();
+  const { error } = await sb.from('calendar_state').upsert({ user_id: sbUser.id, payload: snapshotData(), updated_at: stamp }, { onConflict: 'user_id' }).select('updated_at').single();
+  if (error) { setCloudStatus('off', '同步失败'); if (!silent) alert(error.message); return; }
+  saveSyncMeta({ lastSyncedCloudAt: stamp, cloudUpdatedAt: stamp, lastSyncedAt: stamp, localUpdatedAt: stamp, conflict: false });
+  cloudDirty = false; setCloudStatus('on', '已同步');
+  if (!silent) toast('已上传到云端', true);
 }
 async function downloadCloud() {
   if (!sb || !sbUser) { alert('请先登录云端账号。'); return; }
-  if (cloudUploading) { toast('请先完成当前同步'); return; }
-  clearTimeout(syncTimer);
-  const client = sb, userId = sbUser.id;
+  createBackup('下载云端前', true);
   setCloudStatus('busy', '拉取中');
   const { data, error } = await sb.from('calendar_state').select('payload,updated_at').eq('user_id', sbUser.id).maybeSingle();
   if (error || !data?.payload) { setCloudStatus('on', '已同步'); alert(error ? error.message : '云端暂无数据。'); return; }
   if (!confirm('将使用云端数据覆盖当前本机数据（本机已自动备份快照），继续吗？')) { setCloudStatus('on', '已同步'); return; }
-  if (sb !== client || sbUser?.id !== userId || cloudUploading) { alert('同步状态已变化，请重试。'); return; }
-  if (!createBackup('下载云端前', true)) { setCloudStatus('off','下载取消'); return; }
-  try { applySnapshot(data.payload); } catch (err) { setCloudStatus('off','下载失败'); alert('云端数据格式无效或本机存储失败：'+err.message); return; }
-  clearTimeout(syncTimer); cloudDirty = false;
-  saveSyncMeta({ userId, lastSyncedCloudAt: data.updated_at, cloudUpdatedAt: data.updated_at, lastSyncedAt: isoNow(), localUpdatedAt: isoNow(), conflict: false });
+  applySnapshot(data.payload);
+  saveSyncMeta({ lastSyncedCloudAt: data.updated_at, cloudUpdatedAt: data.updated_at, lastSyncedAt: isoNow(), localUpdatedAt: isoNow(), conflict: false });
   setCloudStatus('on', '已同步'); toast('云端数据已恢复', true);
 }
-function markCloudDirty() { cloudDirty = true; cloudRevision++; }
+function markCloudDirty() { cloudDirty = true; }
 function scheduleCloudSync() {
   clearTimeout(syncTimer);
-  syncTimer = setTimeout(() => { if (sb && sbUser && cloudDirty && !syncMeta().conflict) uploadCloud(true); }, 2000);
+  syncTimer = setTimeout(() => { if (sb && sbUser && !syncMeta().conflict) uploadCloud(true); }, 2000);
 }
 
 /* ===== 主题、纪念日、通知、SW ===== */
@@ -1616,8 +1553,7 @@ function bindEvents() {
     try {
       const data = JSON.parse(await file.text());
       if (!confirm('导入将覆盖当前数据（系统会自动留存快照），继续吗？')) return;
-      if (!createBackup('导入 JSON 前', true)) return;
-      applySnapshot(data); markCloudDirty(); toast('备份已恢复', true);
+      createBackup('导入 JSON 前', true); applySnapshot(data); toast('备份已恢复', true);
     } catch { alert('无法读取该 JSON 备份文件。'); }
   };
 
@@ -1827,13 +1763,6 @@ function bindAiEvents() {
     }
   };
 }
-
-// Narrow bridge: reuse existing AI settings and backup/sync path.
-window.SuiwindLiurenHost = Object.freeze({
-  callAI, openAiModal,
-  getHistory: () => rawGet('liurenHistory', []),
-  setHistory: records => { if (!Array.isArray(records)) throw new TypeError('history'); S.s('liurenHistory', records); window.dispatchEvent(new Event('suiwind:history-change')); }
-});
 
 /* ===== 启动 ===== */
 applyTheme(localStorage.getItem('zx_theme') === 'dark' ? 'dark' : 'light');

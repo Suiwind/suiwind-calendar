@@ -1,17 +1,14 @@
-const CACHE = 'suiwind-calendar-v351-liuren';
+const CACHE = 'suiwind-calendar-v400';
 const FONT_CACHE = 'suiwind-fonts-v400';
 const CORE = [
   './',
   './index.html',
   './styles.css?v=400',
   './app-data.js?v=400',
-  './app.js?v=351',
-  './supabase-local.js?v=351',
+  './app.js?v=400',
+  './supabase-local.js?v=400',
   './bazi-hepan.js?v=400',
   './bazi-hepan-v5.html?v=400',
-  './liuren-core.js?v=351',
-  './liuren.js?v=351',
-  './liuren.css?v=351',
   './manifest.json',
   './favicon.svg'
 ];

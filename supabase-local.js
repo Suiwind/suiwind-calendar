@@ -208,15 +208,6 @@
             }
           };
         },
-        async writeIfUnchanged(row, expectedUpdatedAt){
-          const p=new URLSearchParams();p.set('select','updated_at');
-          if(expectedUpdatedAt!==null){p.set('user_id','eq.'+row.user_id);p.set('updated_at','eq.'+expectedUpdatedAt);}
-          const r=await restFetch(table,expectedUpdatedAt===null?'POST':'PATCH',p,row,'return=representation');
-          if(r.error)return r;
-          const rows=Array.isArray(r.data)?r.data:[];
-          if(rows.length!==1)return {data:null,error:errObj('云端数据已被其他设备修改，请重新选择同步方向。',409)};
-          return {data:rows[0],error:null};
-        },
         upsert(row,options){
           let columns='*';
           return {
