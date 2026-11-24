@@ -57,3 +57,9 @@ python tests/browser_smoke.py
 前四项与 `dom_smoke.py` 已通过；DOM 测试使用实际 Chromium 渲染 HTML/CSS/JS，模拟 localStorage 和 fetch，不进行真实站点导航。覆盖 360/390/768/1280px 四档宽度、一级导航、两术数入口、学习复盘、训练打卡/计时/进阶/备注/补记、旧 JSON 导入。`browser_smoke.py` 需在允许本地 HTTP 访问的环境中运行，覆盖真实 origin 存储、刷新与文件导出；本执行环境禁止导航到本机 HTTP，所以尚未执行完整链路。两份浏览器脚本需 Python Playwright + Chromium，可用 `CHROMIUM_PATH` 指定浏览器。
 
 交给 Claude：阅读 `CLAUDE_HANDOFF.md` 与 `HOOKS.md`，修改样式而非业务协议。先在测试站点通过回归，再上线。
+
+
+## V4.1.2 每日一句回归修复
+
+`#aiQuoteBar` 是全局独立区域，必须位于所有路由容器之外；不得嵌入 `#calendarWorkspace` 或任何可隐藏的页面。保留 `#aiQuoteText`、`#aiQuoteRefresh`、`#aiQuoteSetupBtn`，手机端允许完整换行，禁止使用 line-clamp、固定高度或隐藏溢出截断寄语。原 AI 生成、配置和本地缓存键保持不变。
+固定一级导航保持原样；书眉 `.top` 改为普通文档流，避免桌面端 sticky 偏移遮住每日一句。缓存资源版本更新为 412；不清除站点存储。

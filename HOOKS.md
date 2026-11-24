@@ -26,3 +26,8 @@ data: `data-action-check`, `data-action-delete`, `data-adel`, `data-bdel`, `data
 - 八字：`data-bazi-fill`，内嵌引擎 ID 与内联事件保持在 `bazi-hepan-v5.html` 中，不迁出 iframe。
 
 完整语义与状态见 `CLAUDE_HANDOFF.md`。
+
+
+## V4.1.2 每日一句回归修复
+
+`#aiQuoteBar` 是全局独立区域，必须位于所有路由容器之外；不得嵌入 `#calendarWorkspace` 或任何可隐藏的页面。保留 `#aiQuoteText`、`#aiQuoteRefresh`、`#aiQuoteSetupBtn`，手机端允许完整换行，禁止使用 line-clamp、固定高度或隐藏溢出截断寄语。原 AI 生成、配置和本地缓存键保持不变。

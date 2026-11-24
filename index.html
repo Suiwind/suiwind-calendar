@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#F3F0E8">
-<title>苏伊温德日历 V4.1 个人工作台</title>
+<title>苏伊温德日历 V4.1.2 个人工作台</title>
 <link rel="icon" type="image/svg+xml" href="./favicon.svg">
 <link rel="apple-touch-icon" href="./icons/apple-touch-icon.png">
 <link rel="manifest" href="./manifest.json">
@@ -13,9 +13,9 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/source-serif-4@5/600.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/noto-serif-sc@5/600.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/noto-serif-sc@5/700.css">
-<link rel="stylesheet" href="./styles.css?v=411">
-<link rel="stylesheet" href="./workbench.css?v=411">
-<link rel="stylesheet" href="./fitness.css?v=411">
+<link rel="stylesheet" href="./styles.css?v=412">
+<link rel="stylesheet" href="./workbench.css?v=412">
+<link rel="stylesheet" href="./fitness.css?v=412">
 <script>
 (function(){
   try{
@@ -104,7 +104,7 @@
     <div class="brand-wrap">
       <div class="brand-row">
         <h1>苏伊温德日历 · 工作台</h1>
-        <span class="version">V4.1</span>
+        <span class="version">V4.1.2</span>
       </div>
       <p class="poetic-sub">生命如暗室，不妨我明写春诗</p>
     </div>
@@ -134,6 +134,16 @@
   <button type="button" data-wb-route="fitness">健身训练</button>
   <button type="button" data-wb-route="arts">术数馆</button>
 </nav>
+<!-- 全局每日一句：独立于各工作台页面，不随导航隐藏 -->
+<!-- AI 每日一句 -->
+  <section class="ai-quote-bar" id="aiQuoteBar" aria-label="AI 每日一句">
+    <span class="ai-quote-tag"><svg class="ico ico-sm" aria-hidden="true"><use href="#i-sparkles"/></svg><span>每日一句</span></span>
+    <span class="ai-quote-text" id="aiQuoteText">载入中…</span>
+    <div class="ai-quote-actions">
+      <button class="btn sm ghost" id="aiQuoteRefresh" type="button" title="换一句"><svg class="ico ico-sm" aria-hidden="true"><use href="#i-rotate-cw"/></svg><span>换一句</span></button>
+      <button class="btn sm ghost" id="aiQuoteSetupBtn" type="button">配置 AI</button>
+    </div>
+  </section>
 <section id="learningNav" class="wb-subnav" hidden aria-label="学习复盘切换">
   <button class="btn" id="learningBtn" type="button">学习中心</button>
   <button class="btn" id="reviewBtn" type="button">周月复盘</button>
@@ -214,16 +224,6 @@
 
 
 <div class="app" id="calendarWorkspace">
-  <!-- AI 每日一句 -->
-  <section class="ai-quote-bar" id="aiQuoteBar" aria-label="AI 每日一句">
-    <span class="ai-quote-tag"><svg class="ico ico-sm" aria-hidden="true"><use href="#i-sparkles"/></svg><span>每日一句</span></span>
-    <span class="ai-quote-text" id="aiQuoteText">载入中…</span>
-    <div class="ai-quote-actions">
-      <button class="btn sm ghost" id="aiQuoteRefresh" type="button" title="换一句"><svg class="ico ico-sm" aria-hidden="true"><use href="#i-rotate-cw"/></svg><span>换一句</span></button>
-      <button class="btn sm ghost" id="aiQuoteSetupBtn" type="button">配置 AI</button>
-    </div>
-  </section>
-
   <!-- 主体两栏：月历 + 右侧今日工作台 -->
   <div class="layout">
     <main class="panel calendar">
@@ -719,13 +719,13 @@
   <button class="btn ghost sm" id="swUpdateDismissBtn" type="button">稍后</button>
 </div>
 
-<script src="./supabase-local.js?v=411"></script>
-<script src="./app-data.js?v=411"></script>
-<script defer src="./fitness-core.js?v=411"></script>
-<script defer src="./app.js?v=411"></script>
-<script defer src="./bazi-hepan.js?v=411"></script>
-<script defer src="./liuren-core.js?v=411"></script>
-<script defer src="./workbench.js?v=411"></script>
-<script defer src="./fitness.js?v=411"></script>
+<script src="./supabase-local.js?v=412"></script>
+<script src="./app-data.js?v=412"></script>
+<script defer src="./fitness-core.js?v=412"></script>
+<script defer src="./app.js?v=412"></script>
+<script defer src="./bazi-hepan.js?v=412"></script>
+<script defer src="./liuren-core.js?v=412"></script>
+<script defer src="./workbench.js?v=412"></script>
+<script defer src="./fitness.js?v=412"></script>
 </body>
 </html>

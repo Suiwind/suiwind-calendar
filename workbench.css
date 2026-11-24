@@ -4,7 +4,7 @@ body { padding-top: var(--wb-nav-height); }
 #workbenchNav { position: fixed; top: 0; left: 0; right: 0; z-index: 130; display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 4px; height: var(--wb-nav-height); padding: 6px max(12px,calc((100vw - 960px)/2)); background: var(--surface); border-bottom: 1px solid var(--line); }
 #workbenchNav button { background: transparent; color: var(--text); border: 1px solid transparent; border-radius: 8px; cursor: pointer; min-width: 0; font: inherit; }
 #workbenchNav button[aria-current="page"] { border-color: var(--line); background: var(--bg); font-weight: 700; }
-.top { top: var(--wb-nav-height); }
+.top { position: relative; top: 0; }
 .wb-subnav, .wb-page { width: min(100% - 24px, 1100px); margin: 16px auto; min-width: 0; }
 .wb-subnav, .wb-controls { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
 .wb-subnav button[aria-pressed="true"] { font-weight: 700; outline: 1px solid currentColor; }
@@ -34,4 +34,13 @@ body { padding-top: var(--wb-nav-height); }
   .wb-result-grid { grid-template-columns: 1fr; }
   .wb-page { padding: 12px; }
 }
-body[data-wb-page]:not([data-wb-page="calendar"]) .top { position: relative; top: 0; }
+
+/* Daily quote is a shared region, never nested inside a hidden route. */
+#aiQuoteBar { width: calc(100% - 64px); max-width: 1316px; margin: 20px auto 0; min-width: 0; }
+#aiQuoteText { display: block; min-width: 0; white-space: normal; overflow: visible; overflow-wrap: anywhere; -webkit-line-clamp: unset; }
+@media (max-width: 720px) {
+  #aiQuoteBar { width: calc(100% - 32px); margin: 14px auto 0; grid-template-columns: minmax(0,1fr) auto; gap: 6px 8px; }
+  #aiQuoteBar .ai-quote-tag { grid-column: 1; grid-row: 1; }
+  #aiQuoteBar .ai-quote-actions { grid-column: 2; grid-row: 1; justify-self: end; }
+  #aiQuoteText { grid-column: 1 / -1; grid-row: 2; }
+}

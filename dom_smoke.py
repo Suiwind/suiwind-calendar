@@ -31,7 +31,14 @@ with sync_playwright() as p:
     assert page.locator('#fitnessCalendarCard').is_visible()
     assert page.evaluate("JSON.parse(localStorage.getItem('zx_tasks'))['2026-11-24'][0].text")=='旧任务'
     assert page.evaluate("localStorage.getItem('zx_workshopTools')")=='[{"name":"legacy"}]'
-    def nav(name):page.locator(f'[data-wb-route="{name}"]').click()
+    quote=page.locator('#aiQuoteBar')
+    assert quote.is_visible()
+    page.wait_for_function("document.querySelector('#aiQuoteText').textContent==='模拟 AI 解读'")
+    page.locator('#aiQuoteSetupBtn').click();assert page.locator('#aiModal').is_visible();page.locator('#closeAiModal').click()
+    page.locator('#aiQuoteRefresh').click();page.wait_for_function("document.querySelector('#aiQuoteText').textContent==='模拟 AI 解读'")
+    def nav(name):
+        page.locator(f'[data-wb-route="{name}"]').click()
+        assert quote.is_visible(),name
     today=page.evaluate('SuiwindFitnessCore.dateKey()')
     nav('fitness');page.locator('#fitnessDate').fill(today);page.locator('#fitnessDate').dispatch_event('change')
     page.locator('#fitnessPlan').select_option('A');page.locator('#fitnessCreate').click()
@@ -60,10 +67,13 @@ with sync_playwright() as p:
     nav('calendar');page.locator('#cloudBtn').click();old={'version':30,'tasks':{'2026-11-24':[{'id':'legacy','text':'旧备份任务','done':False}]}};page.locator('#importFile').set_input_files({'name':'old.json','mimeType':'application/json','buffer':json.dumps(old).encode()});page.wait_for_function("JSON.parse(localStorage.getItem('zx_tasks'))['2026-11-24'][0].text==='旧备份任务'")
     assert page.evaluate('SuiwindWorkbench.getFitnessState()')==state;assert len(page.evaluate('SuiwindWorkbench.getHistory()'))==1
     page.locator('#closeCloud').click()
+    page.locator('#aiQuoteText').evaluate("e=>e.textContent='生命如暗室，不妨我明写春诗。'.repeat(8)")
     for width in [360,390,768,1280]:
         page.set_viewport_size({'width':width,'height':800})
         for view in ['calendar','learning','fitness','arts']:
             nav(view)
+            q=page.locator('#aiQuoteText').evaluate("e=>({h:e.clientHeight,scroll:e.scrollHeight,top:e.getBoundingClientRect().top,bottom:e.getBoundingClientRect().bottom,clamp:getComputedStyle(e).webkitLineClamp})")
+            assert q['scroll']<=q['h']+1 and q['clamp']=='none' and q['top']>=0 and q['bottom']<800,(width,view,q)
             if view=='fitness':page.locator('#fitnessToday').click()
             if view=='arts':
                 page.locator('#baziBtn').click();page.locator('#baziFrame').wait_for(state='visible');page.wait_for_timeout(60)

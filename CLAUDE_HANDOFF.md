@@ -52,3 +52,9 @@
 ## 5. 审美改完的验收
 
 执行 `node tests/liuren.test.cjs`、`node tests/fitness.test.cjs`、`node tests/contracts.test.cjs`、`python tests/static_checks.py`、`python tests/dom_smoke.py`。真实 HTTP 环境运行 `python tests/browser_smoke.py`，再测 iOS/Android 真机、主题、原课表与任务、JSON 文件导入导出、PWA 更新以及测试账号的 Supabase。当前执行环境仅通过内存 Chromium + 模拟本机存储/网络的页面交互测试；真实站点导航被管理策略阻止，不得标为真实联调已通过。
+
+
+## V4.1.2 每日一句回归修复
+
+`#aiQuoteBar` 是全局独立区域，必须位于所有路由容器之外；不得嵌入 `#calendarWorkspace` 或任何可隐藏的页面。保留 `#aiQuoteText`、`#aiQuoteRefresh`、`#aiQuoteSetupBtn`，手机端允许完整换行，禁止使用 line-clamp、固定高度或隐藏溢出截断寄语。原 AI 生成、配置和本地缓存键保持不变。
+固定一级导航保持原样；书眉 `.top` 改为普通文档流，避免桌面端 sticky 偏移遮住每日一句。缓存资源版本更新为 412；不清除站点存储。

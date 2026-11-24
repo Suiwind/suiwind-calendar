@@ -139,7 +139,7 @@ async function importFile(file) {
 }
 async function load() {
   try {
-    const r = await fetch('./bazi-hepan-v5.html?v=411', { cache: 'no-store' });
+    const r = await fetch('./bazi-hepan-v5.html?v=412', { cache: 'no-store' });
     if (r.ok) { const s = await r.text(); validateHTML(s); showFrame(s, 'V6.1 内置引擎'); return; }
   } catch (_) {}
   try {

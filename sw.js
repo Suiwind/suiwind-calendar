@@ -1,20 +1,20 @@
-const CACHE = 'suiwind-calendar-v411';
-const FONT_CACHE = 'suiwind-fonts-v411';
+const CACHE = 'suiwind-calendar-v412';
+const FONT_CACHE = 'suiwind-fonts-v412';
 const CORE = [
   './',
   './index.html',
-  './styles.css?v=411',
-  './app-data.js?v=411',
-  './app.js?v=411',
-  './supabase-local.js?v=411',
-  './bazi-hepan.js?v=411',
-  './bazi-hepan-v5.html?v=411',
-  './workbench.css?v=411',
-  './liuren-core.js?v=411',
-  './workbench.js?v=411',
-  './fitness-core.js?v=411',
-  './fitness.js?v=411',
-  './fitness.css?v=411',
+  './styles.css?v=412',
+  './app-data.js?v=412',
+  './app.js?v=412',
+  './supabase-local.js?v=412',
+  './bazi-hepan.js?v=412',
+  './bazi-hepan-v5.html?v=412',
+  './workbench.css?v=412',
+  './liuren-core.js?v=412',
+  './workbench.js?v=412',
+  './fitness-core.js?v=412',
+  './fitness.js?v=412',
+  './fitness.css?v=412',
   './manifest.json',
   './favicon.svg'
 ];
