@@ -61,7 +61,7 @@ const dbName = 'suiwind-bazi-v5-source', dbStore = 'source';
 let loaded = false, currentHtml = '';
 
 const styleState = () => {
-  document.body.style.overflow = $('baziPage').classList.contains('bazi-open') ? 'hidden' : '';
+  // 工作台负责页面布局，不再锁定 body 滚动。
 };
 function notice(msg, error = false) {
   const el = $('baziStatus'); if (!el) return;
@@ -139,7 +139,7 @@ async function importFile(file) {
 }
 async function load() {
   try {
-    const r = await fetch('./bazi-hepan-v5.html?v=400', { cache: 'no-store' });
+    const r = await fetch('./bazi-hepan-v5.html?v=411', { cache: 'no-store' });
     if (r.ok) { const s = await r.text(); validateHTML(s); showFrame(s, 'V6.1 内置引擎'); return; }
   } catch (_) {}
   try {
@@ -209,7 +209,7 @@ function createRecordCard(title, rec, compareKey) {
   }
   wrap.appendChild(info);
 
-  const btn = document.createElement('button'); btn.className = 'btn sm bazi-fill-btn'; btn.type = 'button'; btn.innerHTML = '一键填入复现 <svg class="ico ico-sm" aria-hidden="true"><use href="#i-chevron-right"/></svg>';
+  const btn = document.createElement('button'); btn.className = 'btn sm bazi-fill-btn'; btn.type = 'button'; btn.dataset.baziFill = compareKey; btn.innerHTML = '一键填入复现 <svg class="ico ico-sm" aria-hidden="true"><use href="#i-chevron-right"/></svg>';
   btn.onclick = () => {
     loadPairIntoFrame(rec);
     if ($('baziCompareCategory')) $('baziCompareCategory').value = compareKey;
@@ -308,11 +308,12 @@ window.addEventListener('message', e => {
 });
 
 function open() {
+  window.dispatchEvent(new Event('suiwind:bazi-open'));
   $('baziPage').classList.add('bazi-open'); $('baziPage').setAttribute('aria-hidden', 'false'); styleState();
   if (!loaded && !currentHtml) load(); $('baziClose').focus();
 }
 function close() {
-  $('baziPage').classList.remove('bazi-open'); $('baziPage').setAttribute('aria-hidden', 'true'); styleState(); $('baziBtn').focus();
+  $('baziPage').classList.remove('bazi-open'); $('baziPage').setAttribute('aria-hidden', 'true'); styleState(); window.dispatchEvent(new Event('suiwind:bazi-close'));
 }
 
 function init() {
@@ -332,8 +333,8 @@ function init() {
     });
   }
   document.addEventListener('keydown', e => {
-    if (e.key === 'Escape' && $('baziPage').classList.contains('bazi-open') && e.target?.tagName !== 'INPUT') close();
-  });
+    if (e.key === 'Escape' && $('baziPage').classList.contains('bazi-open') && e.target?.tagName !== 'INPUT' && !['cloudModal','scheduleModal','repeatActionModal','modal','aiModal'].some(id=>$(id)?.classList.contains('show'))) close();
+  }, true);
 }
 
 if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);

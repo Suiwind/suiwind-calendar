@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#F3F0E8">
-<title>苏伊温德日历 V3.5</title>
+<title>苏伊温德日历 V4.1 个人工作台</title>
 <link rel="icon" type="image/svg+xml" href="./favicon.svg">
 <link rel="apple-touch-icon" href="./icons/apple-touch-icon.png">
 <link rel="manifest" href="./manifest.json">
@@ -13,7 +13,9 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/source-serif-4@5/600.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/noto-serif-sc@5/600.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/noto-serif-sc@5/700.css">
-<link rel="stylesheet" href="./styles.css?v=400">
+<link rel="stylesheet" href="./styles.css?v=411">
+<link rel="stylesheet" href="./workbench.css?v=411">
+<link rel="stylesheet" href="./fitness.css?v=411">
 <script>
 (function(){
   try{
@@ -96,6 +98,50 @@
 </svg>
 
 <!-- 八字合盘全屏容器（保持与 bazi-hepan.js 100% 兼容） -->
+<!-- 顶部吸顶双线书眉 -->
+<header class="top">
+  <div class="top-inner">
+    <div class="brand-wrap">
+      <div class="brand-row">
+        <h1>苏伊温德日历 · 工作台</h1>
+        <span class="version">V4.1</span>
+      </div>
+      <p class="poetic-sub">生命如暗室，不妨我明写春诗</p>
+    </div>
+    <nav class="actions" aria-label="快捷设置">
+      <button class="btn nav-status" id="cloudBtn" type="button" title="云同步与数据备份">
+        <i class="cloud-dot" id="cloudDot"></i>
+        <span id="cloudText">仅本地</span>
+      </button>
+      <button class="btn icon-only" id="themeToggleBtn" type="button" title="切换深浅主题" aria-label="切换深浅主题">
+        <span id="themeToggleIcon"><svg class="ico" aria-hidden="true"><use href="#i-moon"/></svg></span>
+      </button>
+      <div class="more-menu-wrap" id="moreMenuWrap">
+        <button class="btn icon-only" id="moreMenuBtn" type="button" aria-expanded="false" aria-haspopup="menu" title="更多"><svg class="ico" aria-hidden="true"><use href="#i-ellipsis"/></svg></button>
+        <div class="more-menu-dropdown" id="moreMenuDropdown" role="menu">
+          <button class="btn more-menu-item" id="aiConfigBtn" type="button" role="menuitem"><svg class="ico ico-sm" aria-hidden="true"><use href="#i-sparkles"/></svg><span>AI 助手设置</span></button>
+          <button class="btn more-menu-item" id="workbenchScheduleBtn" type="button" role="menuitem">课表管理</button>
+          <button class="btn more-menu-item" id="annivBtn" type="button" role="menuitem"><svg class="ico ico-sm ico-seal" aria-hidden="true"><use href="#i-heart"/></svg><span>纪念日管理</span></button>
+          <button class="btn more-menu-item" id="notifyBtn" type="button" role="menuitem"><svg class="ico ico-sm" aria-hidden="true"><use href="#i-bell"/></svg><span class="notify-label" id="notifyLabel">开启提醒</span></button>
+        </div>
+      </div>
+    </nav>
+  </div>
+</header>
+<nav id="workbenchNav" aria-label="工作台导航">
+  <button type="button" data-wb-route="calendar" aria-current="page">日历</button>
+  <button type="button" data-wb-route="learning">学习复盘</button>
+  <button type="button" data-wb-route="fitness">健身训练</button>
+  <button type="button" data-wb-route="arts">术数馆</button>
+</nav>
+<section id="learningNav" class="wb-subnav" hidden aria-label="学习复盘切换">
+  <button class="btn" id="learningBtn" type="button">学习中心</button>
+  <button class="btn" id="reviewBtn" type="button">周月复盘</button>
+</section>
+<section id="artsNav" class="wb-subnav" hidden aria-label="术数馆切换">
+  <button class="btn" id="baziBtn" type="button">八字合盘 V6.1</button>
+  <button class="btn" id="liurenBtn" type="button">小六壬</button>
+</section>
 <section id="baziPage" class="bazi-page" data-density="compact" aria-hidden="true" aria-label="八字合盘">
   <div class="bazi-head">
     <div class="bazi-head-inner">
@@ -166,40 +212,8 @@
   </div>
 </section>
 
-<!-- 顶部吸顶双线书眉 -->
-<header class="top">
-  <div class="top-inner">
-    <div class="brand-wrap">
-      <div class="brand-row">
-        <h1>苏伊温德日历</h1>
-        <span class="version">V3.5</span>
-      </div>
-      <p class="poetic-sub">生命如暗室，不妨我明写春诗</p>
-    </div>
-    <nav class="actions" aria-label="主导航">
-      <button class="btn primary" id="learningBtn" type="button">学习中心</button>
-      <button class="btn" id="reviewBtn" type="button">周月复盘</button>
-      <button class="btn" id="baziBtn" type="button">八字合盘</button>
-      <button class="btn nav-status" id="cloudBtn" type="button" title="云同步与数据备份">
-        <i class="cloud-dot" id="cloudDot"></i>
-        <span id="cloudText">仅本地</span>
-      </button>
-      <button class="btn icon-only" id="themeToggleBtn" type="button" title="切换深浅主题" aria-label="切换深浅主题">
-        <span id="themeToggleIcon"><svg class="ico" aria-hidden="true"><use href="#i-moon"/></svg></span>
-      </button>
-      <div class="more-menu-wrap">
-        <button class="btn icon-only" id="moreMenuBtn" type="button" aria-expanded="false" aria-haspopup="menu" title="更多"><svg class="ico" aria-hidden="true"><use href="#i-ellipsis"/></svg></button>
-        <div class="more-menu-dropdown" id="moreMenuDropdown" role="menu">
-          <button class="btn more-menu-item" id="aiConfigBtn" type="button" role="menuitem"><svg class="ico ico-sm" aria-hidden="true"><use href="#i-sparkles"/></svg><span>AI 助手设置</span></button>
-          <button class="btn more-menu-item" id="annivBtn" type="button" role="menuitem"><svg class="ico ico-sm ico-seal" aria-hidden="true"><use href="#i-heart"/></svg><span>纪念日管理</span></button>
-          <button class="btn more-menu-item" id="notifyBtn" type="button" role="menuitem"><svg class="ico ico-sm" aria-hidden="true"><use href="#i-bell"/></svg><span class="notify-label">开启提醒</span></button>
-        </div>
-      </div>
-    </nav>
-  </div>
-</header>
 
-<div class="app">
+<div class="app" id="calendarWorkspace">
   <!-- AI 每日一句 -->
   <section class="ai-quote-bar" id="aiQuoteBar" aria-label="AI 每日一句">
     <span class="ai-quote-tag"><svg class="ico ico-sm" aria-hidden="true"><use href="#i-sparkles"/></svg><span>每日一句</span></span>
@@ -243,6 +257,7 @@
           <span class="legend-item"><i class="dot medium"></i>中优</span>
           <span class="legend-item"><i class="dot low"></i>低优</span>
           <span class="legend-item"><i class="dot learn"></i>已学</span>
+          <span class="legend-item"><i class="fit-legend-mark"></i>健身</span>
         </div>
         <span id="monthProgressText"></span>
       </div>
@@ -255,6 +270,7 @@
         <span class="date-distance" id="dateDistance">今天</span>
         <div class="hero-sub" id="dateSub"></div>
         <div class="hero-events" id="dateEventsLine"></div>
+        <div id="fitnessCalendarCard" class="fit-calendar-card" hidden><span id="fitnessCalendarSummary"></span><button id="fitnessCalendarOpen" class="btn sm" type="button">查看训练</button></div>
       </div>
 
       <div class="side-tabs" role="tablist">
@@ -380,6 +396,78 @@
     </aside>
   </div>
 </div>
+
+<section id="fitnessWorkspace" class="wb-page" hidden aria-labelledby="fitnessTitle">
+  <h2 id="fitnessTitle">居家睡前健身</h2>
+  <p>四色弹力带 · 零地面 · 周二 / 周五 / 周日 · 北京时间</p>
+  <p id="fitnessStatus" role="status" aria-live="polite"></p>
+  <div id="fitnessWeekStats" class="fit-stats"></div>
+  <div id="fitnessWeek" class="fit-week" aria-label="本周训练计划"></div>
+  <div class="wb-controls">
+    <label for="fitnessDate">训练日期 <input id="fitnessDate" type="date"></label>
+    <button id="fitnessToday" class="btn" type="button">回到今天</button>
+  </div>
+  <p id="fitnessDayHint"></p>
+  <div id="fitnessSetup" class="fit-panel">
+    <div class="fit-grid">
+      <label for="fitnessPlan">训练方案<select id="fitnessPlan"><option value="">休息 / 选择补练</option><option value="A">A · 上肢推拉</option><option value="B">B · 下肢力量</option><option value="C">C · 全身轻量</option></select></label>
+      <label for="fitnessLevel">训练组数<select id="fitnessLevel"><option value="2">起步：2 组</option><option value="3">进阶：最多 3 组</option></select></label>
+    </div>
+    <p class="small">前两周先做 2 组；适应后自行选择进阶。固定 2 组的动作不增加。实际用带按能力选择，不必强行使用最重档。</p>
+    <button id="fitnessCreate" class="btn primary" type="button">建立训练记录</button>
+    <div id="fitnessPreview"></div>
+  </div>
+  <div id="fitnessSession" hidden>
+    <div class="fit-panel">
+      <h3 id="fitnessSessionTitle"></h3>
+      <p id="fitnessProgress"></p><progress id="fitnessProgressBar" value="0" max="10" aria-label="训练组数进度"></progress>
+      <div class="fit-grid">
+        <div><span class="small">训练计时（含休息）</span><output id="fitnessClock" class="fit-clock">00:00</output><button id="fitnessTimer" type="button" class="btn">开始计时</button></div>
+        <div><span class="small">组间休息倒计时</span><output id="fitnessRestClock" class="fit-clock">00:00</output><div class="wb-controls"><button type="button" class="btn sm" data-fit-rest="45">45秒</button><button type="button" class="btn sm" data-fit-rest="60">60秒</button><button type="button" class="btn sm" data-fit-rest="90">90秒</button><button id="fitnessRestStop" class="btn sm" type="button">结束休息</button></div></div>
+      </div>
+      <p class="small">计时以时间戳计算，切屏或刷新不丢进度；结束训练或暂停计时后停止累计。</p>
+      <details id="fitnessManualDetails"><summary>补记或修正训练用时</summary><div class="wb-controls"><label for="fitnessManualMinutes">实际用时（分钟）<input id="fitnessManualMinutes" type="number" min="0" max="1440" step="1" inputmode="numeric"></label><button id="fitnessManualSave" type="button" class="btn sm">保存用时</button></div></details>
+    </div>
+    <label class="fit-check"><input id="fitnessWarmup" type="checkbox">热身完成：原地高抬腿踏步 30 秒 → 绕肩 15 次 → 黄带水平撕拉 10 次（约 2 分钟）</label>
+    <div id="fitnessMoves"></div>
+    <label class="fit-check"><input id="fitnessCooldown" type="checkbox"><span id="fitnessCooldownText"></span></label>
+    <label for="fitnessNote">训练感受 / 调整备注（自动保存）</label><textarea id="fitnessNote" maxlength="2000" placeholder="例如：用红带替代黑带；训练后状态如何？"></textarea>
+    <div class="wb-controls">
+      <button id="fitnessFinish" type="button" class="btn primary">结束训练并保存</button>
+      <button id="fitnessReopen" type="button" class="btn" hidden>继续 / 修正记录</button>
+      <button id="fitnessDelete" type="button" class="btn danger">删除本日记录</button>
+    </div>
+  </div>
+  <details id="fitnessGuide"><summary>弹力带速查与恢复建议</summary>
+    <p>通常黄（最轻）→ 红 → 黑 → 紫（最重）；以实际规格、带宽和阻力为准。练前检查带体与固定点，戴手套。动作稳定且次数达标后再加阻，不需要练到力竭。</p>
+    <p>黄色：热身、撕拉、推举起步；红色：胸推、弯举、臂屈伸与推举进阶；黑色：划船、硬拉、后抬腿；紫色：深蹲、相扑深蹲。可换轻带、调整握距或减量。</p>
+    <p>组间按动作建议休息 45–90 秒，疲劳时延长。筋膜枪使用大圆球头、中低档，每个部位约 30–45 秒；避免颈椎、脊椎、膝盖骨、腋窝及疼痛或受伤处。练后按需要放松、洗漱。</p>
+    <p>原计划饮食结构：一掌心蛋白质、一拳主食、一至两拳蔬菜；训练后按需要补充食物。睡眠优先，不因打卡牺牲休息。若出现锐痛、头晕、胸痛等异常，停止训练。计划用时 20–25 分钟仅作参考，不强行压缩休息。</p>
+    <p>原计划的未来可选升级：有健身毯后，可考虑死虫式、臀桥、标准平板支撑；本版仍采用零地面方案，不自动替换动作。</p>
+  </details>
+  <details id="fitnessHistoryPanel" open><summary>训练历史</summary><div id="fitnessHistoryStats"></div><div id="fitnessHistory"></div><button id="fitnessMoreHistory" class="btn" type="button" hidden>查看更多</button></details>
+</section>
+<section id="liurenWorkspace" class="wb-page" hidden aria-labelledby="liurenTitle">
+  <h2 id="liurenTitle">小六壬</h2>
+  <p>传统民俗参考，不作为医疗、财务或其他重大决策依据。采用月上起日、日上起时，起点计一；北京时间、闰月按同名月、午夜换日。</p>
+  <form id="liurenForm">
+    <label for="liurenMode">起卦方式</label>
+    <select id="liurenMode"><option value="time">当前时间起卦</option><option value="numbers">报三数 / 自定义数字</option><option value="strokes">汉字笔画起卦</option></select>
+    <div id="liurenStrokeFields" hidden><label for="liurenChars">三个汉字</label><input id="liurenChars" type="text" placeholder="例如：山水月"><p>按实际简体或繁体写法逐字填写下方笔画数（山3、水4、月4）；不自动猜测笔画。</p></div>
+    <div id="liurenNumberFields" class="wb-number-grid" hidden>
+      <label>第一数<input id="liurenN1" type="text" inputmode="numeric" pattern="[0-9]+" maxlength="15"></label>
+      <label>第二数<input id="liurenN2" type="text" inputmode="numeric" pattern="[0-9]+" maxlength="15"></label>
+      <label>第三数<input id="liurenN3" type="text" inputmode="numeric" pattern="[0-9]+" maxlength="15"></label>
+    </div>
+    <button class="btn primary" id="liurenCast" type="submit">起卦</button>
+  </form>
+  <p id="liurenStatus" role="status"></p>
+  <div id="liurenResult" aria-live="polite"></div>
+  <label for="liurenQuestion">所问事项</label><textarea id="liurenQuestion" maxlength="3000" placeholder="仅在点击 AI 深度解卦时发送给已配置的模型"></textarea>
+  <div class="wb-controls"><button class="btn primary" id="liurenAnalyze" type="button" disabled>AI 深度解卦</button><button class="btn" id="liurenSave" type="button" disabled>保存卦例</button><button class="btn" id="liurenAiConfig" type="button">AI 助手设置</button></div>
+  <div id="liurenAnalysis" class="wb-analysis" aria-live="polite"></div>
+  <h3>历史卦例</h3><div id="liurenHistory"></div>
+</section>
 
 <!-- 学习中心弹窗（4 核心标签） -->
 <div class="modal" id="learningModal">
@@ -631,9 +719,13 @@
   <button class="btn ghost sm" id="swUpdateDismissBtn" type="button">稍后</button>
 </div>
 
-<script src="./supabase-local.js?v=400"></script>
-<script src="./app-data.js?v=400"></script>
-<script defer src="./app.js?v=400"></script>
-<script defer src="./bazi-hepan.js?v=400"></script>
+<script src="./supabase-local.js?v=411"></script>
+<script src="./app-data.js?v=411"></script>
+<script defer src="./fitness-core.js?v=411"></script>
+<script defer src="./app.js?v=411"></script>
+<script defer src="./bazi-hepan.js?v=411"></script>
+<script defer src="./liuren-core.js?v=411"></script>
+<script defer src="./workbench.js?v=411"></script>
+<script defer src="./fitness.js?v=411"></script>
 </body>
 </html>

@@ -1,0 +1,37 @@
+/* Workbench layout only. Keep JS hooks in id/data attributes. */
+:root { --wb-nav-height: 58px; }
+body { padding-top: var(--wb-nav-height); }
+#workbenchNav { position: fixed; top: 0; left: 0; right: 0; z-index: 130; display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 4px; height: var(--wb-nav-height); padding: 6px max(12px,calc((100vw - 960px)/2)); background: var(--surface); border-bottom: 1px solid var(--line); }
+#workbenchNav button { background: transparent; color: var(--text); border: 1px solid transparent; border-radius: 8px; cursor: pointer; min-width: 0; font: inherit; }
+#workbenchNav button[aria-current="page"] { border-color: var(--line); background: var(--bg); font-weight: 700; }
+.top { top: var(--wb-nav-height); }
+.wb-subnav, .wb-page { width: min(100% - 24px, 1100px); margin: 16px auto; min-width: 0; }
+.wb-subnav, .wb-controls { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.wb-subnav button[aria-pressed="true"] { font-weight: 700; outline: 1px solid currentColor; }
+.wb-page { padding: 16px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); overflow-wrap: anywhere; }
+.wb-page > *, .wb-page form > * { margin-block: 10px; }
+.wb-page label { display: block; }
+.wb-page input, .wb-page select, .wb-page textarea { width: 100%; max-width: 100%; min-width: 0; }
+.wb-page textarea { min-height: 90px; }
+.wb-number-grid, .wb-result-grid { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 8px; }
+.wb-result-grid > div, .wb-history-item { padding: 12px; border: 1px solid var(--line); border-radius: 8px; margin-block: 8px; }
+.wb-analysis { white-space: pre-wrap; overflow-wrap: anywhere; }
+#learningModal, #reviewModal { position: static; display: none; background: none; backdrop-filter: none; padding: 0; margin: 0 auto 24px; width: min(100% - 24px,1100px); }
+#learningModal.show, #reviewModal.show { display: block; }
+#learningModal .modalbox, #reviewModal .modalbox { width: 100%; max-height: none; overflow: visible; transform: none; box-shadow: none; min-width: 0; }
+#baziPage { position: static; display: none; transform: none; overflow: visible; }
+#baziPage.bazi-open { display: block; }
+#baziPage .bazi-head { top: var(--wb-nav-height); }
+[hidden] { display: none !important; }
+@media (max-width: 720px) {
+  body { padding-top: 0; padding-bottom: calc(var(--wb-nav-height) + env(safe-area-inset-bottom)); }
+  #workbenchNav { top: auto; bottom: 0; height: calc(var(--wb-nav-height) + env(safe-area-inset-bottom)); padding: 5px 6px calc(5px + env(safe-area-inset-bottom)); border-top: 1px solid var(--line); border-bottom: 0; }
+  .top, #baziPage .bazi-head { top: 0; }
+  .top .actions { overflow: visible; flex-wrap: wrap; padding-right: 0; mask-image: none; -webkit-mask-image: none; }
+  .modal:not(#learningModal):not(#reviewModal) { bottom: calc(var(--wb-nav-height) + env(safe-area-inset-bottom)); }
+  .modal:not(#learningModal):not(#reviewModal) .modalbox { max-height: calc(100dvh - var(--wb-nav-height) - env(safe-area-inset-bottom)); }
+  #learningModal .modalbox, #reviewModal .modalbox { border-radius: 12px; padding: 12px; }
+  .wb-result-grid { grid-template-columns: 1fr; }
+  .wb-page { padding: 12px; }
+}
+body[data-wb-page]:not([data-wb-page="calendar"]) .top { position: relative; top: 0; }

@@ -25,6 +25,7 @@ const rawSet = (k, v) => localStorage.setItem('zx_' + k, JSON.stringify(v));
 
 let syncSuppressed = false;
 let cloudDirty = false;
+let cloudRevision = 0, cloudUploading = false;
 let syncTimer = null;
 
 const S = {
@@ -344,8 +345,8 @@ function renderSchedule() {
     }
     row.className = `schedule-item ${e.type}${phaseCls}`;
     const meta = [e.teacher, e.room, e.note, e.source === 'added' ? '临时' : ''].filter(Boolean).join(' · ');
-    row.innerHTML = `<div class="schedule-time">${esc(e.start)}–${esc(e.end)}</div><div class="sched-node" aria-hidden="true"></div><div class="schedule-body"><div class="schedule-name">${esc(e.name)}${phaseCls === ' is-now' ? '<span class="now-pill">进行中</span>' : ''}</div>${meta ? `<div class="schedule-meta">${esc(meta)}</div>` : ''}</div>${e.type === 'course' ? `<button class="x" type="button" title="取消/删除" aria-label="取消/删除">${ico('x', 'ico-sm')}</button>` : ''}`;
-    const del = row.querySelector('.x');
+    row.innerHTML = `<div class="schedule-time">${esc(e.start)}–${esc(e.end)}</div><div class="sched-node" aria-hidden="true"></div><div class="schedule-body"><div class="schedule-name">${esc(e.name)}${phaseCls === ' is-now' ? '<span class="now-pill">进行中</span>' : ''}</div>${meta ? `<div class="schedule-meta">${esc(meta)}</div>` : ''}</div>${e.type === 'course' ? `<button data-action-delete class="x" type="button" title="取消/删除" aria-label="取消/删除">${ico('x', 'ico-sm')}</button>` : ''}`;
+    const del = row.querySelector('[data-action-delete]');
     if (del) del.onclick = () => {
       const k = fmt(sel), ov = schedOv(sel);
       if (e.source === 'base') {
@@ -601,6 +602,7 @@ function renderCal(animate = false) {
     g.appendChild(b);
   }
   $('#monthProgressText').textContent = monthTotal ? `本月任务 ${monthDone} / ${monthTotal}（${Math.round(monthDone / monthTotal * 100)}%）` : '本月暂无任务';
+  window.dispatchEvent(new Event('suiwind:calendar-render'));
 }
 
 function renderTodayFocus() {
@@ -655,9 +657,9 @@ function renderTasks() {
     const row = document.createElement('div');
     row.className = 'task' + (t.done ? ' done' : '');
     const pTxt = t.priority === 'high' ? '高' : t.priority === 'low' ? '低' : '中';
-    row.innerHTML = `<input type="checkbox" ${t.done ? 'checked' : ''}><div class="txt"><div>${esc(t.text)}</div><div class="meta"><span class="meta-tag ${t.priority || 'medium'}">${pTxt}优先</span>${t.reminder ? `<span class="meta-tag info">${ico('clock', 'ico-sm')}${esc(t.reminder)}</span>` : ''}${t.recurring ? `<span class="meta-tag info">${ico('rotate-cw', 'ico-sm')}重复</span>` : ''}</div></div><button class="x" type="button" aria-label="删除">${ico('x', 'ico-sm')}</button>`;
-    row.querySelector('input').onchange = ev => { setTaskDone(t, sel, ev.target.checked); renderCal(); renderTasks(); };
-    row.querySelector('.x').onclick = () => {
+    row.innerHTML = `<input data-action-check type="checkbox" ${t.done ? 'checked' : ''}><div class="txt"><div>${esc(t.text)}</div><div class="meta"><span class="meta-tag ${t.priority || 'medium'}">${pTxt}优先</span>${t.reminder ? `<span class="meta-tag info">${ico('clock', 'ico-sm')}${esc(t.reminder)}</span>` : ''}${t.recurring ? `<span class="meta-tag info">${ico('rotate-cw', 'ico-sm')}重复</span>` : ''}</div></div><button data-action-delete class="x" type="button" aria-label="删除">${ico('x', 'ico-sm')}</button>`;
+    row.querySelector('[data-action-check]').onchange = ev => { setTaskDone(t, sel, ev.target.checked); renderCal(); renderTasks(); };
+    row.querySelector('[data-action-delete]').onclick = () => {
       if (t.recurring) {
         pendingRecurring = { task: t, date: new Date(sel) };
         $('#repeatActionDesc').textContent = `${t.text} · ${fmt(sel)}`;
@@ -685,9 +687,9 @@ function renderDeadlines() {
     const stCls = g.done ? 'low' : n <= 0 ? 'high' : n <= 7 ? 'medium' : 'info';
     const row = document.createElement('div');
     row.className = 'task' + (g.done ? ' done' : '');
-    row.innerHTML = `<input type="checkbox" ${g.done ? 'checked' : ''}><div class="txt"><div>${esc(g.text)}</div><div class="meta"><span class="meta-tag">${esc(g.dueDate)}</span><span class="meta-tag ${stCls}">${stText}</span></div></div><button class="x" type="button" aria-label="删除">${ico('x', 'ico-sm')}</button>`;
-    row.querySelector('input').onchange = ev => { g.done = ev.target.checked; g.completedAt = g.done ? isoNow() : ''; S.s('deadlineGoals', DG); renderDeadlines(); renderCal(); };
-    row.querySelector('.x').onclick = () => { if (confirm(`删除「${g.text}」？`)) { DG = DG.filter(x => x.id !== g.id); S.s('deadlineGoals', DG); renderDeadlines(); renderCal(); } };
+    row.innerHTML = `<input data-action-check type="checkbox" ${g.done ? 'checked' : ''}><div class="txt"><div>${esc(g.text)}</div><div class="meta"><span class="meta-tag">${esc(g.dueDate)}</span><span class="meta-tag ${stCls}">${stText}</span></div></div><button data-action-delete class="x" type="button" aria-label="删除">${ico('x', 'ico-sm')}</button>`;
+    row.querySelector('[data-action-check]').onchange = ev => { g.done = ev.target.checked; g.completedAt = g.done ? isoNow() : ''; S.s('deadlineGoals', DG); renderDeadlines(); renderCal(); };
+    row.querySelector('[data-action-delete]').onclick = () => { if (confirm(`删除「${g.text}」？`)) { DG = DG.filter(x => x.id !== g.id); S.s('deadlineGoals', DG); renderDeadlines(); renderCal(); } };
     e.appendChild(row);
   });
 }
@@ -703,9 +705,9 @@ function renderGoals() {
     box.innerHTML = list.length ? '' : '<div class="small py-4">暂无目标</div>';
     list.forEach((g, i) => {
       const r = document.createElement('div'); r.className = 'task' + (g.done ? ' done' : '');
-      r.innerHTML = `<input type="checkbox" ${g.done ? 'checked' : ''}><div class="txt">${esc(g.text)}</div><button class="x" type="button" aria-label="删除">${ico('x', 'ico-sm')}</button>`;
-      r.querySelector('input').onchange = ev => { g.done = ev.target.checked; S.s(sk, obj); renderGoals(); };
-      r.querySelector('.x').onclick = () => { list.splice(i, 1); obj[key] = list; S.s(sk, obj); renderGoals(); };
+      r.innerHTML = `<input data-action-check type="checkbox" ${g.done ? 'checked' : ''}><div class="txt">${esc(g.text)}</div><button data-action-delete class="x" type="button" aria-label="删除">${ico('x', 'ico-sm')}</button>`;
+      r.querySelector('[data-action-check]').onchange = ev => { g.done = ev.target.checked; S.s(sk, obj); renderGoals(); };
+      r.querySelector('[data-action-delete]').onclick = () => { list.splice(i, 1); obj[key] = list; S.s(sk, obj); renderGoals(); };
       box.appendChild(r);
     });
   };
@@ -782,6 +784,7 @@ function renderSide() {
   renderGoals();
   ['q1', 'q2', 'q3'].forEach(id => { $('#' + id).value = r[id] || ''; });
   renderReflectState(r);
+  window.dispatchEvent(new Event('suiwind:calendar-render'));
 }
 
 function setSideTab(tab) {
@@ -811,6 +814,7 @@ function renderLearningSummary() {
 
 function openLearning(tab = 'today') {
   activeLearningTab = tab;
+  window.dispatchEvent(new CustomEvent('suiwind:learning-open'));
   $('#learningModal').classList.add('show');
   renderLearningSummary();
   renderLearningPanel();
@@ -910,7 +914,7 @@ function renderLearnTimer() {
           <b>${esc(x.subject)}</b>
           <span>${secHuman(x.focusSeconds)}</span>
           <span class="small">${x.manual ? esc(sessionDate(x)) + ' 补记' : bjDateTime(x.startAt)}${x.note ? ' · ' + esc(x.note) : ''}</span>
-          <button class="x" type="button" data-del-sess="${x.id}" aria-label="删除">${ico('x', 'ico-sm')}</button>
+          <button data-action-delete class="x" type="button" data-del-sess="${x.id}" aria-label="删除">${ico('x', 'ico-sm')}</button>
         </div>`).join('') : '<div class="small">暂无专注记录。</div>'}
     </div>`;
 
@@ -1133,6 +1137,12 @@ function collectPeriod(a, b) {
   return { days, total, done, hiTotal, hiDone, refDays, wrong, right, better };
 }
 
+function fitnessPeriodText(a,b) {
+  try {
+    const x = window.SuiwindFitnessCore.summarize(readFitnessState(),fmt(a),fmt(b));
+    return `完整 ${x.complete} 次 · 部分 ${x.partial} 次 · ${x.sets} 组 · 已累计 ${Math.floor(x.elapsedMs/60000)} 分钟（不含仍在运行的计时）`;
+  } catch { return '健身数据暂不可读，请检查本机记录。'; }
+}
 function buildReviewMd(type) {
   const isW = type === 'week';
   const a = isW ? startOfWeek(sel) : new Date(sel.getFullYear(), sel.getMonth(), 1, 12);
@@ -1146,7 +1156,8 @@ function buildReviewMd(type) {
     `- 任务完成：${data.done} / ${data.total}（${data.total ? Math.round(data.done / data.total * 100) : 0}%）`,
     `- 高优先级：${data.hiDone} / ${data.hiTotal}`,
     `- 复盘天数：${data.refDays} 天`,
-    `- 专注时长：${secHuman(studySecBetween(fmt(a), fmt(b)))}`, ''
+    `- 专注时长：${secHuman(studySecBetween(fmt(a), fmt(b)))}`,
+    `- 健身训练：${fitnessPeriodText(a,b)}`, ''
   ];
   const sec = (h, arr) => {
     lines.push(`## ${h}`, '');
@@ -1199,6 +1210,7 @@ function renderReviewModal() {
       <div class="review-metric"><small>复盘天数</small><strong>${data.refDays}<small> 天</small></strong></div>
       <div class="review-metric"><small>专注累计</small><strong>${secHuman(studySecBetween(fmt(a), fmt(b)))}</strong></div>
     </div>
+    <div class="card-box" id="fitnessReviewSummary"><h4>健身训练</h4><p>${esc(fitnessPeriodText(a,b))}</p></div>
     <div class="card-box"><h4>完成趋势</h4><div class="trend">${trendHtml}</div></div>
     <div class="review-grid">
       <div class="card-box reflect-col"><h4>可以做得更好</h4>${listHtml(data.wrong)}</div>
@@ -1227,42 +1239,83 @@ function renderReviewModal() {
 }
 
 /* ===== 云同步与本地快照（100% 兼容 V2.0） ===== */
+function readFitnessState() {
+  const core = window.SuiwindFitnessCore;
+  const raw = localStorage.getItem('zx_fitnessState');
+  return raw === null ? core.empty() : core.validate(JSON.parse(raw));
+}
 function snapshotData() {
   return {
     version: 30, savedAt: isoNow(), tasks: T, recurringTasks: RT, weekGoals: WG, monthGoals: MG,
     deadlineGoals: DG, scheduleOverrides: SO, scheduleConfig: SC, reflections: R, anniversaries: A,
-    reviewNotes: S.g('reviewNotes', {}), aiSummaries: S.g('aiSummaries', {}), learningState: LS
+    reviewNotes: S.g('reviewNotes', {}), aiSummaries: S.g('aiSummaries', {}), learningState: LS, liurenHistory: rawGet('liurenHistory', []), fitnessState: readFitnessState()
   };
 }
 function applySnapshot(data) {
-  if (!data || typeof data !== 'object') throw new Error('invalid');
+  if (!data || typeof data !== 'object' || Array.isArray(data) || !['tasks','reflections','learningState','recurringTasks','weekGoals','monthGoals','scheduleConfig','anniversaries'].some(k => Object.hasOwn(data,k))) throw new Error('invalid snapshot');
+  for (const k of ['tasks','weekGoals','monthGoals','scheduleOverrides','scheduleConfig','reflections','reviewNotes','aiSummaries','learningState']) if (Object.hasOwn(data,k) && (data[k] === null || typeof data[k] !== 'object' || Array.isArray(data[k]))) throw new Error('invalid '+k);
+  for (const k of ['recurringTasks','deadlineGoals','anniversaries','liurenHistory']) if (Object.hasOwn(data,k) && (!Array.isArray(data[k]) || data[k].some(x=>!x || typeof x !== 'object' || Array.isArray(x)))) throw new Error('invalid '+k);
+  // Prepare and serialize every value before changing memory or storage. A legacy
+  // snapshot that lacks a field leaves that field untouched, including Liuren.
+  const next = {
+    tasks: data.tasks ?? T,
+    recurringTasks: (data.recurringTasks ?? RT).map(r => ({ ...r, endDate: r.endDate || '', doneDates: r.doneDates || [], skipDates: r.skipDates || [] })),
+    weekGoals: data.weekGoals ?? WG, monthGoals: data.monthGoals ?? MG,
+    deadlineGoals: (data.deadlineGoals ?? DG).map(g => ({ ...g, id: g.id || uuid(), priority: g.priority || 'medium', done: !!g.done, completedAt: g.completedAt || '' })),
+    scheduleOverrides: data.scheduleOverrides ?? SO,
+    scheduleConfig: { ...(data.scheduleConfig ?? SC) }, reflections: data.reflections ?? R,
+    anniversaries: (data.anniversaries ?? A).map(a => ({ ...a, id: a.id || uuid() })),
+    learningState: normalizeLS(JSON.parse(JSON.stringify(data.learningState ?? LS)))
+  };
+  if (!Array.isArray(next.scheduleConfig.disabledCourseIds)) next.scheduleConfig.disabledCourseIds = [];
+  if (Object.hasOwn(data,'fitnessState')) window.SuiwindFitnessCore.validate(data.fitnessState);
+  for (const k of ['reviewNotes','aiSummaries','liurenHistory','fitnessState']) if (Object.hasOwn(data,k)) next[k] = data[k];
+  const writes = Object.entries(next).map(([k,v]) => ['zx_'+k, JSON.stringify(v)]);
+  const previous = writes.map(([k])=>[k,localStorage.getItem(k)]);
+  const changed = [];
   syncSuppressed = true;
   try {
-    T = data.tasks || {};
-    RT = (data.recurringTasks || []).map(r => ({ ...r, endDate: r.endDate || '', doneDates: r.doneDates || [], skipDates: r.skipDates || [] }));
-    WG = data.weekGoals || {}; MG = data.monthGoals || {};
-    DG = (data.deadlineGoals || []).map(g => ({ ...g, id: g.id || uuid(), priority: g.priority || 'medium', done: !!g.done, completedAt: g.completedAt || '' }));
-    SO = data.scheduleOverrides || {};
-    SC = data.scheduleConfig || { disabledCourseIds: [] };
-    if (!Array.isArray(SC.disabledCourseIds)) SC.disabledCourseIds = [];
-    R = data.reflections || {};
-    A = (data.anniversaries || []).map(a => ({ ...a, id: a.id || uuid() }));
-    LS = normalizeLS(data.learningState || {});
-    rawSet('tasks', T); rawSet('recurringTasks', RT); rawSet('weekGoals', WG); rawSet('monthGoals', MG);
-    rawSet('deadlineGoals', DG); rawSet('scheduleOverrides', SO); rawSet('scheduleConfig', SC);
-    rawSet('reflections', R); rawSet('anniversaries', A); rawSet('reviewNotes', data.reviewNotes || {});
-    rawSet('learningState', LS);
+    for (const [k,v] of writes) { localStorage.setItem(k,v); changed.push(k); }
+  } catch (err) {
+    // Storage quota/privacy errors must not leave a partially restored state.
+    // Restore original raw strings, releasing newly written space first.
+    try {
+      for (const k of changed) localStorage.removeItem(k);
+      for (const [k,v] of previous) if (changed.includes(k) && v !== null) localStorage.setItem(k,v);
+    } catch (rollbackError) { throw new Error('恢复中断且自动回滚失败，请使用操作前的内部快照或导出的 JSON：'+rollbackError.message); }
+    throw err;
   } finally { syncSuppressed = false; }
+  ({tasks:T,recurringTasks:RT,weekGoals:WG,monthGoals:MG,deadlineGoals:DG,scheduleOverrides:SO,scheduleConfig:SC,reflections:R,anniversaries:A,learningState:LS}=next);
   syncTimerLoop(); renderCal(); renderSide(); renderStreak(); renderLearningSummary();
+  window.dispatchEvent(new Event('suiwind:history-change'));
+  window.dispatchEvent(new Event('suiwind:fitness-change'));
 }
 
+// Older clients may have synced a row without loading newly introduced fields.
+// On upload preserve remote extension data when its local key never existed.
+function adoptMissingExtensions(remote) {
+  if (!remote || typeof remote !== 'object' || Array.isArray(remote)) return;
+  const pending = [];
+  for (const field of ['liurenHistory','fitnessState']) {
+    if (!Object.hasOwn(remote,field) || localStorage.getItem('zx_'+field) !== null) continue;
+    const value = remote[field];
+    if (field === 'fitnessState') window.SuiwindFitnessCore.validate(value);
+    else if (!Array.isArray(value) || value.some(x=>!x || typeof x !== 'object' || Array.isArray(x))) throw new Error('invalid remote '+field);
+    pending.push([field,value]);
+  }
+  for (const [field,value] of pending) rawSet(field,value);
+  if (pending.some(([k])=>k==='liurenHistory')) window.dispatchEvent(new Event('suiwind:history-change'));
+  if (pending.some(([k])=>k==='fitnessState')) window.dispatchEvent(new Event('suiwind:fitness-change'));
+}
 function getBackups() { try { const a = JSON.parse(localStorage.getItem(BACKUP_KEY) || '[]'); return Array.isArray(a) ? a : []; } catch { return []; } }
-function createBackup(reason = '手动快照', quiet = false) {
+function createBackup(reason = '手动快照', quiet = false, data) {
+  try { if (data === undefined) data = snapshotData(); } catch (err) { alert('无法安全创建快照：'+err.message); return false; }
   const arr = getBackups();
-  arr.unshift({ id: uuid(), reason, dateKey: todayKey(), createdAt: isoNow(), data: snapshotData() });
-  try { localStorage.setItem(BACKUP_KEY, JSON.stringify(arr.slice(0, 7))); } catch {}
+  arr.unshift({ id: uuid(), reason, dateKey: todayKey(), createdAt: isoNow(), data });
+  try { localStorage.setItem(BACKUP_KEY, JSON.stringify(arr.slice(0, 7))); } catch { alert('内部快照写入失败。为防止数据丢失，已取消操作；请先导出 JSON 或释放存储空间。'); return false; }
   renderBackups();
   if (!quiet) toast('已创建内部快照', true);
+  return true;
 }
 function renderBackups() {
   const el = $('#backupHistoryList'); if (!el) return;
@@ -1278,8 +1331,8 @@ function renderBackups() {
     b.onclick = () => {
       const item = getBackups().find(x => x.id === b.dataset.brestore);
       if (!item || !confirm(`恢复「${item.reason}」快照？`)) return;
-      createBackup('恢复前自动留档', true);
-      applySnapshot(item.data);
+      if (!createBackup('恢复前自动留档', true)) return;
+      try { applySnapshot(item.data); markCloudDirty(); } catch (err) { alert('快照恢复失败：'+err.message); return; }
       toast('快照已恢复', true);
     };
   });
@@ -1319,36 +1372,65 @@ function initSupabase() {
     sb = window.supabase.createClient(c.url, c.key, { auth: { persistSession: true, autoRefreshToken: true } });
     sb.auth.getSession().then(({ data }) => {
       sbUser = data?.session?.user || null;
-      setCloudStatus(sbUser ? 'on' : 'off', sbUser ? '已同步' : '未登录');
+      setCloudStatus(sbUser ? 'on' : 'off', sbUser ? '已连接' : '未登录');
       updateCloudUI();
+      if (sbUser && cloudDirty) scheduleCloudSync();
     });
   } catch { sb = null; setCloudStatus('off', '配置错误'); }
 }
 async function uploadCloud(silent = false) {
   if (!sb || !sbUser) { if (!silent) alert('请先登录云端账号。'); return; }
-  setCloudStatus('busy', '同步中');
-  const stamp = isoNow();
-  const { error } = await sb.from('calendar_state').upsert({ user_id: sbUser.id, payload: snapshotData(), updated_at: stamp }, { onConflict: 'user_id' }).select('updated_at').single();
-  if (error) { setCloudStatus('off', '同步失败'); if (!silent) alert(error.message); return; }
-  saveSyncMeta({ lastSyncedCloudAt: stamp, cloudUpdatedAt: stamp, lastSyncedAt: stamp, localUpdatedAt: stamp, conflict: false });
-  cloudDirty = false; setCloudStatus('on', '已同步');
-  if (!silent) toast('已上传到云端', true);
+  if (cloudUploading) { if (!silent) toast('已有同步任务正在进行'); return; }
+  cloudUploading = true;
+  const client = sb, userId = sbUser.id, revision = cloudRevision;
+  const stillActive = () => sb === client && sbUser?.id === userId;
+  const fail = msg => { if (stillActive()) setCloudStatus('off', '同步失败'); if (!silent) alert(msg); };
+  try {
+    setCloudStatus('busy', '同步中');
+    const check = await client.from('calendar_state').select('payload,updated_at').eq('user_id', userId).maybeSingle();
+    if (!stillActive()) return;
+    if (check.error) { fail(check.error.message); return; }
+    const remote = check.data, meta = syncMeta();
+    const matched = remote && meta.lastSyncedCloudAt && Date.parse(remote.updated_at) === Date.parse(meta.lastSyncedCloudAt);
+    if (remote && (!matched || meta.conflict || (meta.userId && meta.userId !== userId))) {
+      saveSyncMeta({ cloudUpdatedAt: remote.updated_at, conflict: true });
+      if (silent) { setCloudStatus('off','发现冲突'); return; }
+      if (!confirm('云端有未确认的数据。是否先把云端保存为本机快照，再明确使用本机数据覆盖云端？取消后可选择下载。')) { setCloudStatus('off','发现冲突'); return; }
+      if (!createBackup('覆盖前云端留档', true, remote.payload)) { setCloudStatus('off','发现冲突'); return; }
+    }
+    adoptMissingExtensions(remote?.payload);
+    const stamp = isoNow(), payload = {...(remote?.payload || {}), ...snapshotData()};
+    const row = { user_id: userId, payload, updated_at: stamp };
+    const result = await client.from('calendar_state').writeIfUnchanged(row, remote?.updated_at ?? null);
+    if (!stillActive()) return;
+    if (result.error) { saveSyncMeta({conflict:true}); fail(result.error.message); return; }
+    const saved = result.data?.updated_at || stamp;
+    saveSyncMeta({ userId, lastSyncedCloudAt: saved, cloudUpdatedAt: saved, lastSyncedAt: stamp, ...(cloudRevision === revision ? {localUpdatedAt:stamp} : {}), conflict: false });
+    cloudDirty = cloudRevision !== revision; setCloudStatus('on','已同步');
+    if (!silent) toast('已上传到云端', true);
+  } catch (err) { fail(err.message || String(err)); }
+  finally { cloudUploading = false; if (cloudRevision !== revision && stillActive() && !syncMeta().conflict) scheduleCloudSync(); }
 }
 async function downloadCloud() {
   if (!sb || !sbUser) { alert('请先登录云端账号。'); return; }
-  createBackup('下载云端前', true);
+  if (cloudUploading) { toast('请先完成当前同步'); return; }
+  clearTimeout(syncTimer);
+  const client = sb, userId = sbUser.id;
   setCloudStatus('busy', '拉取中');
   const { data, error } = await sb.from('calendar_state').select('payload,updated_at').eq('user_id', sbUser.id).maybeSingle();
   if (error || !data?.payload) { setCloudStatus('on', '已同步'); alert(error ? error.message : '云端暂无数据。'); return; }
   if (!confirm('将使用云端数据覆盖当前本机数据（本机已自动备份快照），继续吗？')) { setCloudStatus('on', '已同步'); return; }
-  applySnapshot(data.payload);
-  saveSyncMeta({ lastSyncedCloudAt: data.updated_at, cloudUpdatedAt: data.updated_at, lastSyncedAt: isoNow(), localUpdatedAt: isoNow(), conflict: false });
+  if (sb !== client || sbUser?.id !== userId || cloudUploading) { alert('同步状态已变化，请重试。'); return; }
+  if (!createBackup('下载云端前', true)) { setCloudStatus('off','下载取消'); return; }
+  try { applySnapshot(data.payload); } catch (err) { setCloudStatus('off','下载失败'); alert('云端数据格式无效或本机存储失败：'+err.message); return; }
+  clearTimeout(syncTimer); cloudDirty = false;
+  saveSyncMeta({ userId, lastSyncedCloudAt: data.updated_at, cloudUpdatedAt: data.updated_at, lastSyncedAt: isoNow(), localUpdatedAt: isoNow(), conflict: false });
   setCloudStatus('on', '已同步'); toast('云端数据已恢复', true);
 }
-function markCloudDirty() { cloudDirty = true; }
+function markCloudDirty() { cloudDirty = true; cloudRevision++; }
 function scheduleCloudSync() {
   clearTimeout(syncTimer);
-  syncTimer = setTimeout(() => { if (sb && sbUser && !syncMeta().conflict) uploadCloud(true); }, 2000);
+  syncTimer = setTimeout(() => { if (sb && sbUser && cloudDirty && !syncMeta().conflict) uploadCloud(true); }, 2000);
 }
 
 /* ===== 主题、纪念日、通知、SW ===== */
@@ -1374,7 +1456,7 @@ function renderAnnivManage() {
 }
 
 function updateNotifyUI() {
-  const lb = $('#notifyBtn')?.querySelector('.notify-label');
+  const lb = $('#notifyBtn')?.querySelector('#notifyLabel');
   if (!lb || !('Notification' in window)) return;
   lb.textContent = Notification.permission === 'granted' ? '提醒已开启' : '开启提醒';
 }
@@ -1396,11 +1478,11 @@ function setupSW() {
 
 /* ===== 事件绑定 ===== */
 function bindEvents() {
-  document.addEventListener('click', e => { if (!e.target.closest('.more-menu-wrap')) $('#moreMenuDropdown').classList.remove('open'); });
+  document.addEventListener('click', e => { if (!e.target.closest('#moreMenuWrap')) $('#moreMenuDropdown').classList.remove('open'); });
   document.addEventListener('keydown', e => {
     if (e.key === 'Escape') {
       $('#moreMenuDropdown').classList.remove('open');
-      ['learningModal', 'reviewModal', 'cloudModal', 'scheduleModal', 'repeatActionModal', 'modal', 'aiModal'].forEach(id => $('#' + id)?.classList.remove('show'));
+      ['cloudModal', 'scheduleModal', 'repeatActionModal', 'modal', 'aiModal'].forEach(id => $('#' + id)?.classList.remove('show'));
     }
   });
 
@@ -1476,7 +1558,7 @@ function bindEvents() {
   document.querySelectorAll('[data-learning-tab]').forEach(b => { b.onclick = () => { activeLearningTab = b.dataset.learningTab; renderLearningPanel(); }; });
 
   // 周月复盘
-  $('#reviewBtn').onclick = () => { $('#reviewModal').classList.add('show'); renderReviewModal(); };
+  $('#reviewBtn').onclick = () => { window.dispatchEvent(new CustomEvent('suiwind:review-open')); $('#reviewModal').classList.add('show'); renderReviewModal(); };
   $('#closeReview').onclick = () => $('#reviewModal').classList.remove('show');
   $('#reviewModal').onclick = e => { if (e.target === $('#reviewModal')) $('#reviewModal').classList.remove('show'); };
   $('#weeklyTab').onclick = () => { activeReviewType = 'week'; renderReviewModal(); };
@@ -1540,12 +1622,12 @@ function bindEvents() {
   $('#signInBtn').onclick = async () => {
     if (!sb) { alert('请先保存 Supabase 配置。'); return; }
     const { data, error } = await sb.auth.signInWithPassword({ email: $('#sbEmail').value.trim(), password: $('#sbPassword').value });
-    if (error) alert(error.message); else { sbUser = data.user; setCloudStatus('on', '已同步'); updateCloudUI(); toast('登录成功', true); }
+    if (error) alert(error.message); else { sbUser = data.user; setCloudStatus('on', '已连接'); updateCloudUI(); if (cloudDirty) scheduleCloudSync(); toast('登录成功', true); }
   };
   $('#signOutBtn').onclick = async () => { if (sb) await sb.auth.signOut(); sbUser = null; setCloudStatus('off', '未登录'); updateCloudUI(); };
   $('#uploadCloud').onclick = () => uploadCloud(false);
   $('#downloadCloud').onclick = downloadCloud;
-  $('#exportBtn').onclick = () => downloadText(`苏伊温德日历备份_${fmt(now)}.json`, JSON.stringify(snapshotData(), null, 2), 'application/json');
+  $('#exportBtn').onclick = () => { try { downloadText(`苏伊温德日历备份_${fmt(now)}.json`, JSON.stringify(snapshotData(), null, 2), 'application/json'); } catch (err) { alert('无法安全导出备份：'+err.message); } };
   $('#createBackupBtn').onclick = () => createBackup('手动快照');
   $('#importBtn').onclick = () => $('#importFile').click();
   $('#importFile').onchange = async e => {
@@ -1553,8 +1635,8 @@ function bindEvents() {
     try {
       const data = JSON.parse(await file.text());
       if (!confirm('导入将覆盖当前数据（系统会自动留存快照），继续吗？')) return;
-      createBackup('导入 JSON 前', true); applySnapshot(data); toast('备份已恢复', true);
-    } catch { alert('无法读取该 JSON 备份文件。'); }
+      if (!createBackup('导入 JSON 前', true)) return; applySnapshot(data); markCloudDirty(); toast('备份已恢复', true);
+    } catch (err) { alert('无法恢复该 JSON 备份：'+err.message); }
   };
 
   // 纪念日 & 提醒
@@ -1586,6 +1668,18 @@ const getAiCfg = () => rawGet('aiConfig', {
 });
 const saveAiCfg = cfg => rawSet('aiConfig', cfg);
 
+async function fetchAI(url, options) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), 60000);
+  try {
+    const response = await fetch(url, {...options, signal:controller.signal});
+    // Buffer the response before clearing the timeout so a stalled body is also bounded.
+    const data = await response.json().catch(err => { if (controller.signal.aborted) throw err; return {}; });
+    return {ok:response.ok,status:response.status,json:async()=>data};
+  } catch (err) { if (controller.signal.aborted) throw new Error('AI 请求超时，请重试。'); throw err; }
+  finally { clearTimeout(timer); }
+}
+
 async function callAI(systemPrompt, userPrompt) {
   const cfg = getAiCfg();
   if (!cfg.apiKey) throw new Error('尚未配置 API Key，请先点击「配置 AI」。');
@@ -1593,7 +1687,7 @@ async function callAI(systemPrompt, userPrompt) {
   if (cfg.provider === 'gemini') {
     const model = (cfg.model || 'gemini-2.5-flash').trim();
     const url = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent?key=${encodeURIComponent(cfg.apiKey.trim())}`;
-    const res = await fetch(url, {
+    const res = await fetchAI(url, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -1610,7 +1704,7 @@ async function callAI(systemPrompt, userPrompt) {
   } else {
     const url = (cfg.endpoint || 'https://api.deepseek.com/v1/chat/completions').trim();
     const model = (cfg.model || 'deepseek-chat').trim();
-    const res = await fetch(url, {
+    const res = await fetchAI(url, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -1763,6 +1857,29 @@ function bindAiEvents() {
     }
   };
 }
+
+/* 供独立工作台模块调用；不公开 Key、云凭据或通用存储写权限。 */
+window.SuiwindWorkbench = Object.freeze({
+  callAI, openAiModal,
+  getSelectedDate: () => fmt(sel),
+  getFitnessState: readFitnessState,
+  setFitnessState: state => {
+    window.SuiwindFitnessCore.validate(state);
+    const key = 'zx_fitnessState', previous = localStorage.getItem(key);
+    try { S.s('fitnessState', state); }
+    catch (err) {
+      // S.s can fail while writing sync metadata after the business data write.
+      if (localStorage.getItem(key) !== previous) {
+        try { if (previous === null) localStorage.removeItem(key); else localStorage.setItem(key,previous); }
+        catch (rollbackError) { throw new Error('健身保存异常，回滚失败，请先导出备份：'+rollbackError.message); }
+      }
+      throw err;
+    }
+    window.dispatchEvent(new Event('suiwind:fitness-change'));
+  },
+  getHistory: () => rawGet('liurenHistory', []),
+  setHistory: records => { if (!Array.isArray(records)) throw new TypeError('history'); S.s('liurenHistory', records); window.dispatchEvent(new Event('suiwind:history-change')); },
+});
 
 /* ===== 启动 ===== */
 applyTheme(localStorage.getItem('zx_theme') === 'dark' ? 'dark' : 'light');
