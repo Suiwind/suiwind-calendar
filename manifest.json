@@ -1,7 +1,7 @@
 {
   "name": "苏伊温德日历 · 学习、计划与复盘",
   "short_name": "苏伊温德日历",
-  "description": "个人日历、学习复盘、居家健身、八字合盘与小六壬",
+  "description": "个人日历、动态学习计划、专注计时、睡眠与复盘系统",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#F3F0E8",

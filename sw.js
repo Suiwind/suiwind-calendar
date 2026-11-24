@@ -1,20 +1,17 @@
-const CACHE = 'suiwind-calendar-v412';
-const FONT_CACHE = 'suiwind-fonts-v412';
+const CACHE = 'suiwind-calendar-v351-liuren';
+const FONT_CACHE = 'suiwind-fonts-v400';
 const CORE = [
   './',
   './index.html',
-  './styles.css?v=412',
-  './app-data.js?v=412',
-  './app.js?v=412',
-  './supabase-local.js?v=412',
-  './bazi-hepan.js?v=412',
-  './bazi-hepan-v5.html?v=412',
-  './workbench.css?v=412',
-  './liuren-core.js?v=412',
-  './workbench.js?v=412',
-  './fitness-core.js?v=412',
-  './fitness.js?v=412',
-  './fitness.css?v=412',
+  './styles.css?v=400',
+  './app-data.js?v=400',
+  './app.js?v=351',
+  './supabase-local.js?v=351',
+  './bazi-hepan.js?v=400',
+  './bazi-hepan-v5.html?v=400',
+  './liuren-core.js?v=351',
+  './liuren.js?v=351',
+  './liuren.css?v=351',
   './manifest.json',
   './favicon.svg'
 ];
@@ -31,7 +28,7 @@ self.addEventListener('activate', event => {
   const keep = new Set([CACHE, FONT_CACHE]);
   event.waitUntil(
     caches.keys()
-      .then(keys => Promise.all(keys.filter(key => /^suiwind-(calendar|fonts)-/.test(key) && !keep.has(key)).map(key => caches.delete(key))))
+      .then(keys => Promise.all(keys.filter(key => !keep.has(key)).map(key => caches.delete(key))))
       .then(() => self.clients.claim())
   );
 });
@@ -71,7 +68,7 @@ self.addEventListener('fetch', event => {
           }
           return response;
         })
-        .catch(() => caches.match(event.request).then(hit => hit || (event.request.mode === 'navigate' ? caches.match('./index.html') : Response.error())))
+        .catch(() => caches.match(event.request).then(hit => hit || caches.match('./index.html')))
     );
     return;
   }
