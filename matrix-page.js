@@ -18,7 +18,7 @@
     if (loaded) return;
     const frame = $('matrixFrame');
     if (!frame) return;
-    frame.src = './matrix/index.html?embed=1&v=413';
+    frame.src = './matrix-workbench.html?embed=1&v=414';
     loaded = true;
   }
 
@@ -54,7 +54,7 @@
       const owner = host.replace(/\.github\.io$/i, '');
       const parts = (location.pathname || '').split('/').filter(Boolean);
       const first = parts[0] || '';
-      if (first && !/\.html?$/i.test(first) && first !== 'matrix') {
+      if (first && !/\.html?$/i.test(first)) {
         return `https://github.com/${owner}/${first}`;
       }
       if (owner) {
@@ -124,7 +124,7 @@
     $('matrixBtn')?.addEventListener('click', openMatrix);
     $('matrixClose')?.addEventListener('click', closeMatrix);
     $('matrixNewTabBtn')?.addEventListener('click', () => {
-      window.open('./matrix/index.html', '_blank', 'noopener');
+      window.open('./matrix-workbench.html', '_blank', 'noopener');
     });
 
     $('rollbackMenuBtn')?.addEventListener('click', openRollbackModal);
