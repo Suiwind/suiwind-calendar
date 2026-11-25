@@ -1231,11 +1231,15 @@ function snapshotData() {
   return {
     version: 30, savedAt: isoNow(), tasks: T, recurringTasks: RT, weekGoals: WG, monthGoals: MG,
     deadlineGoals: DG, scheduleOverrides: SO, scheduleConfig: SC, reflections: R, anniversaries: A,
-    reviewNotes: S.g('reviewNotes', {}), aiSummaries: S.g('aiSummaries', {}), learningState: LS
+    reviewNotes: S.g('reviewNotes', {}), aiSummaries: S.g('aiSummaries', {}), learningState: LS,
+    ...(rawGet('wealthLedger', null) ? { wealthLedger: rawGet('wealthLedger', null) } : {})
   };
 }
-function applySnapshot(data) {
+function applySnapshot(data, fromCloud = false) {
   if (!data || typeof data !== 'object') throw new Error('invalid');
+  // 旧版快照没有素账字段：保留现有账本，不作清空。云端恢复须本机明确启用。
+  const restoreWealth = !!data.wealthLedger && (!fromCloud || wealthCloudEnabled());
+  if (restoreWealth) window.SuzhangCore.validate(data.wealthLedger);
   syncSuppressed = true;
   try {
     T = data.tasks || {};
@@ -1252,8 +1256,10 @@ function applySnapshot(data) {
     rawSet('deadlineGoals', DG); rawSet('scheduleOverrides', SO); rawSet('scheduleConfig', SC);
     rawSet('reflections', R); rawSet('anniversaries', A); rawSet('reviewNotes', data.reviewNotes || {});
     rawSet('learningState', LS);
+    if (restoreWealth) rawSet('wealthLedger', data.wealthLedger);
   } finally { syncSuppressed = false; }
   syncTimerLoop(); renderCal(); renderSide(); renderStreak(); renderLearningSummary();
+  if (restoreWealth) window.dispatchEvent(new Event('suzhang:change'));
 }
 
 function getBackups() { try { const a = JSON.parse(localStorage.getItem(BACKUP_KEY) || '[]'); return Array.isArray(a) ? a : []; } catch { return []; } }
@@ -1292,6 +1298,7 @@ function renderBackups() {
 }
 
 let sb = null, sbUser = null;
+const wealthCloudEnabled = () => !!sbUser && rawGet('wealthSyncEnabled', false) && rawGet('wealthSyncOwner', '') === sbUser.id;
 const cloudCfg = () => S.g('cloudConfig', { url: '', key: '' });
 const syncMeta = () => S.g('syncMeta', { localUpdatedAt: '', lastSyncedAt: '', lastSyncedCloudAt: '', cloudUpdatedAt: '', conflict: false });
 function saveSyncMeta(p) { const n = { ...syncMeta(), ...p }; rawSet('syncMeta', n); renderSyncMeta(); return n; }
@@ -1327,12 +1334,28 @@ function initSupabase() {
 async function uploadCloud(silent = false) {
   if (!sb || !sbUser) { if (!silent) alert('请先登录云端账号。'); return; }
   setCloudStatus('busy', '同步中');
+  // 素账默认不上传；即使另一台新版设备未启用，也不能覆盖已有云端账本。
+  const userId = sbUser.id;
+  const remote = await sb.from('calendar_state').select('payload,updated_at').eq('user_id', userId).maybeSingle();
+  if (remote.error || sbUser?.id !== userId) { setCloudStatus('off', '同步失败'); if (!silent) alert(remote.error?.message || '登录状态已改变'); return; }
+  const payload = snapshotData();
+  const localLedger = payload.wealthLedger, remoteLedger = remote.data?.payload?.wealthLedger;
+  const bases = rawGet('wealthCloudBase', {});
+  const enabled = wealthCloudEnabled();
+  const diverged = enabled && !!localLedger && !!remoteLedger && remoteLedger.revision !== localLedger.revision && bases[userId] !== remoteLedger.revision;
+  if (!enabled || !localLedger || diverged) {
+    delete payload.wealthLedger;
+    if (remoteLedger) payload.wealthLedger = remoteLedger;
+  }
+  rawSet('wealthCloudNotice', diverged ? '云端账本版本不同。本地账本已保留，云端账本未被覆盖。请先导出本地素账，再通过日历云同步下载核对。' : '');
   const stamp = isoNow();
-  const { error } = await sb.from('calendar_state').upsert({ user_id: sbUser.id, payload: snapshotData(), updated_at: stamp }, { onConflict: 'user_id' }).select('updated_at').single();
+  const { error } = await sb.from('calendar_state').upsert({ user_id: userId, payload, updated_at: stamp }, { onConflict: 'user_id' }).select('updated_at').single();
   if (error) { setCloudStatus('off', '同步失败'); if (!silent) alert(error.message); return; }
   saveSyncMeta({ lastSyncedCloudAt: stamp, cloudUpdatedAt: stamp, lastSyncedAt: stamp, localUpdatedAt: stamp, conflict: false });
+  if (enabled && localLedger && !diverged) rawSet('wealthCloudBase', { ...rawGet('wealthCloudBase', {}), [userId]: localLedger.revision });
   cloudDirty = false; setCloudStatus('on', '已同步');
-  if (!silent) toast('已上传到云端', true);
+  window.dispatchEvent(new Event('suzhang:cloud'));
+  if (!silent) toast(diverged ? '日历已上传，素账存在版本冲突，未覆盖' : '已上传到云端', true);
 }
 async function downloadCloud() {
   if (!sb || !sbUser) { alert('请先登录云端账号。'); return; }
@@ -1341,7 +1364,11 @@ async function downloadCloud() {
   const { data, error } = await sb.from('calendar_state').select('payload,updated_at').eq('user_id', sbUser.id).maybeSingle();
   if (error || !data?.payload) { setCloudStatus('on', '已同步'); alert(error ? error.message : '云端暂无数据。'); return; }
   if (!confirm('将使用云端数据覆盖当前本机数据（本机已自动备份快照），继续吗？')) { setCloudStatus('on', '已同步'); return; }
-  applySnapshot(data.payload);
+  try { applySnapshot(data.payload, true); } catch (e) { setCloudStatus('off', '恢复失败'); alert('恢复失败：' + e.message); return; }
+  if (wealthCloudEnabled() && data.payload.wealthLedger) {
+    rawSet('wealthCloudBase', { ...rawGet('wealthCloudBase', {}), [sbUser.id]: data.payload.wealthLedger.revision });
+    rawSet('wealthCloudNotice', ''); window.dispatchEvent(new Event('suzhang:cloud'));
+  }
   saveSyncMeta({ lastSyncedCloudAt: data.updated_at, cloudUpdatedAt: data.updated_at, lastSyncedAt: isoNow(), localUpdatedAt: isoNow(), conflict: false });
   setCloudStatus('on', '已同步'); toast('云端数据已恢复', true);
 }
@@ -1784,7 +1811,26 @@ window.SUIWIND_BRIDGE = {
   openAiModal,
   toast,
   copyText,
-  applyTheme
+  applyTheme,
+  wealthRead: () => rawGet('wealthLedger', null),
+  wealthSave: (value) => {
+    window.SuzhangCore.validate(value);
+    if (wealthCloudEnabled()) S.s('wealthLedger', value);
+    else rawSet('wealthLedger', value);
+  },
+  wealthSyncEnabled: wealthCloudEnabled,
+  wealthSetSync: (enabled) => { if (enabled && !sbUser) throw new Error('请先返回日历登录你的 Supabase 私人账号，再启用素账同步。'); rawSet('wealthSyncEnabled', !!enabled); rawSet('wealthSyncOwner', enabled ? sbUser.id : ''); if (enabled) scheduleCloudSync(); },
+  wealthCloudNotice: () => rawGet('wealthCloudNotice', ''),
+  wealthReminders: (items, remove = false) => {
+    const existing = new Set(DG.map(g => g.id));
+    const incoming = items.map(g => ({ id: 'suzhang-' + g.id, text: '素账 · ' + g.label, dueDate: g.date, priority: 'medium', done: false, createdAt: isoNow(), completedAt: '' }));
+    const before = DG.length;
+    if (remove) DG = DG.filter(g => !String(g.id).startsWith('suzhang-'));
+    else DG.push(...incoming.filter(g => !existing.has(g.id)));
+    const count = Math.abs(DG.length - before);
+    if (count) { S.s('deadlineGoals', DG); renderDeadlines(); renderCal(); renderSide(); }
+    return count;
+  }
 };
 
 /* ===== 启动 ===== */
