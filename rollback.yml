@@ -1,0 +1,102 @@
+name: "⏪ 一键版本倒退（彻底撤回新版本）"
+
+on:
+  workflow_dispatch:
+    inputs:
+      steps_back:
+        description: "要往回退几次上传记录？"
+        required: true
+        default: "1 - 退回上 1 次上传（刚传了 1 次选这个）"
+        type: choice
+        options:
+          - "1 - 退回上 1 次上传（刚传了 1 次选这个）"
+          - "2 - 退回上 2 次上传（刚分 2 批传了文件选这个）"
+          - "3 - 退回上 3 次上传"
+          - "custom - 按下方填写的历史编号精确退回"
+      target_sha:
+        description: "可选：仅当上方选 custom 时填入 7 位历史编号（平时留空即可）"
+        required: false
+        default: ""
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  rollback:
+    name: "彻底删除新版残留并恢复旧版"
+    runs-on: ubuntu-latest
+    steps:
+      - name: 读取完整仓库历史
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: 彻底清空新版本并还原旧版本文件
+        env:
+          STEPS_CHOICE: ${{ inputs.steps_back }}
+          INPUT_SHA: ${{ inputs.target_sha }}
+        run: |
+          set -euo pipefail
+
+          # 1. 解析目标历史版本
+          case "$STEPS_CHOICE" in
+            1*) TARGET="HEAD~1" ;;
+            2*) TARGET="HEAD~2" ;;
+            3*) TARGET="HEAD~3" ;;
+            *)
+              CLEAN_SHA="$(echo "$INPUT_SHA" | tr -d '[:space:]')"
+              if [[ ! "$CLEAN_SHA" =~ ^[0-9a-fA-F]{7,40}$ ]]; then
+                echo "::error::请在 target_sha 中填入有效的 7~40 位历史提交编号，或直接选择退回上 1/2/3 次上传。"
+                exit 1
+              fi
+              TARGET="$CLEAN_SHA"
+              ;;
+          esac
+
+          if ! RESOLVED_SHA="$(git rev-parse --verify "${TARGET}^{commit}" 2>/dev/null)"; then
+            echo "::error::仓库历史记录不足，无法回退到 ${TARGET}。"
+            exit 1
+          fi
+          SHORT_SHA="$(git rev-parse --short "$RESOLVED_SHA")"
+          OLD_MSG="$(git log -1 --pretty=%s "$RESOLVED_SHA")"
+          echo "准备恢复至历史版本: ${SHORT_SHA} (${OLD_MSG})"
+
+          # 2. 暂存本撤回开关文件，确保退回旧版后下次依然能继续用「一键版本倒退」
+          cp .github/workflows/rollback.yml /tmp/rollback.yml
+
+          # 3. 连根清空当前新版本的所有文件与新增文件夹（如 matrix/ 等，零残留）
+          git rm -rf --ignore-unmatch .
+          git clean -fd
+
+          # 4. 100% 还原目标旧版本的所有文件
+          git checkout "$RESOLVED_SHA" -- .
+
+          # 5. 保留撤回开关本身
+          mkdir -p .github/workflows
+          cp /tmp/rollback.yml .github/workflows/rollback.yml
+
+          # 6. 自动刷新 sw.js 离线缓存版本号，让手机和电脑自动清掉新版画面、切回旧版（不动任何个人日程数据）
+          if [ -f "sw.js" ]; then
+            STAMP="$(date -u +%Y%m%d%H%M%S)"
+            node -e '
+              const fs = require("fs");
+              let s = fs.readFileSync("sw.js", "utf8");
+              s = s.replace(/const\s+CACHE\s*=\s*[\x27"][^\x27"]+[\x27"]/, "const CACHE = \x27suiwind-calendar-rb-" + process.argv[1] + "\x27");
+              fs.writeFileSync("sw.js", s, "utf8");
+            ' "$STAMP"
+          fi
+
+          # 7. 提交并推送覆盖线上版本
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+
+          if git diff --cached --quiet; then
+            echo "当前文件已与目标旧版本一致，无需重复提交。"
+            exit 0
+          fi
+
+          git commit -m "⏪ 版本倒退：彻底恢复至 ${SHORT_SHA}（${OLD_MSG}）"
+          git push origin HEAD
+          echo "✅ 已彻底退回旧版本 ${SHORT_SHA}，新版本文件已全部清除！"
