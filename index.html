@@ -13,7 +13,7 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/source-serif-4@5/600.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/noto-serif-sc@5/600.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/noto-serif-sc@5/700.css">
-<link rel="stylesheet" href="./styles.css?v=400">
+<link rel="stylesheet" href="./styles.css?v=411">
 <script>
 (function(){
   try{
@@ -93,6 +93,18 @@
   <symbol id="i-timer" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
     <line x1="10" x2="14" y1="2" y2="2"/><line x1="12" x2="15" y1="14" y2="11"/><circle cx="12" cy="14" r="8"/>
   </symbol>
+  <symbol id="i-compass" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/>
+  </symbol>
+  <symbol id="i-shuffle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M2 18h1.4c1.3 0 2.5-.6 3.3-1.7l6.1-8.6c.7-1.1 2-1.7 3.3-1.7H22"/><path d="m18 2 4 4-4 4"/><path d="M2 6h1.9c1.5 0 2.9.9 3.6 2.2"/><path d="M22 18h-5.9c-1.3 0-2.6-.7-3.3-1.8l-.5-.8"/><path d="m18 14 4 4-4 4"/>
+  </symbol>
+  <symbol id="i-copy" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>
+  </symbol>
+  <symbol id="i-trash" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/>
+  </symbol>
 </svg>
 
 <!-- 八字合盘全屏容器（保持与 bazi-hepan.js 100% 兼容） -->
@@ -166,6 +178,297 @@
   </div>
 </section>
 
+<!-- 小六壬排盘全屏容器（三流派引擎：古法 / 江氏 / 道传） -->
+<section id="xlrPage" class="xlr-page" data-density="compact" aria-hidden="true" aria-label="小六壬排盘">
+  <div class="xlr-head">
+    <div class="xlr-head-inner">
+      <div>
+        <div class="brand-row">
+          <h1 class="xlr-title">小六壬排盘</h1>
+          <span class="version">三流派引擎</span>
+        </div>
+        <p class="xlr-subtitle">古法六宫 · 江氏地支六亲六神 · 道传九宫八卦</p>
+      </div>
+      <div class="xlr-actions">
+        <button type="button" class="btn icon-only" id="xlrThemeBtn" title="切换深浅主题" aria-label="切换深浅主题">
+          <span id="xlrThemeIcon"><svg class="ico" aria-hidden="true"><use href="#i-moon"/></svg></span>
+        </button>
+        <button type="button" class="btn primary" id="xlrClose">返回日历</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="xlr-wrap">
+    <div class="xlr-grid">
+      <main class="xlr-main" aria-label="小六壬起课与盘面">
+        <!-- 起课控制面板 -->
+        <section class="xlr-card xlr-composer" aria-label="起课参数">
+          <div class="xlr-composer-top">
+            <div class="xlr-school-bar" role="tablist" aria-label="排盘流派">
+              <button type="button" class="xlr-school-btn active" role="tab" aria-selected="true" data-xlr-school="classic">
+                <span class="xlr-school-name">古法六宫</span>
+                <span class="xlr-school-sub">大安至空亡 · 经典三传</span>
+              </button>
+              <button type="button" class="xlr-school-btn" role="tab" aria-selected="false" data-xlr-school="jiang">
+                <span class="xlr-school-name">江氏进阶</span>
+                <span class="xlr-school-sub">地支 · 六亲 · 六神</span>
+              </button>
+              <button type="button" class="xlr-school-btn" role="tab" aria-selected="false" data-xlr-school="dao">
+                <span class="xlr-school-name">道传九宫</span>
+                <span class="xlr-school-sub">九宫八卦 · 病符桃花天德</span>
+              </button>
+            </div>
+
+            <div class="xlr-mode-tabs" role="tablist" aria-label="起课方式">
+              <button type="button" class="xlr-mode-btn active" role="tab" aria-selected="true" data-xlr-mode="time">时间起课</button>
+              <button type="button" class="xlr-mode-btn" role="tab" aria-selected="false" data-xlr-mode="number">报数起课</button>
+              <button type="button" class="xlr-mode-btn" role="tab" aria-selected="false" data-xlr-mode="random">随机起课</button>
+            </div>
+          </div>
+
+          <div class="xlr-question-row">
+            <div class="xlr-field xlr-field-grow">
+              <label class="xlr-label" for="xlrQuestion">所问之事（选填）</label>
+              <input id="xlrQuestion" type="text" maxlength="80" placeholder="静心写下所问之事，如：本次面试是否顺利、遗失物件能否寻回">
+            </div>
+            <div class="xlr-field xlr-field-topic">
+              <label class="xlr-label" for="xlrTopic">占测分类</label>
+              <select id="xlrTopic">
+                <option value="general">综合断事</option>
+                <option value="career">事业学业</option>
+                <option value="wealth">求财交易</option>
+                <option value="love">感情人际</option>
+                <option value="travel">出行远行</option>
+                <option value="lost">失物寻人</option>
+                <option value="health">健康身心</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- 模式一：时间起课 -->
+          <div id="xlrPanelTime" class="xlr-mode-panel">
+            <div class="xlr-inline-bar">
+              <div class="xlr-cal-switch" role="group" aria-label="历法输入方式">
+                <button type="button" class="btn sm active" id="xlrCalSolarBtn" data-xlr-cal="solar">公历转农历</button>
+                <button type="button" class="btn sm" id="xlrCalLunarBtn" data-xlr-cal="lunar">手选农历</button>
+              </div>
+              <button type="button" class="btn sm ghost" id="xlrNowBtn">
+                <svg class="ico ico-sm" aria-hidden="true"><use href="#i-clock"/></svg>
+                <span>重置为此刻</span>
+              </button>
+            </div>
+
+            <div id="xlrSolarFields" class="xlr-input-grid xlr-cols-2">
+              <div class="xlr-field">
+                <label class="xlr-label" for="xlrDate">公历日期</label>
+                <input id="xlrDate" type="date">
+              </div>
+              <div class="xlr-field">
+                <label class="xlr-label" for="xlrShichen">时辰（北京时间）</label>
+                <select id="xlrShichen"></select>
+              </div>
+            </div>
+
+            <div id="xlrLunarFields" class="xlr-input-grid xlr-cols-3" hidden>
+              <div class="xlr-field">
+                <label class="xlr-label" for="xlrLunarMonth">农历月份</label>
+                <select id="xlrLunarMonth"></select>
+              </div>
+              <div class="xlr-field">
+                <label class="xlr-label" for="xlrLunarDay">农历日期</label>
+                <select id="xlrLunarDay"></select>
+              </div>
+              <div class="xlr-field">
+                <label class="xlr-label" for="xlrLunarShichen">时辰</label>
+                <select id="xlrLunarShichen"></select>
+              </div>
+            </div>
+
+            <div class="xlr-preview-line" id="xlrLunarPreview">农历换算载入中…</div>
+          </div>
+
+          <!-- 模式二：报数起课 -->
+          <div id="xlrPanelNumber" class="xlr-mode-panel" hidden>
+            <div class="xlr-inline-bar">
+              <div class="xlr-cal-switch" role="group" aria-label="报数规则">
+                <button type="button" class="btn sm active" id="xlrNum3Btn" data-xlr-numkind="three">三数起课</button>
+                <button type="button" class="btn sm" id="xlrNum2Btn" data-xlr-numkind="two-time">两数 + 时辰</button>
+              </div>
+              <span class="xlr-hint">心中默念所问，任意报取正整数</span>
+            </div>
+
+            <div class="xlr-input-grid xlr-cols-3">
+              <div class="xlr-field">
+                <label class="xlr-label" for="xlrNum1">第一数（初传）</label>
+                <input id="xlrNum1" type="number" min="1" max="9999" value="3" inputmode="numeric">
+              </div>
+              <div class="xlr-field">
+                <label class="xlr-label" for="xlrNum2">第二数（中传）</label>
+                <input id="xlrNum2" type="number" min="1" max="9999" value="7" inputmode="numeric">
+              </div>
+              <div class="xlr-field" id="xlrNum3Wrap">
+                <label class="xlr-label" for="xlrNum3">第三数（末传）</label>
+                <input id="xlrNum3" type="number" min="1" max="9999" value="9" inputmode="numeric">
+              </div>
+              <div class="xlr-field" id="xlrNumShichenWrap" hidden>
+                <label class="xlr-label" for="xlrNumShichen">落宫时辰</label>
+                <select id="xlrNumShichen"></select>
+              </div>
+            </div>
+            <div class="xlr-preview-line" id="xlrNumShichenNote">江氏进阶模式下，装十二地支与六神将参考当前北京时间时辰。</div>
+          </div>
+
+          <!-- 模式三：随机起课 -->
+          <div id="xlrPanelRandom" class="xlr-mode-panel" hidden>
+            <div class="xlr-random-box">
+              <div class="xlr-random-copy">
+                <strong>静心起念，随缘取数</strong>
+                <p>系统将生成三组自然随机数推演初、中、末三传，并以当前北京时间时辰配合江氏排盘。</p>
+              </div>
+              <div class="xlr-random-nums" id="xlrRandomSeedNote">待起课</div>
+            </div>
+          </div>
+
+          <div class="xlr-submit-row">
+            <button type="button" class="btn primary" id="xlrCastBtn">
+              <svg class="ico ico-sm" aria-hidden="true"><use href="#i-compass"/></svg>
+              <span id="xlrCastBtnText">立即排盘</span>
+            </button>
+            <button type="button" class="btn soft" id="xlrQuickRandomBtn">
+              <svg class="ico ico-sm" aria-hidden="true"><use href="#i-shuffle"/></svg>
+              <span>随机起一课</span>
+            </button>
+          </div>
+        </section>
+
+        <!-- 排盘结果主卡 -->
+        <section class="xlr-card xlr-result" id="xlrResultCard" aria-live="polite" aria-label="排盘结果">
+          <div class="xlr-result-head">
+            <div class="xlr-res-meta" id="xlrResMeta">准备就绪</div>
+            <div class="xlr-hero">
+              <div class="xlr-hero-main">
+                <div class="xlr-hero-palace" id="xlrResMainName">—</div>
+                <div class="xlr-hero-badges">
+                  <span class="xlr-badge" id="xlrResAuspice">—</span>
+                  <span class="xlr-badge xlr-badge-wx" id="xlrResWx">—</span>
+                  <span class="xlr-badge xlr-badge-dir" id="xlrResDir">—</span>
+                </div>
+              </div>
+              <div class="xlr-hero-summary">
+                <div class="xlr-hero-tagline" id="xlrResTagline"></div>
+                <p class="xlr-hero-verse" id="xlrResVerse"></p>
+              </div>
+            </div>
+          </div>
+
+          <!-- 三传流转 -->
+          <div class="xlr-section">
+            <div class="xlr-sec-head">
+              <h2>三传推演与五行生克</h2>
+              <span class="xlr-sec-sub" id="xlrStepsRule"></span>
+            </div>
+            <div class="xlr-steps" id="xlrStepsFlow"></div>
+            <div class="xlr-wx-flow" id="xlrWxFlow"></div>
+          </div>
+
+          <!-- 可视化掌诀 / 九宫盘 -->
+          <div class="xlr-section">
+            <div class="xlr-sec-head">
+              <h2 id="xlrBoardTitle">左手六宫掌诀图</h2>
+              <div class="xlr-board-legend">
+                <span class="xlr-leg-item"><i class="xlr-step-dot s1"></i>初传</span>
+                <span class="xlr-leg-item"><i class="xlr-step-dot s2"></i>中传</span>
+                <span class="xlr-leg-item"><i class="xlr-step-dot s3"></i>末传（落宫）</span>
+              </div>
+            </div>
+            <div class="xlr-board is-6" id="xlrBoard" role="group" aria-label="课盘"></div>
+            <div class="xlr-cell-inspect" id="xlrCellInspect"></div>
+          </div>
+
+          <!-- 江氏地支·六亲·六神总表 -->
+          <div class="xlr-section" id="xlrJiangTableWrap" hidden>
+            <div class="xlr-sec-head">
+              <h2>江氏全盘装卦（地支 · 六亲 · 六神）</h2>
+              <span class="xlr-sec-sub" id="xlrJiangMeta"></span>
+            </div>
+            <div class="xlr-table-wrap">
+              <table class="xlr-table">
+                <thead>
+                  <tr>
+                    <th scope="col">宫位</th>
+                    <th scope="col">传次</th>
+                    <th scope="col">地支五行</th>
+                    <th scope="col">六亲</th>
+                    <th scope="col">六神</th>
+                    <th scope="col">象意提要</th>
+                  </tr>
+                </thead>
+                <tbody id="xlrJiangTableBody"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- 断语与分类参详 -->
+          <div class="xlr-section">
+            <div class="xlr-sec-head">
+              <h2>卦辞与分类参详</h2>
+              <div class="xlr-topic-pills" id="xlrTopicPills" role="tablist" aria-label="断语分类"></div>
+            </div>
+            <div class="xlr-interpret" id="xlrInterpret"></div>
+          </div>
+
+          <!-- 提示词与 AI 解卦 -->
+          <div class="xlr-section xlr-ai-section">
+            <div class="xlr-ai-bar">
+              <div class="xlr-ai-copy">
+                <strong>深度解卦与提示词导出</strong>
+                <span>支持一键复制完整结构化盘面，或调用日历已配置的 AI 助手结合占题拆解。</span>
+              </div>
+              <div class="xlr-ai-btns">
+                <button type="button" class="btn sm" id="xlrCopyPromptBtn">
+                  <svg class="ico ico-sm" aria-hidden="true"><use href="#i-copy"/></svg>
+                  <span>复制卦盘提示词</span>
+                </button>
+                <button type="button" class="btn sm primary" id="xlrAiBtn">
+                  <svg class="ico ico-sm" aria-hidden="true"><use href="#i-sparkles"/></svg>
+                  <span>AI 结合占题解卦</span>
+                </button>
+              </div>
+            </div>
+            <div class="ai-analysis-box" id="xlrAiOutput" hidden></div>
+          </div>
+        </section>
+      </main>
+
+      <!-- 右侧：排盘历史记录与流派简注 -->
+      <aside class="xlr-card xlr-side" aria-label="排盘记录">
+        <div class="xlr-side-head">
+          <div>
+            <h2>排盘记录</h2>
+            <span class="xlr-side-count" id="xlrHistoryCount">0 条记录</span>
+          </div>
+          <button type="button" class="btn sm ghost" id="xlrClearHistoryBtn">
+            <svg class="ico ico-sm" aria-hidden="true"><use href="#i-trash"/></svg>
+            <span>清空</span>
+          </button>
+        </div>
+
+        <div class="xlr-history-list" id="xlrHistoryList"></div>
+
+        <details class="xlr-side-note">
+          <summary>三流派排盘简注</summary>
+          <ul>
+            <li><b>古法六宫</b>：起大安，顺数月、日、时（或三数），直断初、中、末三传吉凶与应象。</li>
+            <li><b>江氏进阶</b>：以落宫为身宫，顺时针隔位装十二地支，依五行生克装六亲，子午大安起青龙排六神。</li>
+            <li><b>道传九宫</b>：扩充病符、桃花、天德为九宫，配后天八卦方位与三传生克流向。</li>
+          </ul>
+          <p class="xlr-disclaimer">传统民俗数术文化工具，仅作思路启发与决策对照，重大事项请结合现实理性判断。</p>
+        </details>
+      </aside>
+    </div>
+  </div>
+</section>
+
 <!-- 顶部吸顶双线书眉 -->
 <header class="top">
   <div class="top-inner">
@@ -177,22 +480,27 @@
       <p class="poetic-sub">生命如暗室，不妨我明写春诗</p>
     </div>
     <nav class="actions" aria-label="主导航">
-      <button class="btn primary" id="learningBtn" type="button">学习中心</button>
-      <button class="btn" id="reviewBtn" type="button">周月复盘</button>
-      <button class="btn" id="baziBtn" type="button">八字合盘</button>
-      <button class="btn nav-status" id="cloudBtn" type="button" title="云同步与数据备份">
-        <i class="cloud-dot" id="cloudDot"></i>
-        <span id="cloudText">仅本地</span>
-      </button>
-      <button class="btn icon-only" id="themeToggleBtn" type="button" title="切换深浅主题" aria-label="切换深浅主题">
-        <span id="themeToggleIcon"><svg class="ico" aria-hidden="true"><use href="#i-moon"/></svg></span>
-      </button>
-      <div class="more-menu-wrap">
-        <button class="btn icon-only" id="moreMenuBtn" type="button" aria-expanded="false" aria-haspopup="menu" title="更多"><svg class="ico" aria-hidden="true"><use href="#i-ellipsis"/></svg></button>
-        <div class="more-menu-dropdown" id="moreMenuDropdown" role="menu">
-          <button class="btn more-menu-item" id="aiConfigBtn" type="button" role="menuitem"><svg class="ico ico-sm" aria-hidden="true"><use href="#i-sparkles"/></svg><span>AI 助手设置</span></button>
-          <button class="btn more-menu-item" id="annivBtn" type="button" role="menuitem"><svg class="ico ico-sm ico-seal" aria-hidden="true"><use href="#i-heart"/></svg><span>纪念日管理</span></button>
-          <button class="btn more-menu-item" id="notifyBtn" type="button" role="menuitem"><svg class="ico ico-sm" aria-hidden="true"><use href="#i-bell"/></svg><span class="notify-label">开启提醒</span></button>
+      <div class="nav-scroll">
+        <button class="btn primary" id="learningBtn" type="button">学习中心</button>
+        <button class="btn" id="reviewBtn" type="button">周月复盘</button>
+        <button class="btn" id="baziBtn" type="button">八字合盘</button>
+        <button class="btn" id="xlrBtn" type="button">小六壬</button>
+        <button class="btn nav-status" id="cloudBtn" type="button" title="云同步与数据备份">
+          <i class="cloud-dot" id="cloudDot"></i>
+          <span id="cloudText">仅本地</span>
+        </button>
+      </div>
+      <div class="nav-utils">
+        <button class="btn icon-only" id="themeToggleBtn" type="button" title="切换深浅主题" aria-label="切换深浅主题">
+          <span id="themeToggleIcon"><svg class="ico" aria-hidden="true"><use href="#i-moon"/></svg></span>
+        </button>
+        <div class="more-menu-wrap">
+          <button class="btn icon-only" id="moreMenuBtn" type="button" aria-expanded="false" aria-haspopup="menu" title="更多"><svg class="ico" aria-hidden="true"><use href="#i-ellipsis"/></svg></button>
+          <div class="more-menu-dropdown" id="moreMenuDropdown" role="menu">
+            <button class="btn more-menu-item" id="aiConfigBtn" type="button" role="menuitem"><svg class="ico ico-sm" aria-hidden="true"><use href="#i-sparkles"/></svg><span>AI 助手设置</span></button>
+            <button class="btn more-menu-item" id="annivBtn" type="button" role="menuitem"><svg class="ico ico-sm ico-seal" aria-hidden="true"><use href="#i-heart"/></svg><span>纪念日管理</span></button>
+            <button class="btn more-menu-item" id="notifyBtn" type="button" role="menuitem"><svg class="ico ico-sm" aria-hidden="true"><use href="#i-bell"/></svg><span class="notify-label">开启提醒</span></button>
+          </div>
         </div>
       </div>
     </nav>
@@ -631,9 +939,10 @@
   <button class="btn ghost sm" id="swUpdateDismissBtn" type="button">稍后</button>
 </div>
 
-<script src="./supabase-local.js?v=400"></script>
-<script src="./app-data.js?v=400"></script>
-<script defer src="./app.js?v=400"></script>
-<script defer src="./bazi-hepan.js?v=400"></script>
+<script src="./supabase-local.js?v=411"></script>
+<script src="./app-data.js?v=411"></script>
+<script defer src="./app.js?v=411"></script>
+<script defer src="./bazi-hepan.js?v=411"></script>
+<script defer src="./xiaoliuren.js?v=411"></script>
 </body>
 </html>

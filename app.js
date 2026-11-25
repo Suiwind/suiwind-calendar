@@ -1395,17 +1395,27 @@ function setupSW() {
 }
 
 /* ===== 事件绑定 ===== */
+function setMoreMenuOpen(open) {
+  const dd = $('#moreMenuDropdown'), btn = $('#moreMenuBtn');
+  if (!dd) return;
+  dd.classList.toggle('open', open);
+  if (btn) btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+}
+
 function bindEvents() {
-  document.addEventListener('click', e => { if (!e.target.closest('.more-menu-wrap')) $('#moreMenuDropdown').classList.remove('open'); });
+  document.addEventListener('click', e => { if (!e.target.closest('.more-menu-wrap')) setMoreMenuOpen(false); });
   document.addEventListener('keydown', e => {
     if (e.key === 'Escape') {
-      $('#moreMenuDropdown').classList.remove('open');
+      setMoreMenuOpen(false);
       ['learningModal', 'reviewModal', 'cloudModal', 'scheduleModal', 'repeatActionModal', 'modal', 'aiModal'].forEach(id => $('#' + id)?.classList.remove('show'));
     }
   });
 
   $('#themeToggleBtn').onclick = () => applyTheme(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
-  $('#moreMenuBtn').onclick = e => { e.stopPropagation(); $('#moreMenuDropdown').classList.toggle('open'); };
+  $('#moreMenuBtn').onclick = e => {
+    e.stopPropagation();
+    setMoreMenuOpen(!$('#moreMenuDropdown').classList.contains('open'));
+  };
 
   $('#prevBtn').onclick = () => { view.setMonth(view.getMonth() - 1); renderCal(true); };
   $('#nextBtn').onclick = () => { view.setMonth(view.getMonth() + 1); renderCal(true); };
@@ -1558,7 +1568,7 @@ function bindEvents() {
   };
 
   // 纪念日 & 提醒
-  $('#annivBtn').onclick = () => { $('#moreMenuDropdown').classList.remove('open'); $('#aDate').value = fmt(sel); renderAnnivManage(); $('#modal').classList.add('show'); };
+  $('#annivBtn').onclick = () => { setMoreMenuOpen(false); $('#aDate').value = fmt(sel); renderAnnivManage(); $('#modal').classList.add('show'); };
   $('#cancelA').onclick = () => $('#modal').classList.remove('show');
   $('#modal').onclick = e => { if (e.target === $('#modal')) $('#modal').classList.remove('show'); };
   $('#saveA').onclick = () => {
@@ -1567,7 +1577,7 @@ function bindEvents() {
     S.s('anniversaries', A); $('#aName').value = ''; renderAnnivManage(); renderCal(); toast('纪念日已添加', true);
   };
   $('#notifyBtn').onclick = async () => {
-    $('#moreMenuDropdown').classList.remove('open');
+    setMoreMenuOpen(false);
     if (!('Notification' in window)) { alert('当前浏览器不支持通知。'); return; }
     const p = await Notification.requestPermission(); updateNotifyUI();
     if (p === 'granted') toast('任务提醒已开启', true);
@@ -1724,7 +1734,7 @@ function openAiModal() {
 }
 
 function bindAiEvents() {
-  $('#aiConfigBtn').onclick = () => { $('#moreMenuDropdown').classList.remove('open'); openAiModal(); };
+  $('#aiConfigBtn').onclick = () => { setMoreMenuOpen(false); openAiModal(); };
   $('#aiQuoteSetupBtn').onclick = openAiModal;
   $('#closeAiModal').onclick = () => $('#aiModal').classList.remove('show');
   $('#aiModal').onclick = e => { if (e.target === $('#aiModal')) $('#aiModal').classList.remove('show'); };
@@ -1763,6 +1773,19 @@ function bindAiEvents() {
     }
   };
 }
+
+/* ===== 跨模块轻量桥接（供小六壬等子模块复用农历/AI/提示） ===== */
+window.SUIWIND_BRIDGE = {
+  bjParts,
+  todayDate,
+  lunar,
+  callAI,
+  getAiCfg,
+  openAiModal,
+  toast,
+  copyText,
+  applyTheme
+};
 
 /* ===== 启动 ===== */
 applyTheme(localStorage.getItem('zx_theme') === 'dark' ? 'dark' : 'light');

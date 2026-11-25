@@ -1,14 +1,15 @@
-const CACHE = 'suiwind-calendar-v400';
-const FONT_CACHE = 'suiwind-fonts-v400';
+const CACHE = 'suiwind-calendar-v411';
+const FONT_CACHE = 'suiwind-fonts-v411';
 const CORE = [
   './',
   './index.html',
-  './styles.css?v=400',
-  './app-data.js?v=400',
-  './app.js?v=400',
-  './supabase-local.js?v=400',
-  './bazi-hepan.js?v=400',
-  './bazi-hepan-v5.html?v=400',
+  './styles.css?v=411',
+  './app-data.js?v=411',
+  './app.js?v=411',
+  './supabase-local.js?v=411',
+  './bazi-hepan.js?v=411',
+  './bazi-hepan-v5.html?v=411',
+  './xiaoliuren.js?v=411',
   './manifest.json',
   './favicon.svg'
 ];
