@@ -1623,9 +1623,10 @@ const getAiCfg = () => rawGet('aiConfig', {
 });
 const saveAiCfg = cfg => rawSet('aiConfig', cfg);
 
-async function callAI(systemPrompt, userPrompt) {
+async function callAI(systemPrompt, userPrompt, options = {}) {
   const cfg = getAiCfg();
   if (!cfg.apiKey) throw new Error('尚未配置 API Key，请先点击「配置 AI」。');
+  const temperature = typeof options?.temperature === 'number' ? options.temperature : 0.8;
 
   if (cfg.provider === 'gemini') {
     const model = (cfg.model || 'gemini-2.5-flash').trim();
@@ -1636,7 +1637,7 @@ async function callAI(systemPrompt, userPrompt) {
       body: JSON.stringify({
         system_instruction: { parts: [{ text: systemPrompt }] },
         contents: [{ role: 'user', parts: [{ text: userPrompt }] }],
-        generationConfig: { temperature: 0.8 }
+        generationConfig: { temperature }
       })
     });
     const data = await res.json().catch(() => ({}));
@@ -1659,7 +1660,7 @@ async function callAI(systemPrompt, userPrompt) {
           { role: 'system', content: systemPrompt },
           { role: 'user', content: userPrompt }
         ],
-        temperature: 0.8
+        temperature
       })
     });
     const data = await res.json().catch(() => ({}));
@@ -1822,14 +1823,21 @@ window.SUIWIND_BRIDGE = {
   wealthSetSync: (enabled) => { if (enabled && !sbUser) throw new Error('请先返回日历登录你的 Supabase 私人账号，再启用素账同步。'); rawSet('wealthSyncEnabled', !!enabled); rawSet('wealthSyncOwner', enabled ? sbUser.id : ''); if (enabled) scheduleCloudSync(); },
   wealthCloudNotice: () => rawGet('wealthCloudNotice', ''),
   wealthReminders: (items, remove = false) => {
-    const existing = new Set(DG.map(g => g.id));
-    const incoming = items.map(g => ({ id: 'suzhang-' + g.id, text: '素账 · ' + g.label, dueDate: g.date, priority: 'medium', done: false, createdAt: isoNow(), completedAt: '' }));
     const before = DG.length;
-    if (remove) DG = DG.filter(g => !String(g.id).startsWith('suzhang-'));
-    else DG.push(...incoming.filter(g => !existing.has(g.id)));
-    const count = Math.abs(DG.length - before);
-    if (count) { S.s('deadlineGoals', DG); renderDeadlines(); renderCal(); renderSide(); }
-    return count;
+    if (remove) {
+      DG = DG.filter(g => !String(g.id).startsWith('suzhang-'));
+      const removed = before - DG.length;
+      if (removed) { S.s('deadlineGoals', DG); renderDeadlines(); renderCal(); renderSide(); }
+      return removed;
+    }
+    const doneIds = new Set(DG.filter(g => String(g.id).startsWith('suzhang-') && g.done).map(g => g.id));
+    const kept = DG.filter(g => !String(g.id).startsWith('suzhang-') || g.done);
+    const incoming = items
+      .map(g => ({ id: 'suzhang-' + g.id, text: '素账 · ' + g.label, dueDate: g.date, priority: 'medium', done: false, createdAt: isoNow(), completedAt: '' }))
+      .filter(g => !doneIds.has(g.id));
+    DG = [...kept, ...incoming];
+    S.s('deadlineGoals', DG); renderDeadlines(); renderCal(); renderSide();
+    return incoming.length;
   }
 };
 

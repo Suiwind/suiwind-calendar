@@ -1,14 +1,14 @@
-const CACHE = 'suiwind-calendar-v415';
+const CACHE = 'suiwind-calendar-v416';
 const FONT_CACHE = 'suiwind-fonts-v414';
 const CORE = [
   './',
   './index.html',
   './styles.css?v=414',
   './app-data.js?v=414',
-  './app.js?v=415',
-  './wealth-core.js?v=415',
-  './wealth-book.js?v=415',
-  './wealth-book.css?v=415',
+  './app.js?v=416',
+  './wealth-core.js?v=416',
+  './wealth-book.js?v=416',
+  './wealth-book.css?v=416',
   './supabase-local.js?v=414',
   './bazi-hepan.js?v=414',
   './bazi-hepan-v5.html?v=411',

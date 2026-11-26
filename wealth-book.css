@@ -1,14 +1,531 @@
-/* 素账：仅命名空间内样式，不覆写原日历任何选择器。 */
-#wealthPage[hidden]{display:none!important} #wealthPage{position:fixed;inset:0;z-index:117;display:flex;flex-direction:column;height:100vh;height:100dvh;background:var(--bg);color:var(--text);overflow:hidden;font:14px/1.65 var(--font-ui)}
-#wealthPage *{box-sizing:border-box} #wealthPage .sz-head{flex:none;border-bottom:1px solid var(--line);background:var(--surface)}
-#wealthPage .sz-head-inner{max-width:1060px;margin:auto;padding:max(12px,env(safe-area-inset-top)) 24px 10px;display:flex;align-items:center;justify-content:space-between;gap:12px}
-#wealthPage h1,#wealthPage h2,#wealthPage h3,#wealthPage p{margin:0} #wealthPage h1{font:700 25px/1.2 var(--font-serif);letter-spacing:.12em} #wealthPage h2{font:700 19px/1.4 var(--font-serif)} #wealthPage h3{font:600 15px/1.5 var(--font-ui)}
-#wealthPage .sz-muted{color:var(--text-3);font-size:12px} #wealthPage .sz-caption{color:var(--text-3);font-size:12px;margin-top:6px} #wealthPage .sz-head-right{display:flex;gap:8px;align-items:center} #wealthPage .sz-tabs{display:flex;gap:24px;max-width:1060px;padding:0 24px;margin:auto}
-#wealthPage .sz-tab{padding:10px 3px 9px;border:0;border-bottom:2px solid transparent;background:none;color:var(--text-3);font:600 14px var(--font-ui);cursor:pointer} #wealthPage .sz-tab[aria-selected=true]{color:var(--accent);border-color:var(--accent)}
-#wealthPage .sz-scroll{flex:1;overflow-y:auto;overscroll-behavior:contain;padding:24px 24px max(32px,env(safe-area-inset-bottom));} #wealthPage .sz-content{max-width:1012px;margin:auto;display:grid;gap:18px} #wealthPage .sz-card{padding:20px;background:var(--card);border:1px solid var(--line);border-radius:var(--r-panel);min-width:0} #wealthPage .sz-plain{padding:0 2px} #wealthPage .sz-card-head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:12px}
-#wealthPage .sz-metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px} #wealthPage .sz-metric{min-width:0} #wealthPage .sz-metric+.sz-metric{border-left:1px solid var(--line);padding-left:14px} #wealthPage .sz-num{font:600 29px/1.25 var(--font-num);font-variant-numeric:tabular-nums;overflow-wrap:anywhere} #wealthPage .sz-smallnum{font:600 19px/1.3 var(--font-num);font-variant-numeric:tabular-nums} #wealthPage .sz-red{color:var(--danger)} #wealthPage .sz-green{color:var(--accent)} #wealthPage .sz-warn{color:var(--ochre)}
-#wealthPage textarea,#wealthPage input:not([type=checkbox]),#wealthPage select{width:100%;min-width:0;color:var(--text);background:var(--field);border:1px solid var(--line-strong);border-radius:var(--r-ctrl);padding:9px 10px;font:inherit;outline-offset:2px} #wealthPage textarea{resize:vertical;min-height:100px;line-height:1.75} #wealthPage input[type=checkbox]{accent-color:var(--accent);width:16px;height:16px;flex:none} #wealthPage label{display:grid;gap:4px;color:var(--text-2);font-size:12px;min-width:0} #wealthPage label.sz-check{display:flex;align-items:center;gap:8px} #wealthPage .sz-fieldgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px} #wealthPage .sz-span{grid-column:1/-1} #wealthPage .sz-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:12px} #wealthPage .sz-actions .sz-grow{flex:1} #wealthPage .sz-shortcuts{display:flex;gap:7px;flex-wrap:wrap} #wealthPage .btn{max-width:100%;height:auto;min-height:34px;white-space:normal;text-align:center;padding:6px 12px} #wealthPage .sz-iconbutton{background:none;border:none;color:var(--text-3);padding:5px;cursor:pointer;font:inherit} #wealthPage .sz-iconbutton:hover{color:var(--text)}
-#wealthPage .sz-list{display:grid;gap:0} #wealthPage .sz-row{display:flex;gap:12px;align-items:center;padding:11px 0;border-bottom:1px solid var(--line);min-width:0} #wealthPage .sz-row:last-child{border-bottom:0} #wealthPage .sz-row-main{flex:1;min-width:0;overflow-wrap:anywhere} #wealthPage .sz-row-right{text-align:right;flex:none} #wealthPage .sz-row-title{font-weight:600} #wealthPage .sz-chip{font-size:11px;color:var(--ochre);border:1px solid var(--line-strong);padding:1px 5px;border-radius:4px;display:inline-block} #wealthPage .sz-draft{border-top:1px solid var(--line);padding:13px 0} #wealthPage .sz-draft .sz-check{margin-bottom:8px} #wealthPage .sz-draft .sz-fieldgrid{grid-template-columns:repeat(4,minmax(0,1fr))} #wealthPage .sz-err{color:var(--danger);font-size:12px;margin-top:5px} #wealthPage .sz-empty{padding:18px 0;color:var(--text-3);font-size:13px} #wealthPage .sz-grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px} #wealthPage .sz-group{padding:12px 14px;background:var(--surface);border-radius:var(--r-block);min-width:0} #wealthPage .sz-group .sz-row{padding:7px 0} #wealthPage .sz-track{height:6px;border-radius:99px;background:var(--surface-2);overflow:hidden;margin:7px 0} #wealthPage .sz-track>i{height:100%;display:block;background:var(--accent);border-radius:99px} #wealthPage .sz-track>i.sz-over{background:var(--seal)} #wealthPage .sz-divider{border:0;border-top:1px solid var(--line);margin:13px 0} #wealthPage details{border-top:1px solid var(--line);padding:12px 0 0;margin-top:12px} #wealthPage summary{color:var(--text-2);font-weight:600;cursor:pointer} #wealthPage .sz-note{white-space:pre-wrap;overflow-wrap:anywhere;font-size:13px;color:var(--text-2);margin-top:8px} #wealthPage .sz-banner{border-left:2px solid var(--ochre);padding:9px 12px;background:var(--ochre-wash);color:var(--text-2);font-size:12px;border-radius:0 var(--r-ctrl) var(--r-ctrl) 0} #wealthPage .sz-status{font-size:12px;min-height:17px;color:var(--text-3);margin-top:8px} #wealthPage .sz-sticky{position:sticky;bottom:0;background:var(--card);padding:8px 0 0;border-top:1px solid var(--line)} #wealthPage .sz-mini{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px} #wealthPage .sz-dialog{border:1px solid var(--line);background:var(--card);color:var(--text);width:min(620px,calc(100% - 24px));max-height:85dvh;overflow:auto;border-radius:var(--r-panel);padding:20px;box-shadow:var(--shadow-pop)} #wealthPage .sz-dialog::backdrop{background:var(--scrim)} #wealthPage .sz-dialog .sz-card-head{margin-bottom:16px}
-@media(max-width:650px){#wealthPage .sz-head-inner{padding:max(9px,env(safe-area-inset-top)) 14px 8px} #wealthPage h1{font-size:21px} #wealthPage .sz-head-inner .sz-muted{display:none} #wealthPage .sz-tabs{padding:0 14px;gap:22px} #wealthPage .sz-scroll{padding:14px 12px max(24px,env(safe-area-inset-bottom))} #wealthPage .sz-content{gap:12px} #wealthPage .sz-card{padding:14px} #wealthPage .sz-metrics{gap:6px} #wealthPage .sz-metric+.sz-metric{padding-left:8px} #wealthPage .sz-num{font-size:22px} #wealthPage .sz-smallnum{font-size:17px} #wealthPage .sz-fieldgrid,#wealthPage .sz-draft .sz-fieldgrid{grid-template-columns:repeat(2,minmax(0,1fr))} #wealthPage .sz-grid2{grid-template-columns:1fr} #wealthPage .sz-actions .btn{padding:6px 9px} #wealthPage input:not([type=checkbox]),#wealthPage textarea,#wealthPage select{font-size:16px} #wealthPage .sz-row{gap:8px} #wealthPage .sz-row .btn{font-size:12px;padding:4px 8px} #wealthPage .sz-row-right .sz-muted{font-size:11px}}
-#wealthPage .sz-group details{padding:0;margin:0;border:0} #wealthPage .sz-group summary{list-style:none;display:flex;align-items:center;justify-content:space-between;gap:8px;cursor:pointer} #wealthPage .sz-group summary::-webkit-details-marker{display:none} #wealthPage .sz-group summary:after{content:'＋';color:var(--text-3);font-size:14px;flex:none} #wealthPage .sz-group details[open]>summary:after{content:'−'} #wealthPage .sz-group details[open]>summary{margin-bottom:6px} #wealthPage .sz-group .sz-group-total{margin-left:auto;font:600 20px/1.3 var(--font-num);font-variant-numeric:tabular-nums;white-space:nowrap} #wealthPage .sz-group .sz-muted{overflow-wrap:anywhere}
-@media(max-width:650px){#wealthPage .sz-metrics .sz-num{font-size:clamp(15px,4.45vw,20px);letter-spacing:-.025em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}#wealthPage .sz-metrics .sz-muted{font-size:11px}#wealthPage .sz-group .sz-group-total{font-size:18px}}
+/* 素账 V3.6.1 · 时令墨本极简与可视化样式
+ * 严格限定在 #wealthPage 命名空间内，绝不覆写原日历任何选择器。
+ */
+#wealthPage[hidden] { display: none !important; }
+#wealthPage {
+  position: fixed;
+  inset: 0;
+  z-index: 117;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  height: 100dvh;
+  background: var(--bg);
+  color: var(--text);
+  overflow: hidden;
+  font: 14px/1.65 var(--font-ui);
+}
+#wealthPage * { box-sizing: border-box; }
+
+/* 顶部书眉与极简三标签 */
+#wealthPage .sz-head {
+  flex: none;
+  border-bottom: 1px solid var(--line);
+  background: var(--surface);
+}
+#wealthPage .sz-head-inner {
+  max-width: 1040px;
+  margin: auto;
+  padding: max(12px, env(safe-area-inset-top)) 24px 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+#wealthPage h1, #wealthPage h2, #wealthPage h3, #wealthPage p { margin: 0; }
+#wealthPage h1 { font: 700 24px/1.2 var(--font-serif); letter-spacing: .12em; }
+#wealthPage h2 { font: 700 18px/1.4 var(--font-serif); display: inline-flex; align-items: center; gap: 7px; }
+#wealthPage h3 { font: 600 14px/1.5 var(--font-ui); display: inline-flex; align-items: center; gap: 6px; }
+
+#wealthPage .sz-muted { color: var(--text-3); font-size: 12px; }
+#wealthPage .sz-caption { color: var(--text-3); font-size: 12px; margin-top: 6px; }
+#wealthPage .sz-head-right { display: flex; gap: 8px; align-items: center; }
+
+#wealthPage .sz-tabs {
+  display: flex;
+  gap: 26px;
+  max-width: 1040px;
+  padding: 0 24px;
+  margin: auto;
+}
+#wealthPage .sz-tab {
+  padding: 10px 3px 9px;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  background: none;
+  color: var(--text-3);
+  font: 600 14px var(--font-ui);
+  cursor: pointer;
+  transition: color var(--dur-1) var(--ease), border-color var(--dur-1) var(--ease);
+}
+#wealthPage .sz-tab:hover { color: var(--text); }
+#wealthPage .sz-tab[aria-selected="true"] { color: var(--accent); border-color: var(--accent); }
+
+/* 内容滚区与卡片 */
+#wealthPage .sz-scroll {
+  flex: 1;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 22px 24px max(36px, env(safe-area-inset-bottom));
+}
+#wealthPage .sz-content {
+  max-width: 992px;
+  margin: auto;
+  display: grid;
+  gap: 16px;
+}
+#wealthPage .sz-card {
+  padding: 20px;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--r-panel);
+  min-width: 0;
+}
+#wealthPage .sz-card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+
+/* 统一 1.5px 线性 SVG 图标 */
+#wealthPage .sz-ico {
+  width: 16px;
+  height: 16px;
+  flex: none;
+  display: inline-block;
+  vertical-align: -2px;
+  color: var(--text-3);
+}
+#wealthPage .sz-ico-sm { width: 14px; height: 14px; }
+#wealthPage .sz-ico-badge {
+  width: 32px;
+  height: 32px;
+  border-radius: 9px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  color: var(--accent);
+}
+#wealthPage .sz-ico-badge.tone-seal { color: var(--seal); background: var(--seal-wash); border-color: transparent; }
+#wealthPage .sz-ico-badge.tone-ochre { color: var(--ochre); background: var(--ochre-wash); border-color: transparent; }
+#wealthPage .sz-ico-badge.tone-accent { color: var(--accent); background: var(--accent-wash); border-color: transparent; }
+#wealthPage .sz-ico-badge.tone-info { color: var(--info); }
+#wealthPage .sz-ico-badge.tone-muted { color: var(--text-3); }
+
+/* 指标栏 */
+#wealthPage .sz-metrics {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+#wealthPage .sz-metric { min-width: 0; }
+#wealthPage .sz-metric + .sz-metric { border-left: 1px solid var(--line); padding-left: 14px; }
+#wealthPage .sz-metric-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--text-3);
+  font-size: 12px;
+}
+#wealthPage .sz-num {
+  font: 600 28px/1.25 var(--font-num);
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+  margin-top: 2px;
+}
+#wealthPage .sz-smallnum {
+  font: 600 17px/1.3 var(--font-num);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+#wealthPage .sz-red { color: var(--danger); }
+#wealthPage .sz-green { color: var(--accent); }
+#wealthPage .sz-warn { color: var(--ochre); }
+
+/* 表单与按钮 */
+#wealthPage textarea,
+#wealthPage input:not([type="checkbox"]),
+#wealthPage select {
+  width: 100%;
+  min-width: 0;
+  color: var(--text);
+  background: var(--field);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--r-ctrl);
+  padding: 9px 10px;
+  font: inherit;
+  outline-offset: 2px;
+}
+#wealthPage textarea { resize: vertical; min-height: 92px; line-height: 1.75; }
+#wealthPage textarea.sz-memo-box {
+  min-height: 108px;
+  background: var(--surface);
+  border-color: var(--line);
+  padding: 12px 14px;
+  border-radius: var(--r-block);
+  transition: border-color var(--dur-1) var(--ease), background var(--dur-1) var(--ease);
+}
+#wealthPage textarea.sz-memo-box:focus {
+  background: var(--field);
+  border-color: var(--accent);
+}
+#wealthPage input[type="checkbox"] { accent-color: var(--accent); width: 16px; height: 16px; flex: none; cursor: pointer; }
+#wealthPage label { display: grid; gap: 4px; color: var(--text-2); font-size: 12px; min-width: 0; }
+#wealthPage label.sz-check { display: flex; align-items: center; gap: 8px; cursor: pointer; }
+
+#wealthPage .sz-fieldgrid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+#wealthPage .sz-span { grid-column: 1 / -1; }
+#wealthPage .sz-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+#wealthPage .sz-actions .sz-grow { flex: 1; }
+#wealthPage .sz-shortcuts { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+#wealthPage .sz-more-bar {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px dashed var(--line);
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+#wealthPage .btn {
+  max-width: 100%;
+  height: auto;
+  min-height: 34px;
+  white-space: normal;
+  text-align: center;
+  padding: 6px 13px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+}
+#wealthPage .sz-iconbutton {
+  background: none;
+  border: none;
+  color: var(--text-3);
+  padding: 4px 6px;
+  cursor: pointer;
+  font: inherit;
+  border-radius: 6px;
+}
+#wealthPage .sz-iconbutton:hover { color: var(--text); background: var(--hover); }
+
+/* 1 行式极简 AI 草稿卡片 */
+#wealthPage .sz-draft-item {
+  border-top: 1px solid var(--line);
+  padding: 11px 0;
+}
+#wealthPage .sz-draft-item:first-child { border-top: 0; padding-top: 4px; }
+#wealthPage .sz-draft-line {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+#wealthPage .sz-draft-summary { flex: 1; min-width: 0; overflow-wrap: anywhere; }
+#wealthPage .sz-draft-amt { font: 600 16px/1.2 var(--font-num); font-variant-numeric: tabular-nums; white-space: nowrap; }
+#wealthPage .sz-draft-editor {
+  margin-top: 10px;
+  padding: 12px;
+  background: var(--surface);
+  border-radius: var(--r-block);
+  border: 1px solid var(--line);
+}
+#wealthPage .sz-draft-editor .sz-fieldgrid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+#wealthPage .sz-draft-item.is-invalid .sz-draft-line { color: var(--danger); }
+#wealthPage .sz-err { color: var(--danger); font-size: 12px; margin-top: 5px; }
+
+/* 列表行与筛选栏 */
+#wealthPage .sz-list { display: grid; gap: 0; }
+#wealthPage .sz-row {
+  display: flex;
+  gap: 11px;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--line);
+  min-width: 0;
+}
+#wealthPage .sz-row:last-child { border-bottom: 0; }
+#wealthPage .sz-row-main { flex: 1; min-width: 0; overflow-wrap: anywhere; }
+#wealthPage .sz-row-right { text-align: right; flex: none; display: grid; gap: 2px; justify-items: end; }
+#wealthPage .sz-row-title { font-weight: 600; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+#wealthPage .sz-row-ops { display: inline-flex; gap: 2px; }
+#wealthPage .sz-chip {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--ochre);
+  border: 1px solid var(--line-strong);
+  padding: 0 5px;
+  border-radius: 4px;
+  display: inline-block;
+  line-height: 1.5;
+}
+#wealthPage .sz-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+#wealthPage .sz-toolbar input[type="month"] { width: auto; min-width: 138px; padding: 6px 10px; }
+#wealthPage .sz-filter-drawer {
+  margin-top: 10px;
+  padding: 12px;
+  background: var(--surface);
+  border-radius: var(--r-block);
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+/* 可视化图表：环形饼图 / 折线图 / 柱状图 */
+#wealthPage .sz-donut-wrap {
+  display: grid;
+  grid-template-columns: 184px minmax(0, 1fr);
+  gap: 22px;
+  align-items: center;
+}
+#wealthPage .sz-donut-box {
+  position: relative;
+  width: 180px;
+  height: 180px;
+  margin: auto;
+}
+#wealthPage .sz-donut-svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+  transform: rotate(-90deg);
+}
+#wealthPage .sz-donut-center {
+  position: absolute;
+  inset: 26px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  pointer-events: none;
+}
+#wealthPage .sz-donut-label { font-size: 11px; color: var(--text-3); letter-spacing: .04em; }
+#wealthPage .sz-donut-val {
+  font: 600 19px/1.2 var(--font-num);
+  font-variant-numeric: tabular-nums;
+  margin-top: 2px;
+  color: var(--text);
+}
+#wealthPage .sz-donut-val.is-long { font-size: 16px; }
+#wealthPage .sz-donut-sub { font-size: 11px; color: var(--text-3); margin-top: 2px; }
+
+#wealthPage .sz-legend { display: grid; gap: 9px; min-width: 0; }
+#wealthPage .sz-legend-row {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  min-width: 0;
+}
+#wealthPage .sz-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  flex: none;
+}
+#wealthPage .sz-legend-name {
+  flex: 1;
+  min-width: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+#wealthPage .sz-legend-val {
+  font: 600 14px/1.2 var(--font-num);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+#wealthPage .sz-legend-pct {
+  width: 44px;
+  text-align: right;
+  font-size: 12px;
+  color: var(--text-3);
+  font-variant-numeric: tabular-nums;
+  flex: none;
+}
+#wealthPage .sz-hero-foot {
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid var(--line);
+  display: flex;
+  gap: 18px;
+  flex-wrap: wrap;
+  font-size: 12px;
+  color: var(--text-2);
+}
+#wealthPage .sz-hero-foot b { font-family: var(--font-num); font-weight: 600; color: var(--text); }
+
+/* SVG 折线图 & 柱状图容器 */
+#wealthPage .sz-chart-box {
+  width: 100%;
+  padding: 6px 0 2px;
+  overflow: hidden;
+}
+#wealthPage .sz-svg-chart {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+#wealthPage .sz-chart-legend {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  font-size: 12px;
+  color: var(--text-3);
+  margin-bottom: 6px;
+}
+#wealthPage .sz-chart-legend span { display: inline-flex; align-items: center; gap: 6px; }
+#wealthPage .sz-swatch-line { width: 16px; height: 2px; border-radius: 2px; display: inline-block; }
+#wealthPage .sz-swatch-dash { width: 16px; height: 0; border-top: 2px dashed var(--ochre); display: inline-block; }
+#wealthPage .sz-swatch-bar { width: 10px; height: 10px; border-radius: 2px; display: inline-block; }
+
+/* 周期切换胶囊 */
+#wealthPage .sz-pills {
+  display: inline-flex;
+  gap: 4px;
+  padding: 3px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r-ctrl);
+  flex-wrap: wrap;
+}
+#wealthPage .sz-pill {
+  border: 0;
+  background: transparent;
+  color: var(--text-2);
+  padding: 5px 12px;
+  border-radius: 6px;
+  font: 500 13px var(--font-ui);
+  cursor: pointer;
+}
+#wealthPage .sz-pill.active {
+  background: var(--accent);
+  color: var(--on-accent);
+}
+
+/* 账户清册分组与杂项 */
+#wealthPage .sz-empty { padding: 14px 0; color: var(--text-3); font-size: 13px; }
+#wealthPage .sz-grid2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+#wealthPage .sz-group {
+  padding: 13px 15px;
+  background: var(--surface);
+  border-radius: var(--r-block);
+  min-width: 0;
+}
+#wealthPage .sz-group .sz-row { padding: 7px 0; }
+#wealthPage .sz-group details { padding: 0; margin: 0; border: 0; }
+#wealthPage .sz-group summary {
+  list-style: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  cursor: pointer;
+}
+#wealthPage .sz-group summary::-webkit-details-marker { display: none; }
+#wealthPage .sz-group summary::after { content: '＋'; color: var(--text-3); font-size: 14px; flex: none; }
+#wealthPage .sz-group details[open] > summary::after { content: '−'; }
+#wealthPage .sz-group details[open] > summary { margin-bottom: 6px; }
+#wealthPage .sz-group-title { display: inline-flex; align-items: center; gap: 7px; font-weight: 600; color: var(--text); }
+#wealthPage .sz-group-total {
+  margin-left: auto;
+  font: 600 19px/1.3 var(--font-num);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+#wealthPage .sz-track {
+  height: 6px;
+  border-radius: 99px;
+  background: var(--surface-2);
+  overflow: hidden;
+  margin: 7px 0;
+}
+#wealthPage .sz-track > i { height: 100%; display: block; background: var(--accent); border-radius: 99px; }
+#wealthPage .sz-track > i.sz-over { background: var(--seal); }
+#wealthPage .sz-divider { border: 0; border-top: 1px solid var(--line); margin: 14px 0; }
+#wealthPage details { border-top: 1px solid var(--line); padding: 12px 0 0; margin-top: 12px; }
+#wealthPage summary { color: var(--text-2); font-weight: 600; cursor: pointer; }
+#wealthPage .sz-note { white-space: pre-wrap; overflow-wrap: anywhere; font-size: 13px; color: var(--text-2); margin-top: 8px; line-height: 1.75; }
+#wealthPage .sz-banner {
+  border-left: 2px solid var(--ochre);
+  padding: 10px 13px;
+  background: var(--ochre-wash);
+  color: var(--text-2);
+  font-size: 12px;
+  border-radius: 0 var(--r-ctrl) var(--r-ctrl) 0;
+}
+#wealthPage .sz-status { font-size: 12px; min-height: 17px; color: var(--text-3); margin-top: 8px; }
+#wealthPage .sz-sticky {
+  position: sticky;
+  bottom: 0;
+  background: var(--card);
+  padding: 10px 0 2px;
+  border-top: 1px solid var(--line);
+}
+
+/* 弹窗 */
+#wealthPage .sz-dialog {
+  border: 1px solid var(--line);
+  background: var(--card);
+  color: var(--text);
+  width: min(600px, calc(100% - 24px));
+  max-height: 85dvh;
+  overflow: auto;
+  border-radius: var(--r-panel);
+  padding: 20px;
+  box-shadow: var(--shadow-pop);
+}
+#wealthPage .sz-dialog::backdrop { background: var(--scrim); }
+#wealthPage .sz-dialog .sz-card-head { margin-bottom: 14px; }
+
+/* 移动端响应式精调 */
+@media (max-width: 650px) {
+  #wealthPage .sz-head-inner { padding: max(9px, env(safe-area-inset-top)) 14px 8px; }
+  #wealthPage h1 { font-size: 21px; }
+  #wealthPage .sz-head-inner .sz-muted { display: none; }
+  #wealthPage .sz-tabs { padding: 0 14px; gap: 22px; }
+  #wealthPage .sz-scroll { padding: 14px 12px max(28px, env(safe-area-inset-bottom)); }
+  #wealthPage .sz-content { gap: 12px; }
+  #wealthPage .sz-card { padding: 14px; }
+  #wealthPage .sz-metrics { gap: 6px; }
+  #wealthPage .sz-metric + .sz-metric { padding-left: 8px; }
+  #wealthPage .sz-metrics .sz-num {
+    font-size: clamp(15px, 4.45vw, 20px);
+    letter-spacing: -.025em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  #wealthPage .sz-metrics .sz-muted,
+  #wealthPage .sz-metric-label { font-size: 11px; }
+  #wealthPage .sz-smallnum { font-size: 15px; }
+  #wealthPage .sz-donut-wrap { grid-template-columns: 1fr; gap: 16px; }
+  #wealthPage .sz-donut-box { width: 168px; height: 168px; }
+  #wealthPage .sz-fieldgrid,
+  #wealthPage .sz-draft-editor .sz-fieldgrid,
+  #wealthPage .sz-filter-drawer { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  #wealthPage .sz-grid2 { grid-template-columns: 1fr; }
+  #wealthPage .sz-actions .btn { padding: 6px 10px; }
+  #wealthPage input:not([type="checkbox"]),
+  #wealthPage textarea,
+  #wealthPage select { font-size: 16px; }
+  #wealthPage .sz-row { gap: 8px; }
+  #wealthPage .sz-row .btn { font-size: 12px; padding: 4px 8px; }
+  #wealthPage .sz-group-total { font-size: 17px; }
+}
